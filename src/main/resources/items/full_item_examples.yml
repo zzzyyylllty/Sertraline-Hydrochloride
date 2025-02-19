@@ -19,19 +19,19 @@ testItem:
       - 'lore-format|default' # 插入 default lore format.
     model: 10000
     update-id: 1 # 类似 MMOItems Revision Id，储存于NBT。
-    fix:
+    fixed:
       # 只有给予时会随机的量。
       # 储存在 NBT 内。
       - idef: attack
         type: value
-        val:
+        val: 1
       - idef: attack
         type: random
         val:
           min: 1
           max: 50
     val:
-      # 每次调用都会生成的量。
+      # 每次调用都会生成的固定量，不可被修改。
       # 不储存在 NBT 内。
       - idef: message
         type: weight

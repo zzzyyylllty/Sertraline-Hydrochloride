@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty
 
+import io.github.zzzyyylllty.data.DepazItem
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.info
@@ -12,7 +13,7 @@ object DepazItems : Plugin() {
 
     var debug = true
     var console = console()
-    var items = LinkedHashMap<String, DepazItem>
+    var items = LinkedHashMap<String, DepazItem>()
     override fun onEnable() {
         console.sendLang(Level.INFO, "enable.boot.copyright")
         console.sendLang(Level.INFO, "enable.boot.plugin", pluginId)
