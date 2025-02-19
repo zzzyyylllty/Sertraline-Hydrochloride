@@ -1,0 +1,143 @@
+testItem:
+  compatibility:
+    mmoitems: # 添加 MMOItems NBT以与大部分支持MI的插件自动进行兼容，使用该选项你必须关闭MI的物品删除自动失效功能。
+      type: 'CONSUMABLE'
+      id: 'DEPAZ_PILLS'
+      revid: 114514 # 如果你不想让你的物品被MI自动更新，关闭MI的自动更新功能或确保它不低于MI内同名同种物品。
+      tier: RARE
+  depaz: # Depaz-Items 属性
+    name: '一个非常牛逼的物品'
+    material: STONE
+    nbts:
+      - node: package
+        value: needy.girl.overdose
+    lore:
+      - '大家好啊，我是说的道理'
+      - '今天来点大家想看的东西啊'
+      - 'conditional|check papi %player_name% == "Mi_Yu"|啊米浴说的道理' # 当物品重载时，如果玩家名称为Mi_Yu，该条lore才会显示
+      - 'madeonly,conditional|check papi %player_name% == "Mi_Yu"|啊米浴说的道理' # 当物品被给予时，如果玩家名称为Mi_Yu，该条lore才会显示
+      - 'lore-format|default' # 插入 default lore format.
+    model: 10000
+    update-id: 1 # 类似 MMOItems Revision Id，储存于NBT。
+    fix:
+      # 只有给予时会随机的量。
+      # 储存在 NBT 内。
+      - idef: attack
+        type: value
+        val:
+      - idef: attack
+        type: random
+        val:
+          min: 1
+          max: 50
+    val:
+      # 每次调用都会生成的量。
+      # 不储存在 NBT 内。
+      - idef: message
+        type: weight
+        val:
+          - weight: 2 # 不填写默认1
+            value: 'HELLO WORLD' # 2/3 出现该选项
+          - weight: 1
+            value: 'GOODBYE WORLD' # 1/3 出现该选项
+    var:
+      # 物品内的变量，可以理解为数据。
+      # 储存在 NBT 内。
+      - idef: message
+        type: weight
+        val: # 初始值
+          - weight: 2 # 不填写默认1
+            value: 'HELLO WORLD' # 2/3 出现该选项
+          - weight: 1
+            value: 'GOODBYE WORLD' # 1/3 出现该选项
+  attributes:
+    - type: MythicLib
+      attr: ATTACK_DAMAGE
+      idef:
+        extend: null # 继承标识符号，相同标识符号的相同属性在继承时会被大的一方覆盖
+        # 例如 父类和子类都为 extends: 111，而父类属性数值为1.0，子类属性数值为2.0，实际只会计算2.0而不是叠加
+        override-parent: false
+        # 覆盖父类的相同属性，相当于自动填写相同的继承符号，例如父类为2.0，开启后子类无论idef.extend为什么，都只会计算子类
+        ingame: 1 # 游戏内标识符号，若存在相同标识符号的相同属性在继承时会被大的一方覆盖
+        # 例如 靴子和裤子都为 ingame: 222，而靴子属性数值为114.0，裤子为514.0，实际只会计算514.0而不是叠加
+      chance: 100.0 # 100% 出现该属性
+      amount: "<depaz.fix.attack>" # 攻击调用val.attack中的数值
+      # amount: <depaz.val.attack>
+      # stats:
+      #   use: random # 调用的stats
+      #   args: '1|50'
+      nbt:
+        save-in-nbt: true
+        # 是否生成数值保存至NBT，当本属性使用【非固定数值】则代表你必须启用它，默认false。
+        # 警告!您一旦在生产环境内调整此选项，可能会出现数值被计算2次或无效，解决办法为提高 update-id。
+        original:
+          depaz: false
+          # 是否生成Depaz原生 NBT 以由depaz插件计算属性，默认如果其他original都未开启为true，开启任意为false
+          MMOItems: true
+          # 是否生成MI原生 NBT，默认false。示例如果开启这个会生成 MMOITEMS_ATTACK_DAMAGE...
+          # 警告! 您一旦在生产环境内调整此选项，可能会出现数值被计算2次或无效，解决办法为提高 update-id。
+          # 警告! 您一旦开启此选项，请确保关闭MI的自动更新功能且关闭MI的物品删除自动失效功能。
+
+          # 不推荐同时开启多项
+    - type: MythicLib
+      attr: ATTACK_SPEED
+      amount: "1.6" # 固定1.6
+      nbt:
+        depaz: false
+        original:
+          depaz: true
+          MMOItems: true
+  actions:
+    left-click @ non-shift: # 左键点击且非shift
+      - type: kether  # 什么类型? kether 为
+        # 支持的类型：
+        # kether               / 不填写   运行 Kether 脚本 https://kether.tabooproject.org/list.html
+        # command_player       / cmd_p   以玩家身份执行命令
+        # command_console      / cmd_c   以控制台身份执行命令
+        # command_op           / cmd_o   以管理员身份执行命令，不推荐使用，管理员命令可能导致夺权，概不负责
+        # mythicmobs_skill     / mmskill 实施 MYTHICMOBS 技能
+        # refresh              / reload  重载物品，只会更改物品的lore
+        # regenerate           / regen   重新生成物品，包括数据和一切属性!
+        # change-var           / cvar
+        nbt: true # 是否包含在 NBT 内，默认false。警告!您一旦在生产环境内调整此选项，可能会出现被执行2次或无效，解决办法为提高 update-id。
+        async: true   # 是否异步执行，默认true
+        chance: 100.0 # 运行的概率，默认100
+        value:
+          - 'tell Hello!'
+    right-click @ non-shift: # 右键点击且非shift
+      - type: kether
+        nbt: true
+        async: true
+        chance: 100.0
+        value:
+          - 'if permission "admin" then tell "<depaz.var.message>" else "You do not have permissions!"'
+    consume @ all: null # 物品食用，不管是否shift
+    left-click @ shift:
+      - type: kether
+        nbt: true
+        async: true
+        consume: true # 是否消耗物品? false/true/all all为所有物品
+        chance: 100.0
+        value:
+          - 'repeat <depaz.consumeamount> tell "Consumed a item."'
+          - 'tell color "&b Consumed <depaz.consumeamount> item(s)"'
+    right-click @ shift: null
+    any-click @ all: null
+    drop @ all:
+      - deny: false
+        type: kether
+        nbt: true
+        async: true
+        consume: true # 是否消耗物品? false/true/all all为所有物品
+        chance: 100.0
+        value: 'tell "不允许扔出这个物品。"'
+    attack @ all:
+      - type: kether
+        nbt: true
+        async: true
+        consume: true # 是否消耗物品? false/true/all all为所有物品
+        chance: 100.0
+        value: 'repeat <depaz.amount> print "Hello World!"'
+    defense @ all: null # 仅限盾牌格挡时
+    swaphands @ all: null # 交换物品时 (可能会被 MMOCore 阻挡)
+    arikeys-i @ all: # 支持使用 Ari keys 自定义按键触发。arikeys-按键
