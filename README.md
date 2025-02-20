@@ -40,14 +40,17 @@
   - [ ] 1.13
   - [ ] 1.20
   - [ ] 1.20.6
-- [ ] 基底物品支持
+- [x] 基底物品支持
   - [x] MMOItems
   - [x] MythicMobs
   - [x] Zaphkiel
   - [x] EcoItems
   - [x] NeigeItems
   - [x] 字符串转换物品
-  - [ ] SX-Item
+  - [x] SX-Item
+  - [x] ItemsAdder
+  - [x] MagicCosmetics
+  - [x] Oxaren
 
 ...
 
@@ -59,8 +62,6 @@
 ./gradlew build
 ```
 
-> 在部分情况下你可能需要使用 -Xskip-prerelease-check 参数。
-> 
 ## 构建开发版本
 
 开发版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。

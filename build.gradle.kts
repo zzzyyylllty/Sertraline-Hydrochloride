@@ -62,11 +62,6 @@ taboolib {
     }
     version { taboolib = "6.2.2" }
 }
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
-    }
-}
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -94,24 +89,33 @@ repositories {
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.hibiscusmc.com/releases/")
 }
-
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
+            force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22")
+            force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22")
+        }
+    }
+}
 dependencies {
     compileOnly("ink.ptms.core:v12101:12101:mapped")
     compileOnly("ink.ptms.core:v12101:12101:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     implementation("me.clip:placeholderapi:2.11.5")
-    implementation("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
-    implementation("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
-    implementation("io.th0rgal:oraxen:1.165.0") { isTransitive = false }
+    compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
+    compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
+    implementation("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
     implementation("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
-    implementation("de.tr7zw:item-nbt-api-plugin:2.12.2") { isTransitive = false }
-    implementation("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
-    implementation("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
-    implementation("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
-    implementation("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
-    implementation("com.willfp:eco:6.71.3") { isTransitive = false }
-    implementation("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.12.2") { isTransitive = false }
+    compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
+    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
+    compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
+    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
+    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+    implementation("com.github.Saukiya:SX-Item:4.4.0")
 
 }
 
@@ -122,7 +126,8 @@ tasks.withType<JavaCompile> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xjvm-default=all")
+        freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
+        // Skip NeigeItems InCompatibility Kotlin Version
     }
 }
 

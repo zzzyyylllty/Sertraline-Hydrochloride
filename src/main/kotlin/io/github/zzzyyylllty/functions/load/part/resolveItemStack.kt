@@ -2,20 +2,19 @@ package io.github.zzzyyylllty.functions.load.part
 
 import com.francobm.magicosmetics.api.Cosmetic
 import com.willfp.ecoitems.items.EcoItems
+import dev.lone.itemsadder.api.ItemsAdder
+import github.saukiya.sxitem.SXItem
 import ink.ptms.zaphkiel.Zaphkiel
 import ink.ptms.zaphkiel.um.Mythic
 import io.github.zzzyyylllty.SertralineHydrochloride.console
-import io.lumine.mythic.core.items.MythicItem
 import net.Indyuce.mmoitems.MMOItems
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-//import pers.neige.neigeitems.NeigeItems
-//import pers.neige.neigeitems.libs.bot.inker.bukkit.nbt.NeigeItemsUtils
-//import pers.neige.neigeitems.manager.ItemManager
+import pers.neige.neigeitems.manager.ItemManager
 import taboolib.common.platform.function.severe
 import taboolib.library.xseries.parseToItemStack
 import taboolib.module.lang.asLangText
+import io.th0rgal.oraxen.api.OraxenItems
 
 fun resolveItemStack(s: String,source: String): Any? {
     val split = s.split(":")
@@ -28,8 +27,8 @@ fun resolveItemStack(s: String,source: String): Any? {
     val prefix = split[0]
     val param = split[1]
 
-    val miType = param.split(".")[0] ?: null
-    val miId = param.split(".")[1] ?: null
+    val miType = param.split(".")[0]
+    val miId = param.split(".")[1]
     
     val prefixu = prefix.uppercase()
 
@@ -46,12 +45,12 @@ fun resolveItemStack(s: String,source: String): Any? {
                 null
             }
         }
-        /*"NI", "NEIGEITEMS" -> {
+        "NI", "NEIGEITEMS" -> {
             returnItem = try { ItemManager.getItemStack(param)} catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
-        }*/
+        }
         "ZA", "ZAPHKIEL" -> {
             returnItem = try { Zaphkiel.api().getItemManager().getItem(param)} catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
@@ -72,6 +71,28 @@ fun resolveItemStack(s: String,source: String): Any? {
         }
         "EC", "ECO", "ECOITEMS" -> {
             returnItem = try { EcoItems.getByID(param)} catch (e: Exception) {
+                severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
+                null
+            }
+        }
+        "SX", "SXITEM", "SX-ITEM" -> {
+            returnItem = try { SXItem.getItemManager().getItem(param) } catch (e: Exception) {
+                severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
+                null
+            }
+        }
+        "IA", "ITEMSADDER" -> {
+            returnItem = try {
+                ItemsAdder.getCustomItem(param)
+            } catch (e: Exception) {
+                severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
+                null
+            }
+        }
+        "OX", "OXAREN" -> {
+            returnItem = try {
+                OraxenItems.getItemById(param)
+            } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
