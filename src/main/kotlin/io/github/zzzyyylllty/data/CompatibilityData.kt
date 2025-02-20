@@ -1,4 +1,8 @@
-package io.github.zzzyyylllty.data.compatiblility
+package io.github.zzzyyylllty.data
+
+data class CompatibilityData(
+    val mmoItemsComp: MMOItemsComp
+)
 
 data class MMOItemsComp(
     val type: String,

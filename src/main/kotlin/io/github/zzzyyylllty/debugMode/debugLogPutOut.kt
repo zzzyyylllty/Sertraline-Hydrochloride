@@ -1,12 +1,12 @@
 package io.github.zzzyyylllty.debugMode
 
-import io.github.zzzyyylllty.DepazItems
+import io.github.zzzyyylllty.SertralineHydrochloride
 import taboolib.common.platform.function.warning
 
 fun debugLog(s: String) {
-    if (DepazItems.debug) warning("[DEVMODE] $s")
+    if (SertralineHydrochloride.debug) warning("[DEVMODE] $s")
 }
 
 fun debugMode(b: Boolean) {
-    DepazItems.debug = b
+    SertralineHydrochloride.debug = b
 }

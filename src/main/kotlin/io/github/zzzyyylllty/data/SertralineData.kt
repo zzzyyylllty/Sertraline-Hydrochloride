@@ -1,6 +1,11 @@
 package io.github.zzzyyylllty.data
 
-data class DepazData(
+data class SertralineData(
+    val name: String,
+    val material: String,
+    val nbts: LinkedHashMap<String, Any?>,
+    val lore: ArrayList<String>?,
+    val model: Double,
     val fixedData: LinkedHashMap<String, SingleData>, // String = idef
     val valuesData: LinkedHashMap<String, SingleData>,
     val variablesData: LinkedHashMap<String, SingleData>
@@ -18,6 +23,7 @@ data class SingleData(
         * */
 enum class SingleDataTypes {
     VALUE,
+    MATH,
     RANDOM,
     WEIGHT
 }

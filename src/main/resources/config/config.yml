@@ -1,0 +1,13 @@
+debug: true
+# 调试模式
+# 性能影响: 一般
+
+datas:
+  fixed-mode: NORMAL
+  val-mode: NORMAL
+  var-mode: NORMAL
+  # 量替换模式
+  # DISABLE: 完全禁用所有
+  # NORMAL: 不允许变量嵌套
+  # UNIVERSAL: 替换直到无变量，可以嵌套变量
+  # 性能影响: 较小
