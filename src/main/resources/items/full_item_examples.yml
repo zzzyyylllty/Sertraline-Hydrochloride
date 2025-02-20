@@ -82,7 +82,7 @@ testItem:
         save-in-nbt: true
         original:
           sertraline: true
-          MMOItems: false
+          mmoitems: false
   actions: # 动作，不储存在NBT
     left-click @ non-shift: # 左键点击且非shift
       - type: KETHER  # 执行什么类型的动作?
@@ -122,13 +122,13 @@ testItem:
         async: true
         consume: true # 是否消耗物品? false/true/all all为所有物品
         chance: 100.0
-        value: 'tell "不允许扔出这个物品。"'
+        value: 'tell color "&c不允许扔出这个物品。"'
     attack @ all:
       - type: KETHER
         async: true
-        consume: true # 是否消耗物品? false/true/all all为所有物品
+        consume: false # 是否消耗物品? false/true/all all为所有物品
         chance: 100.0
-        value: 'repeat <depaz.amount> print "Hello World!"'
+        value: 'ATTACK!'
     defense @ all: null # 仅限盾牌格挡时
     swap-hands @ all: null # 交换物品时 (可能会被 MMOCore 阻挡)
     arikeys.test.key @ all: # 支持使用 Ari keys 自定义按键触发。arikeys.按键值

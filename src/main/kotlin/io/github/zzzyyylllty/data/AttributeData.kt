@@ -7,7 +7,7 @@ data class SingleAttribute(
     val idef: String,
     val override: Boolean = true,
     val chance: Double = 100.0,
-    val amount: Int = 1,
+    val amount: String = "1",
     val atbNbtSection: AtbNbtSection
 )
 enum class AttributeSources {

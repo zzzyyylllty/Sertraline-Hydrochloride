@@ -1,11 +1,11 @@
 package io.github.zzzyyylllty.data
 
 data class SingleActionsData(
-    val type: ActionsType = ActionsType.KETHER,
-    val async: Boolean = true,
-    val chance: Double = 100.0,
-    val value: ArrayList<String>?,
-    val cancelEvent: Boolean = false
+    val type: ActionsType,
+    val async: Boolean,
+    val chance: Double,
+    val value: List<String>,
+    val cancelEvent: Boolean
 )
 
 enum class ActionsType{
