@@ -1,11 +1,9 @@
 package io.github.zzzyyylllty.functions.load.part
 
-import com.willfp.eco.util.toSingletonList
 import io.github.zzzyyylllty.SertralineHydrochloride.console
 import io.github.zzzyyylllty.data.*
 import io.github.zzzyyylllty.debugMode.debugLog
 import org.bukkit.configuration.file.YamlConfiguration
-import taboolib.common.platform.function.warning
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.lang.asLangText
 
@@ -26,13 +24,13 @@ fun loadAttributes(config: YamlConfiguration,root: String) : List<SingleActionsD
         SingleAttribute(
             AttributeSources.valueOf(atb["type"].toString()),
             atb["attr"].toString(),
-            atb["idef"].toString(),
+            atb["idef"] as String?,
             atb["override"].toString().toBoolean(),
-            atb["chance"].toString().toDouble(),
-            atb["amount"].toString(),
+            (atb["chance"] ?: 100.0).toString().toDouble(),
+            (atb["amount"] ?: 1).toString(),
             AtbNbtSection(atb["nbt.save-in-nbt"].toString().toBoolean(),
-                atb["nbt.sertraline"].toString().toBoolean(),
-                atb["nbt.mmoitems"].toString().toBoolean()),
+                (atb["nbt.sertraline"] ?: !(atb["nbt.mmoitems"] as Boolean)).toString().toBoolean(),
+                (atb["nbt.mmoitems"] ?: false).toString().toBoolean()),
                 )
     }
 

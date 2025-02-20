@@ -41,15 +41,8 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralineItemD
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.type"))
         return null
     }) as List<String>
-    val model = (config["$section.model"] ?: run {
-        warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.type"))
-        return null
-    }).toString().toDouble()
-    val updateId = (config["$section.update-id"] ?: run {
-        warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.type"))
-        return null
-    }).toString().toDouble()
-
+    val model = (config["$section.model"]).toString().toDouble()
+    val updateId = (config["$section.update-id"] ?: 1.0).toString().toDouble()
     val fixedList = (config["$section.fixed"] ?: run {
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.nbts"))
         return null

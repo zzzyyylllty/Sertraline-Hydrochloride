@@ -4,7 +4,7 @@ package io.github.zzzyyylllty.data
 data class SingleAttribute(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,
-    val idef: String,
+    val idef: String?,
     val override: Boolean = true,
     val chance: Double = 100.0,
     val amount: String = "1",
