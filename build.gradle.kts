@@ -62,7 +62,11 @@ taboolib {
     }
     version { taboolib = "6.2.2" }
 }
-
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
+    }
+}
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")

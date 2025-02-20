@@ -10,9 +10,9 @@ import net.Indyuce.mmoitems.MMOItems
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import pers.neige.neigeitems.NeigeItems
-import pers.neige.neigeitems.libs.bot.inker.bukkit.nbt.NeigeItemsUtils
-import pers.neige.neigeitems.manager.ItemManager
+//import pers.neige.neigeitems.NeigeItems
+//import pers.neige.neigeitems.libs.bot.inker.bukkit.nbt.NeigeItemsUtils
+//import pers.neige.neigeitems.manager.ItemManager
 import taboolib.common.platform.function.severe
 import taboolib.library.xseries.parseToItemStack
 import taboolib.module.lang.asLangText
@@ -46,12 +46,12 @@ fun resolveItemStack(s: String,source: String): Any? {
                 null
             }
         }
-        "NI", "NEIGEITEMS" -> {
+        /*"NI", "NEIGEITEMS" -> {
             returnItem = try { ItemManager.getItemStack(param)} catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
-        }
+        }*/
         "ZA", "ZAPHKIEL" -> {
             returnItem = try { Zaphkiel.api().getItemManager().getItem(param)} catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
