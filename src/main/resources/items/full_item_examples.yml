@@ -24,29 +24,29 @@ testItem:
       # 储存在 NBT 内。
       - idef: attack
         type: value
-        val: 1
+        values: 1
       - idef: attack
         type: random
-        val:
+        values:
           min: 1
           max: 50
-    val:
+    vals:
       # 每次调用都会生成的固定量，不可被修改。
       # 不储存在 NBT 内。
       - idef: message
         type: weight
-        val:
+        values:
           - weight: 2 # 不填写默认1
             value: 'HELLO WORLD' # 2/3 出现该选项
           - weight: 1
             value: 'GOODBYE WORLD' # 1/3 出现该选项
       # 重要提示! 要进行变量嵌套，必须在config内修改变量替换模式
-    var:
+    vars:
       # 物品内的变量，可以理解为数据。
       # 储存在 NBT 内。
       - idef: test_var
         type: value
-        val: 1 # 初始值
+        values: 1 # 初始值
   attributes:
     - type: MYTHIC_LIB
       # 支持：MYTHIC_LIB(MMOITEMS) ATTRIBUTE_PLUS MYTHIC_MOBS SX_ATTRIBUTE_2 SX_ATTRIBUTE_3

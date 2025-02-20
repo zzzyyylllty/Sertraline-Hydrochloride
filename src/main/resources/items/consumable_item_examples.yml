@@ -8,10 +8,10 @@ depaz_pills:
     model: 10000
     update-id: 1
     max-stack: 1
-    var:
+    vars:
       - idef: left
         type: int
-        val: 6
+        values: 6
   actions:
     consume @ non-shift: # 适量服药有益健康
       - type: kether

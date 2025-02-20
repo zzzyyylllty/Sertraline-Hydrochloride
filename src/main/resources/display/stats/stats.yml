@@ -1,0 +1,5 @@
+default:
+  normal:
+    MYTHIC_LIB_ATTACK_DAMAGE: '> 攻击伤害: {0}'     # 0 = 默认参数 例如 amount: 1 即为 1
+  random:
+    MYTHIC_LIB_ATTACK_DAMAGE: '> 攻击伤害: {1}~{2}' # 自定义参数

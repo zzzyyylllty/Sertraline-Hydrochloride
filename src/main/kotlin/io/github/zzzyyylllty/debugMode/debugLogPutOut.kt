@@ -1,10 +1,11 @@
 package io.github.zzzyyylllty.debugMode
 
 import io.github.zzzyyylllty.SertralineHydrochloride
+import taboolib.common.PrimitiveIO
 import taboolib.common.platform.function.warning
 
-fun debugLog(s: String) {
-    if (SertralineHydrochloride.debug) warning("[DEVMODE] $s")
+fun debugLog(vararg s: Any?) {
+    if (SertralineHydrochloride.debug) s.filterNotNull().forEach { PrimitiveIO.debug(it) }
 }
 
 fun debugMode(b: Boolean) {

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty
 
-import io.github.zzzyyylllty.data.DepazItem
+import io.github.zzzyyylllty.data.SertralineItem
+import io.github.zzzyyylllty.functions.boot
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.pluginId
@@ -12,13 +13,9 @@ object SertralineHydrochloride : Plugin() {
 
     var debug = true
     var console = console()
-    var items = LinkedHashMap<String, DepazItem>()
+    var items = LinkedHashMap<String, SertralineItem>()
     override fun onEnable() {
-        console.sendLang(Level.INFO, "enable.boot.copyright")
-        console.sendLang(Level.INFO, "enable.boot.plugin", pluginId)
-        console.sendLang(Level.INFO, "enable.boot.version", pluginVersion)
-
-
+        boot()
     }
 
 

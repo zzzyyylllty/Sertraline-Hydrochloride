@@ -1,0 +1,33 @@
+package io.github.zzzyyylllty.data
+
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
+
+data class SertralineItemData(
+    val name: String?,
+    val material: Any? = ItemStack(Material.STONE),
+    val nbts: LinkedHashMap<String, Any?>,
+    val lore: List<String>?,
+    val model: Double?,
+    val updateId: Double?,
+    val fixedData: LinkedHashMap<String, SingleData>?, // String = idef
+    val valuesData: LinkedHashMap<String, SingleData>?,
+    val variablesData: LinkedHashMap<String, SingleData>?
+)
+
+data class SingleData(
+    val type: SingleDataTypes,
+    val values: Any?
+)
+/*
+*
+      - idef: attack
+        type: value
+        val: 1
+        * */
+enum class SingleDataTypes {
+    VALUE,
+    MATH,
+    RANDOM,
+    WEIGHT
+}

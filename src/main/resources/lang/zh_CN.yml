@@ -1,3 +1,18 @@
 enable.boot.copyright: '2025 Needy Plugins'
 enable.boot.plugin: '插件: {0}'
 enable.boot.version: '版本: {0}'
+
+enable.load.start: '开始读取物品'
+enable.load.find: '找到 {0} 个文件...'
+enable.load.not_found: '没有找到文件,如果您希望重新生成,请删除 items 文件夹,然后重载。'
+enable.load.regen: '未找到 items 文件夹,重新生成...'
+enable.load.error_compatibility: '在来源 {0} 找到 compatibility 部分, 但节点 {0} 缺失,跳过本部分加载.'
+enable.load.error_sertraline: '在来源 {0} 找到 sertraline 部分, 但节点 {0} 缺失,跳过本部分加载.'
+enable.load.error_item_unable_to_generate: '在来源 {0} 找到 itemstack 部分, 但物品 {1} 因为意外原因生成失败.\nException: {2}'
+enable.load.error_item_not_exist: '在来源 {0} 找到 itemstack 部分, 但物品 {1} 无法获取到,这可能是因为相关插件没有对应物品.'
+enable.load.error_item_no_formula: '在来源 {0} 找到 itemstack 部分, 但其不符合任何一个现有的物品形式.'
+
+debug.load.loading_file: '正在读取文件 {0} ...'
+debug.load.loading_item: '正在读取文件 {0} 的物品 {1} ...'
+debug.load.no_compatibility: '未找到 compatibility 部分,跳过本部分加载.'
+debug.load.no_sertraline: '未找到 sertraline 部分,跳过本部分加载.'
