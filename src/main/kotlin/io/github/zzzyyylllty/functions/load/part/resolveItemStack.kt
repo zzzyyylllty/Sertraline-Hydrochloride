@@ -15,11 +15,12 @@ import taboolib.common.platform.function.severe
 import taboolib.library.xseries.parseToItemStack
 import taboolib.module.lang.asLangText
 import io.th0rgal.oraxen.api.OraxenItems
+import org.bukkit.entity.Player
 
-fun resolveItemStack(s: String,source: String): Any? {
+fun resolveItemStack(s: String,source: String,p: Player): ItemStack? {
     val split = s.split(":")
 
-    var returnItem: Any? = null
+    var returnItem: ItemStack? = null
     if (s.length == 1) {
         returnItem = ItemStack(Material.valueOf(s))
     }
@@ -40,43 +41,43 @@ fun resolveItemStack(s: String,source: String): Any? {
             }
         }
         "MI", "MMOITEMS" -> {
-            returnItem = try { MMOItems.plugin.getMMOItem(MMOItems.plugin.types.get(miType), miId)} catch (e: Exception) {
+            returnItem = try { MMOItems.plugin.getMMOItem(MMOItems.plugin.types.get(miType), miId)?.newBuilder()?.build() } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "NI", "NEIGEITEMS" -> {
-            returnItem = try { ItemManager.getItemStack(param)} catch (e: Exception) {
+            returnItem = try { ItemManager.getItemStack(param, p) } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "ZA", "ZAPHKIEL" -> {
-            returnItem = try { Zaphkiel.api().getItemManager().getItem(param)} catch (e: Exception) {
+            returnItem = try { Zaphkiel.api().getItemManager().getItem(param)?.buildItemStack(p) } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "MM", "MYTHICMOBS", "MYTHIC" -> {
-            returnItem = try { Mythic.API.getItem(param)} catch (e: Exception) {
+            returnItem = try { Mythic.API.getItem(param)?.generateItemStack(1) } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "MC", "MAGIC", "MAGICCOSMETICS" -> {
-            returnItem = try { Cosmetic.getCosmetic(param)} catch (e: Exception) {
+            returnItem = try { Cosmetic.getCosmetic(param).itemStack } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "EC", "ECO", "ECOITEMS" -> {
-            returnItem = try { EcoItems.getByID(param)} catch (e: Exception) {
+            returnItem = try { EcoItems.getByID(param)?.itemStack } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
         }
         "SX", "SXITEM", "SX-ITEM" -> {
-            returnItem = try { SXItem.getItemManager().getItem(param) } catch (e: Exception) {
+            returnItem = try { SXItem.getItemManager().getItem(param, p) } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
@@ -91,7 +92,7 @@ fun resolveItemStack(s: String,source: String): Any? {
         }
         "OX", "OXAREN" -> {
             returnItem = try {
-                OraxenItems.getItemById(param)
+                OraxenItems.getItemById(param).build()
             } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null

@@ -66,10 +66,7 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.papermc.io/repository/maven-snapshots/")
-    maven {
-        name = "adyeshach"
-        url = uri("https://repo.tabooproject.org/repository/releases/")
-    }
+    maven("https://repo.tabooproject.org/repository/releases/")
     maven {
         name = "mythicmobs"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
@@ -77,7 +74,6 @@ repositories {
     maven {
         url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     }
-    maven("https://repo.tabooproject.org/repository/releases")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.codemc.org/repository/maven-public")
     maven("https://repo.rosewooddev.io/repository/public/")
@@ -88,6 +84,7 @@ repositories {
     maven("https://r.irepo.space/maven/")
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.hibiscusmc.com/releases/")
+    maven("https://repo.tabooproject.org/repository/releases/")
 }
 allprojects {
     configurations.all {
@@ -116,7 +113,7 @@ dependencies {
     compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
     compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
     implementation("com.github.Saukiya:SX-Item:4.4.0")
-
+    implementation("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
 }
 
 tasks.withType<JavaCompile> {
