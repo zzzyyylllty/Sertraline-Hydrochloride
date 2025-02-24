@@ -67,22 +67,11 @@ testItem:
         save-in-nbt: true
         # 是否生成数值保存至NBT，当本属性使用【不一定始终都是同样数值】则代表你必须启用它，默认true。
         # 警告!您一旦在生产环境内调整此选项，可能会出现数值被计算2次或无效，解决办法为提高 update-id 来更新物品。
-        original:
-          sertraline: true
-          # 是否生成sertraline原生 NBT 以由本插件计算属性，默认如果其他original都未开启为true，开启任意为false
-          MMOItems: false
-          # 是否根据量生成MI原生NBT，默认false。示例如果开启这个会生成 MMOITEMS_ATTACK_DAMAGE...，不推荐。
-          # 警告! 您一旦在生产环境内调整此选项，可能会出现数值被计算2次或无效，解决办法为提高 update-id。
-          # 警告! 您一旦开启此选项，请确保关闭MI的自动更新功能，数值调整功能且关闭MI的物品删除自动失效功能。
-          # 不推荐同时开启多项
     - type: MYTHICLIB
       attr: ATTACK_SPEED
       amount: "1.6" # 固定1.6
       nbt:
         save-in-nbt: true
-        original:
-          sertraline: true
-          mmoitems: false
   actions: # 动作，不储存在NBT
     left-click @ non-shift: # 左键点击且非shift
       - type: KETHER  # 执行什么类型的动作?

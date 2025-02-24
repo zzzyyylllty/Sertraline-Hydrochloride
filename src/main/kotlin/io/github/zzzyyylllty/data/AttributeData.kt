@@ -8,7 +8,7 @@ data class SingleAttribute(
     val override: Boolean = true,
     val chance: Double = 100.0,
     val amount: String = "1",
-    val atbNbtSection: AtbNbtSection
+    val saveInNbt: Boolean = true
 )
 enum class AttributeSources {
     MYTHIC_LIB,
@@ -17,9 +17,3 @@ enum class AttributeSources {
     SX_ATTRIBUTE_2,
     SX_ATTRIBUTE_3
 }
-
-data class AtbNbtSection(
-    val saveInNbt: Boolean = true,
-    val generateSertralineNbt: Boolean,
-    val generateMMOItemsNbt: Boolean = false,
-)
