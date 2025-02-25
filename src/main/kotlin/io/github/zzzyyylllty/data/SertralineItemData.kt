@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack
 
 data class SertralineItemData(
     val name: String?,
-    val material: ItemStack?,
+    val material: String?,
     val nbts: LinkedHashMap<String, Any?>,
     val lore: List<String>?,
     val model: Double?,

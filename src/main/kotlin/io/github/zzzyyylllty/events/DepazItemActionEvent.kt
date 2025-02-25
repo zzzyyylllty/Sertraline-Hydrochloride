@@ -1,3 +1,4 @@
+import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
@@ -8,5 +9,7 @@ class DepazItemActionEvent(val message: String?) : Event() {
 
     companion object {
         val handlerList: HandlerList = HandlerList()
+        val player: Player =
+        val
     }
 }

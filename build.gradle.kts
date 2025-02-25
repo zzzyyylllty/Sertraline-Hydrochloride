@@ -100,12 +100,13 @@ dependencies {
     compileOnly("ink.ptms.core:v12101:12101:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
+    compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
     implementation("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
     implementation("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
-    compileOnly("de.tr7zw:item-nbt-api-plugin:2.12.2") { isTransitive = false }
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")

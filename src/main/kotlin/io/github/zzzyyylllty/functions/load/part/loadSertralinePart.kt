@@ -25,10 +25,7 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralineItemD
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.type"))
         return null
     }).toString()
-    val material = resolveItemStack((config["$section.material"] ?: run {
-        warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.id"))
-        return null
-    }).toString(), source)
+    val material = (config["$section.material"])
     val nbtList = (config["$section.nbts"] ?: run {
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.nbts"))
         return null

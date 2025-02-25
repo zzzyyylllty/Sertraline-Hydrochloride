@@ -11,3 +11,8 @@ datas:
   # NORMAL: 不允许变量嵌套
   # UNIVERSAL: 替换直到无变量，可以嵌套变量
   # 性能影响: 较小
+
+attribute:
+  engine: INTERNAL
+  # 默认属性引擎
+  # 可选: INTERNAL,MYTHIC_LIB,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3

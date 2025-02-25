@@ -28,7 +28,6 @@ fun loadAttributes(config: YamlConfiguration,root: String) : List<SingleActionsD
             atb["override"].toString().toBoolean(),
             (atb["chance"] ?: 100.0).toString().toDouble(),
             (atb["amount"] ?: 1).toString(),
-            atb["nbt.save-in-nbt"].toString().toBoolean(),
                 )
     }
 

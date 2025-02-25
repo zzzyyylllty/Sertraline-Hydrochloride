@@ -17,7 +17,7 @@ import taboolib.module.lang.asLangText
 import io.th0rgal.oraxen.api.OraxenItems
 import org.bukkit.entity.Player
 
-fun resolveItemStack(s: String,source: String,p: Player): ItemStack? {
+fun resolveItemStack(s: String, source: String, p: Player?): ItemStack? {
     val split = s.split(":")
 
     var returnItem: ItemStack? = null

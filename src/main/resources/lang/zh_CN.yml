@@ -11,6 +11,7 @@ enable.load.error_sertraline: '在来源 {0} 找到 sertraline 部分, 但节点
 enable.load.error_item_unable_to_generate: '在来源 {0} 找到 itemstack 部分, 但物品 {1} 因为意外原因生成失败.\nException: {2}'
 enable.load.error_item_not_exist: '在来源 {0} 找到 itemstack 部分, 但物品 {1} 无法获取到,这可能是因为相关插件没有对应物品.'
 enable.load.error_item_no_formula: '在来源 {0} 找到 itemstack 部分, 但其不符合任何一个现有的物品形式.'
+generate.itemstack.error: '在来源 {0} 尝试生成 ItemStack 时返回了 null。尝试检查 ItemStack 原型格式是否正确'
 
 debug.load.loading_file: '正在读取文件 {0} ...'
 debug.load.loading_item: '正在读取文件 {0} 的物品 {1} ...'
