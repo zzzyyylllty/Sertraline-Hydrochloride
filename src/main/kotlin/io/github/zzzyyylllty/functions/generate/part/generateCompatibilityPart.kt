@@ -6,6 +6,7 @@ import de.tr7zw.nbtapi.NBT
 import de.tr7zw.nbtapi.iface.ReadWriteNBT
 import de.tr7zw.nbtapi.plugin.NBTAPI
 import de.tr7zw.nbtapi.utils.DataFixerUtil
+import ink.ptms.zaphkiel.taboolib.module.nms.getItemTag
 import io.github.zzzyyylllty.SertralineHydrochloride.console
 import io.github.zzzyyylllty.data.CompatibilityData
 import io.github.zzzyyylllty.data.MMOItemsComp
@@ -15,25 +16,35 @@ import io.github.zzzyyylllty.debugMode.debugLog
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.pluginVersion
 import taboolib.common.platform.function.warning
+import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.itemTagReader
 import taboolib.module.nms.minecraftServerObject
+import taboolib.platform.util.buildItem
 
 fun generateCompatbilityPart(item: ItemStack,data: SertralineItem) : ItemStack {
 
     var returnItem = item
     val compData = data.compatibilityData ?: return returnItem
+    buildItem(returnItem).itemTagReader {
+        set("MMOITEMS_ITEM_TYPE", compData.mmoItemsComp.type)
+        set("MMOITEMS_ITEM_ID", compData.mmoItemsComp.id)
+        set("MMOITEMS_REVISION_ID", compData.mmoItemsComp.revid)
+        set("REVISION_ID", compData.mmoItemsComp.revid)
+        set("MMOITEMS_TIER", compData.mmoItemsComp.tier)
 
-    val nbt : ReadWriteNBT = NBT.createNBTObject()
+        write(buildItem(returnItem))
+    }
 
-    NBT.modify(returnItem, {
-        nbt.setString("MMOITEMS_ITEM_TYPE", compData.mmoItemsComp.type)
-        nbt.setString("MMOITEMS_ITEM_ID", compData.mmoItemsComp.id)
-        nbt.setLong("MMOITEMS_REVISION_ID", compData.mmoItemsComp.revid)
-        nbt.setString("MMOITEMS_TIER", compData.mmoItemsComp.tier)
-    })
+/*
+    nbt.setString("MMOITEMS_ITEM_TYPE", compData.mmoItemsComp.type)
+    nbt.setString("MMOITEMS_ITEM_ID", compData.mmoItemsComp.id)
+    nbt.setLong("MMOITEMS_REVISION_ID", compData.mmoItemsComp.revid)
+    nbt.setString("MMOITEMS_TIER", compData.mmoItemsComp.tier)
+*/
 
     // 更新 NBT
-    val updatedNBT = DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_20_4, DataFixerUtil.getCurrentVersion())
+    //val updatedNBT = DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_20_4, DataFixerUtil.getCurrentVersion())
 
     return returnItem
 }

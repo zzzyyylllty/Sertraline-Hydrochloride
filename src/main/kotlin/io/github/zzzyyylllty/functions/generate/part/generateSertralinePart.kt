@@ -3,26 +3,40 @@ package io.github.zzzyyylllty.functions.generate.part
 import de.tr7zw.nbtapi.NBT
 import de.tr7zw.nbtapi.iface.ReadWriteNBT
 import de.tr7zw.nbtapi.utils.DataFixerUtil
+import ink.ptms.chemdah.taboolib.module.chat.colored
 import io.github.zzzyyylllty.data.SertralineItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import taboolib.module.nms.itemTagReader
+import taboolib.platform.util.buildItem
+import taboolib.platform.util.modifyLore
 
 
 fun generateSertralinePart(item: ItemStack,data: SertralineItem) : ItemStack {
 
     var returnItem = item
     val sertData = data.sertralineData
-    val meta = item.itemMeta
 
     // Material
     returnItem.type = Material.valueOf(sertData?.material ?: "STONE")
-    meta?.lore
-    meta?.setCustomModelData(sertData?.model?.toInt())
-    returnItem.itemMeta = meta
 
-    // Name
+    buildItem(returnItem).modifyLore {
+        sertData?.lore?.forEach { line ->
+            add(line)
+            // TODO REPLACE WITH VARS
+        }
+        colored()
+    }
 
+    buildItem(returnItem).itemTagReader {
+        set("DEPAZITEMS.SERTRALINE.UPDATE_ID", sertData?.updateId)
+        set("DEPAZITEMS.SERTRALINE.FIXED_DATA", sertData?.fixedData)
+        set("DEPAZITEMS.SERTRALINE.VARIABLES_DATA", sertData?.variablesData)
+
+        write(buildItem(returnItem))
+    }
+/*
     val nbt : ReadWriteNBT = NBT.createNBTObject()
 
     NBT.modify(returnItem, {
@@ -32,19 +46,13 @@ fun generateSertralinePart(item: ItemStack,data: SertralineItem) : ItemStack {
         nbt.setDouble("SERTRALINE.MODEL", sertData?.model)
 
         // Fixed / vars 存储
-        sertData?.fixedData?.keys?.forEach { k ->
-            nbt.setString("SERTRALINE.DATA_FIXED.$k", sertData.fixedData[k].toString())
-        }
         sertData?.variablesData?.keys?.forEach { k ->
             nbt.setString("SERTRALINE.DATA_VARS.$k", sertData.variablesData[k].toString())
         }
 
 
     })
-
-    // 更新 NBT
-    val updatedNBT = DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_20_4, DataFixerUtil.getCurrentVersion())
-
+*/
     return returnItem
 }
 /*
