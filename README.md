@@ -17,6 +17,7 @@
   - [ ] 物品常量 VAL
   - [ ] 物品变量 VAR
 - [ ] 主要属性功能 - 提供可能出现的属性，可修改的自动lore格式等
+  - [ ] INTERNAL
   - [ ] MYTHIC_LIB
   - [ ] ATTRIBUTE_PLUS
   - [ ] MMOITEMS
@@ -31,6 +32,7 @@
   - [ ] Kether
   - [ ] JavaScript
 - [ ] MMSkill 支持
+- [ ] 游戏内 GUI 编辑
 - [ ] 原生概率执行命令
 - [ ] 玩家数据
   - [ ] 数据库

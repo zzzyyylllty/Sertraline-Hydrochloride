@@ -25,7 +25,7 @@ fun generateCompatbilityPart(item: ItemStack,data: SertralineItem) : ItemStack {
 
     val nbt : ReadWriteNBT = NBT.createNBTObject()
 
-    NBT.modify(item, {
+    NBT.modify(returnItem, {
         nbt.setString("MMOITEMS_ITEM_TYPE", compData.mmoItemsComp.type)
         nbt.setString("MMOITEMS_ITEM_ID", compData.mmoItemsComp.id)
         nbt.setLong("MMOITEMS_REVISION_ID", compData.mmoItemsComp.revid)

@@ -9,7 +9,5 @@ class DepazItemActionEvent(val message: String?) : Event() {
 
     companion object {
         val handlerList: HandlerList = HandlerList()
-        val player: Player =
-        val
     }
 }
