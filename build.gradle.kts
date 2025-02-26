@@ -100,7 +100,7 @@ dependencies {
     compileOnly("ink.ptms.core:v12101:12101:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    compileOnly("com.mojang:datafixerupper:1.0.20")
+    // compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }

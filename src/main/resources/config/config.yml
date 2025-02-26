@@ -15,4 +15,5 @@ datas:
 attribute:
   engine: INTERNAL
   # 默认属性引擎
+  # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值以及所有带有属性的物品的属性引擎： INTERNAL
   # 可选: INTERNAL,MYTHIC_LIB,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3

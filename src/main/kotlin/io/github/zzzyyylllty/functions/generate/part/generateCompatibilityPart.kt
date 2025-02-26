@@ -5,9 +5,11 @@ import com.mojang.datafixers.DataFixerUpper
 import de.tr7zw.nbtapi.NBT
 import de.tr7zw.nbtapi.iface.ReadWriteNBT
 import de.tr7zw.nbtapi.plugin.NBTAPI
+import de.tr7zw.nbtapi.utils.DataFixerUtil
 import io.github.zzzyyylllty.SertralineHydrochloride.console
 import io.github.zzzyyylllty.data.CompatibilityData
 import io.github.zzzyyylllty.data.MMOItemsComp
+import io.github.zzzyyylllty.data.SertralineItem
 import io.github.zzzyyylllty.data.SertralineItemData
 import io.github.zzzyyylllty.debugMode.debugLog
 import org.bukkit.inventory.ItemStack
@@ -16,15 +18,24 @@ import taboolib.common.platform.function.warning
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.minecraftServerObject
 
-fun generateCompatbilityPart(item: ItemStack,data: SertralineItemData) : ItemStack {
+fun generateCompatbilityPart(item: ItemStack,data: SertralineItem) : ItemStack {
 
     var returnItem = item
+    val compData = data.compatibilityData ?: return returnItem
 
     val nbt : ReadWriteNBT = NBT.createNBTObject()
-    DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_12_2, DataFixerUtil.VERSION1_20_6)
-    item.setItemMeta(Compon)
 
-    return CompatibilityData(MMOItemsComp(type,id,revid,tier))
+    NBT.modify(item, {
+        nbt.setString("MMOITEMS_ITEM_TYPE", compData.mmoItemsComp.type)
+        nbt.setString("MMOITEMS_ITEM_ID", compData.mmoItemsComp.id)
+        nbt.setLong("MMOITEMS_REVISION_ID", compData.mmoItemsComp.revid)
+        nbt.setString("MMOITEMS_TIER", compData.mmoItemsComp.tier)
+    })
+
+    // 更新 NBT
+    val updatedNBT = DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_20_4, DataFixerUtil.getCurrentVersion())
+
+    return returnItem
 }
 /*
 * testItem:
