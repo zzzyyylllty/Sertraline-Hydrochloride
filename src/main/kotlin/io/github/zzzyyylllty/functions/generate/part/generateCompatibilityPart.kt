@@ -1,25 +1,8 @@
 package io.github.zzzyyylllty.functions.generate.part
 
-import com.mojang.datafixers.DataFixerBuilder
-import com.mojang.datafixers.DataFixerUpper
-import de.tr7zw.nbtapi.NBT
-import de.tr7zw.nbtapi.iface.ReadWriteNBT
-import de.tr7zw.nbtapi.plugin.NBTAPI
-import de.tr7zw.nbtapi.utils.DataFixerUtil
-import ink.ptms.zaphkiel.taboolib.module.nms.getItemTag
-import io.github.zzzyyylllty.SertralineHydrochloride.console
-import io.github.zzzyyylllty.data.CompatibilityData
-import io.github.zzzyyylllty.data.MMOItemsComp
 import io.github.zzzyyylllty.data.SertralineItem
-import io.github.zzzyyylllty.data.SertralineItemData
-import io.github.zzzyyylllty.debugMode.debugLog
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.function.pluginVersion
-import taboolib.common.platform.function.warning
-import taboolib.library.xseries.XMaterial
-import taboolib.module.lang.asLangText
 import taboolib.module.nms.itemTagReader
-import taboolib.module.nms.minecraftServerObject
 import taboolib.platform.util.buildItem
 
 fun generateCompatbilityPart(item: ItemStack,data: SertralineItem) : ItemStack {

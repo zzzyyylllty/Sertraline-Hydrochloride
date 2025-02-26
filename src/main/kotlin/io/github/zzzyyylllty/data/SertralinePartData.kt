@@ -1,9 +1,6 @@
 package io.github.zzzyyylllty.data
 
-import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
-
-data class SertralineItemData(
+data class SertralinePartData(
     val name: String?,
     val material: String?,
     val nbts: LinkedHashMap<String, Any?>,

@@ -1,8 +1,7 @@
 package io.github.zzzyyylllty.functions.load.part
 
-import com.willfp.eco.util.toSingletonList
 import io.github.zzzyyylllty.SertralineHydrochloride.console
-import io.github.zzzyyylllty.data.SertralineItemData
+import io.github.zzzyyylllty.data.SertralinePartData
 import io.github.zzzyyylllty.data.SingleData
 import io.github.zzzyyylllty.data.SingleDataTypes
 import io.github.zzzyyylllty.debugMode.debugLog
@@ -11,7 +10,7 @@ import taboolib.common.platform.function.warning
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.lang.asLangText
 
-fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralineItemData? {
+fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralinePartData? {
 
     val section = "$root.sertraline" // = testItem.sertraline
     val source = "${config.name}-$root"
@@ -67,7 +66,7 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralineItemD
         varData[l["idef"].toString()] = SingleData(SingleDataTypes.valueOf(l["type"].toString()), l["value"])
     }
 
-    return SertralineItemData(name,material,nbts,lore,model,updateId,fixedData,valData,varData)
+    return SertralinePartData(name,material,nbts,lore,model,updateId,fixedData,valData,varData)
 }
 /*
 *   sertraline: # sertraline 属性
