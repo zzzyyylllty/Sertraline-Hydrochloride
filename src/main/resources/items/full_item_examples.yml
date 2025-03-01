@@ -79,6 +79,7 @@ testItem:
         # REGENERATE           / REGEN   重新生成物品，包括数据和一切属性!
         # JAVASCRIPT           / JS      JavaScript!
         async: true   # 是否异步执行，默认true
+        condition: true # Kether 条件
         chance: 100.0 # 运行的概率，默认100
         value:
           - 'tell Hello!'
@@ -100,7 +101,7 @@ testItem:
     right-click @ shift: null
     any-click @ all: null
     drop @ all:
-      - cancel-event: false # 是否取消事件
+      - cancel-event: true # 是否取消事件
         type: KETHER
         async: true
         consume: true # 是否消耗物品? false/true/all all为所有物品
@@ -111,7 +112,8 @@ testItem:
         async: true
         consume: false # 是否消耗物品? false/true/all all为所有物品
         chance: 100.0
-        value: 'ATTACK!'
+        value: 'tell ATTACK!'
     defense @ all: null # 仅限盾牌格挡时
     swap-hands @ all: null # 交换物品时 (可能会被 MMOCore 阻挡)
     arikeys.test.key @ all: # 支持使用 Ari keys 自定义按键触发。arikeys.按键值
+    equip @ all: ~

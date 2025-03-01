@@ -14,6 +14,7 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralinePartD
 
     val section = "$root.sertraline" // = testItem.sertraline
     val source = "${config.name}-$root"
+    val id = root
 
     config.get(section) ?: run {
         debugLog(console.asLangText("debug.load.no_sertraline"))
@@ -24,7 +25,7 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralinePartD
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.type"))
         return null
     }).toString()
-    val material = (config["$section.material"])
+    val material = (config["$section.material"]).toString()
     val nbtList = (config["$section.nbts"] ?: run {
         warning(console.asLangText("enable.load.error_sertraline", source, "mmoitems.nbts"))
         return null
@@ -66,7 +67,7 @@ fun loadSertralinePart(config: YamlConfiguration,root: String) : SertralinePartD
         varData[l["idef"].toString()] = SingleData(SingleDataTypes.valueOf(l["type"].toString()), l["value"])
     }
 
-    return SertralinePartData(name,material,nbts,lore,model,updateId,fixedData,valData,varData)
+    return SertralinePartData(id,name,material,nbts,lore,model,updateId,fixedData,valData,varData)
 }
 /*
 *   sertraline: # sertraline 属性

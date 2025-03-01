@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.data
 
 data class SertralinePartData(
+    val id: String,
     val name: String?,
     val material: String?,
     val nbts: LinkedHashMap<String, Any?>,

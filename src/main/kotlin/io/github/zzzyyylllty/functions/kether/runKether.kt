@@ -24,3 +24,23 @@ fun runKether(script: String, player: Player): CompletableFuture<Any> {
         )
     ).thenApply { it }
 }
+
+fun List<String>.evalKether(player: Player): CompletableFuture<Any> {
+    val script = this
+    debugLog("running Kether $script in Player $player")
+    return KetherShell.eval(
+        script, options = ScriptOptions(
+            sender = adaptCommandSender(player)
+        )
+    ).thenApply { it }
+}
+
+fun String.evalKether(player: Player): CompletableFuture<Any> {
+    val script = this
+    debugLog("running Kether $script in Player $player")
+    return KetherShell.eval(
+        script, options = ScriptOptions(
+            sender = adaptCommandSender(player)
+        )
+    ).thenApply { it }
+}

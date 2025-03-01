@@ -31,6 +31,7 @@ fun generateSertralinePart(item: ItemStack,data: SertralineItem) : ItemStack {
 
     buildItem(returnItem).itemTagReader {
         set("DEPAZITEMS.SERTRALINE.UPDATE_ID", sertData?.updateId)
+        set("DEPAZITEMS.SERTRALINE.ID", sertData?.id)
         set("DEPAZITEMS.SERTRALINE.FIXED_DATA", sertData?.fixedData)
         set("DEPAZITEMS.SERTRALINE.VARIABLES_DATA", sertData?.variablesData)
 
