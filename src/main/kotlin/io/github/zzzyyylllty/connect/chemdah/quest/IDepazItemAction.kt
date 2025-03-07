@@ -6,7 +6,7 @@ import ink.ptms.chemdah.core.quest.Task
 import ink.ptms.chemdah.core.quest.objective.ObjectiveCountableI
 import ink.ptms.chemdah.core.quest.objective.other.IPlayerInventory.handler
 import org.bukkit.entity.Player
-
+/*
 object IItemPick : ObjectiveCountableI<DepazItemActionEvent>() {
 
     override val name = "pickup item"
@@ -33,4 +33,4 @@ object IItemPick : ObjectiveCountableI<DepazItemActionEvent>() {
     override fun getCount(profile: PlayerProfile, task: Task, event: DepazItemActionEvent): Int {
         return event.item.itemStack.amount
     }
-}
+}*/

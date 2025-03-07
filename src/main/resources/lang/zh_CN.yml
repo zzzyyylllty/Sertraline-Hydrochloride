@@ -17,3 +17,6 @@ debug.load.loading_file: '正在读取文件 {0} ...'
 debug.load.loading_item: '正在读取文件 {0} 的物品 {1} ...'
 debug.load.no_compatibility: '未找到 compatibility 部分,跳过本部分加载.'
 debug.load.no_sertraline: '未找到 sertraline 部分,跳过本部分加载.'
+
+command.main.no_player_found: '在执行一条指令时出现错误: 未找到玩家 {0}.'
+command.main.no_item_found: '在执行一条指令时出现错误: 未找到物品 {0}.'

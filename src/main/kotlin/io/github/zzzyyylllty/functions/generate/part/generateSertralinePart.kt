@@ -3,11 +3,11 @@ package io.github.zzzyyylllty.functions.generate.part
 import de.tr7zw.nbtapi.NBT
 import de.tr7zw.nbtapi.iface.ReadWriteNBT
 import de.tr7zw.nbtapi.utils.DataFixerUtil
-import ink.ptms.chemdah.taboolib.module.chat.colored
 import io.github.zzzyyylllty.data.SertralineItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import taboolib.module.chat.colored
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import taboolib.platform.util.modifyLore

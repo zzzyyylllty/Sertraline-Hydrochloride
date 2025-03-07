@@ -70,12 +70,12 @@ fun resolveItemStack(s: String, source: String, p: Player?): ItemStack? {
                 null
             }
         }
-        "EC", "ECO", "ECOITEMS" -> {
+        /*"EC", "ECO", "ECOITEMS" -> {
             returnItem = try { EcoItems.getByID(param)?.itemStack } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
                 null
             }
-        }
+        }*/
         "SX", "SXITEM", "SX-ITEM" -> {
             returnItem = try { SXItem.getItemManager().getItem(param, p) } catch (e: Exception) {
                 severe(console.asLangText("enable.load.error_item_unable_to_generate"),source, s, e)
