@@ -17,15 +17,15 @@ depaz_pills:
       - type: kether
         consume: true
         value:
-          - 'dplayerdata darkness remove 1'
-          - 'ditemdata var.left remove 1'
-          - 'refresh'
+          - 'depaz playerdata darkness remove 1'
+          - 'depaz itemdata var.left remove 1'
+          - 'depaz refresh'
     consume @ shift: # 处方药GO!
       - type: kether
         consume: all
         value:
           - 'if check <depaz.consumeamount> >= 3 then command papi "effect give %player_name% instant_damage <depaz.consumeamount>" as console'
-          - 'dplayerdata stress remove 10'
-          - 'dplayerdata darkness add 6'
-          - 'ditemdata var.left remove 1'
-          - 'refresh'
+          - 'if check <depaz.consumeamount> >= 3 then dplayerdata stress remove 10'
+          - 'if check <depaz.consumeamount> >= 3 then dplayerdata darkness add 6'
+          - 'if check <depaz.consumeamount> >= 3 then ditemdata var.left remove 1'
+          - 'depaz refresh'

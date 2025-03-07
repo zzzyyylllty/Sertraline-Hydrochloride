@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.functions.load.part
 
 import com.willfp.eco.util.toSingletonList
+import github.saukiya.tools.base.EmptyMap
 import io.github.zzzyyylllty.SertralineHydrochloride.console
 import io.github.zzzyyylllty.data.*
 import io.github.zzzyyylllty.debugMode.debugLog
@@ -8,20 +9,20 @@ import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.lang.asLangText
 
-fun loadActions(config: YamlConfiguration,root: String) : List<SingleActionsData>? {
+fun loadActions(config: YamlConfiguration,root: String) : LinkedHashMap<String, SingleActionsData> {
 
     val section = "$root.actions" // = testItem.sertraline
     val source = "${config.name}-$root"
 
-    val actionsList : List<SingleActionsData> = emptyList()
+    val actionsList : LinkedHashMap<String, SingleActionsData> = LinkedHashMap<String, SingleActionsData>()
 
     val actions = (config[section] ?: run {
         debugLog(console.asLangText("debug.load.no_actions"))
-        return null
+        return actionsList
     }) as List<ConfigurationSection>
 
     for (ac in actions) {
-        SingleActionsData(
+        actionsList[ac["trigger"] as String] = SingleActionsData(
             ActionsType.valueOf(ac["type"].toString()),
             (ac["async"] ?: true) as Boolean,
             (ac["chance"] ?: 100.0) as Double,

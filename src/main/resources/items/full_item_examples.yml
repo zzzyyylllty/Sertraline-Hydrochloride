@@ -67,8 +67,8 @@ testItem:
       attr: ATTACK_SPEED
       amount: "1.6" # 固定1.6
   actions: # 动作，不储存在NBT
-    left-click @ non-shift: # 左键点击且非shift
-      - type: KETHER  # 执行什么类型的动作?
+    - trigger: left-click @ non-shift # 左键点击且非shift
+      type: KETHER  # 执行什么类型的动作?
         # 支持的类型：
         # KETHER               / 不填写   运行 Kether 脚本 https://kether.tabooproject.org/list.html
         # command_player       / CMD_P   以玩家身份执行命令
@@ -78,42 +78,42 @@ testItem:
         # REFRESH              / RELOAD  重载物品，只会更改物品的lore
         # REGENERATE           / REGEN   重新生成物品，包括数据和一切属性!
         # JAVASCRIPT           / JS      JavaScript!
-        async: true   # 是否异步执行，默认true
-        condition: true # Kether 条件
-        chance: 100.0 # 运行的概率，默认100
-        value:
-          - 'tell Hello!'
-    right-click @ non-shift: # 右键点击且非shift
-      - type: KETHER
-        async: true
-        chance: 100.0
-        value:
-          - 'if permission "admin" then tell "<depaz.var.message>" else "You do not have permissions!"'
-    consume @ all: null # 物品食用，不管是否shift
-    left-click @ shift:
-      - type: KETHER
-        async: true
-        consume: true # 是否消耗物品? false/true/all all为所有物品
-        chance: 100.0
-        value:
-          - 'repeat <depaz.consumeamount> tell "Consumed a item."'
-          - 'tell color "&b Consumed <depaz.consumeamount> item(s)"'
-    right-click @ shift: null
-    any-click @ all: null
-    drop @ all:
-      - cancel-event: true # 是否取消事件
-        type: KETHER
-        async: true
-        consume: true # 是否消耗物品? false/true/all all为所有物品
-        chance: 100.0
-        value: 'tell color "&c不允许扔出这个物品。"'
-    attack @ all:
-      - type: KETHER
-        async: true
-        consume: false # 是否消耗物品? false/true/all all为所有物品
-        chance: 100.0
-        value: 'tell ATTACK!'
-    defense @ all: null # 仅限盾牌格挡时
-    swap-hands @ all: null # 交换物品时 (可能会被 MMOCore 阻挡)
-    arikeys.test.key @ all: # 支持使用 Ari keys 自定义按键触发。arikeys.按键值
-    equip @ all: ~
+      async: true   # 是否异步执行，默认true
+      condition: true # Kether 条件
+      chance: 100.0 # 运行的概率，默认100
+      value:
+      - 'tell Hello!'
+    - trigger: right-click @ non-shift # 右键点击且非shift
+      type: KETHER
+      async: true
+      chance: 100.0
+      value:
+        - 'if permission "admin" then tell "<depaz.var.message>" else "You do not have permissions!"'
+    #- trigger: consume @ all 物品食用，不管是否shift
+    - trigger: left-click @ shift
+      type: KETHER
+      async: true
+      consume: true # 是否消耗物品? false/true/all all为所有物品
+      chance: 100.0
+      value:
+        - 'repeat <depaz.consumeamount> tell "Consumed a item."'
+        - 'tell color "&b Consumed <depaz.consumeamount> item(s)"'
+    #- trigger: right-click @ shift
+    #- trigger: any-click @ all:
+    - trigger: drop @ all
+      cancel-event: true # 是否取消事件
+      type: KETHER
+      async: true
+      consume: true # 是否消耗物品? false/true/all all为所有物品
+      chance: 100.0
+      value: 'tell color "&c不允许扔出这个物品。"'
+    - trigger: attack @ all
+      type: KETHER
+      async: true
+      consume: false # 是否消耗物品? false/true/all all为所有物品
+      chance: 100.0
+      value: 'tell ATTACK!'
+    #- trigger: defense @ all #仅限盾牌格挡时
+    #- trigger: swaphands @ all # 交换物品时 (可能会被 MMOCore 阻挡)
+    #- trigger: arikeys.test.key @ all # 支持使用 Ari keys 自定义按键触发。arikeys.按键值
+    #- trigger: equip @ all

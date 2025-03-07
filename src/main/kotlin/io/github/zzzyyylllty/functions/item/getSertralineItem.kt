@@ -5,7 +5,7 @@ import io.github.zzzyyylllty.data.SertralineItem
 import org.bukkit.inventory.ItemStack
 import pers.neige.neigeitems.utils.ItemUtils.getNbt
 
-fun stlItem(item: ItemStack): SertralineItem? {
+fun getStlItem(item: ItemStack): SertralineItem? {
     return SertralineHydrochloride.items[item.getNbt().getString("DEPAZITEMS.SERTRALINE.ID")]
 }
 

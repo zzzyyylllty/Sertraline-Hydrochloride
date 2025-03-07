@@ -17,7 +17,7 @@ fun connectChemdah() {
 @Dependency("Chemdah")
 fun e(e: InferItemHookEvent) {
     when (e.id.lowercase()) {
-        "depaz","needy","sertraline" -> {
+        "depaz","needy","sertraline","overdose" -> {
             e.itemClass = ItemDepazSelector::class.java
         }
     }
