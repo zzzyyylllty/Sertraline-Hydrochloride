@@ -40,7 +40,7 @@ testItem:
             value: 'HELLO WORLD' # 2/3 出现该选项
           - weight: 1
             value: 'GOODBYE WORLD' # 1/3 出现该选项
-      # 重要提示! 要进行变量嵌套，必须在config内修改变量替换模式
+      # 不支持变量内嵌套另一个变量 (PlaceHolderAPI可以在变量内用)。
     vars:
       # 物品内的变量，可以理解为数据。
       # 储存在 NBT 内。
@@ -48,8 +48,8 @@ testItem:
         type: value
         values: 1 # 初始值
   attributes:
-    - type: MYTHIC_LIB
-      # 支持：MYTHIC_LIB(MMOITEMS) ATTRIBUTE_PLUS MYTHIC_MOBS SX_ATTRIBUTE_2 SX_ATTRIBUTE_3
+    - type: INTERNAL
+      # 支持：INTERNAL MYTHIC_LIB(MMOITEMS) ATTRIBUTE_PLUS MYTHIC_MOBS SX_ATTRIBUTE_2 SX_ATTRIBUTE_3
       attr: ATTACK_DAMAGE
       idef: null
       # 游戏内标识符号，若存在相同标识符号的相同属性在继承时会被大的一方覆盖，不储存在 NBT。
@@ -58,7 +58,7 @@ testItem:
       override: false
       # 替换父类所有相同种类相同attr的属性。默认true。
       chance: 100.0 # 100% 出现该属性
-      amount: "<depaz.fixed.attack>" # 攻击调用val.attack中的数值
+      amount: "<depaz.fixed.attack>" # 攻击调用fixed.attack中的数值
       # amount: <depaz.val.attack>
       # stats:
       #   use: random # 调用的stats
