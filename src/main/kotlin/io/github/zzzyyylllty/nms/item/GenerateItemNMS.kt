@@ -7,10 +7,11 @@ import taboolib.module.nms.nmsProxy
 
 abstract class NMS12000 {
     abstract fun sendItem(player: Player,item: ItemStack)
-
+/*
     companion object {
         val INSTANCE by unsafeLazy {
             nmsProxy<NMS12000>()
         }
-    }
+    }*/
+
 }
