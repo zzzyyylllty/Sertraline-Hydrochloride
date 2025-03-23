@@ -1,0 +1,10 @@
+newItem:
+  minecraft:
+    material: GRASS_BLOCK
+    name: '一个草方块'
+  action:
+    onInteract:
+      type: KETHER
+      async: true
+      content:
+        - 'tell "Hello World!"'

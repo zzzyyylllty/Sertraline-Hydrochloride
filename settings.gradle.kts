@@ -1,4 +1,4 @@
-rootProject.name = "Sertraline-Hydrochloride"
+rootProject.name = "SertralineHydrochloride"
 
 
 pluginManagement {
