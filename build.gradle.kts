@@ -1,67 +1,24 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.izzel.taboolib.gradle.*
-import io.izzel.taboolib.gradle.Basic
-import io.izzel.taboolib.gradle.Bukkit
-import io.izzel.taboolib.gradle.BukkitFakeOp
-import io.izzel.taboolib.gradle.BukkitHook
-import io.izzel.taboolib.gradle.BukkitUI
-import io.izzel.taboolib.gradle.BukkitUtil
-import io.izzel.taboolib.gradle.BukkitNMS
 import io.izzel.taboolib.gradle.BukkitNMSUtil
-import io.izzel.taboolib.gradle.BukkitNMSItemTag
-import io.izzel.taboolib.gradle.BukkitNMSEntityAI
-import io.izzel.taboolib.gradle.BukkitNMSDataSerializer
-import io.izzel.taboolib.gradle.I18n
-import io.izzel.taboolib.gradle.Metrics
-import io.izzel.taboolib.gradle.MinecraftChat
-import io.izzel.taboolib.gradle.MinecraftEffect
-import io.izzel.taboolib.gradle.CommandHelper
-import io.izzel.taboolib.gradle.Database
-import io.izzel.taboolib.gradle.DatabasePlayer
-import io.izzel.taboolib.gradle.Ptc
-import io.izzel.taboolib.gradle.PtcObject
-import io.izzel.taboolib.gradle.Kether
-
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    id("org.jetbrains.kotlin.jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.21"
 }
 
 taboolib {
     env {
-        install(Basic)
-        install(Bukkit)
-        install(BukkitFakeOp)
-        install(BukkitHook)
-        install(BukkitUI)
-        install(BukkitUtil)
-        install(BukkitNMS)
-        install(BukkitNMSUtil)
-        install(BukkitNMSItemTag)
-        install(BukkitNMSEntityAI)
-        install(BukkitNMSDataSerializer)
-        install(I18n)
-        install(Metrics)
-        install(MinecraftChat)
-        install(MinecraftEffect)
-        install(CommandHelper)
-        install(Database)
-        install(DatabasePlayer)
-        install(Ptc)
-        install(PtcObject)
-        install(Kether)
+        // 安装模块
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSUtil)
     }
-    description {
-        name = "Sertraline"
-        desc("An Advanced Item Plugin")
-        contributors {
-            name("AkaCandyKAngel")
-        }
+    version {
+        taboolib = "6.2.3-20d868d"
+        coroutines = "1.8.1"
     }
-    version { taboolib = "6.2.2" }
 }
+
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -86,18 +43,14 @@ repositories {
     maven("https://repo.hibiscusmc.com/releases/")
     maven("https://repo.tabooproject.org/repository/releases/")
 }
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            force("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
-            force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22")
-            force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22")
-        }
-    }
-}
+
 dependencies {
-    compileOnly("ink.ptms.core:v12101:12101:mapped")
-    compileOnly("ink.ptms.core:v12101:12101:universal")
+    compileOnly("ink.ptms.core:v12004:12004:mapped")
+    compileOnly("ink.ptms.core:v12004:12004:universal")
+    compileOnly(kotlin("stdlib"))
+    compileOnly(fileTree("libs"))
+    compileOnly("ink.ptms.core:v12004:12004:mapped")
+    compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     // compileOnly("com.mojang:datafixerupper:1.0.20")
@@ -111,10 +64,22 @@ dependencies {
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
-    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
-    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+    // compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
+    // compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
     implementation("com.github.Saukiya:SX-Item:4.4.0")
     implementation("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
+    compileOnly("net.luckperms:api:5.4")
+    implementation("me.clip:placeholderapi:2.11.5")
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
+    implementation("com.beust:klaxon:5.5")
+    implementation("net.kyori:adventure-api:4.19.0")
+    compileOnly("ink.ptms.adyeshach:api:2.0.24")
+    compileOnly(kotlin("stdlib"))
+    compileOnly(fileTree("libs"))
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT") { isTransitive = false }
+    implementation("net.kyori:adventure-text-minimessage:4.19.0")
+    testImplementation(kotlin("test"))
 }
 
 tasks.withType<JavaCompile> {
@@ -123,13 +88,12 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
-        // Skip NeigeItems InCompatibility Kotlin Version
+        jvmTarget = "17"
+        freeCompilerArgs = listOf("-Xjvm-default=all")
     }
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
