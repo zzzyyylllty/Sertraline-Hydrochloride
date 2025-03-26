@@ -1,6 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.load
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.YamlConfiguration
@@ -26,7 +28,8 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : ItemStack {
     val legacy = LegacyComponentSerializer.legacyAmpersand()
     if (strings != null) {
         for (string in strings.split("\n")) {
-            lore.add(mm.deserialize(legacy.serialize(legacy.deserialize(string.replace("§", "&")))))
+            val comp = mm.deserialize(legacy.serialize(legacy.deserialize(string.replace("§", "&"))))
+            lore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
         }
     }
     item.lore(lore)
