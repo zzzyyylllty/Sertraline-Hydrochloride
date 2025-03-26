@@ -21,7 +21,9 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : ItemStack {
 
     val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString()))
         var meta = item.itemMeta
-    meta.displayName(mm.deserialize("<white>${config["$root.minecraft.name"].toString()}"))
+    var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}")
+    name.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
+    meta.displayName(name)
     item.setItemMeta(meta)
     val strings = config.getString("$root.minecraft.lore")
     var lore : MutableList<Component> = mutableListOf()

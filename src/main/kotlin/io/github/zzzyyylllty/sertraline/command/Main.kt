@@ -60,7 +60,7 @@ object SertralineMainCommand {
     val about = subCommand {
         execute<CommandSender> { sender, context, argument -> //
             sender.sendInternalMessages("<gradient:aqua:blue>Sertraline Hydrochloride</gradient> <#ccccff>$pluginVersion")
-            sender.sendInternalMessages("<gradient:#6600ff:#aa00aa>Running on Platform:</gradient> <light_purple>${runningPlatform.name} - $minecraftVersion")
+            sender.sendInternalMessages("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name} - $minecraftVersion")
             sender.sendInternalMessages("<#660099>Plugin by AkaCandyKAngel.")
             sender.sendInternalMessages("<#660099>Use <blue>/sertraline help</blue> for help.")
         }

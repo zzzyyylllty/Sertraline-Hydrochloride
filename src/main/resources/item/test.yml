@@ -1,9 +1,9 @@
 test:
   minecraft:
-    material: DIRT
-    name: '测试物品'
+    material: APPLE
+    name: '<red>Apple'
     lore: |
-      <red>坏黑的大苹果
+      <red>Bad Black's Great Apple.
   action:
     - onInteract:
         type: KETHER
