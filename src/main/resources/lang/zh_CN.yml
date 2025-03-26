@@ -15,6 +15,8 @@ ITEM_LOAD_NOT_FOUND: "未找到 item 文件夹内的文件!如果您希望重新
 ITEM_GIVE: "给予玩家 <yellow>{0} <white>个 <gray>{1} <dark_gray>({2})"
 ITEM_NOT_FOUND: "<red>无法找到物品 <gray>{1}"
 
+ACTION_TRIGGER_NOT_FOUND: "无法找到物品 {1} 的某个 Action 中的 Trigger."
+
 DEBUG_LOADING_FILE: "正在加载文件 {0}"
 DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
 

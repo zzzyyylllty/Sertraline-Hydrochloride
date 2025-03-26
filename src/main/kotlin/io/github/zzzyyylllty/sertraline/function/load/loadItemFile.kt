@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.info
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.common.platform.function.warning
 import taboolib.module.lang.asLangText
 import java.io.File
 
@@ -41,11 +40,7 @@ fun loadItemFile() {
 
             devLog("DEBUG_LOADING_ITEM", file.name, iroot)
             val item = loadMaterialPart(config, iroot)
-            itemMap[iroot] = DepazItems(
-                id = iroot,
-                originalItem = item,
-                actions = linkedMapOf()
-            )
+            itemMap[iroot] = item
 
         }
     }

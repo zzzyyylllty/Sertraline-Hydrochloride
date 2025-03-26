@@ -5,11 +5,11 @@ test:
     lore: |
       <red>Bad Black's Great Apple.
   action:
-    - onInteract:
-        type: KETHER
-        async: true
-        content:
-          - 'tell "Hello World!"'
+    - trigger: onInteract
+      type: KETHER
+      async: true
+      content: |
+        tell "Hello World!"
 PREMIUM9_CARD:
   minecraft:
     material: PAPER
@@ -21,8 +21,8 @@ PREMIUM9_CARD:
       <white>最高补齐给予 1500 宇称晶隙 (25000 成长值)。
       <white>请妥善保管。遗失不补。右键即立即给予使用者对应身份。
   action:
-    - onInteract:
-        type: KETHER
-        async: true
-        content:
-          - 'tell "Hello World!"'
+    - trigger: onInteract
+      type: KETHER
+      async: true
+      content: |
+        tell "Hello World!"
