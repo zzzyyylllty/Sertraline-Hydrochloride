@@ -23,12 +23,12 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 
 ## TODO
 - [x] 读取文件/文件夹
-- [ ] 给予物品
+- [x] 给予物品
 - [ ] 物品变量
 - [ ] MythicLib 属性
 - [ ] Kether: 判断物品
 - [ ] Kether: 构建物品
-- [ ] Kether 动作指令
+- [x] Kether: eval
 - [ ] 释放技能
 - [ ] Chemdah 物品识别兼容性
 ...

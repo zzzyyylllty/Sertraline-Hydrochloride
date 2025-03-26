@@ -15,6 +15,6 @@ fun CommandSender.sendInternalMessages(message: String) {
 fun CommandSender.sendStringAsComponent(message: String) {
     val mm = MiniMessage.miniMessage()
     val legacy = LegacyComponentSerializer.legacyAmpersand()
-    (this as Audience).sendMessage(mm.deserialize(legacy.serialize(legacy.deserialize(message.replace("§", "&")))))
+    this.sendMessage(mm.deserialize(legacy.serialize(legacy.deserialize(message.replace("§", "&")))))
 }
 

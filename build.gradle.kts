@@ -48,12 +48,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("ink.ptms.core:v12004:12004:mapped")
-    compileOnly("ink.ptms.core:v12004:12004:universal")
-    compileOnly(kotlin("stdlib"))
-    compileOnly(fileTree("libs"))
-    compileOnly("ink.ptms.core:v12004:12004:mapped")
-    compileOnly("ink.ptms.core:v12004:12004:universal")
+    // compileOnly("ink.ptms.core:v12004:12004:mapped")
+    // compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     // compileOnly("com.mojang:datafixerupper:1.0.20")
@@ -81,7 +77,7 @@ dependencies {
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT") { isTransitive = false }
+    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
     testImplementation(kotlin("test"))
 }

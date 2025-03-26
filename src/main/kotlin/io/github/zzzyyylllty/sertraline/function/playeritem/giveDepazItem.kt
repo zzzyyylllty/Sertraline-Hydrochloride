@@ -25,5 +25,5 @@ fun Player.giveDepazItem(id: String,amount: Int = 1) {
     }
     item.amount = amount
     this.giveItem(item) // TODO
-    sender.sendInternalMessages(sender.asLangText("ITEM_GIVE", amount, id, item.getDisplayNameOrRegName()))
+    sender.sendInternalMessages(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
 }
