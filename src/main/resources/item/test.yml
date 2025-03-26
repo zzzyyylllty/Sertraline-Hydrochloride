@@ -3,7 +3,7 @@ test:
     material: DIRT
     name: '测试物品'
     lore: |
-      <white>我要测试你的码
+      <red>坏黑的大苹果
   action:
     onInteract:
       async: true
@@ -20,19 +20,6 @@ PREMIUM9_CARD:
       <white>若当前成长值超过 10000，则将以每 10 成长值 1 宇称晶隙 的价格补全差价。
       <white>最高补齐给予 1500 宇称晶隙 (25000 成长值)。
       <white>请妥善保管。遗失不补。右键即立即给予使用者对应身份。
-  action:
-    onInteract:
-      type: KETHER
-      async: true
-      content:
-        - 'tell "Hello World!"'
-MAGICAL_STAMP:
-  minecraft:
-    material: PAPER
-    name: '<#FF66FF>魔法邮票</#FF66FF>'
-    lore: |
-      <#CC66FF>据说世界会变成七彩色，</#CC66FF>
-      <#CC66FF>让我们一起去寻找彩虹吧。</#CC66FF>
   action:
     onInteract:
       type: KETHER

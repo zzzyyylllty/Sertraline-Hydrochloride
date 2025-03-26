@@ -11,7 +11,7 @@ plugins {
 taboolib {
     env {
         // 安装模块
-        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSUtil)
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper)
     }
     version {
         taboolib = "6.2.3-20d868d"
@@ -42,6 +42,9 @@ repositories {
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.hibiscusmc.com/releases/")
     maven("https://repo.tabooproject.org/repository/releases/")
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") {
+        name = "sonatype-oss-snapshots"
+    }
 }
 
 dependencies {
@@ -72,6 +75,7 @@ dependencies {
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
+    // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("com.beust:klaxon:5.5")
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")

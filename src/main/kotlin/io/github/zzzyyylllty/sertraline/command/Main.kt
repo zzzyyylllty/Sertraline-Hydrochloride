@@ -4,6 +4,7 @@ import ink.ptms.adyeshach.core.entity.type.minecraftVersion
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand
 import io.github.zzzyyylllty.sertraline.Sertraline.plugin
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazItemCommand
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.severeL
@@ -77,6 +78,9 @@ object SertralineMainCommand {
 
     @CommandBody
     val api = DepazApiCommand
+
+    @CommandBody
+    val item = DepazItemCommand
 
     @CommandBody
     val debug = DepazDebugCommand

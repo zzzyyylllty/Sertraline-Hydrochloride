@@ -8,7 +8,7 @@
 
 Sertraline 是一个在 Minecraft Bukkit 平台下运行的物品库插件。
 
-旨在 Taboolib 的架构下的服务器中方便，简单地利用属性插件，功能和 Kether 执行。
+旨在 Taboolib 的架构下的服务器中方便，简单地利用属性插件，功能和 Kether 创建物品。
 
 基于 <a href = "https://tabooproject.org">Taboolib 6.x</a> 和 Kotlin.
 

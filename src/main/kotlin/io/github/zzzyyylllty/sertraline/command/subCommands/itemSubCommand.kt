@@ -1,14 +1,20 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
 import com.beust.klaxon.Klaxon
+import ink.ptms.chemdah.core.quest.addon.data.Plan
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.function.playeritem.giveDepazItem
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
+import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.util.asList
 import taboolib.platform.util.asLangText
+import taboolib.platform.util.giveItem
 
 @CommandHeader(
     name = "sertralineitem",
@@ -26,19 +32,20 @@ object DepazItemCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
+                if (sender is Player) sender.giveDepazItem(id, 1)
             }
-        }
-    }
-
-
-    @CommandBody
-    val getItemMap = subCommand {
-        execute<CommandSender> { sender, context, argument ->
-            var message = sender.asLangText("COMMAND_DEBUG_ITEM", itemMap.size)
-            for (entry in itemMap.entries) {
-                message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
+            suggestion<CommandSender>(uncheck = true) { sender, context ->
+                itemMap.keys.asList()
             }
-            sender.sendInternalMessages(message)
+            player("player") {
+                execute<CommandSender> { sender, context, argument ->
+                    val id = context["id"]
+                    val tabooPlayer = context.player("player")
+                    // 转化为Bukkit的Player
+                    val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                    bukkitPlayer?.giveDepazItem(id = id)
+                }
+            }
         }
     }
 
