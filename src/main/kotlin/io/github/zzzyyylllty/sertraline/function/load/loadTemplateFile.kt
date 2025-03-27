@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
@@ -51,7 +52,7 @@ fun loadTemplateFile(file: File) {
     for (iroot in config.getKeys(false)) {
 
         devLog("DEBUG_LOADING_TEMPLATE", file.name, iroot)
-        val item = loadMaterialPart(config, iroot)
-        itemMap[iroot] = item
+        val template = loadTemplate(config, iroot)
+        templateMap[iroot] = template
     }
 }

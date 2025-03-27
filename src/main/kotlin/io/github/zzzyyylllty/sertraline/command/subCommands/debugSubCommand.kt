@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.command.subCommands
 import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.command.CommandBody
@@ -37,8 +38,20 @@ object DepazDebugCommand {
     @CommandBody
     val getItemMap = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            var message = sender.asLangText("COMMAND_DEBUG_ITEM", itemMap.size)
+            var message = sender.asLangText("COMMAND_DEBUG_ITEMMAP", itemMap.size)
             for (entry in itemMap.entries) {
+                message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
+            }
+            sender.sendInternalMessages(message)
+        }
+    }
+
+
+    @CommandBody
+    val getTemplateMap = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            var message = sender.asLangText("COMMAND_DEBUG_TEMPLATEMAP", templateMap.size)
+            for (entry in templateMap.entries) {
                 message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
             }
             sender.sendInternalMessages(message)

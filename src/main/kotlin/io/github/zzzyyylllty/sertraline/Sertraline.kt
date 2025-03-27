@@ -14,6 +14,7 @@ import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
 import taboolib.common.platform.function.releaseResourceFile
+import taboolib.library.configuration.ConfigurationSection
 import java.io.File
 import java.util.*
 
@@ -23,6 +24,7 @@ object Sertraline : Plugin() {
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
     var dataFolder = nativeDataFolder()
+    var templateMap = LinkedHashMap<String, ConfigurationSection>()
     var itemMap = LinkedHashMap<String, DepazItems>()
     var devMode = true
     val console by lazy { console() }

@@ -1,5 +1,6 @@
 COMMAND_DEBUG_ITEM: "<aqua><b>物品:</b> <br>{0}"
 COMMAND_DEBUG_ITEMMAP: "<aqua><b>物品映射:</b> ({0})<br>"
+COMMAND_DEBUG_TEMPLATEMAP: "<aqua><b>模板映射:</b> ({0})<br>"
 
 INTERNAL_INFO_RELOADING: "尝试重载 ..."
 INTERNAL_INFO_RELOADED: "尝试重载 ... 完成."
@@ -29,6 +30,6 @@ DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
 DEBUG_LOADING_TEMPLATE: "正在加载文件 {0} 的模板 {1}"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
-ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."
+ERROR_PLAYER_NOT_FOUND: "玩家 {}未找到."
 
 GENERATION_INVALID_MATERIAL: "无法生成物品 {0}, 因为 Material 为 null。"
