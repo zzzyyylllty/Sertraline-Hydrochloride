@@ -15,6 +15,9 @@ import taboolib.module.configuration.Type
 import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
+import taboolib.common.platform.function.releaseResourceFile
+import taboolib.module.configuration.Config
+import java.io.File
 import java.util.*
 
 object Sertraline : Plugin() {
@@ -28,9 +31,13 @@ object Sertraline : Plugin() {
     val console by lazy { console() }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    val config by lazy { Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = true), Type.YAML) }
-
-    val placeHolderConfig by lazy { Configuration.loadFromFile(newFile(getDataFolder(), "placeholders.yml", create = true), Type.YAML) }
+    val config by lazy {
+        if (!File(getDataFolder(), "config.yml").exists()) {
+            warningL("CONFIG_REGEN")
+            releaseResourceFile("config.yml")
+        }
+        Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = false), Type.YAML)
+    }
 
     override fun onEnable() {
         warning("Sertraline now starting.")
@@ -50,7 +57,6 @@ object Sertraline : Plugin() {
             e.printStackTrace()
         }
         plugin.config.reload()
-        plugin.placeHolderConfig.reload()
         itemMap = linkedMapOf()
         loadItemFile()
     }

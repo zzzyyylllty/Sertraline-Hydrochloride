@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
 import com.beust.klaxon.Klaxon
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import org.bukkit.command.CommandSender
@@ -41,6 +42,14 @@ object DepazDebugCommand {
                 message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
             }
             sender.sendInternalMessages(message)
+        }
+    }
+
+
+    @CommandBody
+    val getConfig = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            sender.sendInternalMessages(config.toString())
         }
     }
 
