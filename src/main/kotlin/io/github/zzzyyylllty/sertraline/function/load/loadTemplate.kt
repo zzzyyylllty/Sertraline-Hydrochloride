@@ -12,7 +12,8 @@ import taboolib.library.configuration.ConfigurationSection
 import taboolib.library.xseries.XMaterial
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
+import java.util.LinkedHashMap
 
-fun loadTemplate(config: YamlConfiguration, root: String) : ConfigurationSection {
-    return config.get(root) as ConfigurationSection
+fun loadTemplate(config: YamlConfiguration, root: String) : org.bukkit.configuration.ConfigurationSection? {
+    return config.getConfigurationSection(root)
 }

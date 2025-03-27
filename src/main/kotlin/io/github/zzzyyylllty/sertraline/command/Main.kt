@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.plugin
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazItemCommand
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.function.load.reloadSertraline
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import org.bukkit.command.CommandSender
@@ -88,15 +89,7 @@ object SertralineMainCommand {
     @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            infoL("INTERNAL_INFO_RELOADING")
-            sender.sendInternalMessages(sender.asLangText("INTERNAL_INFO_RELOADING"))
-            try {
-                plugin.reloadCustomConfig()
-                sender.sendInternalMessages(sender.asLangText("INTERNAL_INFO_RELOADED"))
-            } catch (e: Throwable) {
-                sender.sendInternalMessages(sender.asLangText("INTERNAL_SEVERE_RELOAD_ERROR"))
-                e.printStackTrace()
-            }
+            reloadSertraline(sender)
         }
     }
 

@@ -7,11 +7,14 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.bukkit.command.CommandSender
+import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.library.xseries.XMaterial
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
+import java.util.LinkedHashMap
 
 fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
     val legacyApi = LegacyComponentSerializer.legacyAmpersand()
@@ -43,7 +46,7 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
     item.lore(lore)
 
     var actions : MutableList<Action> = mutableListOf()
-    val sections = config.get("$root.action") as List<LinkedHashMap<String, Any>>?
+    val sections = config.getList("$root.action") as List<LinkedHashMap<String, Any>>?
 
     if (sections != null && !sections.isEmpty()) for (section in sections) {
         val actionList = if (section["content"] is ArrayList<*>) section["content"] as ArrayList<String> else (section["content"] as String).split("\n")

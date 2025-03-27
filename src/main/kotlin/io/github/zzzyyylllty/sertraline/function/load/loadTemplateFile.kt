@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.warningL
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.info
@@ -17,15 +18,15 @@ import java.io.File
 fun loadTemplateFiles() {
     info(console.asLangText("TEMPLATE_START_LOAD"))
 
-    val files = File(getDataFolder(), "item").listFiles() ?: run {
+    val files = File(getDataFolder(), "template").listFiles() ?: run {
         warningL("TEMPLATE_LOAD_NOT_FOUND")
         return
     }
 
-    if (!File(getDataFolder(), "item").exists()) {
+    if (!File(getDataFolder(), "template").exists()) {
 
-        warningL("ITEM_LOAD_REGEN")
-        releaseResourceFile("item/test.yml")
+        warningL("TEMPLATE_LOAD_REGEN")
+        releaseResourceFile("template/example.yml")
 
     }
 
@@ -53,6 +54,6 @@ fun loadTemplateFile(file: File) {
 
         devLog("DEBUG_LOADING_TEMPLATE", file.name, iroot)
         val template = loadTemplate(config, iroot)
-        templateMap[iroot] = template
+        templateMap[iroot] = template as ConfigurationSection
     }
 }
