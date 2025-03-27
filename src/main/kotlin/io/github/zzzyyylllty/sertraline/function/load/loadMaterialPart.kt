@@ -20,13 +20,13 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
     val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString()))
 
     val itemTag = item.itemTagReader {
-        val value = getString("自定义的节点.支持多节点", "默认值")
-        set("自定义的节点.支持多节点", "新的值 + ${value}")
+        //val value = getString("SERTRALINE_ID", "$root")
+        set("SERTRALINE_ID", "$root")
         // 收尾方法 写了才算写入物品 不然不会写入 减少操作可能出现的失误
         write(item)
     }
 
-        var meta = item.itemMeta
+    var meta = item.itemMeta
     var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}")
     name.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
     meta.displayName(name)
