@@ -1,6 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import io.github.zzzyyylllty.sertraline.logger.severeL
@@ -9,13 +11,23 @@ import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
+import kotlin.collections.get
 
-fun ItemStack?.getDepazItem(): String? {
+fun ItemStack?.getDepazItem(): DepazItems? {
     var id : String? = null
     this.itemTagReader {
         id = getString("SERTRALINE_ID")
     }
-    return id
+    return itemMap[id]
+}
+fun ItemStack?.getDepazItemOrFail(): DepazItems {
+    var id : String? = null
+    this.itemTagReader {
+        id = getString("SERTRALINE_ID")
+    }
+    val item = itemMap[id]
+    if (item == null) throwNPEWithMessage("ITEM_NOT_FOUND", id.toString())
+    return item!!
 }
 
 fun ItemStack?.isDepazItem(): Boolean {
@@ -24,4 +36,12 @@ fun ItemStack?.isDepazItem(): Boolean {
         idExists = (getString("SERTRALINE_ID")?.isEmpty() == true)
     }
     return idExists
+}
+
+fun ItemStack?.isDepazItemInList(): Boolean {
+    var id : String? = null
+    this.itemTagReader {
+        id = getString("SERTRALINE_ID")
+    }
+    return itemMap[id] != null
 }

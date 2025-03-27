@@ -31,6 +31,20 @@ IRON_SWORD:
       <red>Just a normal sword.
       <white>Sword DaoLi.
   attribute:
-    - source: MYTHIC_LIB
-      name: ATTACK_DAMAGE
-      amount: 6
+    - ATTACK_SPEED: 1.6
+    - ATTACK_DAMAGE: 6
+      # Can be repeated.
+    - ATTACK_DAMAGE: 114514
+      meta: # Optional
+        engine: MYTHIC_LIB
+        # Attribute Engine: MYTHIC_LIB
+        # uuid: <Type UUID Here>
+        require:
+          - HAND
+        # MAIN_HAND,OFF_HAND,FEET/BOOT/BOOTS,LEG/LEGS/LEGGINGS,CHESTPLATE/CHEST,HELMET/HEAD,EQUIP,HAND,SLOT_<slot>(Ex. SLOT_20)
+        # EQUIP = In Equip
+        # Default is EQUIP
+        # ! CAUTION !
+        # If you want to use SLOT require, please enable it at config.yml.
+        condition: |
+          check sender = "AmeChan"

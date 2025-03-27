@@ -13,13 +13,12 @@ data-section:
   # 性能影响: 较小
 
 attribute:
-  engine: INTERNAL
-  # INTERNAL内置属性引擎
-  # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值: INTERNAL
-  # 可选: INTERNAL,MYTHIC_LIB,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3，必须选择现有的插件的类型
+  default: MYTHIC_LIB
+  # 默认属性使用，默认 MYTHIC_LIB，本插件需要 MYTHIC_LIB。
+  # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值以及所有带有属性的物品的属性部分使用的类型: MYTHIC_LIB
+  # 可选: INTERNAL,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3，必须选择现有的插件的类型
   # 性能影响: 因选择而异
-  default: INTERNAL
-  # 默认属性使用
-  # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值以及所有带有属性的物品的属性部分使用的类型: INTERNAL
-  # 可选: INTERNAL,MMOITEMS,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3，必须选择现有的插件的类型
-  # 性能影响: 因选择而异
+  slot-condition: false
+  # 是否启用判断需要装备在特定槽位的属性
+  # 刷新属性时，将把所有物品都遍历一遍。如果你不需要它，保持关闭。
+  # 性能影响: 较高
