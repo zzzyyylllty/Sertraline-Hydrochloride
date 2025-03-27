@@ -1,10 +1,8 @@
 package io.github.zzzyyylllty.sertraline
 
 import io.github.zzzyyylllty.sertraline.data.DepazItems
-import io.github.zzzyyylllty.sertraline.function.load.loadItemFile
-import taboolib.common.LifeCycle
+import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import taboolib.common.io.newFile
-import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
@@ -16,7 +14,6 @@ import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
 import taboolib.common.platform.function.releaseResourceFile
-import taboolib.module.configuration.Config
 import java.io.File
 import java.util.*
 
@@ -41,7 +38,7 @@ object Sertraline : Plugin() {
 
     override fun onEnable() {
         warning("Sertraline now starting.")
-        loadItemFile()
+        loadItemFiles()
     }
 
     override fun onDisable() {
@@ -58,7 +55,7 @@ object Sertraline : Plugin() {
         }
         plugin.config.reload()
         itemMap = linkedMapOf()
-        loadItemFile()
+        loadItemFiles()
     }
 
 

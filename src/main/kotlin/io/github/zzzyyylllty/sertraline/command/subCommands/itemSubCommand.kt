@@ -1,10 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
-import com.beust.klaxon.Klaxon
-import ink.ptms.chemdah.core.quest.addon.data.Plan
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
-import io.github.zzzyyylllty.sertraline.function.playeritem.giveDepazItem
+import io.github.zzzyyylllty.sertraline.function.item.giveDepazItem
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -13,8 +10,6 @@ import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.util.asList
-import taboolib.platform.util.asLangText
-import taboolib.platform.util.giveItem
 
 @CommandHeader(
     name = "sertralineitem",

@@ -7,8 +7,8 @@ import taboolib.common.platform.function.info
 import taboolib.common.platform.function.warning
 import taboolib.module.lang.asLangText
 
-fun devLog(node: String,vararg args: Any) {
-    if (devMode) warning(console.asLangText(node,args))
+fun devLog(langNode: String, vararg args: Any) {
+    if (devMode) warning(console.asLangText(langNode,args))
 }
 
 fun devMode(b: Boolean) {

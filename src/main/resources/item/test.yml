@@ -1,28 +1,25 @@
-test:
+APPLE:
   minecraft:
     material: APPLE
     name: '<red>Apple'
     lore: |
       <red>Bad Black's Great Apple.
+      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
   action:
-    - trigger: onInteract
+    - trigger: onConsume @ Universal
       type: KETHER
       async: true
       content: |
         tell "Hello World!"
-PREMIUM9_CARD:
+DEPAZ_PILLS:
   minecraft:
-    material: PAPER
-    name: 'Premium 9 高级版权限卡'
+    material: GRAY_DYE
+    name: '<white>Depaz Pills'
     lore: |
-      <white>ChoTenGroup 的身份证明，只有最早的一批流浪者才能免费获得。
-      <white>使用后立即获得 Premium 9 特权服务 (补齐 19800 成长值)。时间 永久。
-      <white>若当前成长值超过 10000，则将以每 10 成长值 1 宇称晶隙 的价格补全差价。
-      <white>最高补齐给予 1500 宇称晶隙 (25000 成长值)。
-      <white>请妥善保管。遗失不补。右键即立即给予使用者对应身份。
-  action:
-    - trigger: onInteract
-      type: KETHER
-      async: true
-      content: |
-        tell "Hello World!"
+      <white>“Look I’m taking my medicine like a good girl…” 
+                                                  <light_purple>--KAngel
+  extend:
+    - template: FOOD_TEMPLATE
+      data:
+        effect: instant_damage
+

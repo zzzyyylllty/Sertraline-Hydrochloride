@@ -1,11 +1,9 @@
-package io.github.zzzyyylllty.sertraline.function.playeritem
+package io.github.zzzyyylllty.sertraline.function.item
 
-import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import io.github.zzzyyylllty.sertraline.logger.severeL
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem

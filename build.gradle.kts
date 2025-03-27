@@ -11,7 +11,7 @@ plugins {
 taboolib {
     env {
         // 安装模块
-        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag)
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag, CONFIGURATION)
     }
     version {
         taboolib = "6.2.3-20d868d"

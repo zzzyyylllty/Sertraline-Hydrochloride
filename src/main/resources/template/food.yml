@@ -1,0 +1,7 @@
+FOOD_TEMPLATE:
+  action:
+    - trigger: onInteract @ Universal
+      type: KETHER
+      async: true
+      content: |
+        command inline "effect give {{ sender }} {{ &effect }}" as console

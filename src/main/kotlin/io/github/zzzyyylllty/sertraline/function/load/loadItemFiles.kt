@@ -2,7 +2,6 @@ package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.warningL
@@ -12,8 +11,9 @@ import taboolib.common.platform.function.info
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.lang.asLangText
 import java.io.File
+import kotlin.collections.set
 
-fun loadItemFile() {
+fun loadItemFiles() {
     info(console.asLangText("ITEM_START_LOAD"))
 
     val files = File(getDataFolder(), "item").listFiles() ?: run {
@@ -31,17 +31,25 @@ fun loadItemFile() {
     infoL("ITEM_LOAD_FOUND")
 
     for (file in files) {
-
-        val config = YamlConfiguration.loadConfiguration(file)
-
-        devLog("DEBUG_LOADING_FILE", file.name)
-
-        for (iroot in config.getKeys(false)) {
-
-            devLog("DEBUG_LOADING_ITEM", file.name, iroot)
-            val item = loadMaterialPart(config, iroot)
-            itemMap[iroot] = item
-
+        // If directory load file in it...
+        if (file.isDirectory) file.listFiles()?.forEach {
+            loadItemFile(it)
         }
+        else loadItemFile(file)
+    }
+}
+
+fun loadItemFile(file: File) {
+
+    val config = YamlConfiguration.loadConfiguration(file)
+
+    devLog("DEBUG_LOADING_FILE", file.name)
+
+    for (iroot in config.getKeys(false)) {
+
+        devLog("DEBUG_LOADING_ITEM", file.name, iroot)
+        val item = loadMaterialPart(config, iroot)
+        itemMap[iroot] = item
+
     }
 }

@@ -28,14 +28,14 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 - [ ] MythicLib 属性
 - [ ] Kether: 判断物品
 - [ ] Kether: 构建物品
-- [x] Kether: eval
+- [ ] Kether: eval
 - [ ] 释放技能
 - [ ] Chemdah 物品识别兼容性
 ...
 
-## 友情链接
+## 链接
 - [TabooLib 非官方文档](https://taboolib.feishu.cn/)
-- [Adyeshach](https://github.com/TabooLib/adyeshach)
+- [Zaphkiel](https://github.com/TabooLib/zaphkiel)
 - [精神支柱](https://needystreameroverload.wiki.gg/wiki/Ame-chan)
 
 ## 构建发行版本

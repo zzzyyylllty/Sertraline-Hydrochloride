@@ -15,12 +15,18 @@ ITEM_LOAD_NOT_FOUND: "未找到 item 文件夹内的文件!如果您希望重新
 ITEM_GIVE: "给予玩家 <yellow>{0} <white>个 <gray>{1} <dark_gray>({2})"
 ITEM_NOT_FOUND: "<red>无法找到物品 <gray>{1}"
 
+TEMPLATE_START_LOAD: "开始加载模板文件 ..."
+TEMPLATE_LOAD_FOUND: "已找到模板文件 ..."
+TEMPLATE_LOAD_REGEN: "未找到模板文件夹,重新生成 ..."
+TEMPLATE_LOAD_NOT_FOUND: "未找到 TEMPLATE 文件夹内的文件!如果您希望重新生成,请删除整个文件夹."
+
 CONFIG_REGEN: "正在生成 config..."
 
 ACTION_TRIGGER_NOT_FOUND: "无法找到物品 {1} 的某个 Action 中的 Trigger."
 
 DEBUG_LOADING_FILE: "正在加载文件 {0}"
 DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
+DEBUG_LOADING_TEMPLATE: "正在加载文件 {0} 的模板 {1}"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
 ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."
