@@ -1,6 +1,7 @@
 FOOD_TEMPLATE:
   action:
-    - trigger: onInteract @ Universal
+    - trigger: onInteract
+      on: UNIVERSAL
       type: KETHER
       async: true
       content: |

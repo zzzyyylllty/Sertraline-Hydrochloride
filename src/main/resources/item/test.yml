@@ -6,7 +6,8 @@ APPLE:
       <red>Bad Black's Great Apple.
       <gray>Tell you <yellow>Hello World!</yellow> After Consume.
   action:
-    - trigger: onConsume @ Universal
+    - trigger: onConsume
+      on: UNIVERSAL
       type: KETHER
       async: true
       content: |
@@ -22,4 +23,14 @@ DEPAZ_PILLS:
     - template: FOOD_TEMPLATE
       data:
         effect: instant_damage
-
+IRON_SWORD:
+  minecraft:
+    material: IRON_SWORD
+    name: '<white>Iron Sword'
+    lore: |
+      <red>Just a normal sword.
+      <white>Sword DaoLi.
+  attribute:
+    - source: MYTHIC_LIB
+      name: ATTACK_DAMAGE
+      amount: 6

@@ -10,7 +10,12 @@ import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.subCommand
+import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.util.asMap
 import taboolib.platform.util.asLangText
+import java.io.File
+import java.util.LinkedHashMap
+import kotlin.String
 
 @CommandHeader(
     name = "sertralinedebug",
@@ -52,7 +57,8 @@ object DepazDebugCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = sender.asLangText("COMMAND_DEBUG_TEMPLATEMAP", templateMap.size)
             for (entry in templateMap.entries) {
-                message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
+                val str = entry.value.asMap()
+                message = "$message<br><white>${entry.key} <gray>- $str"
             }
             sender.sendInternalMessages(message)
         }
