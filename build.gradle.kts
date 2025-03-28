@@ -5,21 +5,35 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.serialization") version "1.8.22"
 }
 
 taboolib {
+    description {
+        name("Sertraline")
+        desc("An advanced item plugin.")
+        contributors {
+            // 作者名称
+            name("AkaCandyKAngel")
+        }
+        dependencies {
+            // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
+            name("MythicLib")
+            // 可选依赖
+            // name("XXX").optional(true)
+        }
+    }
     env {
         // 安装模块
         install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag, CONFIGURATION)
     }
     version {
         taboolib = "6.2.3-20d868d"
-        coroutines = "1.8.1"
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
     relocate("kotlinx.serialization", "kotlinx.serialization163")
+    // relocate("com.beust.klaxon.Klaxon", "xxx.xxx.xxx.Klaxon")
 }
 
 repositories {
@@ -75,18 +89,18 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
-    implementation("com.beust:klaxon:5.5")
+    // implementation("com.beust:klaxon:5.5")
+    taboo("com.beust:klaxon:5.5")
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
-    compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
     implementation("net.kyori:adventure-nbt:4.19.0")
     testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3") { isTransitive = false }
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"){ isTransitive = false }
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.5.3") { isTransitive = false }
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.3"){ isTransitive = false }
     }
 
 tasks.withType<JavaCompile> {

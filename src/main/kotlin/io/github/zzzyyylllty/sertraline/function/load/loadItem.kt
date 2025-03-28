@@ -63,11 +63,11 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val type = AttributeSources.valueOf(section["meta_type"] as String? ?: "MYTHIC_LIB")
         val definer = section["meta_definer"] as String? ?: "sertraline"
         val metaUUID = section["meta_uuid"] as String?
-        val uuid = if (metaUUID == null) UUID.randomUUID() else UUID.fromString(metaUUID)
+        val uuid = metaUUID ?: UUID.randomUUID().toString()
         val amount = section["meta_engine"] as String? ?: "100"
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"
         val mythicLibEquipSlot = section["meta_equip_slot"] as String? ?: "MAIN_HAND"
-        val requireSlot = section["meta_require"] as List<String>
+        val requireSlot = section["meta_require"] as List<String>?
         val conditionOnBuild = section["meta_condition_onbuild"] as String?
         val conditionOnEffect = section["meta_condition"] as String?
         val chance = section["chance"] as String? ?: "100.0"
@@ -83,7 +83,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
                amount = attr.value.toString(),
                source = source,
                mythicLibEquipSlot = mythicLibEquipSlot,
-               requireSlot = requireSlot,
+               requireSlot = requireSlot ?: emptyList(),
                conditionOnBuild = conditionOnBuild,
                conditionOnEffect = conditionOnEffect
            )

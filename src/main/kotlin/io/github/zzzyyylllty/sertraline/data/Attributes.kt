@@ -1,7 +1,9 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import taboolib.common.env.RuntimeDependency
+import io.github.zzzyyylllty.sertraline.function.sertralize.UUIDSerializable
+import kotlinx.serialization.Serializable
 import java.util.UUID
-
 data class Attribute(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,
@@ -23,7 +25,6 @@ enum class AttributeSources {
     ///SX_ATTRIBUTE_2,
     //SX_ATTRIBUTE_3
 }
-
 data class AttributeInst(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,

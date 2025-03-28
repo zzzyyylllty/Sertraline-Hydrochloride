@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import io.github.zzzyyylllty.sertraline.function.sertralize.KlaxonItemStack
+import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
 data class DepazItems(
@@ -15,8 +17,11 @@ data class DepazItems(
  * 可被构建为 [ItemStack]
  * 物品未写入 NBT
  * */
+
+@Serializable
 data class DepazItemInst(
     val id: String,
-    val originalItem: ItemStack,
+    // @KlaxonItemStack
+    val item: ItemStack,
     val attributes: MutableList<AttributeInst>
 )

@@ -20,6 +20,7 @@ import io.lumine.mythic.lib.player.modifier.ModifierSource
 import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
+import java.util.UUID
 
 /**
  * Refresh stat for player.
@@ -58,7 +59,7 @@ fun Player.applyAtb(attribute: AttributeInst) {
     val typedValue = relativeOrFlat(attribute.amount)
     when (attribute.type) {
         MYTHIC_LIB -> StatModifier(
-            uuid,
+            UUID.fromString(uuid),
             "sertraline",
             attribute.attr,
             typedValue.value.toDouble(),
