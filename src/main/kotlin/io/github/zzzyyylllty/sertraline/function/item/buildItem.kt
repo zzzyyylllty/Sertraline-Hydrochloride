@@ -25,10 +25,11 @@ fun DepazItemInst.buildItem() : ItemStack {
     val item = this.originalItem
     item.itemTagReader {
         val value = getString("自定义的节点.支持多节点", "默认值")
-        set("自定义的节点.支持多节点", "新的值 + ${value}")
+        set("自定义的节点.支持多节点", "新的值 + $value")
         // 收尾方法 写了才算写入物品 不然不会写入 减少操作可能出现的失误
         write(item)
     }
+    return item
 }
 
 // 未写入 NBT
