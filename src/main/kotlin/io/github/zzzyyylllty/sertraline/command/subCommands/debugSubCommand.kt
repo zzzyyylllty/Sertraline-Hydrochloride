@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemNBTOrFail
 import io.github.zzzyyylllty.sertraline.function.item.giveDepazItem
 import org.bukkit.command.CommandSender
@@ -105,6 +106,23 @@ object DepazDebugCommand {
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
                     bukkitPlayer?.giveDepazItem(id = id)
                 }
+            }
+        }
+    }
+
+    @CommandBody
+    val getInst = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val id = context["id"]
+            if (sender is Player) sender.sendInternalMessages(sender.inventory.itemInMainHand.getDepazItemInst().toString())
+        }
+        player("player") {
+            execute<CommandSender> { sender, context, argument ->
+                val id = context["id"]
+                val tabooPlayer = context.player("player")
+                // 转化为Bukkit的Player
+                val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                bukkitPlayer?.sendInternalMessages(bukkitPlayer.inventory.itemInMainHand.getDepazItemInst().toString())
             }
         }
     }

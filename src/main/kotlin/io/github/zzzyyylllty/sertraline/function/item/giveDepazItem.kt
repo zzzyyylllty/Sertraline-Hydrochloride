@@ -17,7 +17,7 @@ fun Player?.giveDepazItem(id: String,amount: Int = 1,playerName: String) {
 }
 fun Player.giveDepazItem(id: String,amount: Int = 1) {
     val sender = this
-    var item = itemMap[id]?.originalItem ?: run {
+    var item = itemMap[id]?.buildInstance(sender)?.buildItem() ?: run {
         sender.sendInternalMessages(sender.asLangText("ITEM_NOT_FOUND", id))
         throw NullPointerException()
     }

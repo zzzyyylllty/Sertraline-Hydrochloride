@@ -8,7 +8,7 @@ data class Attribute(
     val definer: String,
     val uuid: UUID,
     // val override: Boolean = true,
-    val chance: Double = 100.0,
+    val chance: String = "100.0",
     val amount: String = "1",
     val source: String = "VOID", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效

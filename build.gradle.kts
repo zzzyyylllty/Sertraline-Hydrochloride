@@ -6,6 +6,7 @@ plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
     kotlin("jvm") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 taboolib {
@@ -18,6 +19,7 @@ taboolib {
         coroutines = "1.8.1"
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
+    relocate("kotlinx.serialization", "kotlinx.serialization163")
 }
 
 repositories {
@@ -83,7 +85,9 @@ dependencies {
     implementation("net.kyori:adventure-nbt:4.19.0")
     testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
-}
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3") { isTransitive = false }
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"){ isTransitive = false }
+    }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

@@ -63,8 +63,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val type = AttributeSources.valueOf(section["meta_engine"] as String? ?: "MYTHIC_LIB")
         val definer = section["meta_engine"] as String? ?: "sertraline"
         val uuid = UUID.fromString(section["meta_engine"] as String?) ?: UUID.randomUUID()
-        val override = TODO()
-        val chance = TODO()
+        val chance = section["meta_engine"] as String?
         val amount = TODO()
         val source = TODO()
         val mythicLibEquipSlot = TODO()

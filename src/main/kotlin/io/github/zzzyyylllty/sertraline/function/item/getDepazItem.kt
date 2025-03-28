@@ -1,19 +1,23 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.beust.klaxon.Json
+import com.beust.klaxon.Klaxon
+import com.beust.klaxon.json
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
 import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.lumine.mythic.bukkit.utils.adventure.nbt.TagStringIO
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM.JSONObject
 import io.lumine.mythic.bukkit.utils.shadows.nbt.MojangsonParser
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
-import taboolib.platform.util.asLangText
-import taboolib.platform.util.giveItem
+import kotlinx.serialization.encodeToString
 import kotlin.collections.get
 
 fun ItemStack?.getDepazItem(): DepazItems? {
@@ -34,6 +38,14 @@ fun ItemStack?.getDepazItemOrFail(): DepazItems {
 }
 fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
+}
+fun ItemStack?.getDepazItemInst(): DepazItemInst? {
+    val str =
+        this?.itemTagReader {
+            getString("SERTRALINE_DATA")
+        }
+    val json = kotlinx.serialization.json.Json.encodeToString(str)
+    return Klaxon().parse<DepazItemInst>(json)
 }
 
 fun ItemStack?.isDepazItem(): Boolean {
