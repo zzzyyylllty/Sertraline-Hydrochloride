@@ -89,7 +89,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
                 chance = chance,
                 source = source,
                 mythicLibEquipSlot = mythicLibEquipSlot,
-                requireSlot = requireSlot ?: emptyList(),
+                requireSlot = requireSlot ?: listOf<String>("36","37","38","39","ANY_HAND"),
                 conditionOnBuild = conditionOnBuild,
                 conditionOnEffect = conditionOnEffect
             )

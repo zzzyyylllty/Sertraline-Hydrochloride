@@ -30,7 +30,7 @@ fun Player.refreshStat() {
         if (slotEnabled) for (slot in 0..40) {
             val i = inv.getItem(slot)
             if (i.isDepazItemInList()) {
-                for (atb in i.getDepazItemInst()!!.attributes) {
+                for (atb in i.getDepazItemInst().attributes) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
                 }
             }
@@ -39,7 +39,7 @@ fun Player.refreshStat() {
             for (slot in player.getSlots(slotList)) {
                 val i = inv.getItem(slot)
                 if (i.isDepazItemInList()) {
-                    for (atb in i.getDepazItemInst()!!.attributes) {
+                    for (atb in i.getDepazItemInst().attributes) {
                         if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
                     }
                 }
