@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import ink.ptms.chemdah.taboolib.common.util.random
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
@@ -23,9 +24,10 @@ import kotlin.collections.get
 
 fun DepazItemInst.buildItem() : ItemStack {
     val item = this.originalItem
+    val depaz = this
     item.itemTagReader {
         val value = getString("自定义的节点.支持多节点", "默认值")
-        set("自定义的节点.支持多节点", "新的值 + $value")
+        set("SERTRALINE_ID", depaz.id)
         // 收尾方法 写了才算写入物品 不然不会写入 减少操作可能出现的失误
         write(item)
     }
@@ -37,13 +39,17 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
     val depaz = this
     val instAttrs = mutableListOf<AttributeInst>()
     for (attr in depaz.attributes) {
+        // Attribute Chance
         if (attr.chance > random(0.0,99.9)) instAttrs.add(
             AttributeInst(
                 type = attr.type,
                 attr = attr.attr,
                 definer = attr.definer,
                 uuid = attr.uuid,
-                amount = attr.amount.evalKether(p as CommandSender).toString(),
+                amount =
+                    if (config.getBoolean("attribute.kether-amount")) attr.amount.evalKether(p as CommandSender).toString()
+                    else attr.amount
+                ,
                 source = attr.source,
                 mythicLibEquipSlot = attr.mythicLibEquipSlot,
                 requireSlot = attr.requireSlot
