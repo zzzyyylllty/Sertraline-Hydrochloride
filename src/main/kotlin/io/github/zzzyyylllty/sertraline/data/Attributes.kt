@@ -1,12 +1,18 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import java.util.UUID
+
 data class Attribute(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,
-    val definer: String?,
+    val definer: String,
+    val uuid: UUID,
     val override: Boolean = true,
     val chance: Double = 100.0,
     val amount: String = "1",
+    val source: String = "VOID", // MythicLib 等一些玩意有效
+    val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
+    val requireSlot: List<String>
 )
 enum class AttributeSources {
     MYTHIC_LIB,

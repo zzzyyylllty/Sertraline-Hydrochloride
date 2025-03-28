@@ -28,8 +28,9 @@ ACTION_TRIGGER_NOT_FOUND: "无法找到物品 {1} 的某个 Action 中的 Trigge
 DEBUG_LOADING_FILE: "正在加载文件 {0}"
 DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
 DEBUG_LOADING_TEMPLATE: "正在加载文件 {0} 的模板 {1}"
+DEBUG_STAT_REFRESH: "正在刷新玩家 {0} 的状态"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
-ERROR_PLAYER_NOT_FOUND: "玩家 {}未找到."
+ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."
 
 GENERATION_INVALID_MATERIAL: "无法生成物品 {0}, 因为 Material 为 null。"

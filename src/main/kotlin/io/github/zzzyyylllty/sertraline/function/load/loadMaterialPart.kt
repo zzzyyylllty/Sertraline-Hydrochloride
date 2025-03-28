@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.data.Action
+import io.github.zzzyyylllty.sertraline.data.Attribute
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import net.kyori.adventure.text.Component
@@ -29,9 +30,8 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
         write(item)
     }
 
-    var meta = item.itemMeta
-    var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}")
-    name.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
+    val meta = item.itemMeta
+    var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}").decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
     meta.displayName(name)
     item.setItemMeta(meta)
     val strings = config.getString("$root.minecraft.lore")
@@ -58,5 +58,24 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
             )
         )
     }
-    return DepazItems(root, item, actions)
+
+    var attributes : MutableList<Attribute> = mutableListOf()
+    val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
+
+    if (sections != null && !sections.isEmpty()) for (section in sections) {
+        val actionList = if (section["content"] is ArrayList<*>) section["content"] as ArrayList<String> else (section["content"] as String).split("\n")
+        attributes.add(
+           Attribute(
+               attr = TODO(),
+               definer = TODO(),
+               uuid = TODO(),
+               requireSlot = TODO()
+           )
+        )
+    }
+
+
+
+
+    return DepazItems(root, item, actions, attributes)
 }

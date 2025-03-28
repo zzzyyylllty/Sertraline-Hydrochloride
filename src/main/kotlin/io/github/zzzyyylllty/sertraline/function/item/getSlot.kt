@@ -35,6 +35,7 @@ fun Player.getSlots(list: List<String>): List<Int> {
                 "LEGGINGS","LEG","LEGS" -> intList.add(37)
                 "CHESTPLATE","CHEST" -> intList.add(38)
                 "HELMET","HEAD" -> intList.add(39)
+                "ANY_SLOT" -> for (i in 0..40) intList.add(i)
             }
     }
     return intList
