@@ -1,7 +1,9 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.alibaba.fastjson2.into
 import com.alibaba.fastjson2.to
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
@@ -29,12 +31,19 @@ fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
 }
 fun ItemStack?.getDepazItemInst(): DepazItemInst {
-    var data : String? = "{}"
+    var attribute : String? = "{}"
+    var id : String? = null
         this?.itemTagReader {
-            data = getString("SERTRALINE_DATA")
+            attribute = getString("SERTRALINE_ATTRIBUTE")
+            id = getString("SERTRALINE_ID")
         }
-    val json = data
-    return json.to<DepazItemInst>() ?: throw NullPointerException()
+    val atbInst = attribute.into<MutableList<AttributeInst>>() ?: throw NullPointerException()
+
+    return DepazItemInst(
+        id = id ?: throw NullPointerException(),
+        item = this ?: throw NullPointerException(),
+        attributes = atbInst
+    )
 }
 
 fun ItemStack?.isDepazItem(): Boolean {

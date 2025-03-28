@@ -15,18 +15,14 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
-import taboolib.platform.util.buildItem
 
 
 fun DepazItemInst.buildItem() : ItemStack {
     val depaz = this
-
     item.itemTagReader {
         // val value = getString("自定义的节点.支持多节点", "默认值")
         set("SERTRALINE_ID", depaz.id)
-        // set("SERTRALINE_DATA", Klaxon().toJsonString("test"))
-        // set("SERTRALINE_DATA", Json.encodeToString(depaz))
-        set("SERTRALINE_DATA", depaz.toJSONString())
+        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
 
         write(item)
     }
@@ -38,7 +34,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
     val depaz = this
     val instAttrs = mutableListOf<AttributeInst>()
     val sender = p as CommandSender
-    for (attr in depaz.attributes) {
+    for (attr in depaz.attributeParts) {
         // Attribute Chance
         if (attr.chance.evalKether(sender).get().toString().toDouble() > random(0.0,99.9)) instAttrs.add(
             AttributeInst(
@@ -46,10 +42,6 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
                 attr = attr.attr,
                 definer = attr.definer,
                 uuid = attr.uuid,
-                amount =
-                    if (config.getBoolean("attribute.kether-amount")) attr.amount.evalKether(sender).get().toString()
-                    else attr.amount
-                ,
                 source = attr.source,
                 mythicLibEquipSlot = attr.mythicLibEquipSlot,
                 requireSlot = attr.requireSlot

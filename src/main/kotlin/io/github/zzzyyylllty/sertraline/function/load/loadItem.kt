@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.data.Action
-import io.github.zzzyyylllty.sertraline.data.Attribute
+import io.github.zzzyyylllty.sertraline.data.AttributePart
 import io.github.zzzyyylllty.sertraline.data.AttributeSources
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
@@ -10,11 +10,10 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.common.platform.function.info
 import taboolib.library.xseries.XMaterial
-import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import java.util.LinkedHashMap
-import java.util.UUID
 
 fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     val legacyApi = LegacyComponentSerializer.legacyAmpersand()
@@ -52,10 +51,13 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         )
     }
 
-    var attributes : MutableList<Attribute> = mutableListOf()
+    var attributeParts : MutableList<AttributePart> = mutableListOf()
     val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
 
-    if (sections != null && !sections.isEmpty()) for (section in sections) {
+    info("atbsections: $atbsections")
+
+    if (atbsections != null && !atbsections.isEmpty()) for (section in atbsections) {
+        info("section: $section")
 
         var attributeNames: MutableList<MutableMap.MutableEntry<String, Any>> = mutableListOf()
         for (entry in section) {
@@ -74,26 +76,28 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val conditionOnEffect = section["meta_condition"] as String?
         val chance = section["chance"] as String? ?: "100.0"
 
-        for (attr in attributeNames)
-        attributes.add(
-           Attribute(
-               type = type,
-               attr = attr.key,
-               definer = definer,
-               uuid = uuid,
-               chance = chance,
-               amount = attr.value.toString(),
-               source = source,
-               mythicLibEquipSlot = mythicLibEquipSlot,
-               requireSlot = requireSlot ?: emptyList(),
-               conditionOnBuild = conditionOnBuild,
-               conditionOnEffect = conditionOnEffect
-           )
+        val attrList = kotlin.collections.LinkedHashMap<String, String>()
+        for (attr in attributeNames) {
+            attrList.put(attr.key, attr.value.toString())
+        }
+        attributeParts.add(
+            AttributePart(
+                type = type,
+                attr = attrList,
+                definer = definer,
+                uuid = uuid,
+                chance = chance,
+                source = source,
+                mythicLibEquipSlot = mythicLibEquipSlot,
+                requireSlot = requireSlot ?: emptyList(),
+                conditionOnBuild = conditionOnBuild,
+                conditionOnEffect = conditionOnEffect
+            )
         )
     }
 
 
 
 
-    return DepazItems(root, item, actions, attributes)
+    return DepazItems(root, item, actions, attributeParts)
 }

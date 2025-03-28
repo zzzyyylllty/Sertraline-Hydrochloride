@@ -1,14 +1,10 @@
 package io.github.zzzyyylllty.sertraline.function.stats
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.data.Attribute
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.AttributeSources.*
-import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
-import io.github.zzzyyylllty.sertraline.function.item.getDepazItemNBTOrFail
-import io.github.zzzyyylllty.sertraline.function.item.getDepazItemOrFail
 import io.github.zzzyyylllty.sertraline.function.item.getSlots
 import io.github.zzzyyylllty.sertraline.function.item.isDepazItemInList
 import io.github.zzzyyylllty.sertraline.function.item.relativeOrFlat
@@ -56,15 +52,18 @@ fun Player.applyAtb(attribute: AttributeInst) {
     val playerData: MMOPlayerData = MMOPlayerData.get(this)
     val statMap: StatMap = playerData.statMap
     val uuid = UUID.fromString(attribute.uuid) ?: UUID.randomUUID()
-    val typedValue = relativeOrFlat(attribute.amount)
-    when (attribute.type) {
-        MYTHIC_LIB -> StatModifier(
-            uuid,
-            "sertraline",
-            attribute.attr,
-            typedValue.value.toDouble(),
-            ModifierType.valueOf(typedValue.type.name),
-            EquipmentSlot.valueOf(attribute.mythicLibEquipSlot),
-            ModifierSource.valueOf(attribute.source)).register(playerData)
+    for (single in attribute.attr) {
+        val typedValue = relativeOrFlat(single.value)
+        when (attribute.type) {
+            MYTHIC_LIB -> StatModifier(
+                uuid,
+                "sertraline",
+                single.key,
+                typedValue.value.toDouble(),
+                ModifierType.valueOf(typedValue.type.name),
+                EquipmentSlot.valueOf(attribute.mythicLibEquipSlot),
+                ModifierSource.valueOf(attribute.source)).register(playerData)
+        }
     }
+
 }
