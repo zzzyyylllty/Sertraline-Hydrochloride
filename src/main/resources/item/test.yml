@@ -39,7 +39,7 @@ IRON_SWORD:
       # The generated lore will repeat too.
       # Complex attributes below
     - MAX_HEALTH: '50%'
-      meta_engine: MYTHIC_LIB
+      meta_type: MYTHIC_LIB
       # Attribute Engine is MYTHIC_LIB
       meta_require:
         - HAND
@@ -48,8 +48,13 @@ IRON_SWORD:
       # Default is EQUIP
       # ! CAUTION !
       # If you want to use SLOT_xx require, please enable it at config.yml.
+      meta_condition_onbuild: |
+        check sender == "AmeChan"
+      # on item generation if player have this condition this attribute will be applied.
       meta_condition: |
         check sender == "AmeChan"
+      meta_source: MELEE_WEAPON
+      # meta_equip_slot: MAIN_HAND
       # meta_uuid: <Type UUID Here>
       # meta_definer: sertraline
-      # meta_chance: 50.0
+      # meta_chance: 100.0

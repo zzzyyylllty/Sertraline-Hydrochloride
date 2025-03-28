@@ -55,32 +55,37 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
 
     if (sections != null && !sections.isEmpty()) for (section in sections) {
 
-        var attributeNames: MutableList<String> = mutableListOf()
-        for (string in section.keys) {
-            if (!string.startsWith("meta")) attributeNames.add(string)
+        var attributeNames: MutableList<MutableMap.MutableEntry<String, Any>> = mutableListOf()
+        for (entry in section) {
+            if (!entry.key.startsWith("meta")) attributeNames.add(entry)
         }
 
-        val type = AttributeSources.valueOf(section["meta_engine"] as String? ?: "MYTHIC_LIB")
-        val definer = section["meta_engine"] as String? ?: "sertraline"
-        val uuid = UUID.fromString(section["meta_engine"] as String?) ?: UUID.randomUUID()
-        val chance = section["meta_engine"] as String?
-        val amount = TODO()
-        val source = TODO()
-        val mythicLibEquipSlot = TODO()
-        val requireSlot = TODO()
+        val type = AttributeSources.valueOf(section["meta_type"] as String? ?: "MYTHIC_LIB")
+        val definer = section["meta_definer"] as String? ?: "sertraline"
+        val metaUUID = section["meta_uuid"] as String?
+        val uuid = if (metaUUID == null) UUID.randomUUID() else UUID.fromString(metaUUID)
+        val amount = section["meta_engine"] as String? ?: "100"
+        val source = section["meta_source"] as String? ?: "MELEE_WEAPON"
+        val mythicLibEquipSlot = section["meta_equip_slot"] as String? ?: "MAIN_HAND"
+        val requireSlot = section["meta_require"] as List<String>
+        val conditionOnBuild = section["meta_condition_onbuild"] as String?
+        val conditionOnEffect = section["meta_condition"] as String?
+        val chance = section["chance"] as String? ?: "100.0"
 
         for (attr in attributeNames)
         attributes.add(
            Attribute(
                type = type,
-               attr = attr,
+               attr = attr.key,
                definer = definer,
                uuid = uuid,
-               chance = TODO(),
-               amount = TODO(),
-               source = TODO(),
-               mythicLibEquipSlot = TODO(),
-               requireSlot = TODO()
+               chance = chance,
+               amount = attr.value.toString(),
+               source = source,
+               mythicLibEquipSlot = mythicLibEquipSlot,
+               requireSlot = requireSlot,
+               conditionOnBuild = conditionOnBuild,
+               conditionOnEffect = conditionOnEffect
            )
         )
     }

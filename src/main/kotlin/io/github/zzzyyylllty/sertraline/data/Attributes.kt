@@ -12,7 +12,9 @@ data class Attribute(
     val amount: String = "1",
     val source: String = "VOID", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String>
+    val requireSlot: List<String>,
+    val conditionOnBuild: String? = null,
+    val conditionOnEffect: String? = null
 )
 enum class AttributeSources {
     MYTHIC_LIB,
@@ -28,7 +30,7 @@ data class AttributeInst(
     val definer: String,
     val uuid: UUID,
     val amount: String = "1",
-    val source: String = "VOID", // MythicLib 等一些玩意有效
+    val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
     val requireSlot: List<String>
 )
