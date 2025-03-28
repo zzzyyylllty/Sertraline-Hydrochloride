@@ -36,6 +36,7 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 ## 友链   
 - [TabooLib 非官方文档](https://taboolib.feishu.cn/)
 - [Zaphkiel](https://github.com/TabooLib/zaphkiel)
+- [MythicLib](https://www.spigotmc.org/resources/mmolib-mythiclib.90306/)
 - [精神支柱](https://needystreameroverload.wiki.gg/wiki/Ame-chan)
 
 ## 贡献者
@@ -43,10 +44,6 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 <a href="https://github.com/zzzyyylllty/Sertraline-Hydrochloride/graphs/contributors">
   <img src="https://stg.contrib.rocks/image?repo=zzzyyylllty/Sertraline-Hydrochloride" />
 </a>
-
-## Star
-
-[![Stargazers over time](https://starchart.cc/zzzyyylllty/Sertraline-Hydrochloride.svg?variant=adaptive)](https://starchart.cc/zzzyyylllty/Sertraline-Hydrochloride)
 
 ## 构建发行版本
 
