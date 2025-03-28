@@ -4,40 +4,29 @@
 )*/
 package io.github.zzzyyylllty.sertraline.function.item
 
-import com.beust.klaxon.Klaxon
+import com.alibaba.fastjson2.toJSONString
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
-import kotlinx.serialization.json.Json
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.common.env.RuntimeDependency
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
-import java.util.UUID
+import taboolib.platform.util.buildItem
 
 
 fun DepazItemInst.buildItem() : ItemStack {
-    val item = this.item
     val depaz = this
+
     item.itemTagReader {
         // val value = getString("自定义的节点.支持多节点", "默认值")
         set("SERTRALINE_ID", depaz.id)
         // set("SERTRALINE_DATA", Klaxon().toJsonString("test"))
         // set("SERTRALINE_DATA", Json.encodeToString(depaz))
-        val jsonUtils = Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            encodeDefaults = true
-            allowStructuredMapKeys = true
-            allowSpecialFloatingPointValues = true
-        }
-        set("SERTRALINE_DATA", jsonUtils.encodeToString(DepazItemInst.serializer(), depaz))
+        set("SERTRALINE_DATA", depaz.toJSONString())
 
         write(item)
     }

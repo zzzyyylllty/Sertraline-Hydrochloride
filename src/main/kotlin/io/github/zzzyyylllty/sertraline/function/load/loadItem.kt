@@ -20,7 +20,9 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     val legacyApi = LegacyComponentSerializer.legacyAmpersand()
     val mm = MiniMessage.miniMessage()
 
-    val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString()))
+    val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString())) {
+        customModelData = 0
+    }
     val meta = item.itemMeta
     var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}").decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
     meta.displayName(name)
@@ -63,7 +65,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val type = AttributeSources.valueOf(section["meta_type"] as String? ?: "MYTHIC_LIB")
         val definer = section["meta_definer"] as String? ?: "sertraline"
         val metaUUID = section["meta_uuid"] as String?
-        val uuid = metaUUID ?: UUID.randomUUID().toString()
+        val uuid = metaUUID
         val amount = section["meta_engine"] as String? ?: "100"
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"
         val mythicLibEquipSlot = section["meta_equip_slot"] as String? ?: "MAIN_HAND"

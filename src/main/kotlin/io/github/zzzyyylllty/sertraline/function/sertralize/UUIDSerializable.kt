@@ -1,5 +1,5 @@
 package io.github.zzzyyylllty.sertraline.function.sertralize
-
+/*
 import com.beust.klaxon.Converter
 import com.beust.klaxon.JsonValue
 import kotlinx.serialization.KSerializer
@@ -26,4 +26,4 @@ object UUIDSerializable : KSerializer<UUID> {
         encoder.encodeString(value.toString())
     }
 
-}
+}*/

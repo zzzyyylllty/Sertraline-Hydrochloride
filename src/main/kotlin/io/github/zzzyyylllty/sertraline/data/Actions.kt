@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.data
 
-import kotlinx.serialization.Serializable
 import taboolib.library.xseries.XMaterial
 data class Action(
     var trigger: String,

@@ -1,14 +1,12 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import taboolib.common.env.RuntimeDependency
-import io.github.zzzyyylllty.sertraline.function.sertralize.UUIDSerializable
-import kotlinx.serialization.Serializable
 import java.util.UUID
 data class Attribute(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,
     val definer: String,
-    val uuid: UUID,
+    val uuid: String?,
     // val override: Boolean = true,
     val chance: String = "100.0",
     val amount: String = "1",
@@ -29,7 +27,7 @@ data class AttributeInst(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: String,
     val definer: String,
-    val uuid: UUID,
+    val uuid: String?,
     val amount: String = "1",
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效

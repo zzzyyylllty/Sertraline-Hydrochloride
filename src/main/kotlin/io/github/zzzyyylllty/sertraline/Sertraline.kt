@@ -27,20 +27,6 @@ import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.io.File
 import java.util.*
 
-@RuntimeDependencies(
-    RuntimeDependency(
-        value = "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3",
-        test = "!kotlinx.serialization.Serializer",
-        relocate = ["!kotlin.", "!kotlin1922.","!kotlinx.serialization.", "!kotlinx.serialization163."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        value = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3",
-        test = "!kotlinx.serialization.json.Json",
-        relocate = ["!kotlin.", "!kotlin1922.","!kotlinx.serialization.", "!kotlinx.serialization163."],
-        transitive = false
-    ),
-)
 object Sertraline : Plugin() {
 
     val plugin by lazy { this }

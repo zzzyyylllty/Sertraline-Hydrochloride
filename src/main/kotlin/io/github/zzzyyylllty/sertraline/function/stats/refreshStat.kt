@@ -55,11 +55,11 @@ fun Player.refreshStat() {
 fun Player.applyAtb(attribute: AttributeInst) {
     val playerData: MMOPlayerData = MMOPlayerData.get(this)
     val statMap: StatMap = playerData.statMap
-    val uuid = attribute.uuid
+    val uuid = UUID.fromString(attribute.uuid) ?: UUID.randomUUID()
     val typedValue = relativeOrFlat(attribute.amount)
     when (attribute.type) {
         MYTHIC_LIB -> StatModifier(
-            UUID.fromString(uuid),
+            uuid,
             "sertraline",
             attribute.attr,
             typedValue.value.toDouble(),

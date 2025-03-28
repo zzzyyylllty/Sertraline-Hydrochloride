@@ -32,8 +32,9 @@ taboolib {
         taboolib = "6.2.3-20d868d"
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
-    relocate("kotlinx.serialization", "kotlinx.serialization163")
-    // relocate("com.beust.klaxon.Klaxon", "xxx.xxx.xxx.Klaxon")
+    //relocate("kotlinx.serialization", "kotlinx.serialization151")
+    relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
+    relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
 }
 
 repositories {
@@ -99,8 +100,9 @@ dependencies {
     implementation("net.kyori:adventure-nbt:4.19.0")
     testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.5.3") { isTransitive = false }
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.3"){ isTransitive = false }
+    taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
+    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.5.1") { isTransitive = false }
+    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1") { isTransitive = false }
     }
 
 tasks.withType<JavaCompile> {
