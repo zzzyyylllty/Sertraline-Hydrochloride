@@ -2,34 +2,25 @@ package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.data.Attribute
+import io.github.zzzyyylllty.sertraline.data.AttributeSources
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.bukkit.command.CommandSender
-import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.YamlConfiguration
-import taboolib.library.configuration.ConfigurationSection
 import taboolib.library.xseries.XMaterial
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import java.util.LinkedHashMap
+import java.util.UUID
 
-fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
+fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     val legacyApi = LegacyComponentSerializer.legacyAmpersand()
     val mm = MiniMessage.miniMessage()
 
     val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString()))
-
-    val itemTag = item.itemTagReader {
-        //val value = getString("SERTRALINE_ID", "$root")
-        set("SERTRALINE_ID", "$root")
-        // 收尾方法 写了才算写入物品 不然不会写入 减少操作可能出现的失误
-        write(item)
-    }
-
     val meta = item.itemMeta
     var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}").decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
     meta.displayName(name)
@@ -63,12 +54,33 @@ fun loadMaterialPart(config: YamlConfiguration, root: String) : DepazItems {
     val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
 
     if (sections != null && !sections.isEmpty()) for (section in sections) {
-        val actionList = if (section["content"] is ArrayList<*>) section["content"] as ArrayList<String> else (section["content"] as String).split("\n")
+
+        var attributeNames: MutableList<String> = mutableListOf()
+        for (string in section.keys) {
+            if (!string.startsWith("meta")) attributeNames.add(string)
+        }
+
+        val type = AttributeSources.valueOf(section["meta_engine"] as String? ?: "MYTHIC_LIB")
+        val definer = section["meta_engine"] as String? ?: "sertraline"
+        val uuid = UUID.fromString(section["meta_engine"] as String?) ?: UUID.randomUUID()
+        val override = TODO()
+        val chance = TODO()
+        val amount = TODO()
+        val source = TODO()
+        val mythicLibEquipSlot = TODO()
+        val requireSlot = TODO()
+
+        for (attr in attributeNames)
         attributes.add(
            Attribute(
-               attr = TODO(),
-               definer = TODO(),
-               uuid = TODO(),
+               type = type,
+               attr = attr,
+               definer = definer,
+               uuid = uuid,
+               chance = TODO(),
+               amount = TODO(),
+               source = TODO(),
+               mythicLibEquipSlot = TODO(),
                requireSlot = TODO()
            )
         )

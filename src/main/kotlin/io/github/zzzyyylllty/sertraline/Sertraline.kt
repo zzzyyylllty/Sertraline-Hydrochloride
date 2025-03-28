@@ -19,6 +19,9 @@ import io.github.zzzyyylllty.sertraline.logger.*
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
 import taboolib.common.platform.function.releaseResourceFile
+import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
+import top.maplex.arim.tools.fixedcalculator.FixedCalculator
+import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.io.File
 import java.util.*
 
@@ -33,6 +36,11 @@ object Sertraline : Plugin() {
     var devMode = true
     val console by lazy { console() }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    // Arim Start
+    val evaluator by lazy { ConditionEvaluator() }
+    val fixedCalculator by lazy { FixedCalculator() }
+    val variableCalculator by lazy { VariableCalculator() }
 
     val config by lazy {
         if (!File(getDataFolder(), "config.yml").exists()) {

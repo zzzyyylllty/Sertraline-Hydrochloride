@@ -34,3 +34,4 @@ ERROR_NOT_PLAYER: "发送者不是一个玩家."
 ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."
 
 GENERATION_INVALID_MATERIAL: "无法生成物品 {0}, 因为 Material 为 null。"
+

@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.data.Attribute
 import io.github.zzzyyylllty.sertraline.data.AttributeSources.*
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.function.item.getDepazItemNBTOrFail
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemOrFail
 import io.github.zzzyyylllty.sertraline.function.item.getSlots
 import io.github.zzzyyylllty.sertraline.function.item.isDepazItemInList
@@ -18,7 +19,9 @@ import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
 
-
+/**
+ * Refresh stat for player.
+ *
 fun Player.refreshStat() {
     val player = this
     val inv = player.inventory
@@ -28,7 +31,7 @@ fun Player.refreshStat() {
         if (slotEnabled) for (slot in 0..40) {
             val i = inv.getItem(slot)
             if (i.isDepazItemInList()) {
-                for (atb in i.getDepazItemOrFail().attributes) {
+                for (atb in i.getDepazItemNBTOrFail()) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
                 }
             }
@@ -37,7 +40,7 @@ fun Player.refreshStat() {
             for (slot in player.getSlots(slotList)) {
                 val i = inv.getItem(slot)
                 if (i.isDepazItemInList()) {
-                    for (atb in i.getDepazItemOrFail().attributes) {
+                    for (atb in i.getDepazItemNBTOrFail().attributes) {
                         if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
                     }
                 }
@@ -61,4 +64,4 @@ fun Player.applyAtb(attribute: Attribute) {
             EquipmentSlot.valueOf(attribute.mythicLibEquipSlot),
             ModifierSource.valueOf(attribute.source)).register(playerData)
     }
-}
+}*/

@@ -32,21 +32,24 @@ IRON_SWORD:
       <white>Sword DaoLi.
   attribute:
     - ATTACK_SPEED: 1.6
+      ATTACK_DAMAGE: 10
+      # Multi attribute in one list section.
     - MAX_HEALTH: 5
       # Attributes Can be repeated.
       # The generated lore will repeat too.
       # Complex attributes below
-    - MAX_HEALTH: 50%
-      settings:
-        engine: MYTHIC_LIB
-        # Attribute Engine is MYTHIC_LIB
-        # uuid: <Type UUID Here>
-        require:
-          - HAND
-        # MAIN_HAND,OFF_HAND,FEET/BOOT/BOOTS,LEG/LEGS/LEGGINGS,CHESTPLATE/CHEST,HELMET/HEAD,EQUIP,HAND,SLOT_<slot>(Ex. SLOT_20), ANY_SLOT
-        # EQUIP = In Equip
-        # Default is EQUIP
-        # ! CAUTION !
-        # If you want to use SLOT_xx require, please enable it at config.yml.
-        condition: |
-          check sender == "AmeChan"
+    - MAX_HEALTH: '50%'
+      meta_engine: MYTHIC_LIB
+      # Attribute Engine is MYTHIC_LIB
+      meta_require:
+        - HAND
+      # MAIN_HAND,OFF_HAND,FEET/BOOT/BOOTS,LEG/LEGS/LEGGINGS,CHESTPLATE/CHEST,HELMET/HEAD,EQUIP,HAND,SLOT_<slot>(Ex. SLOT_20), ANY_SLOT
+      # EQUIP = In Equip,Contains any hand
+      # Default is EQUIP
+      # ! CAUTION !
+      # If you want to use SLOT_xx require, please enable it at config.yml.
+      meta_condition: |
+        check sender == "AmeChan"
+      # meta_uuid: <Type UUID Here>
+      # meta_definer: sertraline
+      # meta_chance: 50.0

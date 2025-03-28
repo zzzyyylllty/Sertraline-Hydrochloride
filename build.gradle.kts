@@ -17,6 +17,7 @@ taboolib {
         taboolib = "6.2.3-20d868d"
         coroutines = "1.8.1"
     }
+    relocate("top.maplex.arim","xxx.xxx.arim")
 }
 
 repositories {
@@ -79,7 +80,9 @@ dependencies {
     compileOnly(fileTree("libs"))
     implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
+    implementation("net.kyori:adventure-nbt:4.19.0")
     testImplementation(kotlin("test"))
+    taboo("top.maplex.arim:Arim:1.2.13")
 }
 
 tasks.withType<JavaCompile> {

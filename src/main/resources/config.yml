@@ -1,18 +1,11 @@
 debug: true
 # 调试模式
-# 性能影响: 一般
-
-data-section:
-  fixed-mode: NORMAL
-  val-mode: NORMAL
-  var-mode: NORMAL
-  # 量替换模式
-  # DISABLE: 完全禁用所有
-  # NORMAL: 不允许变量嵌套
-  # UNIVERSAL: 替换直到无变量，可以嵌套变量
-  # 性能影响: 较小
+# 性能影响: 中
 
 attribute:
+  kether-amount: true
+  # 对 Amount 数值进行 Kether 解析
+  # 性能影响: 小
   default: MYTHIC_LIB
   # 默认属性使用，默认 MYTHIC_LIB，本插件需要 MYTHIC_LIB。
   # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值以及所有带有属性的物品的属性部分使用的类型: MYTHIC_LIB
@@ -32,4 +25,4 @@ attribute:
   # 刷新属性时哪些格子的物品会被遍历。不推荐修改。
   # 默认遍历 所有装备 + 副手 + 主手
   # 作为不开 slot-condition 的替代选择。
-  # 性能影响: 较低
+  # 性能影响: 小

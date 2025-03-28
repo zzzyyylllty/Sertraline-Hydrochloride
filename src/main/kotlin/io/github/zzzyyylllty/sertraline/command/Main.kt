@@ -76,6 +76,12 @@ object SertralineMainCommand {
         createHelper()
     }
 
+    /*
+    @CommandBody
+    val flatHelp = subCommand {
+        createTabooLegacyStyleCommandHelper()
+    }
+    */
 
     @CommandBody
     val api = DepazApiCommand

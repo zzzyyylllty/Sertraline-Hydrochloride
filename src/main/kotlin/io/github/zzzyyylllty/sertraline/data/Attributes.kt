@@ -7,7 +7,7 @@ data class Attribute(
     val attr: String,
     val definer: String,
     val uuid: UUID,
-    val override: Boolean = true,
+    // val override: Boolean = true,
     val chance: Double = 100.0,
     val amount: String = "1",
     val source: String = "VOID", // MythicLib 等一些玩意有效
@@ -21,3 +21,14 @@ enum class AttributeSources {
     ///SX_ATTRIBUTE_2,
     //SX_ATTRIBUTE_3
 }
+
+data class AttributeInst(
+    val type: AttributeSources = AttributeSources.MYTHIC_LIB,
+    val attr: String,
+    val definer: String,
+    val uuid: UUID,
+    val amount: String = "1",
+    val source: String = "VOID", // MythicLib 等一些玩意有效
+    val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
+    val requireSlot: List<String>
+)

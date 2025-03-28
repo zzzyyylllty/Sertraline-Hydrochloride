@@ -48,7 +48,7 @@ fun loadItemFile(file: File) {
     for (iroot in config.getKeys(false)) {
 
         devLog("DEBUG_LOADING_ITEM", file.name, iroot)
-        val item = loadMaterialPart(config, iroot)
+        val item = loadItem(config, iroot)
         itemMap[iroot] = item
 
     }

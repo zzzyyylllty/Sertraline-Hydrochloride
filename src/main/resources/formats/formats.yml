@@ -1,8 +1,11 @@
 __default__:
-  # Example Item Config
-  # Test:
-  #   attribute:
-  #     attack_damage: 1
-  # will apply lore in: '* Damage: 1'
-  # Caution! the 'attribute.attack_damage' 's dot '.' will need to be replaced at "__"
-  attribute__attack_damage: '<dark_gray>* <gray>Damage: <white>{value}'
+  format:
+    - '#<root>__attribute__ATTACK_DAMAGE'
+  stat:
+    # Example Item Config
+    # Test:
+    #   attribute:
+    #     attack_damage: 1
+    # will apply lore in: '* Damage: 1'
+    # Caution! the 'attribute.attack_damage' 's dot '.' will need to be replaced at "__"
+    <root>__attribute__ATTACK_DAMAGE: '<dark_gray>* <gray>Damage: <white>{value}'
