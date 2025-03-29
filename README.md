@@ -21,6 +21,15 @@ Sertraline 是一个在 Minecraft Bukkit 平台下运行的物品库插件。
 
 Sertraline 是免费的，但我们不提供开发版本的构建文件。
 
+你可通过自行构建获取开发版本，或是在 Release 下载稳定版本。
+
+## 测试过的服务端
+
+### Sertraline 0.1.1
+
+* Leaf 1.20.4
+* Leaf 1.21.1
+
 ## TODO
 - [x] 读取文件/文件夹
 - [x] 给予物品
@@ -28,7 +37,7 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 - [ ] MythicLib 属性
 - [ ] Kether: 判断物品
 - [ ] Kether: 构建物品
-- [ ] Kether: eval
+- [x] Kether: eval
 - [ ] 释放技能
 - [ ] Chemdah 物品识别兼容性
 ...
@@ -37,6 +46,7 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 - [TabooLib 非官方文档](https://taboolib.feishu.cn/)
 - [Zaphkiel](https://github.com/TabooLib/zaphkiel)
 - [MythicLib](https://www.spigotmc.org/resources/mmolib-mythiclib.90306/)
+- [Leaf Server Jar](https://github.com/Winds-Studio/Leaf)
 - [精神支柱](https://needystreameroverload.wiki.gg/wiki/Ame-chan)
 
 ## 贡献者
