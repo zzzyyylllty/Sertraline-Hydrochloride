@@ -1,7 +1,8 @@
 FOOD_TEMPLATE:
   action:
     - trigger: onInteract
-      on: UNIVERSAL
+      require:
+        - HAND
       type: KETHER
       async: true
       content: |

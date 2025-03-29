@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import java.util.UUID
+
 data class AttributePart(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String>,
@@ -22,9 +24,9 @@ enum class AttributeSources {
 }
 data class AttributeInst(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
-    val attr: LinkedHashMap<String, String>,
-    val definer: String,
-    val uuid: String?,
+    val attr: LinkedHashMap<String, String> = LinkedHashMap<String, String>(),
+    val definer: String = "sertraline",
+    val uuid: String? = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
     val requireSlot: List<String>

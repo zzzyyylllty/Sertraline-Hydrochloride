@@ -1,6 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.into
+import com.alibaba.fastjson2.parseArray
 import com.alibaba.fastjson2.to
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
@@ -10,6 +12,7 @@ import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
+import kotlin.collections.toMutableList
 
 fun ItemStack?.getDepazItem(): DepazItems? {
     var id : String? = null
@@ -30,19 +33,20 @@ fun ItemStack?.getDepazItemOrFail(): DepazItems {
 fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
 }
-fun ItemStack?.getDepazItemInst(): DepazItemInst {
+fun ItemStack.getDepazItemInst(): DepazItemInst {
     var attribute : String? = "{}"
-    var id : String? = null
-        this?.itemTagReader {
+    var id : String = "null"
+        this.itemTagReader {
             attribute = getString("SERTRALINE_ATTRIBUTE")
-            id = getString("SERTRALINE_ID")
+            id = getString("SERTRALINE_ID") ?: "null"
         }
-    val atbInst = attribute.into<MutableList<AttributeInst>>() ?: throw NullPointerException()
+    val array = JSON.parseArray(attribute, AttributeInst::class.java)
+    val atbInst = array.toList<AttributeInst>()
 
     return DepazItemInst(
-        id = id ?: throw NullPointerException(),
-        item = this ?: throw NullPointerException(),
-        attributes = atbInst
+        id = id,
+        item = this,
+        attributes = atbInst as MutableList<AttributeInst>
     )
 }
 

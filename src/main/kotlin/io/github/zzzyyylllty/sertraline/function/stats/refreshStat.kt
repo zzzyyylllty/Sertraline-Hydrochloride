@@ -25,10 +25,10 @@ fun Player.refreshStat() {
     val player = this
     val inv = player.inventory
     submitAsync {
-        devLog("DEBUG_STAT_REFRESH", player.name)
+        devLog("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown")
         val slotEnabled = config.getBoolean("attribute.slot-condition")
         if (slotEnabled) for (slot in 0..40) {
-            val i = inv.getItem(slot)
+            val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
                 for (atb in i.getDepazItemInst().attributes) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
@@ -37,7 +37,7 @@ fun Player.refreshStat() {
         } else {
             val slotList : List<String> = (config.getStringList("attribute.require-enabled-slot") ?: listOf<String>("36","37","38","39","ANY_HAND"))
             for (slot in player.getSlots(slotList)) {
-                val i = inv.getItem(slot)
+                val i = inv.getItem(slot) ?: continue
                 if (i.isDepazItemInList()) {
                     for (atb in i.getDepazItemInst().attributes) {
                         if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
