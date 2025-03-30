@@ -9,21 +9,26 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.warning
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 
 
 fun DepazItemInst.buildItem() : ItemStack {
     val depaz = this
+    var list = mutableListOf<String>()
+    for (atb in depaz.attributes) {
+        list.add(atb.toJSONString())
+    }
     item.itemTagReader {
         // val value = getString("自定义的节点.支持多节点", "默认值")
         set("SERTRALINE_ID", depaz.id)
-        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
-
+        set("SERTRALINE_ATTRIBUTE", list)
         write(item)
     }
     return item

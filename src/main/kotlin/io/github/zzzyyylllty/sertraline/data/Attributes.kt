@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import ink.ptms.adyeshach.core.serializer.SerializerType
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
 data class AttributePart(
@@ -11,10 +13,11 @@ data class AttributePart(
     val chance: String = "100.0",
     val source: String = "VOID", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String>,
+    val requireSlot: ArrayList<String>,
     val conditionOnBuild: String? = null,
     val conditionOnEffect: String? = null
 )
+@Serializable
 enum class AttributeSources {
     MYTHIC_LIB,
     //ATTRIBUTE_PLUS,
@@ -22,6 +25,7 @@ enum class AttributeSources {
     ///SX_ATTRIBUTE_2,
     //SX_ATTRIBUTE_3
 }
+@Serializable
 data class AttributeInst(
     val type: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String> = LinkedHashMap<String, String>(),
@@ -29,5 +33,5 @@ data class AttributeInst(
     val uuid: String? = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String>
+    val requireSlot: ArrayList<String>
 )

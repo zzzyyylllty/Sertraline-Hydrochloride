@@ -32,7 +32,7 @@ taboolib {
         taboolib = "6.2.3-20d868d"
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
-    //relocate("kotlinx.serialization", "kotlinx.serialization151")
+    relocate("kotlinx.serialization", "kotlinx.serialization133")
     relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
 }
@@ -91,7 +91,7 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
-    taboo("com.beust:klaxon:5.5")
+    taboo("com.beust:klaxon:5.6")
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     compileOnly(fileTree("libs"))
@@ -101,9 +101,19 @@ dependencies {
     testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
     taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
+    implementation("org.tabooproject.reflex:analyser:1.1.4")
+    implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
+    implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
+    // 本体依赖
+    implementation("org.ow2.asm:asm:9.2")
+    implementation("org.ow2.asm:asm-util:9.2")
+    implementation("org.ow2.asm:asm-commons:9.2")
+    //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3") { isTransitive = false }
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.5.1") { isTransitive = false }
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1") { isTransitive = false }
-    }
+}
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
