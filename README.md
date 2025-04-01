@@ -63,9 +63,9 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 ./gradlew clean build
 ```
 
-## 构建开发版本
+## 构建 API 版本
 
-开发版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
+API 版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
 
 ```
 ./gradlew clean taboolibBuildApi -PDeleteCode
