@@ -34,7 +34,8 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 - [x] 读取文件/文件夹
 - [x] 给予物品
 - [ ] 物品变量
-- [ ] MythicLib 属性
+- [x] MythicLib 属性
+- [ ] 自动属性更新
 - [ ] Kether: 判断物品
 - [ ] Kether: 构建物品
 - [x] Kether: eval
