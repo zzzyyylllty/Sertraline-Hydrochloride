@@ -10,13 +10,13 @@ import io.github.zzzyyylllty.sertraline.logger.warningL
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
-import taboolib.common.platform.function.info
+import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.lang.asLangText
 import java.io.File
 
 fun loadTemplateFiles() {
-    info(console.asLangText("TEMPLATE_START_LOAD"))
+    infoS(console.asLangText("TEMPLATE_START_LOAD"))
 
     val files = File(getDataFolder(), "template").listFiles() ?: run {
         warningL("TEMPLATE_LOAD_NOT_FOUND")
@@ -48,11 +48,11 @@ fun loadTemplateFile(file: File) {
 
     val config = YamlConfiguration.loadConfiguration(file)
 
-    devLog("DEBUG_LOADING_FILE", file.name)
+    devLog(console.asLangText("DEBUG_LOADING_FILE", file.name))
 
     for (iroot in config.getKeys(false)) {
 
-        devLog("DEBUG_LOADING_TEMPLATE", file.name, iroot)
+        devLog(console.asLangText("DEBUG_LOADING_TEMPLATE", file.name, iroot))
         val template = loadTemplate(config, iroot)
         templateMap[iroot] = template as ConfigurationSection
     }

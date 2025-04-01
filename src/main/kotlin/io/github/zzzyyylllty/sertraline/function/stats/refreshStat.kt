@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.stats
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.AttributeSources.*
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -16,16 +17,22 @@ import io.lumine.mythic.lib.player.modifier.ModifierSource
 import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
+import taboolib.module.lang.asLangText
 import java.util.UUID
 
 /**
- * Refresh stat for player.
+ * Reapply stat for player.
  */
+
 fun Player.refreshStat() {
+
+}
+
+fun Player.reapplyStat() {
     val player = this
     val inv = player.inventory
     submitAsync {
-        devLog("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown")
+        devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
         val slotEnabled = config.getBoolean("attribute.slot-condition")
         if (slotEnabled) for (slot in 0..40) {
             val i = inv.getItem(slot) ?: continue
@@ -35,7 +42,7 @@ fun Player.refreshStat() {
                 }
             }
         } else {
-            val slotList : List<String> = (config.getStringList("attribute.require-enabled-slot") ?: listOf<String>("36","37","38","39","ANY_HAND"))
+            val slotList : List<String> = (config.getStringList("attribute.require-enabled-slot"))
             for (slot in player.getSlots(slotList)) {
                 val i = inv.getItem(slot) ?: continue
                 if (i.isDepazItemInList()) {
@@ -57,7 +64,7 @@ fun Player.applyAtb(attribute: AttributeInst) {
         when (attribute.type) {
             MYTHIC_LIB -> StatModifier(
                 uuid,
-                "sertraline",
+                attribute.definer,
                 single.key,
                 typedValue.value.toDouble(),
                 ModifierType.valueOf(typedValue.type.name),

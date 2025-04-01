@@ -4,12 +4,12 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.devMode
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import taboolib.common.PrimitiveIO
-import taboolib.common.platform.function.info
-import taboolib.common.platform.function.warning
+import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
+import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.module.lang.asLangText
 
-fun devLog(langNode: String, vararg args: Any) {
-    if (devMode) warningL(langNode, args)
+fun devLog(input: String) {
+    if (devMode) warningS("$input")
 }
 
 fun devMode(b: Boolean) {

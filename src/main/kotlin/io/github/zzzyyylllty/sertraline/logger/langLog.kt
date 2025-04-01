@@ -1,18 +1,18 @@
 package io.github.zzzyyylllty.sertraline.logger
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
-import taboolib.common.platform.function.info
-import taboolib.common.platform.function.severe
-import taboolib.common.platform.function.warning
+import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
+import io.github.zzzyyylllty.sertraline.function.internalMessage.severeS
+import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.module.lang.asLangText
 
 
 fun infoL(node: String,vararg args: Any) {
-    info(console.asLangText(node,args))
+    infoS(console.asLangText(node,args))
 }
 fun severeL(node: String,vararg args: Any) {
-    severe(console.asLangText(node,args))
+    severeS(console.asLangText(node,args))
 }
 fun warningL(node: String,vararg args: Any) {
-    warning(console.asLangText(node,args))
+    warningS(console.asLangText(node,args))
 }

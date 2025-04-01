@@ -7,7 +7,8 @@ APPLE:
       <gray>Tell you <yellow>Hello World!</yellow> After Consume.
   action:
     - trigger: onConsume
-      on: UNIVERSAL
+      require:
+        - MAIN_HAND
       type: KETHER
       async: true
       content: |
@@ -19,6 +20,10 @@ DEPAZ_PILLS:
     lore: |
       <white>“Look I’m taking my medicine like a good girl…” 
                                                   <light_purple>--KAngel
+      <white>
+      <white>On Consume: Instant Damage I
+      <#FF66FF>Stresses <#FF66FF>15 <#FF6666>-> <#FF66FF>3
+      <#FF66FF>Darkness <#FF66FF>15 <#66CCFF>-> <#FF66FF>24
   extend:
     - template: FOOD_TEMPLATE
       data:

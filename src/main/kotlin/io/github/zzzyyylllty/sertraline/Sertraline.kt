@@ -11,8 +11,8 @@ import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
-import taboolib.common.platform.function.info
-import taboolib.common.platform.function.warning
+import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
+import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Type
 import taboolib.module.database.getHost
@@ -52,6 +52,7 @@ object Sertraline : Plugin() {
     var itemMap = LinkedHashMap<String, DepazItems>()
     var devMode = true
     val console by lazy { console() }
+    val consoleSender by lazy { console.castSafely<CommandSender>() }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     // Arim Start
@@ -68,12 +69,12 @@ object Sertraline : Plugin() {
     }
 
     override fun onEnable() {
-        warning("Sertraline now starting.")
+        warningS("Sertraline now starting.")
         reloadSertraline()
     }
 
     override fun onDisable() {
-        info("Successfully running ExamplePlugin!")
+        infoS("Successfully running ExamplePlugin!")
     }
 
     fun reloadCustomConfig() {

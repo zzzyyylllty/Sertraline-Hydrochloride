@@ -9,7 +9,7 @@ import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.sertralize.atbInstConverter
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.function.warning
+import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
 import kotlin.collections.toMutableList
@@ -60,7 +60,7 @@ fun ItemStack.getDepazItemInst(): DepazItemInst {
         atbInst.add(jsonUtils.decodeFromString(AttributeInst.serializer(), single))
         //atbInst.add(Json.decodeFromString<AttributeInst>(single))
     }
-    warning("Check passed.")
+    warningS("Check passed.")
 
     return DepazItemInst(
         id = id,

@@ -10,13 +10,12 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.YamlConfiguration
-import taboolib.common.platform.function.info
+import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
 import java.util.LinkedHashMap
 
 fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
-    val legacyApi = LegacyComponentSerializer.legacyAmpersand()
     val mm = MiniMessage.miniMessage()
 
     val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString())) {
@@ -54,10 +53,10 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     var attributeParts : MutableList<AttributePart> = mutableListOf()
     val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
 
-    info("atbsections: $atbsections")
+    infoS("atbsections: $atbsections")
 
     if (atbsections != null && !atbsections.isEmpty()) for (section in atbsections) {
-        info("section: $section")
+        infoS("section: $section")
 
         var attributeNames: MutableList<MutableMap.MutableEntry<String, Any>> = mutableListOf()
         for (entry in section) {
@@ -68,7 +67,6 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val definer = section["meta_definer"] as String? ?: "sertraline"
         val metaUUID = section["meta_uuid"] as String?
         val uuid = metaUUID
-        val amount = section["meta_engine"] as String? ?: "100"
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"
         val mythicLibEquipSlot = section["meta_equip_slot"] as String? ?: "MAIN_HAND"
         val requireSlot = section["meta_require"] as kotlin.collections.ArrayList<String>?

@@ -14,7 +14,7 @@ import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.function.warning
+import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 

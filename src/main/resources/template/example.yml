@@ -2,7 +2,7 @@ FOOD_TEMPLATE:
   action:
     - trigger: onInteract
       require:
-        - HAND
+        - MAIN_HAND
       type: KETHER
       async: true
       content: |
