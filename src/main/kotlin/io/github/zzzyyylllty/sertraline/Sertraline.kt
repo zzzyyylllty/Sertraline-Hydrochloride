@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline
 import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependencies
 import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependency
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.function.internalMessage.fineS
 import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFiles
@@ -26,6 +27,7 @@ import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.io.File
 import java.util.*
+
 @RuntimeDependencies(
     RuntimeDependency(
         "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3",
@@ -69,12 +71,12 @@ object Sertraline : Plugin() {
     }
 
     override fun onEnable() {
-        warningS("Sertraline now starting.")
+        infoL("INTERNAL_ONENABLE")
         reloadSertraline()
     }
 
     override fun onDisable() {
-        infoS("Successfully running ExamplePlugin!")
+        infoL("INTERNAL_ONDISABLE")
     }
 
     fun reloadCustomConfig() {

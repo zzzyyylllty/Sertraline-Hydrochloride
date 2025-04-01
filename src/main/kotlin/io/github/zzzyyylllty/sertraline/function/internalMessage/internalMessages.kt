@@ -12,7 +12,7 @@ import taboolib.module.chat.Components
 
 fun CommandSender.sendInternalMessages(message: String) {
     if (this is ConsoleCommandSender) fineS(message)
-        else this.sendStringAsComponent("<gray>[<gradient:#BBBBFF:#66CCFF:#CC66FF>Sertraline</gradient>]</gray> [<#eeeeff>MESSA</#eeeeff>]</gray> <reset>$message")
+        else this.sendStringAsComponent("<gray>[<gradient:#BBBBFF:#66CCFF:#CC66FF>Sertraline</gradient>] [<#ccccff>MESSA</#ccccff>]</gray> <reset>$message")
 }
 
 fun fineS(message: String) {

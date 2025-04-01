@@ -8,6 +8,9 @@ INTERNAL_SEVERE_RELOAD_ERROR: "尝试重载 ... 出现错误."
 INTERNAL_INFO_CREATING_CONFIG: "尝试创建配置文件 ..."
 INTERNAL_INFO_CREATED_CONFIG: "尝试创建配置文件 ... 完成."
 INTERNAL_SEVERE_CREATE_CONFIG_ERROR: "尝试创建配置文件 ... 出现错误."
+INTERNAL_ONENABLE: "正在启动 Sertraline ..."
+INTERNAL_ONDISABLE: "正在关闭 Sertraline ..."
+
 
 ITEM_START_LOAD: "开始加载物品文件 ..."
 ITEM_LOAD_FOUND: "已找到物品文件 ..."

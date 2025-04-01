@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.data.AttributePart
 import io.github.zzzyyylllty.sertraline.data.AttributeSources
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -53,10 +54,10 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     var attributeParts : MutableList<AttributePart> = mutableListOf()
     val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
 
-    infoS("atbsections: $atbsections")
+    devLog("atbsections: $atbsections")
 
     if (atbsections != null && !atbsections.isEmpty()) for (section in atbsections) {
-        infoS("section: $section")
+        devLog("section: $section")
 
         var attributeNames: MutableList<MutableMap.MutableEntry<String, Any>> = mutableListOf()
         for (entry in section) {
