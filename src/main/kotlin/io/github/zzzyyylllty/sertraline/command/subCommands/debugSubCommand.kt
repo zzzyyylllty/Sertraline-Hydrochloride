@@ -4,7 +4,7 @@ import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
-import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemNBTOrFail
 import io.github.zzzyyylllty.sertraline.function.item.giveDepazItem
@@ -42,7 +42,7 @@ object DepazDebugCommand {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
                 var message = sender.asLangText("COMMAND_DEBUG_ITEM", Klaxon().toJsonString(itemMap[id]))
-                sender.sendInternalMessages(message)
+                sender.infoS(message)
             }
         }
     }
@@ -55,7 +55,7 @@ object DepazDebugCommand {
             for (entry in itemMap.entries) {
                 message = "$message<br><white>${entry.key} <gray>- ${entry.value}"
             }
-            sender.sendInternalMessages(message)
+            sender.infoS(message)
         }
     }
 
@@ -68,7 +68,7 @@ object DepazDebugCommand {
                 val str = entry.value.asMap()
                 message = "$message<br><white>${entry.key} <gray>- $str"
             }
-            sender.sendInternalMessages(message)
+            sender.infoS(message)
         }
     }
 
@@ -76,15 +76,15 @@ object DepazDebugCommand {
     @CommandBody
     val getConfig = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            sender.sendInternalMessages(config.toString())
+            sender.infoS(config.toString())
         }
     }
     @CommandBody
     val getDataComp = subCommand {
         execute<CommandSender> { sender, context, argument ->
             if (sender is Player) {
-                sender.sendInternalMessages(sender.inventory.itemInMainHand.getDepazItemNBTOrFail() ?: "<null>")
-            } else sender.sendInternalMessages("player only.")
+                sender.infoS(sender.inventory.itemInMainHand.getDepazItemNBTOrFail() ?: "<null>")
+            } else sender.infoS("player only.")
         }
     }
 
@@ -115,14 +115,14 @@ object DepazDebugCommand {
     val getInst = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val id = context["id"]
-            if (sender is Player) sender.sendInternalMessages(sender.inventory.itemInMainHand.getDepazItemInst().toString())
+            if (sender is Player) sender.infoS(sender.inventory.itemInMainHand.getDepazItemInst().toString())
         }
         player("player") {
             execute<CommandSender> { sender, context, argument ->
                 val tabooPlayer = context.player("player")
                 // 转化为Bukkit的Player
                 val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                bukkitPlayer?.sendInternalMessages(bukkitPlayer.inventory.itemInMainHand.getDepazItemInst().toString())
+                bukkitPlayer?.infoS(bukkitPlayer.inventory.itemInMainHand.getDepazItemInst().toString())
             }
         }
     }
@@ -131,14 +131,14 @@ object DepazDebugCommand {
     @CommandBody
     val refreshStat = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            if (sender is Player) sender.refreshStat()
+            if (sender is Player) sender.refreshStat(listOf("UNIVERSAL"))
         }
         player("player") {
             execute<CommandSender> { sender, context, argument ->
                 val tabooPlayer = context.player("player")
                 // 转化为Bukkit的Player
                 val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                bukkitPlayer?.refreshStat()
+                bukkitPlayer?.refreshStat(listOf("UNIVERSAL"))
             }
         }
     }

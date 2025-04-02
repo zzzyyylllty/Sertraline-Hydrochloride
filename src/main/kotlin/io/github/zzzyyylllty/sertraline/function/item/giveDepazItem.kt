@@ -2,7 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.item
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
-import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
@@ -18,10 +18,10 @@ fun Player?.giveDepazItem(id: String,amount: Int = 1,playerName: String) {
 fun Player.giveDepazItem(id: String,amount: Int = 1) {
     val sender = this
     var item = itemMap[id]?.buildInstance(sender)?.buildItem() ?: run {
-        sender.sendInternalMessages(sender.asLangText("ITEM_NOT_FOUND", id))
+        sender.infoS(sender.asLangText("ITEM_NOT_FOUND", id))
         throw NullPointerException()
     }
     item.amount = amount
     this.giveItem(item) // TODO
-    sender.sendInternalMessages(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
+    sender.infoS(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
 }

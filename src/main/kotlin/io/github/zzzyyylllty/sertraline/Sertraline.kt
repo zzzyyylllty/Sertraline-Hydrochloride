@@ -3,7 +3,7 @@ package io.github.zzzyyylllty.sertraline
 import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependencies
 import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependency
 import io.github.zzzyyylllty.sertraline.data.DepazItems
-import io.github.zzzyyylllty.sertraline.function.internalMessage.fineS
+import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFiles
@@ -12,8 +12,8 @@ import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getDataFolder
-import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
-import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
+import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Type
 import taboolib.module.database.getHost
@@ -54,7 +54,7 @@ object Sertraline : Plugin() {
     var itemMap = LinkedHashMap<String, DepazItems>()
     var devMode = true
     val console by lazy { console() }
-    val consoleSender by lazy { console.castSafely<CommandSender>() }
+    val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     // Arim Start

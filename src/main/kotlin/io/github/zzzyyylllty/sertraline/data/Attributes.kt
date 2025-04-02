@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.data
 
-import ink.ptms.adyeshach.core.serializer.SerializerType
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -13,7 +12,7 @@ data class AttributePart(
     val chance: String = "100.0",
     val source: String = "VOID", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: ArrayList<String>,
+    val requireSlot: List<String>,
     val conditionOnBuild: String? = null,
     val conditionOnEffect: String? = null
 )
@@ -33,5 +32,5 @@ data class AttributeInst(
     val uuid: String? = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: ArrayList<String>
+    val requireSlot: List<String>
 )

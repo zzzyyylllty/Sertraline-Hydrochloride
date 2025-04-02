@@ -5,7 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
-import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -36,6 +36,7 @@ fun Player.getSlots(list: List<String>): List<Int> {
                 "CHESTPLATE","CHEST" -> intList.add(38)
                 "HELMET","HEAD" -> intList.add(39)
                 "ANY_SLOT" -> for (i in 0..40) intList.add(i)
+                "UNIVERSAL" -> intList.addAll(listOf(36,37,38,39,40, this.inventory.heldItemSlot))
             }
     }
     return intList

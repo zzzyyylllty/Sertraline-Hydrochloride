@@ -11,7 +11,6 @@ INTERNAL_SEVERE_CREATE_CONFIG_ERROR: "尝试创建配置文件 ... 出现错误.
 INTERNAL_ONENABLE: "正在启动 Sertraline ..."
 INTERNAL_ONDISABLE: "正在关闭 Sertraline ..."
 
-
 ITEM_START_LOAD: "开始加载物品文件 ..."
 ITEM_LOAD_FOUND: "已找到物品文件 ..."
 ITEM_LOAD_REGEN: "未找到物品文件夹,重新生成 ..."
@@ -32,6 +31,8 @@ DEBUG_LOADING_FILE: "正在加载文件 {0}"
 DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
 DEBUG_LOADING_TEMPLATE: "正在加载文件 {0} 的模板 {1}"
 DEBUG_STAT_REFRESH: "正在刷新玩家 {0} 的状态"
+DEBUG_ACTION_APPLY: "正在执行玩家 {0} 的 action"
+DEBUG_NO_PARAM_USE_DEFAULT: "未指定参数 {0}，将使用 {1}"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
 ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."

@@ -11,11 +11,6 @@ attribute:
   # 如果你不把 Sertraline 与 其他属性插件一起使用，推荐值以及所有带有属性的物品的属性部分使用的类型: MYTHIC_LIB
   # 可选: INTERNAL,ATTRIBUTE_PLUS,MYTHIC_MOBS,SX_ATTRIBUTE_2,SX_ATTRIBUTE_3，必须选择现有的插件的类型
   # 性能影响: 因选择而异
-  slot-condition: false
-  # 是否启用判断需要装备在特定槽位的属性
-  # 刷新属性时，将把所有物品都遍历一遍。如果你不需要它，保持关闭。
-  # 如果你只想启用特定格数的遍历，参见require-enabled-slot。
-  # 性能影响: 较高
   require-enabled-slot:
     - HELMET
     - CHESTPLATE
@@ -24,5 +19,4 @@ attribute:
     - ANY_HAND
   # 刷新属性时哪些格子的物品会被遍历。不推荐修改。
   # 默认遍历 所有装备 + 副手 + 主手
-  # 作为不开 slot-condition 的替代选择。
-  # 性能影响: 小
+  # 性能影响: 一般

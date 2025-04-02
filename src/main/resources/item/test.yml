@@ -9,6 +9,11 @@ APPLE:
     - trigger: onConsume
       require:
         - MAIN_HAND
+      # MAIN_HAND,OFF_HAND,FEET/BOOT/BOOTS,LEG/LEGS/LEGGINGS,CHESTPLATE/CHEST,HELMET/HEAD,EQUIP,HAND,SLOT_<slot>(Ex. SLOT_20), ANY_SLOT
+      # EQUIP = In Equip,Contains any hand
+      # Default is EQUIP
+      # ! CAUTION !
+      # If you want to use SLOT_xx require, please enable it at config.yml.
       type: KETHER
       async: true
       content: |
@@ -16,6 +21,7 @@ APPLE:
 DEPAZ_PILLS:
   minecraft:
     material: GRAY_DYE
+    model: 10000
     name: '<white>Depaz Pills'
     lore: |
       <white>“Look I’m taking my medicine like a good girl…” 

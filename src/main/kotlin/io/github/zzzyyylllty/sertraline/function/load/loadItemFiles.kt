@@ -7,7 +7,7 @@ import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
-import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
+import io.github.zzzyyylllty.sertraline.logger.infoS
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.lang.asLangText
 import java.io.File

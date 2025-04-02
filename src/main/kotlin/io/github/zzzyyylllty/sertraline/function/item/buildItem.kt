@@ -5,16 +5,13 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.alibaba.fastjson2.toJSONString
-import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 

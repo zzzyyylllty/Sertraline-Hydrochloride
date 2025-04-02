@@ -18,37 +18,41 @@ import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.asLangText
-import java.util.UUID
+import taboolib.platform.util.bukkitPlugin
+import java.util.*
 
 /**
  * Reapply stat for player.
  */
 
-fun Player.refreshStat() {
-
+fun Player.refreshStat(slotinput: List<String>) {
+    val playerData: MMOPlayerData = MMOPlayerData.get(this)
+    val statMap = playerData.getStatMap()
+    for (instance in statMap.instances) {
+        instance.removeIf { key -> key.startsWith("sertraline") }
+    }
+    val slots = getSlots(slotinput)
+    this.reapplyStat(slots)
 }
 
-fun Player.reapplyStat() {
+/**
+* @param [slotinput] will affected slots
+* */
+fun Player.reapplyStat(slotinput: List<Int>) {
     val player = this
     val inv = player.inventory
     submitAsync {
         devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
-        val slotEnabled = config.getBoolean("attribute.slot-condition")
-        if (slotEnabled) for (slot in 0..40) {
+        val applySlot = slotinput
+        val slotList = mutableListOf<Int>()
+        for (singleApplySlot in getSlots(config.getStringList("attribute.require-enabled-slot"))) {
+            if (applySlot.contains(singleApplySlot)) slotList.add(singleApplySlot)
+        }
+        for (slot in slotList) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
                 for (atb in i.getDepazItemInst().attributes) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
-                }
-            }
-        } else {
-            val slotList : List<String> = (config.getStringList("attribute.require-enabled-slot"))
-            for (slot in player.getSlots(slotList)) {
-                val i = inv.getItem(slot) ?: continue
-                if (i.isDepazItemInList()) {
-                    for (atb in i.getDepazItemInst().attributes) {
-                        if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
-                    }
                 }
             }
         }
@@ -72,5 +76,4 @@ fun Player.applyAtb(attribute: AttributeInst) {
                 ModifierSource.valueOf(attribute.source)).register(playerData)
         }
     }
-
 }

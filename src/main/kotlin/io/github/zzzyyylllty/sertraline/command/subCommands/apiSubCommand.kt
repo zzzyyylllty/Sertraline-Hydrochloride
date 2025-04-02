@@ -1,6 +1,6 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
-import io.github.zzzyyylllty.sertraline.function.internalMessage.sendInternalMessages
+import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
@@ -32,7 +32,7 @@ object DepazApiCommand {
                     val mm = MiniMessage.miniMessage()
                     // 获取参数的值
                     val content = context["content"]
-                    sender.sendInternalMessages(content) }
+                    sender.infoS(content) }
             }
         }
     }
@@ -47,8 +47,8 @@ object DepazApiCommand {
                     // 获取参数的值
                     val content = context["script"]
                     val ret = content.evalKether(sender)
-                    sender.sendInternalMessages("§5Kether: §7$content")
-                    sender.sendInternalMessages("§5Return: §7${ret.get()}") }
+                    sender.infoS("§5Kether: §7$content")
+                    sender.infoS("§5Return: §7${ret.get()}") }
             }
         }
     }
@@ -66,8 +66,8 @@ object DepazApiCommand {
                         // 获取参数的值
                         val content = context["script"]
                         val ret = content.evalKether(sender)
-                        sender.sendInternalMessages("§5Kether: §7$content")
-                        sender.sendInternalMessages("§5Return: §7${ret.get()}") }
+                        sender.infoS("§5Kether: §7$content")
+                        sender.infoS("§5Return: §7${ret.get()}") }
                 }
             }
         }

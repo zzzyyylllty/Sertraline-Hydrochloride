@@ -2,11 +2,11 @@ package io.github.zzzyyylllty.sertraline.debugMode
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.devMode
-import io.github.zzzyyylllty.sertraline.function.internalMessage.debugS
+import io.github.zzzyyylllty.sertraline.logger.debugS
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import taboolib.common.PrimitiveIO
-import io.github.zzzyyylllty.sertraline.function.internalMessage.infoS
-import io.github.zzzyyylllty.sertraline.function.internalMessage.warningS
+import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.module.lang.asLangText
 
 fun devLog(input: String) {
