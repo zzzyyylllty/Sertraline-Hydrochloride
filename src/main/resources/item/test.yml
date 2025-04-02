@@ -69,3 +69,16 @@ IRON_SWORD:
       # meta_uuid: <Type UUID Here>
       # meta_definer: sertraline
       # meta_chance: 100.0
+TEST_NBT_ITEM:
+  minecraft:
+    material: IRON_SWORD
+    name: '<white>Iron Sword'
+    lore: |
+      <red>Just a normal sword.
+      <white>Sword DaoLi.
+    nbt:
+      test: 1
+      needy.girl: "Multi NBTs"
+      testList:
+        - HelloWorld
+        - GoodbyeWorld

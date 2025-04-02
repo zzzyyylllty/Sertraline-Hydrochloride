@@ -8,6 +8,7 @@ data class Action(
     var require: List<String>,
     var actions: List<String>
 )
+
 enum class ActionType {
     KETHER,
     SKILL_MYTHIC,

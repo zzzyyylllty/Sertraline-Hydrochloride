@@ -55,8 +55,6 @@ fun ItemStack.getDepazItemInst(): DepazItemInst {
         atbInst.add(jsonUtils.decodeFromString(AttributeInst.serializer(), single))
         //atbInst.add(Json.decodeFromString<AttributeInst>(single))
     }
-    warningS("Check passed.")
-
     return DepazItemInst(
         id = id,
         item = this,

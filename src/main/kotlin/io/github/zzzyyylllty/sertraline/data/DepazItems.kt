@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack
 
 data class DepazItems(
     val id: String,
-    val originalItem: ItemStack,
+    val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>
 )
@@ -20,4 +20,12 @@ data class DepazItemInst(
     val id: String,
     val item: ItemStack,
     val attributes: MutableList<AttributeInst>
+)
+
+data class VanillaItemInst(
+    val material: String,
+    val name: String?,
+    val lore: List<String>,
+    val model: Int,
+    val nbt: LinkedHashMap<String, Any>
 )

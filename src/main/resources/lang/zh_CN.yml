@@ -36,6 +36,10 @@ DEBUG_NO_PARAM_USE_DEFAULT: "未指定参数 {0}，将使用 {1}"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
 ERROR_PLAYER_NOT_FOUND: "玩家 {0} 未找到."
+ERROR_UNKNOWN_SKILL: "未知的技能 {0}"
+ERROR_UNKNOWN_SKILL_TRIGGER: "未知的技能触发器 {0}"
+ERROR_UNABLE_TO_GENERATE_ITEM: "无法从字符串 {0} 生成 ItemStack， Exception: {1}"
+ERROR_GENERATED_ITEM_NOT_EXIST: "从字符串 {0} 生成 ItemStack 为 null"
 
 GENERATION_INVALID_MATERIAL: "无法生成物品 {0}, 因为 Material 为 null。"
 

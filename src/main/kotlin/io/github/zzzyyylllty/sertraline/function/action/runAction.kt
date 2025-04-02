@@ -4,7 +4,6 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.data.ActionType
-import io.github.zzzyyylllty.sertraline.data.ActionType.*
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItem
@@ -37,9 +36,9 @@ fun Player.applyAction(action: Action) {
     val player = this
     submit(async = action.async) {
         when (action.type) {
-            KETHER -> action.actions.evalKether(player)
-            SKILL_MYTHIC -> player.warningS("In Dev!")
-            JAVASCRIPT -> player.warningS("In Dev!")
+            ActionType.KETHER -> action.actions.evalKether(player)
+            ActionType.SKILL_MYTHIC -> player.warningS("In Dev!")
+            ActionType.JAVASCRIPT -> player.warningS("In Dev!")
         }
     }
 }

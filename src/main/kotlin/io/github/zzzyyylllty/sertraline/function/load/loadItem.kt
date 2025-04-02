@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.data.ActionType
 import io.github.zzzyyylllty.sertraline.data.AttributePart
 import io.github.zzzyyylllty.sertraline.data.AttributeSources
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.data.VanillaItemInst
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.sertralize.serializeStringList
@@ -16,6 +17,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.YamlConfiguration
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.severeL
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.buildItem
@@ -24,6 +26,7 @@ import java.util.LinkedHashMap
 fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     val mm = MiniMessage.miniMessage()
 
+    /*
     val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString())) {
         customModelData = (config.get("$root.minecraft.model") as Int?) ?: 0
     }
@@ -32,47 +35,62 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}").decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
     meta.displayName(name)
     item.setItemMeta(meta)
-    /*
-    val strings = config.getString("$root.minecraft.lore")
-    var lore : MutableList<Component> = mutableListOf()
-    val legacy = LegacyComponentSerializer.legacyAmpersand()
-    if (strings != null) {
-        for (string in strings.split("\n")) {
-            val comp = mm.deserialize(legacy.serialize(legacy.deserialize(string.replace("§", "&"))))
-            lore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
-        }
-    }*/
-
-    var lore : MutableList<Component> = mutableListOf()
-    val legacy = LegacyComponentSerializer.legacyAmpersand()
     serializeStringList(config.get("$root.minecraft.lore")).forEach {
         val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
         lore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
     }
     item.lore(lore)
+    */
+
+    val nbts = config.get("$root.minecraft.nbt") as LinkedHashMap<String, Any>?
+
+    val item = VanillaItemInst(
+        material = config.get("$root.minecraft.material") as String? ?:"STONE",
+        name = config.get("$root.minecraft.name") as String?,
+        lore = serializeStringList(config.get("$root.minecraft.lore")),
+        model = config.get("$root.minecraft.model") as Int? ?:0,
+        nbt = nbts ?: LinkedHashMap<String, Any>()
+    )
 
     var actions : MutableList<Action> = mutableListOf()
-    val sections = config.getList("$root.action") as List<LinkedHashMap<String, Any>>?
+    val sections = config.getList("$root.action") as List<LinkedHashMap<String, Any?>>?
 
     devLog("actionsections: $sections")
 
     if (sections != null && !sections.isEmpty()) for (section in sections) {
         devLog("section: $section")
         val actionList = serializeStringList(section["content"])
+        devLog("actions $actionList ")
         var requireList = serializeStringList(section["require"])
+        devLog("require: $requireList")
+        var trigger = section["trigger"] as String?
+        devLog("trigger: $trigger")
+        val type = section["type"] as String
         if (requireList.isEmpty()) {
             requireList = listOf("UNIVERSAL")
             devLog(consoleSender.asLangText("DEBUG_NO_PARAM_USE_DEFAULT","require","listOf(\"UNIVERSAL\")"))
         }
-        actions.add(
+        if (trigger == null) {
+            trigger = "onInteract"
+            devLog(consoleSender.asLangText("DEBUG_NO_PARAM_USE_DEFAULT","trigger","onInteract"))
+        }
+        devLog("requireList is not empty.")
+
+        devLog("Trigger $trigger ")
+        devLog("async ${section["async"] as Boolean}")
+        devLog("type: $type")
+        devLog("require: $requireList")
+        devLog("actions $actionList ")
+        val ac =
             Action(
-                trigger = (section["trigger"] ?: throwNPEWithMessage("ACTION_TRIGGER_NOT_FOUND", root)).toString(),
+                trigger = trigger,
                 async = (section["async"] as Boolean),
                 actions = actionList,
-                type = ActionType.valueOf(section["type"] as String? ?: "KETHER"),
+                type = ActionType.valueOf(type),
                 require = requireList,
             )
-        )
+        devLog("Adding $ac.")
+        actions.add(ac)
     }
 
     var attributeParts : MutableList<AttributePart> = mutableListOf()
@@ -88,8 +106,8 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
             if (!entry.key.startsWith("meta")) attributeNames.add(entry)
         }
 
-        val type = AttributeSources.valueOf(section["meta_type"] as String? ?: "MYTHIC_LIB")
-        val definer = section["meta_definer"] as String? ?: "sertraline_<slot>"
+        val type = AttributeSources.valueOf(section["meta_type"] as String? ?: config["attribute.default"] as String? ?: "MYTHIC_LIB")
+        val definer = section["meta_definer"] as String? ?: config["attribute.default-definer"] as String? ?: "sertraline_<slot>"
         val metaUUID = section["meta_uuid"] as String?
         val uuid = metaUUID
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"

@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.serialization") version "1.8.22"
+    kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 taboolib {
@@ -32,6 +32,7 @@ taboolib {
         taboolib = "6.2.3-20d868d"
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
+    relocate("ink.ptms.um","xx.um")
     relocate("kotlinx.serialization", "kotlinx.serialization133")
     relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
@@ -63,6 +64,7 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") {
         name = "sonatype-oss-snapshots"
     }
+    maven("https://repo.momirealms.net/releases/")
 }
 
 dependencies {
@@ -70,6 +72,8 @@ dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
+    implementation("net.momirealms:craft-engine-core:0.0.41")
+    implementation("net.momirealms:craft-engine-bukkit:0.0.41")
     // compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
@@ -92,6 +96,7 @@ dependencies {
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
     taboo("com.beust:klaxon:5.6")
+    taboo("ink.ptms:um:1.1.3") // universal mythicmobs
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     compileOnly(fileTree("libs"))
@@ -119,12 +124,20 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xjvm-default=all")
+        jvmTarget = "21"
+        freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
+        // Skip NeigeItems InCompatibility Kotlin Version
     }
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
+    }
 }

@@ -31,7 +31,8 @@ import kotlin.String
  * https://taboolib.feishu.cn/wiki/C2oDwYpa7i9AyykaiKMc3PbNndu
  * */
 
-val debounceRefreshStat = debounce<Player, List<String>>(500) { player , slotinput ->
+
+val debounceRefreshStat = debounce<Player, List<String>>(config["attribute.debounce-time"] as Long? ?: 500) { player , slotinput ->
     player.refreshStat(slotinput)
 }
 
