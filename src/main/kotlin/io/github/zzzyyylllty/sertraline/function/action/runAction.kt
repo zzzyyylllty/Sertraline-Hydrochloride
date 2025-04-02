@@ -14,6 +14,7 @@ import io.github.zzzyyylllty.sertraline.function.item.isDepazItemInList
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.stats.applyAtb
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.asLangText
 
@@ -33,9 +34,12 @@ fun Player.applyActions(trigger: String) {
 }
 
 fun Player.applyAction(action: Action) {
-    when (action.type) {
-        KETHER -> action.actions.evalKether(this)
-        SKILL_MYTHIC -> this.warningS("In Dev!")
-        JAVASCRIPT -> this.warningS("In Dev!")
+    val player = this
+    submit(async = action.async) {
+        when (action.type) {
+            KETHER -> action.actions.evalKether(player)
+            SKILL_MYTHIC -> player.warningS("In Dev!")
+            JAVASCRIPT -> player.warningS("In Dev!")
+        }
     }
 }
