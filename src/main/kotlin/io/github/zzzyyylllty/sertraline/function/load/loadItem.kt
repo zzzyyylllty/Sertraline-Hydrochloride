@@ -89,7 +89,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         }
 
         val type = AttributeSources.valueOf(section["meta_type"] as String? ?: "MYTHIC_LIB")
-        val definer = section["meta_definer"] as String? ?: "sertraline"
+        val definer = section["meta_definer"] as String? ?: "sertraline_<slot>"
         val metaUUID = section["meta_uuid"] as String?
         val uuid = metaUUID
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"

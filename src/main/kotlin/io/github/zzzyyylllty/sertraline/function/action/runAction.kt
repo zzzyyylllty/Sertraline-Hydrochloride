@@ -20,8 +20,8 @@ import taboolib.module.lang.asLangText
 
 fun Player.applyActions(trigger: String) {
     val player = this
-    val inv = player.inventory
     submitAsync {
+    val inv = player.inventory
         devLog(console.asLangText("DEBUG_ACTION_APPLY", player.player?.name ?:"Unknown"))
         val slotList = getSlots(config.getStringList("action.require-enabled-slot"))
         for (slot in slotList) {

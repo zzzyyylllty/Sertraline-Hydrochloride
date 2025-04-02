@@ -16,23 +16,43 @@ import io.lumine.mythic.lib.api.stat.modifier.StatModifier
 import io.lumine.mythic.lib.player.modifier.ModifierSource
 import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
+import taboolib.common.function.debounce
+import taboolib.common.function.throttle
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.asLangText
 import taboolib.platform.util.bukkitPlugin
 import java.util.*
+import kotlin.String
+
+/**
+ * Throttle Stat refresh.
+ * wait 1000 ms / update
+ *
+ * https://taboolib.feishu.cn/wiki/C2oDwYpa7i9AyykaiKMc3PbNndu
+ * */
+
+val debounceRefreshStat = debounce<Player, List<String>>(500) { player , slotinput ->
+    player.refreshStat(slotinput)
+}
+
 
 /**
  * Reapply stat for player.
  */
-
 fun Player.refreshStat(slotinput: List<String>) {
+
+    val pl = this
     val playerData: MMOPlayerData = MMOPlayerData.get(this)
-    val statMap = playerData.getStatMap()
-    for (instance in statMap.instances) {
-        instance.removeIf { key -> key.startsWith("sertraline") }
+    submitAsync {
+        val statMap = playerData.getStatMap()
+        val slots = pl.getSlots(slotinput)
+        for (slot in slots) {
+            for (instance in statMap.instances) {
+                instance.removeIf { key -> key.startsWith("sertraline") }
+            }
+        }
+        player?.reapplyStat(slots)
     }
-    val slots = getSlots(slotinput)
-    this.reapplyStat(slots)
 }
 
 /**
@@ -45,6 +65,8 @@ fun Player.reapplyStat(slotinput: List<Int>) {
         devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
         val applySlot = slotinput
         val slotList = mutableListOf<Int>()
+        devLog("SLOTS: ${getSlots(config.getStringList("attribute.require-enabled-slot"))}")
+        devLog("INPUTSLOTS: ${applySlot}")
         for (singleApplySlot in getSlots(config.getStringList("attribute.require-enabled-slot"))) {
             if (applySlot.contains(singleApplySlot)) slotList.add(singleApplySlot)
         }
@@ -52,14 +74,15 @@ fun Player.reapplyStat(slotinput: List<Int>) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
                 for (atb in i.getDepazItemInst().attributes) {
-                    if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb)
+                    if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot)
                 }
             }
         }
     }
 }
 
-fun Player.applyAtb(attribute: AttributeInst) {
+fun Player.applyAtb(attribute: AttributeInst, slot: Int) {
+    devLog("APPLYING ATTRIBUTE $attribute")
     val playerData: MMOPlayerData = MMOPlayerData.get(this)
     val statMap: StatMap = playerData.statMap
     val uuid = UUID.fromString(attribute.uuid) ?: UUID.randomUUID()
@@ -68,7 +91,7 @@ fun Player.applyAtb(attribute: AttributeInst) {
         when (attribute.type) {
             MYTHIC_LIB -> StatModifier(
                 uuid,
-                attribute.definer,
+                attribute.definer.replace("<slot>", slot.toString()),
                 single.key,
                 typedValue.value.toDouble(),
                 ModifierType.valueOf(typedValue.type.name),
