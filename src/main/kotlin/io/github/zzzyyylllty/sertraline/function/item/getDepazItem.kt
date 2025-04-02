@@ -31,9 +31,18 @@ fun ItemStack.getDepazItemInst(): DepazItemInst {
     //val atbInst = array.toList<AttributeInst>()
     //val atbInst = Klaxon().parse<List<AttributeInst>>(attribute)
     val atbInst = mutableListOf<AttributeInst>()
+    val jsonUtils = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        allowSpecialFloatingPointValues = true
+    }
     for (single in attribute) {
         //Klaxon()/*.converter(atbInstConverter)*/.parse<AttributeInst>(single)
-        atbInst.add(Json.decodeFromString(AttributeInst.serializer(), single))
+        atbInst.add(jsonUtils.decodeFromString(AttributeInst.serializer(), single))
         //atbInst.add(Json.decodeFromString<AttributeInst>(single))
     }
     return DepazItemInst(

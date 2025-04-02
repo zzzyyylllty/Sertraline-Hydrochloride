@@ -104,7 +104,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         val uuid = metaUUID
         val source = section["meta_source"] as String? ?: "MELEE_WEAPON"
         val mythicLibEquipSlot = section["meta_equip_slot"] as String? ?: "MAIN_HAND"
-        val requireSlot = serializeStringList("meta_require")
+        val requireSlot = serializeStringList(section["meta_require"])
         val conditionOnBuild = section["meta_condition_onbuild"] as String?
         val conditionOnEffect = section["meta_condition"] as String?
         val chance = section["chance"] as String? ?: "100.0"
@@ -122,7 +122,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
                 chance = chance,
                 source = source,
                 mythicLibEquipSlot = mythicLibEquipSlot,
-                requireSlot = if (requireSlot.isEmpty()) listOf<String>("UNIVERSAL") else requireSlot,
+                requireSlot = requireSlot.ifEmpty { listOf("UNIVERSAL") },
                 conditionOnBuild = conditionOnBuild,
                 conditionOnEffect = conditionOnEffect
             )
