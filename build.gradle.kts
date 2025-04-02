@@ -111,8 +111,6 @@ dependencies {
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3") { isTransitive = false }
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3") { isTransitive = false }
-    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.5.1") { isTransitive = false }
-    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1") { isTransitive = false }
 }
 
 tasks.withType<JavaCompile> {
