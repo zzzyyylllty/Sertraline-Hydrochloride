@@ -25,6 +25,9 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 
 ## 测试过的服务端
 
+### Sertraline 0.1.2
+
+* Leaf 1.20.4
 ### Sertraline 0.1.1
 
 * Leaf 1.20.4

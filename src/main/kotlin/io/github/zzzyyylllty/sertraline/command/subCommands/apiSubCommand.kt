@@ -14,7 +14,7 @@ import taboolib.common.platform.function.submitAsync
 
 @CommandHeader(
     name = "sertralineapi",
-    aliases = ["itemapi","needyitemapi","depazapi"],
+    aliases = ["itemapi","needyitemapi","depazapi","chotenapi"],
     permission = "sertraline.command.api",
     description = "API Command of DepazItems.",
     permissionMessage = "",
@@ -47,8 +47,8 @@ object DepazApiCommand {
                     // 获取参数的值
                     val content = context["script"]
                     val ret = content.evalKether(sender)
-                    sender.infoS("§5Kether: §7$content")
-                    sender.infoS("§5Return: §7${ret.get()}") }
+                    sender.infoS("<yellow>Kether: <gray>$content")
+                    sender.infoS("<yellow>Return: <gray>${ret.get()}") }
             }
         }
     }
@@ -66,8 +66,8 @@ object DepazApiCommand {
                         // 获取参数的值
                         val content = context["script"]
                         val ret = content.evalKether(sender)
-                        sender.infoS("§5Kether: §7$content")
-                        sender.infoS("§5Return: §7${ret.get()}") }
+                        sender.infoS("<yellow>Kether: <gray>$content")
+                        sender.infoS("<yellow>Return: <gray>${ret.get()}") }
                 }
             }
         }
