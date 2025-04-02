@@ -17,10 +17,8 @@ import io.lumine.mythic.lib.player.modifier.ModifierSource
 import io.lumine.mythic.lib.player.modifier.ModifierType
 import org.bukkit.entity.Player
 import taboolib.common.function.debounce
-import taboolib.common.function.throttle
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.asLangText
-import taboolib.platform.util.bukkitPlugin
 import java.util.*
 import kotlin.String
 
@@ -89,7 +87,7 @@ fun Player.applyAtb(attribute: AttributeInst, slot: Int) {
     val uuid = UUID.fromString(attribute.uuid) ?: UUID.randomUUID()
     for (single in attribute.attr) {
         val typedValue = relativeOrFlat(single.value)
-        when (attribute.type) {
+        when (attribute.attributeSources) {
             MYTHIC_LIB -> StatModifier(
                 uuid,
                 attribute.definer.replace("<slot>", slot.toString()),

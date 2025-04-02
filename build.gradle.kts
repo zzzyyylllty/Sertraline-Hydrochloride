@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "2.0.0"
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.serialization") version "1.8.22"
 }
 
 taboolib {
@@ -72,8 +72,8 @@ dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    implementation("net.momirealms:craft-engine-core:0.0.41")
-    implementation("net.momirealms:craft-engine-bukkit:0.0.41")
+    ///implementation("net.momirealms:craft-engine-core:0.0.41")
+    //implementation("net.momirealms:craft-engine-bukkit:0.0.41")
     // compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
@@ -118,26 +118,19 @@ dependencies {
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3") { isTransitive = false }
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
         freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
         // Skip NeigeItems InCompatibility Kotlin Version
     }
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
-kotlin {
-    sourceSets.all {
-        languageSettings {
-            languageVersion = "2.0"
-        }
-    }
+tasks.withType<JavaCompile> {
+    options.release.set(17)
+    options.encoding = "UTF-8"
 }

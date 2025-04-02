@@ -30,15 +30,15 @@ import java.util.*
 
 @RuntimeDependencies(
     RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3",
+        "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.8.0",
         test = "!kotlinx.serialization.Serializer",
-        relocate = ["!kotlin.", "!kotlin2000.", "!kotlinx.serialization.", "!kotlinx.serialization133."],
+        relocate = ["!kotlin.", "!kotlin2110.", "!kotlinx.serialization.", "!kotlinx.serialization180."],
         transitive = false
     ),
     RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3",
+        "!org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.0",
         test = "!kotlinx.serialization.json.Json",
-        relocate = ["!kotlin.", "!kotlin2000.", "!kotlinx.serialization.", "!kotlinx.serialization133."],
+        relocate = ["!kotlin.", "!kotlin2110.", "!kotlinx.serialization.", "!kotlinx.serialization180."],
         transitive = false
     )
 )

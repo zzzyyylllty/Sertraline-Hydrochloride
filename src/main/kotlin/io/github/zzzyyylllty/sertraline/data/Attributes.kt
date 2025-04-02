@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 data class AttributePart(
-    val type: AttributeSources = AttributeSources.MYTHIC_LIB,
+    val attributeSources: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String>,
     val definer: String,
     val uuid: String?,
@@ -26,7 +26,7 @@ enum class AttributeSources {
 }
 @Serializable
 data class AttributeInst(
-    val type: AttributeSources = AttributeSources.MYTHIC_LIB,
+    val attributeSources: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String> = LinkedHashMap<String, String>(),
     val definer: String = "sertraline",
     val uuid: String? = UUID.randomUUID().toString(),

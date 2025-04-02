@@ -1,18 +1,6 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
-import ink.ptms.chemdah.core.quest.selector.InferItem.Companion.toInferItem
-import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.data.DepazItems
-import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
-import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
-import io.github.zzzyyylllty.sertraline.logger.infoS
-import io.github.zzzyyylllty.sertraline.logger.severeL
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import taboolib.module.nms.itemTagReader
-import taboolib.platform.util.asLangText
-import taboolib.platform.util.giveItem
-import kotlin.collections.get
 
 /**
  * Get slots from STRING List.

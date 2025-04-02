@@ -9,7 +9,6 @@ import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
-import io.github.zzzyyylllty.sertraline.function.sertralize.serializeStringList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -75,7 +74,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
         // Attribute Chance
         if (attr.chance.evalKether(sender).get().toString().toDouble() > random(0.0,99.9)) instAttrs.add(
             AttributeInst(
-                type = attr.type,
+                attributeSources = attr.attributeSources,
                 attr = attr.attr,
                 definer = attr.definer,
                 uuid = attr.uuid,

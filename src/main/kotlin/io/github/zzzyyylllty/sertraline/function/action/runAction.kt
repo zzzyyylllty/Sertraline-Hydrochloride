@@ -7,11 +7,8 @@ import io.github.zzzyyylllty.sertraline.data.ActionType
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItem
-import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
 import io.github.zzzyyylllty.sertraline.function.item.getSlots
-import io.github.zzzyyylllty.sertraline.function.item.isDepazItemInList
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
-import io.github.zzzyyylllty.sertraline.function.stats.applyAtb
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
@@ -35,7 +32,7 @@ fun Player.applyActions(trigger: String) {
 fun Player.applyAction(action: Action) {
     val player = this
     submit(async = action.async) {
-        when (action.type) {
+        when (action.actionType) {
             ActionType.KETHER -> action.actions.evalKether(player)
             ActionType.SKILL_MYTHIC -> player.warningS("In Dev!")
             ActionType.JAVASCRIPT -> player.warningS("In Dev!")

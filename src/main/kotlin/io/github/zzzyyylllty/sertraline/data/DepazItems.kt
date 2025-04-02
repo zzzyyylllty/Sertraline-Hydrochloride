@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
 data class DepazItems(

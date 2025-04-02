@@ -8,21 +8,13 @@ import io.github.zzzyyylllty.sertraline.data.AttributeSources
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.data.VanillaItemInst
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.function.error.throwNPEWithMessage
 import io.github.zzzyyylllty.sertraline.function.sertralize.serializeStringList
-import io.github.zzzyyylllty.sertraline.logger.debugS
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.configuration.file.YamlConfiguration
-import io.github.zzzyyylllty.sertraline.logger.infoS
-import io.github.zzzyyylllty.sertraline.logger.severeL
-import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.asLangText
-import taboolib.platform.util.buildItem
 import java.util.LinkedHashMap
 
+@OptIn(ExperimentalStdlibApi::class)
 fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     val mm = MiniMessage.miniMessage()
 
@@ -65,7 +57,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         devLog("require: $requireList")
         var trigger = section["trigger"] as String?
         devLog("trigger: $trigger")
-        val type = section["type"] as String
+        val type: ActionType = ActionType.valueOf(section["type"] as String? ?: "KETHER")
         if (requireList.isEmpty()) {
             requireList = listOf("UNIVERSAL")
             devLog(consoleSender.asLangText("DEBUG_NO_PARAM_USE_DEFAULT","require","listOf(\"UNIVERSAL\")"))
@@ -86,7 +78,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
                 trigger = trigger,
                 async = (section["async"] as Boolean),
                 actions = actionList,
-                type = ActionType.valueOf(type),
+                actionType = type,
                 require = requireList,
             )
         devLog("Adding $ac.")
@@ -106,7 +98,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
             if (!entry.key.startsWith("meta")) attributeNames.add(entry)
         }
 
-        val type = AttributeSources.valueOf(section["meta_type"] as String? ?: config["attribute.default"] as String? ?: "MYTHIC_LIB")
+        val type: AttributeSources = AttributeSources.valueOf(section["meta_type"] as String? ?: config["attribute.default"] as String? ?: "MYTHIC_LIB")
         val definer = section["meta_definer"] as String? ?: config["attribute.default-definer"] as String? ?: "sertraline_<slot>"
         val metaUUID = section["meta_uuid"] as String?
         val uuid = metaUUID
@@ -123,7 +115,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
         }
         attributeParts.add(
             AttributePart(
-                type = type,
+                attributeSources = type,
                 attr = attrList,
                 definer = definer,
                 uuid = uuid,
