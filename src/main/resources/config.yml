@@ -20,3 +20,14 @@ attribute:
   # 刷新属性时哪些格子的物品会被遍历。不推荐修改。
   # 默认遍历 所有装备 + 副手 + 主手
   # 性能影响: 一般
+
+action:
+  require-enabled-slot:
+    - HELMET
+    - CHESTPLATE
+    - LEGGINGS
+    - BOOTS
+    - ANY_HAND
+  # 刷新属性时哪些格子的物品会执行。不推荐修改。
+  # 默认遍历 所有装备 + 副手 + 主手
+  # 性能影响: 一般
