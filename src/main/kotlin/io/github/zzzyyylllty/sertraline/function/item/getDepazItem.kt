@@ -36,7 +36,7 @@ fun ItemStack?.getData(): LinkedHashMap<String, Any> {
     }
 
     this.itemTagReader {
-        data = jsonUtils.decodeFromString<LinkedHashMap<String, Any>>(getString("SERTRALINE_DATA") ?: "{}")
+        data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>(getString("SERTRALINE_DATA") ?: "{}")
     }
     return data
 }

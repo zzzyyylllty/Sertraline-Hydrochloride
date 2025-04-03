@@ -60,10 +60,13 @@ object Sertraline : Plugin() {
     var dataFolder = nativeDataFolder()
     var templateMap = LinkedHashMap<String, ConfigurationSection>()
     var itemMap = LinkedHashMap<String, DepazItems>()
-    var devMode = true
     val console by lazy { console() }
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val devModeCon by lazy {
+        config.getBoolean("debug",false)
+    }
+    var devMode = devModeCon
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
