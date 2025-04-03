@@ -73,6 +73,15 @@ fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
         customModelData = originalItem.model
     }
 
+    buildedItem.itemTagReader {
+        for (nbtp in depaz.originalItem.nbt) {
+            for (nbtSingle in nbtp) {
+                set(nbtSingle.key, nbtSingle.value)
+            }
+        }
+        write(buildedItem)
+    }
+
     if (originalItem.name != null) {
         val meta = buildedItem.itemMeta
         val name = mm.deserialize("<white>${originalItem.name}")
@@ -80,6 +89,8 @@ fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
         meta.displayName(name)
         buildedItem.setItemMeta(meta)
     }
+
+
 
     buildedItem.lore(compLore)
 

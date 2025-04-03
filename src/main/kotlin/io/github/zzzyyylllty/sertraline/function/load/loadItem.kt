@@ -33,15 +33,14 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
         }
     }
 
-
-    val nbts = config.get("minecraft.nbt") as LinkedHashMap<String, Any>?
+    val nbts = config.get("minecraft.nbt") as List<LinkedHashMap<String, Any>>?
 
     val item = VanillaItemInst(
         material = config.get("minecraft.material") as String? ?:"STONE",
         name = config.get("minecraft.name") as String?,
         lore = serializeStringList(config.get("minecraft.lore")),
         model = config.get("minecraft.model") as Int? ?:0,
-        nbt = nbts ?: LinkedHashMap<String, Any>(),
+        nbt = nbts ?: listOf(),
         materialLoreEnabled = config.get("minecraft.material-lore") as Boolean? ?: true
     )
 

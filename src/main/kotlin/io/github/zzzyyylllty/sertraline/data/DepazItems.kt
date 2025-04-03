@@ -1,7 +1,6 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
@@ -38,6 +37,6 @@ data class VanillaItemInst(
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>,
+    val nbt: List<LinkedHashMap<String, Any>>,
     val materialLoreEnabled: Boolean,
 )

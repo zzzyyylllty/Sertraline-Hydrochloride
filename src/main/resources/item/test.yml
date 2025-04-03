@@ -72,17 +72,16 @@ IRON_SWORD:
       # meta_chance: 100.0
 TEST_NBT_ITEM:
   minecraft:
-    material: IRON_SWORD
-    name: '<white>Iron Sword'
+    material: IRON_INGOT
+    name: '<white>NBT ITEM'
     lore: |
-      <red>Just a normal sword.
-      <white>Sword DaoLi.
+      <red>Test <yellow>NBT</yellow> Item.
     nbt:
-      test: 1
-      needy.girl: "Multi NBTs"
-      testList:
-        - HelloWorld
-        - GoodbyeWorld
+      - test: 1
+      - needy.girl: "Multi NBTs"
+      - testList:
+          - HelloWorld
+          - GoodbyeWorld
 TEST_MMOITEM:
   minecraft:
     material: MI:SWORD.STEEL_SWORD
