@@ -4,10 +4,7 @@
 )*/
 package io.github.zzzyyylllty.sertraline.function.item
 
-import com.alibaba.fastjson2.JSON
-import com.alibaba.fastjson2.parseObject
 import com.alibaba.fastjson2.toJSONString
-import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
@@ -15,6 +12,7 @@ import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
+import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -27,10 +25,7 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.apache.commons.lang3.mutable.Mutable
 import taboolib.module.lang.asLangText
 
 
@@ -117,7 +112,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
 
 
 // 未写入 NBT
-fun DepazItems.solvePlaceholders(p: Player, data: LinkedHashMap<String, Any> = this.data) : DepazItems {
+fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any>? = null) : DepazItems {
 
 /*
     var atbjson = this.attributes.toJSONString()
@@ -172,6 +167,10 @@ fun DepazItems.solvePlaceholders(p: Player, data: LinkedHashMap<String, Any> = t
         allowStructuredMapKeys = true
         allowSpecialFloatingPointValues = true
     }
+    val parsedData = inputData ?: this.data
+
+    devLog("ParsedData: $parsedData InputData: $inputData")
+
     var json = this.toJSONString()
 
     devLog("encoded ATTRIBUTE json: $json")
@@ -179,7 +178,16 @@ fun DepazItems.solvePlaceholders(p: Player, data: LinkedHashMap<String, Any> = t
     var i = 0
     while (json.contains("<kether:.+?>".toRegex())) {
         i++
-        json = json.replace("<kether:(.+?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
+        val pattern = "<kether:(.+?)>".toRegex()
+
+        val found = pattern.findAll(json)
+
+        found.forEach { f ->
+            val m = f.value
+            val section = m.substring(8..(m.length-2))
+            devLog("Founded kether shell module $m , $section")
+            section.evalKetherString(p)
+        }
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
@@ -187,7 +195,19 @@ fun DepazItems.solvePlaceholders(p: Player, data: LinkedHashMap<String, Any> = t
     }
     while (json.contains("<data:.+?>".toRegex())) {
         i++
-        json = json.replace("<data:(.+?)>".toRegex(), data["$1"].toString())
+        val pattern = "<data:(.+?)>".toRegex()
+
+        val found = pattern.findAll(json)
+
+        found.forEach { f ->
+            val m = f.value
+            val section = m.substring(6..(m.length-2))
+            devLog("Founded data module $m , $section")
+            json = json.replace("$m", (parsedData[section] as String? ?: run {
+                severeS(console.asLangText("ITEM_DATA_NOT_FOUND",section))
+                "null"
+            }))
+        }
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break

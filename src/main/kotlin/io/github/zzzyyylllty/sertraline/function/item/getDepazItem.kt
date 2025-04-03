@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.alibaba.fastjson2.JSON
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
@@ -61,7 +62,7 @@ fun ItemStack.getDepazItemInst(): DepazItemInst {
         this.itemTagReader {
             attribute = getString("SERTRALINE_ATTRIBUTE") ?: "[]"
             id = getString("SERTRALINE_ID") ?: "null"
-            data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>>(getString("SERTRALINE_DATA") ?:"{}")
+            data = JSON.parse(getString("SERTRALINE_DATA") ?:"{}") as LinkedHashMap<String, Any>
         }
     val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
 

@@ -63,10 +63,7 @@ object Sertraline : Plugin() {
     val console by lazy { console() }
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val devModeCon by lazy {
-        config.getBoolean("debug",false)
-    }
-    var devMode = devModeCon
+    var devMode = false
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -99,6 +96,7 @@ object Sertraline : Plugin() {
             e.printStackTrace()
         }
         plugin.config.reload()
+        devMode = config.getBoolean("debug",false)
         itemMap = linkedMapOf()
         loadTemplateFiles()
         loadItemFiles()

@@ -18,6 +18,8 @@ ITEM_LOAD_NOT_FOUND: "未找到 item 文件夹内的文件!如果您希望重新
 ITEM_GIVE: "给予玩家 <yellow>{0} <white>个 <gray>{1} <dark_gray>({2})"
 ITEM_NOT_FOUND: "无法找到物品 {0}"
 ITEM_ATTRIBUTE_LIMITED_KETHER: "Kether 替换超过临界值。请检查是否含有 Kether 死循环。"
+ITEM_DATA_NOT_FOUND: "未找到物品的 data {0}"
+
 
 TEMPLATE_START_LOAD: "开始加载模板文件 ..."
 TEMPLATE_LOAD_FOUND: "已找到模板文件 ..."
