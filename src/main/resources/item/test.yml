@@ -34,6 +34,7 @@ DEPAZ_PILLS:
     - template: FOOD_TEMPLATE
       data:
         effect: instant_damage
+        # 这里的 data 会覆盖模板内的 data
 IRON_SWORD:
   minecraft:
     material: IRON_SWORD

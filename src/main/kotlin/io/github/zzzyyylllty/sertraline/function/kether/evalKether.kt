@@ -132,6 +132,26 @@ fun String?.evalKetherValue(
     }.build()).getNow(def)
 }
 
+fun String?.evalKetherString(
+    player: CommandSender?,
+    vars: Map<String, Any?> = mapOf(),
+    sets: List<Pair<String, Any?>> = emptyList(),
+    def: Any = "null"
+): String? {
+    if (this.isNullOrBlank()) {
+        val future = CompletableFuture<Any?>()
+        future.complete(null)
+        return future.toString()
+    }
+    return KetherShell.eval(this, ScriptOptions.builder().apply {
+        sender(player ?: console)
+        vars(vars)
+        sets.forEach {
+            set(it.first, it.second)
+        }
+    }.build()).getNow(def) as String?
+}
+
 fun String?.evalKetherBoolean(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),

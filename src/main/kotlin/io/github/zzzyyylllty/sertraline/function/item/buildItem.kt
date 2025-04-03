@@ -4,11 +4,19 @@
 )*/
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.parseObject
 import com.alibaba.fastjson2.toJSONString
+import com.beust.klaxon.Klaxon
+import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
+import io.github.zzzyyylllty.sertraline.data.DepazItemUnsolvedInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -20,27 +28,28 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import org.apache.commons.lang3.mutable.Mutable
+import taboolib.module.lang.asLangText
 
 
 fun DepazItemInst.buildItem() : ItemStack {
 
     val depaz = this
-    val list = mutableListOf<String>()
-
-    for (atb in depaz.attributes) {
-        list.add(atb.toJSONString())
-    }
 
     item.itemTagReader {
         set("SERTRALINE_ID", depaz.id)
-        set("SERTRALINE_ATTRIBUTE", list)
+        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
+        set("SERTRALINE_DATA", data.toJSONString())
         write(item)
     }
     return item
 }
 
 // 未写入 NBT
-fun DepazItems.buildInstance(p: Player) : DepazItemInst {
+fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
 
     val depaz = this
     val instAttrs = mutableListOf<AttributeInst>()
@@ -89,10 +98,50 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
         )
     }
 
-    return DepazItemInst(
+    return DepazItemUnsolvedInst(
         id = depaz.id,
         item = buildedItem,
-        attributes = instAttrs
+        attributes = instAttrs,
+        data = data
     )
-    
+}
+
+
+// 未写入 NBT
+fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
+
+    var atbjson = this.attributes.toJSONString()
+    devLog("encoded ATTRIBUTE json: $atbjson")
+
+    var i = 0
+    while (atbjson.contains("<kether:.?>".toRegex())) {
+        i++
+        atbjson = atbjson.replace("<kether:(.?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
+        if (i > 10) {
+            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
+            break
+        }
+    }
+    devLog("kethered json: $atbjson")
+    val jsonUtils = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        allowSpecialFloatingPointValues = true
+    }
+
+    val atb = jsonUtils.decodeFromString<kotlin.collections.MutableList<AttributeInst>>(atbjson)
+    //Klaxon().parse<MutableList<*>>(atbjson)
+
+    val inst = DepazItemInst(
+        id = this.id,
+        item = this.item,
+        attributes = atb,
+        data = data
+    )
+    devLog("inst: $inst")
+    return inst
 }

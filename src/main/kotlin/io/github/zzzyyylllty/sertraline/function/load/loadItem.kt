@@ -51,13 +51,9 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
     devLog("actionsections: $sections")
 
     if (sections != null && !sections.isEmpty()) for (section in sections) {
-        devLog("section: $section")
         val actionList = serializeStringList(section["content"])
-        devLog("actions $actionList ")
         var requireList = serializeStringList(section["require"])
-        devLog("require: $requireList")
         var trigger = section["trigger"] as String?
-        devLog("trigger: $trigger")
         val type: ActionType = ActionType.valueOf(section["type"] as String? ?: "KETHER")
         if (requireList.isEmpty()) {
             requireList = listOf("UNIVERSAL")
@@ -123,15 +119,14 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
                 chance = chance,
                 source = source,
                 mythicLibEquipSlot = mythicLibEquipSlot,
-                requireSlot = requireSlot.ifEmpty { listOf("UNIVERSAL") },
+                requireSlot = requireSlot.ifEmpty { mutableListOf("UNIVERSAL") },
                 conditionOnBuild = conditionOnBuild,
                 conditionOnEffect = conditionOnEffect
             )
         )
     }
 
+    val data = config.get("data") as LinkedHashMap<String, Any>? ?: LinkedHashMap()
 
-
-
-    return DepazItems(root, item, actions, attributeParts)
+    return DepazItems(root, item, actions, attributeParts, data)
 }

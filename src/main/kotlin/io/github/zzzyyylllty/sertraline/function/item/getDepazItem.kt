@@ -4,7 +4,12 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
+import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
+import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
@@ -20,17 +25,11 @@ fun ItemStack?.getDepazItem(): DepazItems? {
 fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
 }
+
 fun ItemStack.getDepazItemInst(): DepazItemInst {
-    var attribute : List<String> = emptyList()
+    var attribute : String = "[]"
     var id : String = "null"
-        this.itemTagReader {
-            attribute = getStringList("SERTRALINE_ATTRIBUTE")
-            id = getString("SERTRALINE_ID") ?: "null"
-        }
-    //val array = JSON.parseArray(attribute) // <- AttributeInst::class.java
-    //val atbInst = array.toList<AttributeInst>()
-    //val atbInst = Klaxon().parse<List<AttributeInst>>(attribute)
-    val atbInst = mutableListOf<AttributeInst>()
+    var data = LinkedHashMap<String, Any>()
     val jsonUtils = Json {
         prettyPrint = true
         isLenient = true
@@ -40,15 +39,18 @@ fun ItemStack.getDepazItemInst(): DepazItemInst {
         allowStructuredMapKeys = true
         allowSpecialFloatingPointValues = true
     }
-    for (single in attribute) {
-        //Klaxon()/*.converter(atbInstConverter)*/.parse<AttributeInst>(single)
-        atbInst.add(jsonUtils.decodeFromString(AttributeInst.serializer(), single))
-        //atbInst.add(Json.decodeFromString<AttributeInst>(single))
-    }
+        this.itemTagReader {
+            attribute = getString("SERTRALINE_ATTRIBUTE") ?: "[]"
+            id = getString("SERTRALINE_ID") ?: "null"
+            data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>>(getString("SERTRALINE_DATA") ?:"{}")
+        }
+    val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
+
     return DepazItemInst(
         id = id,
         item = this,
-        attributes = atbInst
+        attributes = atbInst,
+        data = data
     )
 }
 

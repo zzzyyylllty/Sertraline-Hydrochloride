@@ -114,8 +114,8 @@ dependencies {
     implementation("org.ow2.asm:asm-util:9.2")
     implementation("org.ow2.asm:asm-commons:9.2")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.3.3") { isTransitive = false }
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.3") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.0") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.0") { isTransitive = false }
 }
 
 tasks.withType<KotlinCompile> {

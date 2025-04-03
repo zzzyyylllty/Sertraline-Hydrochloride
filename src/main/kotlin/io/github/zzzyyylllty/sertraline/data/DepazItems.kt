@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
@@ -8,7 +10,7 @@ data class DepazItems(
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, Any> =  LinkedHashMap(),
+    val data: LinkedHashMap<String, Any> //= LinkedHashMap(),
 )
 
 /**
@@ -22,7 +24,13 @@ data class DepazItemInst(
     val id: String,
     val item: ItemStack,
     val attributes: MutableList<AttributeInst>,
-    val data: LinkedHashMap<String, Any> =  LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any> //= LinkedHashMap(),
+)
+data class DepazItemUnsolvedInst(
+    val id: String,
+    val item: ItemStack,
+    val attributes: MutableList<AttributeInst>,
+    val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any> //= LinkedHashMap(),
 )
 
 data class VanillaItemInst(
@@ -30,6 +38,6 @@ data class VanillaItemInst(
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: LinkedHashMap<String, Any>,
+    val nbt: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>,
     val materialLoreEnabled: Boolean,
 )
