@@ -30,44 +30,36 @@ import kotlin.String
  * */
 
 
-val debounceRefreshStat = debounce<Player, List<String>>(config["attribute.debounce-time"] as Long? ?: 500) { player , slotinput ->
-    player.refreshStat(slotinput)
+val debounceRefreshStat = debounce<Player>(config["attribute.debounce-time"] as Long? ?: 500) { player  ->
+    player.refreshStat()
 }
 
 
 /**
  * Reapply stat for player.
  */
-fun Player.refreshStat(slotinput: List<String>) {
+fun Player.refreshStat() {
 
     val pl = this
     submitAsync {
     val playerData: MMOPlayerData = MMOPlayerData.get(pl)
         val statMap = playerData.getStatMap()
-        val slots = pl.getSlots(slotinput)
-        for (slot in slots) {
             for (instance in statMap.instances) {
                 instance.removeIf { key -> key.startsWith("sertraline") }
             }
-        }
-        player?.reapplyStat(slots)
+        player?.reapplyStat()
     }
 }
 
 /**
 * @param [slotinput] will affected slots
 * */
-fun Player.reapplyStat(slotinput: List<Int>) {
+fun Player.reapplyStat() {
     val player = this
         val inv = player.inventory
         devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
-        val applySlot = slotinput
-        val slotList = mutableListOf<Int>()
-        devLog("SLOTS: ${getSlots(config.getStringList("attribute.require-enabled-slot"))}")
-        devLog("INPUTSLOTS: ${applySlot}")
-        for (singleApplySlot in getSlots(config.getStringList("attribute.require-enabled-slot"))) {
-            if (applySlot.contains(singleApplySlot)) slotList.add(singleApplySlot)
-        }
+        val slotList = getSlots(config.getStringList("attribute.require-enabled-slot"))
+        devLog("SLOTS: ${slotList}")
         for (slot in slotList) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {

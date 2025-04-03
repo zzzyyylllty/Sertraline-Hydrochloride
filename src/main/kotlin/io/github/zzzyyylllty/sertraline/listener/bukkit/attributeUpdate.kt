@@ -5,14 +5,19 @@ import io.github.zzzyyylllty.sertraline.function.stats.debounceRefreshStat
 import io.github.zzzyyylllty.sertraline.function.stats.refreshStat
 import org.bukkit.event.player.PlayerItemHeldEvent
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.submitAsync
 
 @SubscribeEvent
 fun hotBarChangeEvent(e: PlayerItemHeldEvent) {
-    debounceRefreshStat(e.player, listOf("UNIVERSAL"))
+    submitAsync {
+        debounceRefreshStat(e.player)
+    }
 }
 
 @SubscribeEvent
 fun armorEquipEvent(e: PlayerArmorChangeEvent) {
-    debounceRefreshStat(e.player, listOf("UNIVERSAL"))
+    submitAsync {
+        debounceRefreshStat(e.player)
+    }
 }
 
