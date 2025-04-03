@@ -19,9 +19,9 @@ Sertraline 是一个在 Minecraft Bukkit 平台下运行的物品库插件。
 
 ## 服务
 
-Sertraline 是免费的，但我们不提供开发版本的构建文件。
+Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
 
-你可通过自行构建获取开发版本，或是在 Release 下载稳定版本。
+你可通过自行构建获取不稳定版本，或是在 Release 下载稳定版本。
 
 ## 测试过的服务端
 
@@ -61,7 +61,7 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 
 ## 构建发行版本
 
-需要Java 21.
+需要 Java 17.
 
 发行版本用于正常使用, 不含 TabooLib 本体。
 
@@ -69,9 +69,9 @@ Sertraline 是免费的，但我们不提供开发版本的构建文件。
 ./gradlew clean build
 ```
 
-## 构建 API 版本
+## 构建开发版本
 
-API 版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
+开发版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
 
 ```
 ./gradlew clean taboolibBuildApi -PDeleteCode
