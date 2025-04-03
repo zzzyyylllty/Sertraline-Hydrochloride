@@ -11,7 +11,6 @@ import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
-import io.github.zzzyyylllty.sertraline.data.DepazItemSolved
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
@@ -48,13 +47,9 @@ fun DepazItemInst.buildItem() : ItemStack {
     return item
 }
 
-// 未写入 NBT
 fun DepazItems.buildInstance(p: Player) : DepazItemInst {
-    return this.solveInst(p).buildInstance(p)
-}
-fun DepazItemSolved.buildInstance(p: Player) : DepazItemInst {
 
-    val depaz = this
+    val depaz = this.solvePlaceholders(p)
     val instAttrs = mutableListOf<AttributeInst>()
     val sender = p as CommandSender
 
@@ -122,9 +117,7 @@ fun DepazItemSolved.buildInstance(p: Player) : DepazItemInst {
 
 
 // 未写入 NBT
-fun DepazItems.solveInst(p: Player) : DepazItemSolved {
-
-
+fun DepazItems.solvePlaceholders(p: Player, data: LinkedHashMap<String, Any> = this.data) : DepazItems {
 
 /*
     var atbjson = this.attributes.toJSONString()
@@ -184,17 +177,17 @@ fun DepazItems.solveInst(p: Player) : DepazItemSolved {
     devLog("encoded ATTRIBUTE json: $json")
 
     var i = 0
-    while (json.contains("<kether:.?>".toRegex())) {
+    while (json.contains("<kether:.+?>".toRegex())) {
         i++
-        json = json.replace("<kether:(.?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
+        json = json.replace("<kether:(.+?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
         }
     }
-    while (json.contains("<data:.?>".toRegex())) {
+    while (json.contains("<data:.+?>".toRegex())) {
         i++
-        json = json.replace("<data:(.?)>".toRegex(), this.data["$1"].toString())
+        json = json.replace("<data:(.+?)>".toRegex(), data["$1"].toString())
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
@@ -204,14 +197,6 @@ fun DepazItems.solveInst(p: Player) : DepazItemSolved {
 
     val inst = jsonUtils.decodeFromString<DepazItems>(json)
 
-
-
     devLog("inst: $inst")
-    return DepazItemSolved(
-        id = inst.id,
-        originalItem = inst.originalItem,
-        actions = inst.actions,
-        attributeParts = inst.attributeParts,
-        data = inst.data
-    )
+    return inst
 }

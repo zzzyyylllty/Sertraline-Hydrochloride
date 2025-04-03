@@ -22,6 +22,25 @@ fun ItemStack?.getDepazItem(): DepazItems? {
     return itemMap[id]
 }
 
+fun ItemStack?.getData(): LinkedHashMap<String, Any> {
+    var data = linkedMapOf<String, Any>()
+
+    val jsonUtils = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        allowSpecialFloatingPointValues = true
+    }
+
+    this.itemTagReader {
+        data = jsonUtils.decodeFromString<LinkedHashMap<String, Any>>(getString("SERTRALINE_DATA") ?: "{}")
+    }
+    return data
+}
+
 fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
 }

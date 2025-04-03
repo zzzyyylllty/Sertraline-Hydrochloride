@@ -70,8 +70,6 @@ object Sertraline : Plugin() {
     val fixedCalculator by lazy { FixedCalculator() }
     val variableCalculator by lazy { VariableCalculator() }
 
-
-
     val config by lazy {
         if (!File(getDataFolder(), "config.yml").exists()) {
             warningL("CONFIG_REGEN")

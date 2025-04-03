@@ -26,13 +26,7 @@ data class DepazItemInst(
     val attributes: MutableList<AttributeInst>,
     val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
 )
-data class DepazItemSolved(
-    val id: String,
-    val originalItem: VanillaItemInst,
-    val actions: MutableList<Action>,
-    val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
-)
+
 @Serializable
 data class VanillaItemInst(
     val material: String,
