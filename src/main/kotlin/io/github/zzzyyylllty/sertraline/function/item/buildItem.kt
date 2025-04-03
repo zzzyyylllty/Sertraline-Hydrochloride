@@ -50,13 +50,7 @@ fun DepazItemInst.buildItem() : ItemStack {
 
 // 未写入 NBT
 fun DepazItems.buildInstance(p: Player) : DepazItemInst {
-    return DepazItemSolved(
-        id = this.id,
-        originalItem = this.originalItem,
-        actions = this.actions,
-        attributeParts = this.attributeParts,
-        data = this.data
-    ).buildInstance(p)
+    return this.solveInst(p).buildInstance(p)
 }
 fun DepazItemSolved.buildInstance(p: Player) : DepazItemInst {
 
