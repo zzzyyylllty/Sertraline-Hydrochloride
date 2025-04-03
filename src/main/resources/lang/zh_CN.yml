@@ -24,6 +24,7 @@ TEMPLATE_LOAD_FOUND: "已找到模板文件 ..."
 TEMPLATE_LOAD_REGEN: "未找到模板文件夹,重新生成 ..."
 TEMPLATE_LOAD_NOT_FOUND: "未找到 TEMPLATE 文件夹内的文件!如果您希望重新生成,请删除整个文件夹."
 TEMPLATE_NOT_FOUND: "尝试生成物品时找到不存在或加载出错的模板 {0}"
+TEMPLATE_APPLYING: "正在给物品 {0} 应用模板 {1}"
 
 CONFIG_REGEN: "正在生成 config..."
 

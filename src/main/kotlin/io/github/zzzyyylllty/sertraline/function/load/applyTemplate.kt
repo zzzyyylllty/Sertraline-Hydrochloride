@@ -20,11 +20,9 @@ fun applyTemplate(iconfig: ConfigurationSection, templateText: LinkedHashMap<Str
     for (section in template.getValues(false)) {
         config[section.key] = section.value
     }
-    for (templateData in templateText["data"] as List<LinkedHashMap<String, Any>>) {
-        for (data in templateData) {
-            config["data.${data.key}"] = data.value
-            devLog("Replaced Template Data ${data.key} to ${data.value}")
-        }
+    for (data in templateText["data"] as LinkedHashMap<String, Any>) {
+        config["data.${data.key}"] = data.value
+        devLog("Replaced Template Data ${data.key} to ${data.value}")
     }
     return config
 }

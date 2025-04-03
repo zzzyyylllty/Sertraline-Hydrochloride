@@ -131,6 +131,7 @@ fun DepazItemSolved.buildInstance(p: Player) : DepazItemInst {
 fun DepazItems.solveInst(p: Player) : DepazItemSolved {
 
 
+
 /*
     var atbjson = this.attributes.toJSONString()
     devLog("encoded ATTRIBUTE json: $atbjson")
@@ -173,6 +174,7 @@ fun DepazItems.solveInst(p: Player) : DepazItemSolved {
     )
 */
 
+    devLog("solving $this")
 
     val jsonUtils = Json {
         prettyPrint = true
@@ -183,7 +185,7 @@ fun DepazItems.solveInst(p: Player) : DepazItemSolved {
         allowStructuredMapKeys = true
         allowSpecialFloatingPointValues = true
     }
-    var json = jsonUtils.encodeToString(this)
+    var json = this.toJSONString()
 
     devLog("encoded ATTRIBUTE json: $json")
 

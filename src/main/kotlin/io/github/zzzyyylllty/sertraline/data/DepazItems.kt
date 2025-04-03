@@ -11,7 +11,7 @@ data class DepazItems(
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
 )
 
 /**
@@ -24,14 +24,14 @@ data class DepazItemInst(
     val id: String,
     val item: ItemStack,
     val attributes: MutableList<AttributeInst>,
-    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
 )
 data class DepazItemSolved(
     val id: String,
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
 )
 @Serializable
 data class VanillaItemInst(
@@ -39,6 +39,6 @@ data class VanillaItemInst(
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: List<LinkedHashMap<String, @Contextual Any>>,
+    val nbt: List<LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>,
     val materialLoreEnabled: Boolean,
 )
