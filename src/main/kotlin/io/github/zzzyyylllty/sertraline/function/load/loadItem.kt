@@ -26,8 +26,8 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
         effect: instant_damage
     */
 
-    if (config.get("minecraft.extend") != null) {
-        val list = config.get("minecraft.extend") as List<LinkedHashMap<String, Any>>
+    if (config.get("extend") != null) {
+        val list = config.get("extend") as List<LinkedHashMap<String, Any>>
         for (template in list) {
             config = applyTemplate(config, template)
         }

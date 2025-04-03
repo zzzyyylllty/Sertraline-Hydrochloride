@@ -121,6 +121,8 @@ fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
 // 未写入 NBT
 fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
 
+
+/*
     var atbjson = this.attributes.toJSONString()
     devLog("encoded ATTRIBUTE json: $atbjson")
 
@@ -128,6 +130,14 @@ fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
     while (atbjson.contains("<kether:.?>".toRegex())) {
         i++
         atbjson = atbjson.replace("<kether:(.?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
+        if (i > 10) {
+            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
+            break
+        }
+    }
+    while (atbjson.contains("<data:.?>".toRegex())) {
+        i++
+        atbjson = atbjson.replace("<data:(.?)>".toRegex(), this.data["$1"].toString())
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
@@ -145,7 +155,6 @@ fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
     }
 
     val atb = jsonUtils.decodeFromString<kotlin.collections.MutableList<AttributeInst>>(atbjson)
-    //Klaxon().parse<MutableList<*>>(atbjson)
 
     val inst = DepazItemInst(
         id = this.id,
@@ -153,6 +162,50 @@ fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
         attributes = atb,
         data = data
     )
+*/
+
+
+    val jsonUtils = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        allowSpecialFloatingPointValues = true
+    }
+    var json = jsonUtils.encodeToString(this)
+
+    devLog("encoded ATTRIBUTE json: $json")
+
+    var i = 0
+    while (json.contains("<kether:.?>".toRegex())) {
+        i++
+        json = json.replace("<kether:(.?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
+        if (i > 10) {
+            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
+            break
+        }
+    }
+    while (json.contains("<data:.?>".toRegex())) {
+        i++
+        json = json.replace("<data:(.?)>".toRegex(), this.data["$1"].toString())
+        if (i > 10) {
+            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
+            break
+        }
+    }
+    devLog("kethered json: $json")
+
+    val inst = jsonUtils.decodeFromString<DepazItemUnsolvedInst>(json)
+
+
+
     devLog("inst: $inst")
-    return inst
+    return DepazItemInst(
+        id = inst.id,
+        item = inst.item,
+        attributes = inst.attributes,
+        data = inst.data
+    )
 }

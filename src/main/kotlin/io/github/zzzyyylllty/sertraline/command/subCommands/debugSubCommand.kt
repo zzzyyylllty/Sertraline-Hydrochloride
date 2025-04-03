@@ -41,7 +41,7 @@ object DepazDebugCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                var message = sender.asLangText("COMMAND_DEBUG_ITEM", Klaxon().toJsonString(itemMap[id]))
+                var message = sender.asLangText("COMMAND_DEBUG_ITEM", itemMap[id].toString())
                 sender.infoS(message)
             }
         }

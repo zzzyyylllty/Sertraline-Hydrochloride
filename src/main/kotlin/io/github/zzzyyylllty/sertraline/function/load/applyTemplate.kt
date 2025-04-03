@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.load
 
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import org.bukkit.configuration.ConfigurationSection
 import taboolib.platform.util.asLangText
@@ -19,9 +20,11 @@ fun applyTemplate(iconfig: ConfigurationSection, templateText: LinkedHashMap<Str
     for (section in template.getValues(false)) {
         config[section.key] = section.value
     }
-    for (templateData in templateText["data"] as LinkedHashMap<String, Any>) {
-        config["data.${templateData.key}"] = templateData.value
-        severeS("Replaced Template Data ${templateData.key} to ${templateData.value}")
+    for (templateData in templateText["data"] as List<LinkedHashMap<String, Any>>) {
+        for (data in templateData) {
+            config["data.${data.key}"] = data.value
+            devLog("Replaced Template Data ${data.key} to ${data.value}")
+        }
     }
     return config
 }

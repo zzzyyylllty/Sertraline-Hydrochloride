@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.data
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
+@Serializable
 data class AttributePart(
     val attributeSources: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String>,

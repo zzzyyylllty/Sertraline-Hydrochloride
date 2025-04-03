@@ -4,6 +4,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
+import org.bukkit.inventory.ItemStack
 
 object AnySerializer : KSerializer<Any> {
     override val descriptor: SerialDescriptor =
