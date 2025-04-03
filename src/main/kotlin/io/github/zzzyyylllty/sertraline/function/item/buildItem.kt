@@ -11,7 +11,7 @@ import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
-import io.github.zzzyyylllty.sertraline.data.DepazItemUnsolvedInst
+import io.github.zzzyyylllty.sertraline.data.DepazItemSolved
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
@@ -49,7 +49,16 @@ fun DepazItemInst.buildItem() : ItemStack {
 }
 
 // 未写入 NBT
-fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
+fun DepazItems.buildInstance(p: Player) : DepazItemInst {
+    return DepazItemSolved(
+        id = this.id,
+        originalItem = this.originalItem,
+        actions = this.actions,
+        attributeParts = this.attributeParts,
+        data = this.data
+    ).buildInstance(p)
+}
+fun DepazItemSolved.buildInstance(p: Player) : DepazItemInst {
 
     val depaz = this
     val instAttrs = mutableListOf<AttributeInst>()
@@ -109,7 +118,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
         )
     }
 
-    return DepazItemUnsolvedInst(
+    return DepazItemInst(
         id = depaz.id,
         item = buildedItem,
         attributes = instAttrs,
@@ -119,7 +128,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemUnsolvedInst {
 
 
 // 未写入 NBT
-fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
+fun DepazItems.solveInst(p: Player) : DepazItemSolved {
 
 
 /*
@@ -197,15 +206,16 @@ fun DepazItemUnsolvedInst.solveInst(p: Player) : DepazItemInst {
     }
     devLog("kethered json: $json")
 
-    val inst = jsonUtils.decodeFromString<DepazItemUnsolvedInst>(json)
+    val inst = jsonUtils.decodeFromString<DepazItems>(json)
 
 
 
     devLog("inst: $inst")
-    return DepazItemInst(
+    return DepazItemSolved(
         id = inst.id,
-        item = inst.item,
-        attributes = inst.attributes,
+        originalItem = inst.originalItem,
+        actions = inst.actions,
+        attributeParts = inst.attributeParts,
         data = inst.data
     )
 }

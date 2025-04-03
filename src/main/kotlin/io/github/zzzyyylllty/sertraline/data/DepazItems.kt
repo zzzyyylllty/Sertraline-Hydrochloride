@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
-import io.github.zzzyyylllty.sertraline.function.sertralize.ItemStackSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
@@ -11,7 +11,7 @@ data class DepazItems(
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
 )
 
 /**
@@ -20,28 +20,25 @@ data class DepazItems(
  * 可被构建为 [ItemStack]
  * 物品未写入 NBT
  * */
-
-@Serializable
 data class DepazItemInst(
     val id: String,
-    val item: @Serializable(with = ItemStackSerializer::class) ItemStack,
+    val item: ItemStack,
     val attributes: MutableList<AttributeInst>,
-    val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
 )
-@Serializable
-data class DepazItemUnsolvedInst(
+data class DepazItemSolved(
     val id: String,
-    val item: @Serializable(with = ItemStackSerializer::class) ItemStack,
-    val attributes: MutableList<AttributeInst>,
-    val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any> //= LinkedHashMap(),
+    val originalItem: VanillaItemInst,
+    val actions: MutableList<Action>,
+    val attributeParts: MutableList<AttributePart>,
+    val data: LinkedHashMap<String, @Contextual Any> //= LinkedHashMap(),
 )
-
 @Serializable
 data class VanillaItemInst(
     val material: String,
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: List<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>>,
+    val nbt: List<LinkedHashMap<String, @Contextual Any>>,
     val materialLoreEnabled: Boolean,
 )

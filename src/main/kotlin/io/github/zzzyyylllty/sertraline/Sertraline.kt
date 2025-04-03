@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFiles
 import io.github.zzzyyylllty.sertraline.function.load.reloadSertraline
+import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
@@ -19,8 +20,15 @@ import taboolib.module.configuration.Type
 import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.serializersModule
+import kotlinx.serialization.modules.SerializersModule
+import net.luckperms.api.query.QueryOptions.contextual
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import taboolib.common.platform.function.releaseResourceFile
 import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
 import top.maplex.arim.tools.fixedcalculator.FixedCalculator
@@ -61,6 +69,8 @@ object Sertraline : Plugin() {
     val evaluator by lazy { ConditionEvaluator() }
     val fixedCalculator by lazy { FixedCalculator() }
     val variableCalculator by lazy { VariableCalculator() }
+
+
 
     val config by lazy {
         if (!File(getDataFolder(), "config.yml").exists()) {

@@ -18,7 +18,7 @@ fun Player?.giveDepazItem(id: String,amount: Int = 1,playerName: String) {
 }
 fun Player.giveDepazItem(id: String,amount: Int = 1) {
     val sender = this
-    var item = itemMap[id]?.buildInstance(sender)?.solveInst(sender)?.buildItem() ?: run {
+    var item = itemMap[id]?.solveInst(sender)?.buildInstance(sender)?.buildItem() ?: run {
         sender.infoS(sender.asLangText("ITEM_NOT_FOUND", id))
         throw NullPointerException()
     }
