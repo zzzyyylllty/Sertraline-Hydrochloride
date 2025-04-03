@@ -41,8 +41,8 @@ val debounceRefreshStat = debounce<Player, List<String>>(config["attribute.debou
 fun Player.refreshStat(slotinput: List<String>) {
 
     val pl = this
-    val playerData: MMOPlayerData = MMOPlayerData.get(this)
     submitAsync {
+    val playerData: MMOPlayerData = MMOPlayerData.get(pl)
         val statMap = playerData.getStatMap()
         val slots = pl.getSlots(slotinput)
         for (slot in slots) {
@@ -59,8 +59,7 @@ fun Player.refreshStat(slotinput: List<String>) {
 * */
 fun Player.reapplyStat(slotinput: List<Int>) {
     val player = this
-    val inv = player.inventory
-    submitAsync {
+        val inv = player.inventory
         devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
         val applySlot = slotinput
         val slotList = mutableListOf<Int>()
@@ -78,7 +77,6 @@ fun Player.reapplyStat(slotinput: List<Int>) {
             }
         }
     }
-}
 
 fun Player.applyAtb(attribute: AttributeInst, slot: Int) {
     devLog("APPLYING ATTRIBUTE $attribute")
