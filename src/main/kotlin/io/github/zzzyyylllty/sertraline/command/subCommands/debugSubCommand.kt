@@ -131,14 +131,14 @@ object DepazDebugCommand {
     @CommandBody
     val refreshStat = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            if (sender is Player) sender.refreshStat(listOf("UNIVERSAL"))
+            if (sender is Player) sender.refreshStat()
         }
         player("player") {
             execute<CommandSender> { sender, context, argument ->
                 val tabooPlayer = context.player("player")
                 // 转化为Bukkit的Player
                 val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                bukkitPlayer?.refreshStat(listOf("UNIVERSAL"))
+                bukkitPlayer?.refreshStat()
             }
         }
     }
