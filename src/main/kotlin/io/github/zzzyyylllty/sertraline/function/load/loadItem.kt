@@ -15,37 +15,38 @@ import taboolib.platform.util.asLangText
 import java.util.LinkedHashMap
 
 @OptIn(ExperimentalStdlibApi::class)
-fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
+fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
     val mm = MiniMessage.miniMessage()
+    var config = iconfig.getConfigurationSection(root)!!
 
     /*
-    val item = buildItem(XMaterial.valueOf(config["$root.minecraft.material"].toString())) {
-        customModelData = (config.get("$root.minecraft.model") as Int?) ?: 0
-    }
-
-    val meta = item.itemMeta
-    var name = mm.deserialize("<white>${config["$root.minecraft.name"].toString()}").decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE)
-    meta.displayName(name)
-    item.setItemMeta(meta)
-    serializeStringList(config.get("$root.minecraft.lore")).forEach {
-        val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
-        lore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
-    }
-    item.lore(lore)
+  extend:
+    - template: FOOD_TEMPLATE
+      data:
+        effect: instant_damage
     */
 
-    val nbts = config.get("$root.minecraft.nbt") as LinkedHashMap<String, Any>?
+    if (config.get("minecraft.extend") != null) {
+        val list = config.get("minecraft.extend") as List<LinkedHashMap<String, Any>>
+        for (template in list) {
+            config = applyTemplate(config, template)
+        }
+    }
+
+
+    val nbts = config.get("minecraft.nbt") as LinkedHashMap<String, Any>?
 
     val item = VanillaItemInst(
-        material = config.get("$root.minecraft.material") as String? ?:"STONE",
-        name = config.get("$root.minecraft.name") as String?,
-        lore = serializeStringList(config.get("$root.minecraft.lore")),
-        model = config.get("$root.minecraft.model") as Int? ?:0,
-        nbt = nbts ?: LinkedHashMap<String, Any>()
+        material = config.get("minecraft.material") as String? ?:"STONE",
+        name = config.get("minecraft.name") as String?,
+        lore = serializeStringList(config.get("minecraft.lore")),
+        model = config.get("minecraft.model") as Int? ?:0,
+        nbt = nbts ?: LinkedHashMap<String, Any>(),
+        materialLoreEnabled = config.get("minecraft.material-lore") as Boolean? ?: true
     )
 
-    var actions : MutableList<Action> = mutableListOf()
-    val sections = config.getList("$root.action") as List<LinkedHashMap<String, Any?>>?
+    val actions : MutableList<Action> = mutableListOf()
+    val sections = config.getList("action") as List<LinkedHashMap<String, Any?>>?
 
     devLog("actionsections: $sections")
 
@@ -86,7 +87,7 @@ fun loadItem(config: YamlConfiguration, root: String) : DepazItems {
     }
 
     var attributeParts : MutableList<AttributePart> = mutableListOf()
-    val atbsections = config.getList("$root.attribute") as List<LinkedHashMap<String, Any>>?
+    val atbsections = config.getList("attribute") as List<LinkedHashMap<String, Any>>?
 
     devLog("atbsections: $atbsections")
 

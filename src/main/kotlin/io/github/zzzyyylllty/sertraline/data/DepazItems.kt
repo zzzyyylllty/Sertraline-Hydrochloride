@@ -7,7 +7,8 @@ data class DepazItems(
     val id: String,
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
-    val attributeParts: MutableList<AttributePart>
+    val attributeParts: MutableList<AttributePart>,
+    val data: LinkedHashMap<String, Any> =  LinkedHashMap(),
 )
 
 /**
@@ -20,7 +21,8 @@ data class DepazItems(
 data class DepazItemInst(
     val id: String,
     val item: ItemStack,
-    val attributes: MutableList<AttributeInst>
+    val attributes: MutableList<AttributeInst>,
+    val data: LinkedHashMap<String, Any> =  LinkedHashMap(),
 )
 
 data class VanillaItemInst(
@@ -28,5 +30,6 @@ data class VanillaItemInst(
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: LinkedHashMap<String, Any>
+    val nbt: LinkedHashMap<String, Any>,
+    val materialLoreEnabled: Boolean,
 )

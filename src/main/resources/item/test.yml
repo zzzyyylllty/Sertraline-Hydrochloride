@@ -82,3 +82,8 @@ TEST_NBT_ITEM:
       testList:
         - HelloWorld
         - GoodbyeWorld
+TEST_MMOITEM:
+  minecraft:
+    material: MI:SWORD.STEEL_SWORD
+    material-lore: true
+    # keep MMOItem Lore

@@ -89,8 +89,8 @@ object Sertraline : Plugin() {
         }
         plugin.config.reload()
         itemMap = linkedMapOf()
-        loadItemFiles()
         loadTemplateFiles()
+        loadItemFiles()
     }
 
 

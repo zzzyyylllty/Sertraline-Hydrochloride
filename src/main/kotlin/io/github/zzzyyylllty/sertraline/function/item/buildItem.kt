@@ -25,14 +25,13 @@ import taboolib.platform.util.buildItem
 fun DepazItemInst.buildItem() : ItemStack {
 
     val depaz = this
-    var list = mutableListOf<String>()
+    val list = mutableListOf<String>()
 
     for (atb in depaz.attributes) {
         list.add(atb.toJSONString())
     }
 
     item.itemTagReader {
-        // val value = getString("自定义的节点.支持多节点", "默认值")
         set("SERTRALINE_ID", depaz.id)
         set("SERTRALINE_ATTRIBUTE", list)
         write(item)
@@ -48,21 +47,26 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
     val sender = p as CommandSender
 
     val mm = MiniMessage.miniMessage()
-    var compLore : MutableList<Component> = mutableListOf()
+    val compLore : MutableList<Component> = mutableListOf()
     val legacy = LegacyComponentSerializer.legacyAmpersand()
 
+    val solvedItem = resolveItemStack(originalItem.material, p)
+
+    if (originalItem.materialLoreEnabled) solvedItem?.lore()?.forEach {
+        compLore.add(it.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
+    }
     originalItem.lore.forEach {
         val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
         compLore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
     }
 
-    val buildedItem = buildItem(resolveItemStack(originalItem.material, p) ?: ItemStack(Material.STONE)) {
+    val buildedItem = buildItem(solvedItem ?: ItemStack(Material.STONE)) {
         customModelData = originalItem.model
     }
 
     if (originalItem.name != null) {
         val meta = buildedItem.itemMeta
-        var name = mm.deserialize("<white>${originalItem.name}")
+        val name = mm.deserialize("<white>${originalItem.name}")
             .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
         meta.displayName(name)
         buildedItem.setItemMeta(meta)
