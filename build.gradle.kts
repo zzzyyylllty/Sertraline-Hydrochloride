@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.serialization") version "1.8.22"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 taboolib {
@@ -85,8 +85,8 @@ dependencies {
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
-    // compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
-    // compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
+    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
     implementation("com.github.Saukiya:SX-Item:4.4.0")
     implementation("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
     compileOnly("net.luckperms:api:5.4")
@@ -100,7 +100,7 @@ dependencies {
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     compileOnly(fileTree("libs"))
-    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
     implementation("net.kyori:adventure-nbt:4.19.0")
     testImplementation(kotlin("test"))
@@ -120,17 +120,17 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
         freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
         // Skip NeigeItems InCompatibility Kotlin Version
     }
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 tasks.withType<JavaCompile> {
-    options.release.set(17)
+    options.release.set(21)
     options.encoding = "UTF-8"
 }
