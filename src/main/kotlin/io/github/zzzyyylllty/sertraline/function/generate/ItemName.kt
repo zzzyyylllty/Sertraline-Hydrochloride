@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import pers.neige.neigeitems.utils.ItemUtils.getName
 import taboolib.module.nms.getI18nName
 
 fun ItemStack.getDisplayNameOrRegName(): String {

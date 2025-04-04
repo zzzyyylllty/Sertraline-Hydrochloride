@@ -4,7 +4,7 @@ APPLE:
     name: '<red>Apple'
     lore: |
       <red>Bad Black's Great Apple.
-      <gray>Tell you <yellow>Hello World!</yellow> After Consume in main hand.
+      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
   action:
     - trigger: onConsume
       require:
@@ -13,27 +13,28 @@ APPLE:
       # EQUIP = In Equip,Contains any hand
       # Default is EQUIP
       # ! CAUTION !
-      # If you want to use SLOT_xx require, please enable it at config.yml action.require-enabled-slot
+      # If you want to use SLOT_xx require, please enable it at config.yml.
       type: KETHER
       async: true
       content: |
         tell "Hello World!"
 DEPAZ_PILLS:
   minecraft:
-    material: COOKED_BEEF
+    material: GRAY_DYE
     model: 10000
     name: '<white>Depaz Pills'
     lore: |
       <white>“Look I’m taking my medicine like a good girl…” 
                                                   <light_purple>--KAngel
       <white>
-      <gray>On Consume: 
-      <#66BBBB>Instant Damage I
+      <white>On Consume: Instant Damage I
+      <#FF66FF>Stresses <#FF66FF>15 <#FF6666>-> <#FF66FF>3
+      <#FF66FF>Darkness <#FF66FF>15 <#66CCFF>-> <#FF66FF>24
   extend:
     - template: FOOD_TEMPLATE
       data:
         effect: instant_damage
-        # replace template data
+        # 这里的 data 会覆盖模板内的 data
 IRON_SWORD:
   minecraft:
     material: IRON_SWORD
@@ -58,7 +59,7 @@ IRON_SWORD:
       # EQUIP = In Equip,Contains any hand
       # Default is EQUIP
       # ! CAUTION !
-      # If you want to use SLOT_xx require, please enable it at config.yml attribute.require-enabled-slot
+      # If you want to use SLOT_xx require, please enable it at config.yml.
       meta_condition_onbuild: |
         check sender == "AmeChan"
       # on item generation if player have this condition this attribute will be applied.
