@@ -5,8 +5,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "1.9.22"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
+    //id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 taboolib {
@@ -30,12 +31,19 @@ taboolib {
     }
     version {
         taboolib = "6.2.3-20d868d"
+        coroutines = "1.8.1"
+
+        // 打包Kotlin环境 开启此项
+        skipKotlin = true
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
     relocate("ink.ptms.um","xx.um")
-    relocate("kotlinx.serialization", "kotlinx.serialization133")
+    relocate("kotlinx.serialization", "kotlinx.serialization163")
     relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
+    relocate("kotlin", "io.github.zzzyyylllty.sertraline.library.kotlin")
+    relocate("kotlin.enums", "io.github.zzzyyylllty.sertraline.library.kotlin.enums")
+    relocate("kotlinx", "io.github.zzzyyylllty.sertraline.library.kotlinx")
 }
 
 repositories {
@@ -72,8 +80,9 @@ dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    ///implementation("net.momirealms:craft-engine-core:0.0.41")
-    //implementation("net.momirealms:craft-engine-bukkit:0.0.41")
+    compileOnly(fileTree("libs"))
+    implementation("net.momirealms:craft-engine-core:0.0.41")
+    implementation("net.momirealms:craft-engine-bukkit:0.0.41")
     // compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
@@ -85,8 +94,8 @@ dependencies {
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
-    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
-    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+    // compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
+    // compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
     implementation("com.github.Saukiya:SX-Item:4.4.0")
     implementation("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
     compileOnly("net.luckperms:api:5.4")
@@ -114,8 +123,8 @@ dependencies {
     implementation("org.ow2.asm:asm-util:9.2")
     implementation("org.ow2.asm:asm-commons:9.2")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.0") { isTransitive = false }
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.0") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3") { isTransitive = false }
 }
 
 tasks.withType<KotlinCompile> {
@@ -124,13 +133,20 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
         // Skip NeigeItems InCompatibility Kotlin Version
     }
+}/*
+kotlin {
+    jvmToolchain(21) // 同时设置工具链和 JVM Target
 }
 
-configure<JavaPluginConvention> {
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
-tasks.withType<JavaCompile> {
-    options.release.set(21)
-    options.encoding = "UTF-8"
-}
+/
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveFileName.set("Sertraline-${project.version}.jar")
+    mergeServiceFiles()
+}*/

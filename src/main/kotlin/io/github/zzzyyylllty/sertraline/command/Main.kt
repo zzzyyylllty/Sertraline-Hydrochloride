@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command
 
 import ink.ptms.adyeshach.core.entity.type.minecraftVersion
+import ink.ptms.adyeshach.taboolib.module.nms.MinecraftVersion.runningVersion
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand
 import io.github.zzzyyylllty.sertraline.Sertraline.plugin
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
@@ -61,7 +62,7 @@ object SertralineMainCommand {
     val about = subCommand {
         execute<CommandSender> { sender, context, argument -> //
             sender.infoS("<gradient:aqua:blue>Sertraline Hydrochloride</gradient> <#ccccff>$pluginVersion")
-            sender.infoS("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name} - $minecraftVersion")
+            sender.infoS("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name} - ${minecraftVersion} (${runningVersion})")
             sender.infoS("<#660099>Plugin by AkaCandyKAngel.")
             sender.infoS("<#660099>Use <blue>/sertraline help</blue> for help.")
         }

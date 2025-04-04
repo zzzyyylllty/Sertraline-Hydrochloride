@@ -27,6 +27,7 @@ import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import kotlinx.serialization.json.Json
 import taboolib.module.lang.asLangText
+import kotlinx.serialization.decodeFromString
 
 
 fun DepazItemInst.buildItem() : ItemStack {
