@@ -4,6 +4,7 @@ import ink.ptms.zaphkiel.api.ItemEvent
 import ink.ptms.zaphkiel.api.ItemStream
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.item.buildInstance
 import io.github.zzzyyylllty.sertraline.function.item.buildItem
 import org.bukkit.entity.Player
@@ -37,6 +38,7 @@ fun DepazItemInst?.directInvokeItemEvent(player: Player?, event: Event, data: Ma
             future.complete(null)
         }
     }
+    devLog("invoking item for player ${player?.player?.name} event ${event.eventName} data $data script $script for instance $depaz")
     return future
 }
 

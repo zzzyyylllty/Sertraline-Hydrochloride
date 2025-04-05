@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.function.kether.script
 
+import ink.ptms.zaphkiel.impl.feature.getCurrentDurability
 import ink.ptms.zaphkiel.impl.feature.kether.itemStream
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -18,17 +19,15 @@ import taboolib.module.kether.combinationParser
 
 
 @KetherParser(["needyitem","depaz"], shared = true)
-fun actionItem() = combinationParser {
-    it.group(text()).apply(it) { str ->
-        now {
-            when (str) {
-                "consume" ->
-                    actionNow { getScriptItem().item.amount-- }
-                "print" ->
-                    actionNow { devLog(getScriptItem().toString()) }
+fun actionItem() = scriptParser {
+    it.switch {
+        case ("consume") {
+            actionNow { getScriptItem().item.amount-- }
+        }
+        case ("printitem") {
+                actionNow { devLog(getScriptItem().toString()) }
             }
         }
-    }
 }
 /*scriptParser {
     it.switch {
