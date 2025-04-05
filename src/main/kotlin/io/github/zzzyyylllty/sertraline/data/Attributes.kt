@@ -8,7 +8,7 @@ data class AttributePart(
     val attributeSources: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String>,
     val definer: String,
-    val uuid: String?,
+    val uuid: String,
     // val override: Boolean = true,
     val chance: String = "100.0",
     val source: String = "VOID", // MythicLib 等一些玩意有效
@@ -30,7 +30,7 @@ data class AttributeInst(
     val attributeSources: AttributeSources = AttributeSources.MYTHIC_LIB,
     val attr: LinkedHashMap<String, String> = LinkedHashMap<String, String>(),
     val definer: String = "sertraline",
-    val uuid: String? = UUID.randomUUID().toString(),
+    val uuid: String = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
     val requireSlot: List<String> = listOf()

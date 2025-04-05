@@ -27,6 +27,7 @@ import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import kotlinx.serialization.json.Json
 import taboolib.module.lang.asLangText
+import java.util.UUID
 
 
 fun DepazItemInst.buildItem() : ItemStack {
@@ -94,7 +95,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
                 attributeSources = attr.attributeSources,
                 attr = attr.attr,
                 definer = attr.definer,
-                uuid = attr.uuid,
+                uuid = attr.uuid ?: UUID.randomUUID().toString(),
                 source = attr.source,
                 mythicLibEquipSlot = attr.mythicLibEquipSlot,
                 requireSlot = attr.requireSlot

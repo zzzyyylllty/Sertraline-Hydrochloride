@@ -1,7 +1,6 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.inventory.ItemStack
 
@@ -11,7 +10,7 @@ data class DepazItems(
     val originalItem: VanillaItemInst,
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
-    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any>,
 )
 
 /**
@@ -24,7 +23,7 @@ data class DepazItemInst(
     val id: String,
     val item: ItemStack,
     val attributes: MutableList<AttributeInst>,
-    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any> //= LinkedHashMap(),
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any>,
 )
 
 @Serializable
@@ -33,6 +32,14 @@ data class VanillaItemInst(
     val name: String?,
     val lore: List<String>,
     val model: Int,
-    val nbt: List<LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>,
+    val nbt: List<java.util.LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>,
     val materialLoreEnabled: Boolean,
 )
+
+@Serializable
+sealed class DataValue {
+    @Serializable data class Text(val content: String) : DataValue()
+    @Serializable data class Double(val value: Double) : DataValue()
+    @Serializable data class Int(val value: Int) : DataValue()
+    @Serializable data class Long(val value: Long) : DataValue()
+}

@@ -9,11 +9,11 @@ import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.data.VanillaItemInst
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.sertralize.serializeStringList
-import kotlinx.serialization.Contextual
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.platform.util.asLangText
 import java.util.LinkedHashMap
+import java.util.UUID
 
 @OptIn(ExperimentalStdlibApi::class)
 fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
@@ -115,7 +115,7 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
                 attributeSources = type,
                 attr = attrList,
                 definer = definer,
-                uuid = uuid,
+                uuid = uuid ?: UUID.randomUUID().toString(),
                 chance = chance,
                 source = source,
                 mythicLibEquipSlot = mythicLibEquipSlot,

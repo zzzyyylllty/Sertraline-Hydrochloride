@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     id("io.izzel.taboolib") version "2.0.22"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.serialization") version "1.8.22"
+    kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 taboolib {
@@ -26,7 +26,7 @@ taboolib {
     }
     env {
         // 安装模块
-        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag, CONFIGURATION)
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag)
     }
     version {
         taboolib = "6.2.3-20d868d"
@@ -74,7 +74,6 @@ dependencies {
     compileOnly(fileTree("libs"))
     ///implementation("net.momirealms:craft-engine-core:0.0.41")
     //implementation("net.momirealms:craft-engine-bukkit:0.0.41")
-    // compileOnly("com.mojang:datafixerupper:1.0.20")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
@@ -114,8 +113,8 @@ dependencies {
     implementation("org.ow2.asm:asm-util:9.2")
     implementation("org.ow2.asm:asm-commons:9.2")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.0") { isTransitive = false }
-    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.0") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3") { isTransitive = false }
+    taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3") { isTransitive = false }
 }
 
 tasks.withType<KotlinCompile> {
