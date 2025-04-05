@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.kether.script
 
 import ink.ptms.zaphkiel.impl.feature.kether.itemStream
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.getScriptItem
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.ComponentLike
@@ -16,13 +17,15 @@ import org.bukkit.entity.Player
 import taboolib.module.kether.combinationParser
 
 
-@KetherParser(["item"], shared = true)
+@KetherParser(["needyitem","depaz"], shared = true)
 fun actionItem() = combinationParser {
     it.group(text()).apply(it) { str ->
         now {
             when (str) {
                 "consume" ->
                     actionNow { getScriptItem().item.amount-- }
+                "print" ->
+                    actionNow { devLog(getScriptItem().toString()) }
             }
         }
     }

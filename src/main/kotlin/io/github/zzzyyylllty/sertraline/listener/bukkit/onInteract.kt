@@ -17,34 +17,34 @@ import taboolib.common.platform.function.submitAsync
 @SubscribeEvent
 fun onInteract(e: PlayerInteractEvent) {
     submitAsync {
-    e.player.applyActions("onInteract")
+    e.player.applyActions("onInteract", e)
 }
 }
 
 @SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {
     submitAsync {
-    e.player.applyActions("onLogin")
+    e.player.applyActions("onLogin", e)
 }
 }
 
 @SubscribeEvent
 fun onPreAttack(e: PrePlayerAttackEntityEvent) {
     submitAsync {
-    e.player.applyActions("onPreAttack")
+    e.player.applyActions("onPreAttack", e)
 }
 }
 
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
     submitAsync {
-        e.player.applyActions("onConsume")
+        e.player.applyActions("onConsume", e)
         if(config.getBoolean("item.no-replacement-consume",false)) e.replacement = null
     }
 }
 @SubscribeEvent
 fun onAttack(e: PlayerAttackEvent) {
     submitAsync {
-        e.player.applyActions("onAttack")
+        e.player.applyActions("onAttack", e)
     }
 }
