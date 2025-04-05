@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.listener.bukkit
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.function.action.applyActions
 import io.github.zzzyyylllty.sertraline.logger.infoS
@@ -37,12 +38,12 @@ fun onPreAttack(e: PrePlayerAttackEntityEvent) {
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
     submitAsync {
-    e.player.applyActions("onConsume")
+        e.player.applyActions("onConsume")
+        if(config.getBoolean("item.no-replacement-consume",false)) e.replacement = null
     }
 }
-
 @SubscribeEvent
-fun onConsume(e: PlayerAttackEvent) {
+fun onAttack(e: PlayerAttackEvent) {
     submitAsync {
         e.player.applyActions("onAttack")
     }

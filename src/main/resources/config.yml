@@ -1,7 +1,9 @@
 debug: true
 # 调试模式
 # 性能影响: 中
-
+item:
+  no-replacement-consume: true
+  # 关闭蜂蜜瓶等物品使用后返回物品，如玻璃瓶。
 attribute:
   debounce-time: 500
   # 状态刷新防抖函数执行频率，单位毫秒

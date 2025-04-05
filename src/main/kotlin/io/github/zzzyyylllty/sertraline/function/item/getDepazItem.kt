@@ -23,6 +23,11 @@ fun ItemStack?.getDepazItem(): DepazItems? {
     return itemMap[id]
 }
 
+fun DepazItemInst?.getDepazItem(): DepazItems? {
+    var id : String? = this?.id
+    return itemMap[id]
+}
+
 fun ItemStack?.getData(): LinkedHashMap<String, Any> {
     var data = linkedMapOf<String, Any>()
 
