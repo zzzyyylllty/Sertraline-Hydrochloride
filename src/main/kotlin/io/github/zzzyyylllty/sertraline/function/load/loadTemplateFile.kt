@@ -18,16 +18,17 @@ import java.io.File
 fun loadTemplateFiles() {
     infoS(console.asLangText("TEMPLATE_START_LOAD"))
 
-    val files = File(getDataFolder(), "template").listFiles() ?: run {
-        warningL("TEMPLATE_LOAD_NOT_FOUND")
-        return
-    }
-
     if (!File(getDataFolder(), "template").exists()) {
 
         warningL("TEMPLATE_LOAD_REGEN")
         releaseResourceFile("template/example.yml")
 
+    }
+    val files = File(getDataFolder(), "template").listFiles()
+
+    if (files == null) {
+        warningL("TEMPLATE_LOAD_NOT_FOUND")
+        return
     }
 
     infoL("TEMPLATE_LOAD_FOUND")

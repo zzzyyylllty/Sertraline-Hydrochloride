@@ -72,8 +72,8 @@ dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    ///implementation("net.momirealms:craft-engine-core:0.0.41")
-    //implementation("net.momirealms:craft-engine-bukkit:0.0.41")
+    compileOnly("net.momirealms:craft-engine-core:0.0.41")
+    compileOnly("net.momirealms:craft-engine-bukkit:0.0.41")
     implementation("me.clip:placeholderapi:2.11.5")
     compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
@@ -119,17 +119,17 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
         freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
         // Skip NeigeItems InCompatibility Kotlin Version
     }
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 tasks.withType<JavaCompile> {
-    options.release.set(17)
+    options.release.set(21)
     options.encoding = "UTF-8"
 }

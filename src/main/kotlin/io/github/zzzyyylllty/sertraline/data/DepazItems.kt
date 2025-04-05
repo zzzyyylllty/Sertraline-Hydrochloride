@@ -35,6 +35,12 @@ data class VanillaItemInst(
     val nbt: List<java.util.LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>,
     val materialLoreEnabled: Boolean,
 )
+@Serializable
+data class Category(
+    val icon: DepazItems,
+    val name: String,
+    val lore: List<String>
+)
 
 @Serializable
 sealed class DataValue {

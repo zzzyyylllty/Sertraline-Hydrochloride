@@ -8,6 +8,8 @@ import ink.ptms.zaphkiel.um.Mythic
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.th0rgal.oraxen.api.OraxenItems
 import net.Indyuce.mmoitems.MMOItems
+import net.momirealms.craftengine.bukkit.api.CraftEngineItems
+import net.momirealms.craftengine.core.util.Key
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -16,6 +18,7 @@ import taboolib.common.platform.function.severe
 import taboolib.library.xseries.XMaterial
 import taboolib.library.xseries.parseToItemStack
 import taboolib.module.lang.asLangText
+import top.maplex.arim.tools.itemmanager.source.SourceCraftEngine
 
 fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val split = s.split(":")
@@ -98,15 +101,15 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 null
             }
         }
-        /*
+
         "CE", "CRAFTENGINE" -> {
             returnItem = try {
-                CraftEngin
+                CraftEngineItems.byId(Key.from(param))?.buildItemStack()
             } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null
             }
-        }*/
+        }
     }
     if (returnItem == null) severe(console.asLangText("ERROR_GENERATED_ITEM_NOT_EXIST"), s)
     return returnItem

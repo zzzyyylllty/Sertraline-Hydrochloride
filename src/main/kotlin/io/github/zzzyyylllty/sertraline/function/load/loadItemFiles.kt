@@ -16,16 +16,18 @@ import kotlin.collections.set
 fun loadItemFiles() {
     infoS(console.asLangText("ITEM_START_LOAD"))
 
-    val files = File(getDataFolder(), "item").listFiles() ?: run {
-        warningL("ITEM_LOAD_NOT_FOUND")
-        return
-    }
-
     if (!File(getDataFolder(), "item").exists()) {
 
         warningL("ITEM_LOAD_REGEN")
         releaseResourceFile("item/test.yml")
 
+    }
+
+    val files = File(getDataFolder(), "item").listFiles()
+
+    if (files == null) {
+        warningL("ITEM_LOAD_NOT_FOUND")
+        return
     }
 
     infoL("ITEM_LOAD_FOUND")
