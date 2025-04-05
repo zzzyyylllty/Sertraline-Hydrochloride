@@ -2,6 +2,8 @@ package io.github.zzzyyylllty.sertraline.command.subCommands
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.item.giveDepazItem
+import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -39,6 +41,25 @@ object DepazItemCommand {
                     // 转化为Bukkit的Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
                     bukkitPlayer?.giveDepazItem(id = id)
+                }
+            }
+            dynamic("amount") {
+                execute<CommandSender> { sender, context, argument ->
+                    val id = context["id"]
+                    val amount = context["amount"]
+                    if (sender is Player) sender.giveDepazItem(id, amount.evalKetherString(sender)?.toInt() ?:1)
+                }
+                suggestion<CommandSender>(uncheck = true) { sender, context ->
+                    listOf("1","64","16")
+                }
+                player("player") {
+                    execute<CommandSender> { sender, context, argument ->
+                        val id = context["id"]
+                        val tabooPlayer = context.player("player")
+                        // 转化为Bukkit的Player
+                        val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                        bukkitPlayer?.giveDepazItem(id = id)
+                    }
                 }
             }
         }

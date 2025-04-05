@@ -88,29 +88,6 @@ object DepazDebugCommand {
         }
     }
 
-
-    @CommandBody
-    val instanceItem = subCommand {
-        dynamic("id") {
-            execute<CommandSender> { sender, context, argument ->
-                val id = context["id"]
-                if (sender is Player) sender.giveDepazItem(id, 1)
-            }
-            suggestion<CommandSender>(uncheck = true) { sender, context ->
-                itemMap.keys.asList()
-            }
-            player("player") {
-                execute<CommandSender> { sender, context, argument ->
-                    val id = context["id"]
-                    val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
-                    val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    bukkitPlayer?.giveDepazItem(id = id)
-                }
-            }
-        }
-    }
-
     @CommandBody
     val getInst = subCommand {
         execute<CommandSender> { sender, context, argument ->
