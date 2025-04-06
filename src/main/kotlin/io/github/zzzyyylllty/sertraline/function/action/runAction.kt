@@ -17,31 +17,31 @@ import io.github.zzzyyylllty.sertraline.function.kether.directInvokeItemEvent
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import org.bukkit.event.player.PlayerEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.lang.asLangText
 
-fun Player.applyActions(trigger: String, e: Event) {
+fun Player.applyActions(trigger: String, e: Event, i2 : ItemStack? = null,islot: Int? = null) {
     val player = this
     submitAsync {
     val inv = player.inventory
         devLog(console.asLangText("DEBUG_ACTION_APPLY", player.player?.name ?:"Unknown"))
         val slotList = getSlots(config.getStringList("action.require-enabled-slot"))
         for (slot in slotList) {
-            val data = inv.getItem(slot).getData()
-            var i = inv.getItem(slot)?.getDepazItemInst() ?: continue
+            var i = if (islot == slot) i2?.getDepazItemInst() ?: continue else inv.getItem(slot)?.getDepazItemInst() ?: continue
+            val data = i.data
                 for (action in i.getDepazItem()?.actions ?: continue) {
                     if (action.trigger == trigger && player.getSlots(action.require).contains(slot)) {
-                        val returni = player.applyAction(action, i, data, e)
-                        if (returni != null) i = returni
+                        player.applyAction(action, i, data, e)
                     }
                 }
         }
     }
 }
 
-fun Player.applyAction(action: Action, i: DepazItemInst,data : LinkedHashMap<String, Any>,e: Event): DepazItemInst? {
+fun Player.applyAction(action: Action, i: DepazItemInst,data : LinkedHashMap<String, Any>,e: Event) {
     val player = this
     var returnItem: DepazItemInst? = i
     submit(async = action.async) {
@@ -57,5 +57,4 @@ fun Player.applyAction(action: Action, i: DepazItemInst,data : LinkedHashMap<Str
             ActionType.JAVASCRIPT -> player.warningS("In Dev!")
         }
     }
-    return returnItem
 }

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.francobm.magicosmetics.api.Cosmetic
+import com.willfp.ecoitems.items.EcoItems
 import dev.lone.itemsadder.api.ItemsAdder
 import github.saukiya.sxitem.SXItem
 import ink.ptms.zaphkiel.Zaphkiel
@@ -9,6 +10,8 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.th0rgal.oraxen.api.OraxenItems
 import net.Indyuce.mmoitems.MMOItems
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems
+import net.momirealms.craftengine.bukkit.plugin.BukkitCraftEngine
+import net.momirealms.craftengine.core.plugin.CraftEngine
 import net.momirealms.craftengine.core.util.Key
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -32,7 +35,7 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val param = split[1]
 
     val miType = param.split(".")[0]
-    val miId = param.split(".")[1]
+    val miId = if (param.split(".").size >= 2) param.split(".")[1] else "1"
 
     val prefixu = prefix.uppercase()
 
@@ -73,12 +76,12 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 null
             }
         }
-        /*"EC", "ECO", "ECOITEMS" -> {
+        "EC", "ECO", "ECOITEMS" -> {
             returnItem = try { EcoItems.getByID(param)?.itemStack } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null
             }
-        }*/
+        }
         "SX", "SXITEM", "SX-ITEM" -> {
             returnItem = try { SXItem.getItemManager().getItem(param, p) } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
@@ -104,7 +107,12 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
 
         "CE", "CRAFTENGINE" -> {
             returnItem = try {
-                CraftEngineItems.byId(Key.from(param))?.buildItemStack()
+                if (p == null) CraftEngineItems.byId(Key.from(param))?.buildItemStack()
+                else {
+                    // val api = CraftEngine.instance()
+                    val bukkitApi = BukkitCraftEngine.instance()
+                    CraftEngineItems.byId(Key.from(param))?.buildItemStack(bukkitApi.adapt(p))
+                }
             } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null

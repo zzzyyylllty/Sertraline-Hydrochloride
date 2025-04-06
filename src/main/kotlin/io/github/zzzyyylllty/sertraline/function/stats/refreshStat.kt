@@ -63,7 +63,7 @@ fun Player.reapplyStat() {
         for (slot in slotList) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
-                for (atb in i.getDepazItemInst().attributes) {
+                for (atb in i.getDepazItemInst()?.attributes ?: continue) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot)
                 }
             }

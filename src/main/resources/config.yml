@@ -8,7 +8,7 @@ attribute:
   debounce-time: 500
   # 状态刷新防抖函数执行频率，单位毫秒
   # 表示应在玩家最后一次移动物品等刷新属性后的多长时间后计算属性
-  # 例如玩家移动物品后，在500ms内再移动一次不会计算属性，在最后一次移动后的500ms才会计算。
+  # 例如玩家移动物品后，在500s内再移动一次不会计算属性，在最后一次移动后的500ms才会计算。
   # 将此数值调低可避免属性计算不及时，但可能会影响性能
   # 默认值: 500
   default: MYTHIC_LIB
@@ -29,6 +29,7 @@ attribute:
   # 性能影响: 一般
 
 action:
+  throttle-time: 500
   require-enabled-slot:
     - HELMET
     - CHESTPLATE

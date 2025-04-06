@@ -52,28 +52,23 @@ fun ItemStack?.getDepazItemNBTOrFail(): String? {
     return this?.getItemTag()?.getDeep("SERTRALINE_DATA")?.toJsonSimplified()
 }
 
-fun ItemStack.getDepazItemInst(): DepazItemInst {
+fun ItemStack.getDepazItemInst(): DepazItemInst? {
     var attribute : String = "[]"
-    var id : String = "null"
+    var id : String? = null
     var data = LinkedHashMap<String, Any>()
-    val jsonUtils = Json {
-        prettyPrint = true
-        isLenient = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-        allowStructuredMapKeys = true
-        allowSpecialFloatingPointValues = true
+    this.itemTagReader {
+        id = getString("SERTRALINE_ID")
     }
+    if (itemMap[id] == null || id == null) return null
+
         this.itemTagReader {
             attribute = getString("SERTRALINE_ATTRIBUTE") ?: "[]"
-            id = getString("SERTRALINE_ID") ?: "null"
             data = JSON.parse(getString("SERTRALINE_DATA") ?:"{}") as LinkedHashMap<String, Any>
         }
     val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
 
     return DepazItemInst(
-        id = id,
+        id = id!!,
         item = this,
         attributes = atbInst,
         data = data
