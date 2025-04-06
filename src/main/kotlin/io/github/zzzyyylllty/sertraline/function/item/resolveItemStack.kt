@@ -76,12 +76,13 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 null
             }
         }
+        /*
         "EC", "ECO", "ECOITEMS" -> {
             returnItem = try { EcoItems.getByID(param)?.itemStack } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null
             }
-        }
+        }*/
         "SX", "SXITEM", "SX-ITEM" -> {
             returnItem = try { SXItem.getItemManager().getItem(param, p) } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
