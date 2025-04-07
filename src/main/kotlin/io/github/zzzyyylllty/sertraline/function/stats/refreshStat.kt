@@ -30,7 +30,7 @@ import kotlin.String
  * */
 
 
-val debounceRefreshStat = debounce<Player>(config["attribute.debounce-time"] as Long? ?: 500) { player  ->
+val debounceRefreshStat = debounce<Player>(config.getLong("attribute.debounce-time",500)) { player  ->
     player.refreshStat()
 }
 

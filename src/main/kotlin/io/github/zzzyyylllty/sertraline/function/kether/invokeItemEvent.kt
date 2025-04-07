@@ -12,6 +12,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerEvent
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.submitAsync
 import taboolib.module.kether.KetherShell.eval
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.ScriptOptions
@@ -19,27 +20,27 @@ import java.util.concurrent.CompletableFuture
 
 // Some code from ink.ptms.zaphkiel.impl.item.DefaultItemEvent
 fun DepazItemInst?.directInvokeItemEvent(player: Player?, event: Event, data: Map<String, Any?>, script: List<String>): CompletableFuture<DepazItemInst?> {
-    val future = CompletableFuture<DepazItemInst?>()
-    val depaz = this@directInvokeItemEvent
-    val options = ScriptOptions.new {
-        if (player != null) {
-            sender(player)
+        val future = CompletableFuture<DepazItemInst?>()
+        val depaz = this@directInvokeItemEvent
+        val options = ScriptOptions.new {
+            if (player != null) {
+                sender(player)
+            }
+            vars(data)
+            set("@Event", event)
+            set("@Item", depaz)
+            sandbox()
+            detailError()
         }
-        vars(data)
-        set("@Event", event)
-        set("@Item", depaz)
-        sandbox()
-        detailError()
-    }
-    eval(script, options).thenRun {
-        if (depaz != null) {
-            future.complete(depaz)
-        } else {
-            future.complete(null)
+        eval(script, options).thenRun {
+            if (depaz != null) {
+                future.complete(depaz)
+            } else {
+                future.complete(null)
+            }
         }
-    }
-    devLog("invoking item for player ${player?.player?.name} event ${event.eventName} data $data script $script for instance $depaz")
-    return future
+        devLog("invoking item for player ${player?.player?.name} event ${event.eventName} data $data script $script for instance $depaz")
+        return future
 }
 
 fun ScriptFrame.getScriptItem(): DepazItemInst {

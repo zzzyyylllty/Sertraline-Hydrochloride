@@ -12,5 +12,5 @@ import taboolib.module.nms.getI18nName
 
 fun ItemStack.getDisplayNameOrRegName(): String {
     val mm = MiniMessage.miniMessage()
-    return this.itemMeta?.displayName ?: this.getName()
+    return mm.serialize(this.displayName())
 }

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.command.subCommands
 
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.function.kether.runKether
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -46,7 +47,7 @@ object DepazApiCommand {
                     val mm = MiniMessage.miniMessage()
                     // 获取参数的值
                     val content = context["script"]
-                    val ret = content.evalKether(sender)
+                    val ret = runKether(listOf(content), sender)
                     sender.infoS("<yellow>Kether: <gray>$content")
                     sender.infoS("<yellow>Return: <gray>${ret.get()}") }
             }
@@ -61,11 +62,11 @@ object DepazApiCommand {
                 execute<CommandSender> { sender, context, argument ->
                     submitAsync {
                         val tabooPlayer = context.player("player")
-                        val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                        val bukkitPlayer = tabooPlayer.castSafely<Player>() as CommandSender
                         val mm = MiniMessage.miniMessage()
                         // 获取参数的值
                         val content = context["script"]
-                        val ret = content.evalKether(sender)
+                        val ret = runKether(listOf(content), bukkitPlayer)
                         sender.infoS("<yellow>Kether: <gray>$content")
                         sender.infoS("<yellow>Return: <gray>${ret.get()}") }
                 }
@@ -81,7 +82,7 @@ object DepazApiCommand {
                     val mm = MiniMessage.miniMessage()
                     // 获取参数的值
                     val content = context["script"]
-                    content.evalKether(sender) }
+                    runKether(listOf(content), sender) }
             }
         }
     }
@@ -94,11 +95,12 @@ object DepazApiCommand {
                 execute<CommandSender> { sender, context, argument ->
                     submitAsync {
                         val tabooPlayer = context.player("player")
-                        val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                        val bukkitPlayer = tabooPlayer.castSafely<Player>() as CommandSender
                         val mm = MiniMessage.miniMessage()
                         // 获取参数的值
                         val content = context["script"]
-                        content.evalKether(sender) }
+                        runKether(listOf(content), bukkitPlayer)
+                    }
                 }
             }
         }

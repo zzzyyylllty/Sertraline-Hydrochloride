@@ -8,7 +8,6 @@ import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFiles
 import io.github.zzzyyylllty.sertraline.function.load.reloadSertraline
-import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
