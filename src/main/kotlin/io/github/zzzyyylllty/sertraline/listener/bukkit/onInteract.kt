@@ -58,9 +58,9 @@ fun onPreAttack(e: PrePlayerAttackEntityEvent) {
 
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
+    if(config.getBoolean("item.no-replacement-consume",false)) e.replacement = null
     submitAsync {
         throttleAction(ThrottleActionLink(e.player, "onConsume"), ThrottleActionParam(e, e.item, e.hand.ordinal))
-        if(config.getBoolean("item.no-replacement-consume",false)) e.replacement = null
     }
 }
 @SubscribeEvent
