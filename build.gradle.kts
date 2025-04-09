@@ -56,9 +56,15 @@ taboolib {
         install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag)
     }
     version {
-        taboolib = "6.2.3-20d868d"
+        taboolib = "6.2.0" // 6.2.3-20d868d
         coroutines = "1.7.3"
-        skipTabooLibRelocate = true
+        // 跳过 Kotlin 加载
+        skipKotlin = false
+        // 跳过 Kotlin 重定向
+        skipKotlinRelocate = false
+        // 跳过 TabooLib 重定向
+        skipTabooLibRelocate = false
+
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
     relocate("ink.ptms.um","xx.um")

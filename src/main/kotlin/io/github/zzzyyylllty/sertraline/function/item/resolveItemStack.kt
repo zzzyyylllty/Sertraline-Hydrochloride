@@ -28,7 +28,7 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
 
     var returnItem: ItemStack? = null
     if (split.size == 1) {
-        return ItemStack(XMaterial.valueOf(s).get() ?: Material.STONE)
+        return ItemStack(XMaterial.valueOf(s).parseMaterial() ?: Material.GRASS_BLOCK)
     }
 
     val prefix = split[0]
