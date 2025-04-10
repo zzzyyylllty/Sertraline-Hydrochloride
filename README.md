@@ -1,4 +1,4 @@
-# Sertraline-Hydrochloride 盐酸舍曲林 / DepazItems
+# Sertraline 盐酸舍曲林 / DepazItems
 
 **项目使用 TabooLib Start Jar 创建**
 

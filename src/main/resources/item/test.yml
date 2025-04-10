@@ -18,11 +18,11 @@ APPLE:
       async: true
       content: |
         tell "Hello World!"
-DEPAZ_PILLS:
+MEDICINAL_PILLS:
   minecraft:
-    material: GRAY_DYE
+    material: COOKED_BEEF
     model: 10000
-    name: '<white>Depaz Pills'
+    name: '<white>MEDICINAL Pills'
     lore: |
       <white>Look I’m taking my medicine like a good girl.
       <white>
