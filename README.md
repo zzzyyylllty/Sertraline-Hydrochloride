@@ -78,11 +78,6 @@ Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
 ./gradlew clean build
 ```
 
-```
-./gradlew shadowJar
-```
-
-And after shadow, you need to copy kotlin/enums in shadowed jar to normal jar inside kotlin200
 ## 构建开发版本
 
 开发版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
