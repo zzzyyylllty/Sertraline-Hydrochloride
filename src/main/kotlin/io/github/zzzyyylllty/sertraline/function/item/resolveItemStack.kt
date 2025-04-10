@@ -34,8 +34,8 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val prefix = split[0]
     val param = split[1]
 
-    val miType = param.split(".")[0]
-    val miId = if (param.split(".").size >= 2) param.split(".")[1] else "1"
+    val miType = param.split(":")[0]
+    val miId = if (param.split(":").size >= 2) param.split(":")[1] else "1"
 
     val prefixu = prefix.uppercase()
 
@@ -112,7 +112,7 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 else {
                     // val api = CraftEngine.instance()
                     val bukkitApi = BukkitCraftEngine.instance()
-                    CraftEngineItems.byId(Key.from(param))?.buildItemStack(bukkitApi.adapt(p))
+                    CraftEngineItems.byId(Key.of(miType,miId))?.buildItemStack(bukkitApi.adapt(p))
                 }
             } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))

@@ -40,7 +40,7 @@ taboolib {
     }
     env {
         // 调试模式
-        debug = false
+        debug = true
         // 是否在开发模式下强制下载依赖
         forceDownloadInDev = true
         // 中央仓库地址
@@ -53,10 +53,10 @@ taboolib {
         fileAssets = "assets"
         // 是否启用隔离加载器（即完全隔离模式）
         enableIsolatedClassloader = false
-        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil,Database, Kether, CommandHelper, BukkitNMSItemTag)
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag)
     }
     version {
-        taboolib = "6.2.0" // 6.2.3-20d868d
+        taboolib = "6.2.3-20d868d" // 6.2.3-20d868d
         coroutines = "1.7.3"
         // 跳过 Kotlin 加载
         skipKotlin = false
@@ -103,6 +103,9 @@ repositories {
         name = "sonatype-oss-snapshots"
     }
     maven("https://repo.momirealms.net/releases/")
+    maven("https://maven.aliyun.com/repository/google")
+    maven("https://maven.aliyun.com/repository/public")
+    maven("https://maven.aliyun.com/repository/jcenter")
 }
 
 dependencies {
@@ -118,7 +121,9 @@ dependencies {
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
     compileOnly("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
-    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
+
+    // compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
+
     compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
     compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
     compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
@@ -126,24 +131,29 @@ dependencies {
     compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
     compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
     compileOnly("com.github.Saukiya:SX-Item:4.4.0")
+
     compileOnly("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
+
     compileOnly("net.luckperms:api:5.4")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
+
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
+
     taboo("com.beust:klaxon:5.6")
+
     taboo("ink.ptms:um:1.1.3") // universal mythicmobs
     implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
-    compileOnly(fileTree("libs"))
     implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
     implementation("net.kyori:adventure-nbt:4.19.0")
-    testImplementation(kotlin("test"))
+    // testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
     taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
+    taboo("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.0") { isTransitive = false }
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.0") { isTransitive = false }
     //compileOnly("ink.ptms.core:v12004:12004:mapped")

@@ -37,19 +37,26 @@ import java.util.*
 
 @RuntimeDependencies(
     RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.0",
+        "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3",
         test = "!kotlinx.serialization.Serializer",
-        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization170."],
+        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization163."],
         transitive = false
     ),
     RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.0",
+        "!org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3",
         test = "!kotlinx.serialization.json.Json",
-        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization170."],
+        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization163."],
+        transitive = false
+    ),
+    RuntimeDependency(
+        "!org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0",
+        test = "!kotlin.enums.EnumEntries",
+        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlin200.enums."],
         transitive = false
     )
 )
 class RuntimeEnv
+
 
 object Sertraline : Plugin() {
 
