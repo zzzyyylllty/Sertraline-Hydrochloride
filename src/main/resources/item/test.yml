@@ -24,17 +24,13 @@ DEPAZ_PILLS:
     model: 10000
     name: '<white>Depaz Pills'
     lore: |
-      <white>“Look I’m taking my medicine like a good girl…” 
-                                                  <light_purple>--KAngel
+      <white>Look I’m taking my medicine like a good girl.
       <white>
       <white>On Consume: Instant Damage I
-      <#FF66FF>Stresses <#FF66FF>15 <#FF6666>-> <#FF66FF>3
-      <#FF66FF>Darkness <#FF66FF>15 <#66CCFF>-> <#FF66FF>24
   extend:
     - template: FOOD_TEMPLATE
       data:
         effect: instant_damage
-        # 这里的 data 会覆盖模板内的 data
 IRON_SWORD:
   minecraft:
     material: IRON_SWORD

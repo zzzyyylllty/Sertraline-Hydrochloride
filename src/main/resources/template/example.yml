@@ -7,4 +7,3 @@ FOOD_TEMPLATE:
       async: true
       content: |
         command inline "effect give {{ sender }} {{ <data:effect> }}" as console
-# 在Kether中使用 &xxx 以替换为 Any 类型

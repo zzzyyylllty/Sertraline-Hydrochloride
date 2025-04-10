@@ -30,6 +30,10 @@ Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
 * cache\taboolib
 * libraries\io\izzel\taboolib
 
+### Sertraline 0.3.1
+
+* Leaf 1.20.4
+* Leaf 1.21.4
 ### Sertraline 0.1.5
 
 * Leaf 1.20.4
