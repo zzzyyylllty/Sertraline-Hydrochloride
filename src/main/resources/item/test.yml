@@ -19,6 +19,9 @@ APPLE:
       content: |
         tell "Hello World!"
 MEDICINAL_PILLS:
+  meta:
+    data:
+      effect: instant_damage
   minecraft:
     material: COOKED_BEEF
     model: 10000
@@ -29,8 +32,6 @@ MEDICINAL_PILLS:
       <white>On Consume: Instant Damage I
   extend:
     - template: FOOD_TEMPLATE
-      data:
-        effect: instant_damage
 IRON_SWORD:
   minecraft:
     material: IRON_SWORD
