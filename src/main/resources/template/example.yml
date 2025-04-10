@@ -1,9 +1,9 @@
 FOOD_TEMPLATE:
   action:
-    - trigger: onInteract
+    - trigger: onConsume
       require:
-        - MAIN_HAND
+        - ANY_HAND
       type: KETHER
       async: true
       content: |
-        command inline "effect give {{ sender }} {{ <data:effect> }}" as console
+        command inline "effect give {{ sender }} {{ &effect }}" as console

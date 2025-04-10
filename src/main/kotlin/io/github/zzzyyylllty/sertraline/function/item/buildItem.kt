@@ -194,6 +194,7 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
             break
         }
     }
+    /*
     while (json.contains("<data:.+?>".toRegex())) {
         i++
         val pattern = "<data:(.+?)>".toRegex()
@@ -214,6 +215,8 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
             break
         }
     }
+
+     */
     devLog("kethered json: $json")
 
     val inst = jsonUtils.decodeFromString<DepazItems>(json)
