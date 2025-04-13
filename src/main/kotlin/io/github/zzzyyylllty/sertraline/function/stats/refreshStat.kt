@@ -15,6 +15,7 @@ import io.lumine.mythic.lib.api.stat.StatMap
 import io.lumine.mythic.lib.api.stat.modifier.StatModifier
 import io.lumine.mythic.lib.player.modifier.ModifierSource
 import io.lumine.mythic.lib.player.modifier.ModifierType
+import net.Indyuce.mmoitems.api.player.PlayerData
 import org.bukkit.entity.Player
 import taboolib.common.function.debounce
 import taboolib.common.platform.function.submitAsync
@@ -56,25 +57,26 @@ fun Player.refreshStat() {
 * */
 fun Player.reapplyStat() {
     val player = this
-        val inv = player.inventory
-        devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
-        val slotList = getSlots(config.getStringList("attribute.require-enabled-slot"))
-        devLog("SLOTS: ${slotList}")
+    val inv = player.inventory
+    devLog(console.asLangText("DEBUG_STAT_REFRESH", player.player?.name ?:"Unknown"))
+    val slotList = getSlots(config.getStringList("attribute.require-enabled-slot"))
+    devLog("SLOTS: ${slotList}")
+    val playerData: MMOPlayerData = MMOPlayerData.get(this)
+    val statMap: StatMap = playerData.statMap
         for (slot in slotList) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
                 for (atb in i.getDepazItemInst()?.attributes ?: continue) {
-                    if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot)
+                    if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot, playerData, statMap)
                 }
             }
         }
     }
 
-fun Player.applyAtb(attribute: AttributeInst, slot: Int) {
+fun Player.applyAtb(attribute: AttributeInst, slot: Int, playerData: MMOPlayerData, map: StatMap) {
     devLog("APPLYING ATTRIBUTE $attribute")
-    val playerData: MMOPlayerData = MMOPlayerData.get(this)
-    val statMap: StatMap = playerData.statMap
-    val uuid = UUID.fromString(attribute.uuid) ?: UUID.randomUUID()
+    val uuid = UUID.fromString(attribute.uuid) ?: UUID.nameUUIDFromBytes(attribute.toString().toByteArray())
+    // Make sure UUID Is Same
     for (single in attribute.attr) {
         val typedValue = relativeOrFlat(single.value)
         when (attribute.attributeSources) {

@@ -30,11 +30,14 @@ If you have updated the plugin version, please delete it before you report bugs:
 * cache\taboolib
 * libraries\io\izzel\taboolib
 
+## Specials
+
+![image](https://github.com/user-attachments/assets/2c9873bb-6b8f-4c2f-99e1-0fc32a73070e)
 ### Sertraline 0.3.x
 
 * Leaf 1.20.4
 * Leaf 1.21.4
-* 
+
 ### Sertraline 0.1.5
 
 * Leaf 1.20.4
