@@ -4,7 +4,9 @@
 )*/
 package io.github.zzzyyylllty.sertraline.function.item
 
+import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.toJSONString
+import com.willfp.eco.core.items.toSNBT
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
@@ -26,7 +28,12 @@ import taboolib.common.util.random
 import taboolib.module.nms.itemTagReader
 import taboolib.platform.util.buildItem
 import kotlinx.serialization.json.Json
+import pers.neige.neigeitems.utils.ItemUtils.getNbt
+import pers.neige.neigeitems.utils.ItemUtils.getNbtOrNull
+import pers.neige.neigeitems.utils.ItemUtils.toNbt
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.ItemTagType
+import taboolib.module.nms.getItemTag
 import java.util.UUID
 
 
@@ -36,10 +43,22 @@ fun DepazItemInst.buildItem() : ItemStack {
 
     item.itemTagReader {
         set("SERTRALINE_ID", depaz.id)
+        // Before 0.4
         set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
+
+        // 0.4 start
+        // itemTag.set("SERTRALINE_ATTRIBUTE",depaz.attributes.toNbt())
+        // 0.4 end
+
         set("SERTRALINE_DATA", data.toJSONString())
         write(item)
     }
+    /*
+    item.itemTagReader {
+        devLog((itemTag.get("SERTRALINE_ATTRIBUTE") as List<*> as List<AttributeInst>).toString())
+    }
+    */
+
     return item
 }
 
@@ -114,48 +133,6 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
 
 // 未写入 NBT
 fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any>? = null) : DepazItems {
-
-/*
-    var atbjson = this.attributes.toJSONString()
-    devLog("encoded ATTRIBUTE json: $atbjson")
-
-    var i = 0
-    while (atbjson.contains("<kether:.?>".toRegex())) {
-        i++
-        atbjson = atbjson.replace("<kether:(.?)>".toRegex(), "$1".evalKetherString(p) ?: throw NullPointerException())
-        if (i > 10) {
-            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
-            break
-        }
-    }
-    while (atbjson.contains("<data:.?>".toRegex())) {
-        i++
-        atbjson = atbjson.replace("<data:(.?)>".toRegex(), this.data["$1"].toString())
-        if (i > 10) {
-            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
-            break
-        }
-    }
-    devLog("kethered json: $atbjson")
-    val jsonUtils = Json {
-        prettyPrint = true
-        isLenient = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-        allowStructuredMapKeys = true
-        allowSpecialFloatingPointValues = true
-    }
-
-    val atb = jsonUtils.decodeFromString<kotlin.collections.MutableList<AttributeInst>>(atbjson)
-
-    val inst = DepazItemInst(
-        id = this.id,
-        item = this.item,
-        attributes = atb,
-        data = data
-    )
-*/
 
     devLog("solving $this")
 

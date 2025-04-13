@@ -48,7 +48,7 @@ fun Player.refreshStat() {
             for (instance in statMap.instances) {
                 instance.removeIf { key -> key.startsWith("sertraline") }
             }
-        player?.reapplyStat()
+        pl.reapplyStat()
     }
 }
 

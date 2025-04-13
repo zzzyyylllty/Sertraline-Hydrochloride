@@ -53,7 +53,7 @@ fun ItemStack?.getDepazItemNBTOrFail(): String? {
 }
 
 fun ItemStack.getDepazItemInst(): DepazItemInst? {
-    var attribute : String = "[]"
+    var attribute : String = "{}"
     var id : String? = null
     var data = LinkedHashMap<String, Any>()
     this.itemTagReader {
@@ -62,7 +62,7 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
     if (itemMap[id] == null || id == null) return null
 
         this.itemTagReader {
-            attribute = getString("SERTRALINE_ATTRIBUTE") ?: "[]"
+            attribute = getString("SERTRALINE_ATTRIBUTE") ?: "{}"
             data = JSON.parse(getString("SERTRALINE_DATA") ?:"{}") as LinkedHashMap<String, Any>
         }
     val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
