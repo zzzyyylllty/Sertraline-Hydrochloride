@@ -12,6 +12,12 @@ Intended to facilitate and simplify the creation of items using attribute plugin
 
 Based on <a href = "https://tabooproject.org">Taboolib 6.x</a> + Kotlin.
 
+**NATIVE 1.20.4**
+
+**TESTED 1.20.4-1.21.4**
+
+**REQUIRED JAVA 21**
+
 Project Name From：
 <div style="text-align: center;">Game <a href = "https://needystreameroverload.wiki.gg/wiki/">Needy Girl Overdose</a>'s Depaz Pills</div><br>
 <div style="text-align: center;"><a href = "https://baike.baidu.com/item/%E7%9B%90%E9%85%B8%E8%88%8D%E6%9B%B2%E6%9E%97%E7%89%87/8353072">Sertraline - Hydrochloride</a></div>
@@ -22,32 +28,6 @@ Project Name From：
 Sertraline is free, but we do not provide build files for unstable versions.
 
 You can obtain unstable versions by building them yourself, or download stable versions from Release.
-
-## Tested Versions
-
-If you have updated the plugin version, please delete it before you report bugs:
-
-* cache\taboolib
-* libraries\io\izzel\taboolib
-
-## Specials
-
-![image](https://github.com/user-attachments/assets/2c9873bb-6b8f-4c2f-99e1-0fc32a73070e)
-### Sertraline 0.3.x
-
-* Leaf 1.20.4
-* Leaf 1.21.4
-
-### Sertraline 0.1.5
-
-* Leaf 1.20.4
-### Sertraline 0.1.2
-
-* Leaf 1.20.4
-### Sertraline 0.1.1
-
-* Leaf 1.20.4
-* Leaf 1.21.1
 
 ## TODO
 - [x] Read files/folders

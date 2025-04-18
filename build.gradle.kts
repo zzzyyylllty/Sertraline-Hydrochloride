@@ -138,17 +138,17 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
+    implementation("net.kyori:adventure-api:4.19.0")
+    implementation("net.kyori:adventure-text-minimessage:4.19.0")
+    implementation("net.kyori:adventure-nbt:4.19.0")
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
 
     taboo("com.beust:klaxon:5.6")
 
     taboo("ink.ptms:um:1.1.3") // universal mythicmobs
-    implementation("net.kyori:adventure-api:4.19.0")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    implementation("net.kyori:adventure-text-minimessage:4.19.0")
-    implementation("net.kyori:adventure-nbt:4.19.0")
     // testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
     taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
