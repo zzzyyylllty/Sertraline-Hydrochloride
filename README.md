@@ -12,11 +12,11 @@ Sertraline 是一个在 Minecraft Bukkit 平台下运行的物品库插件。
 
 基于 <a href = "https://tabooproject.org">Taboolib 6.x</a> 和 Kotlin.
 
-**原生版本 1.20.4**
+**原生版本 1.20.4 & Paper**
 
-**测试过的版本 1.20.4-1.21.4**
+**测试过的版本 Paper 1.20.4-1.21.4**
 
-**需要 Java 版本 >= 21**
+**需要 Java 版本 >= 21 & Paper**
 
 这个项目的名字来源于：
 <div style="text-align: center;">游戏 <a href = "https://needystreameroverload.wiki.gg/wiki/">主播女孩重度依赖</a> 中的安神片 (Depaz Pills)</div><br>

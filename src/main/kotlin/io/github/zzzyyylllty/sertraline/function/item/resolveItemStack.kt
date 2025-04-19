@@ -34,8 +34,8 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val prefix = split[0]
     val param = split[1]
 
-    val miType = param.split(":")[0]
-    val miId = if (param.split(":").size >= 2) param.split(":")[1] else "1"
+    val miType = param.split(".")[0]
+    val miId = if (param.split(".").size >= 2) param.split(".")[1] else "1"
 
     val prefixu = prefix.uppercase()
 
