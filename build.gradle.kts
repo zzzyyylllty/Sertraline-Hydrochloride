@@ -111,6 +111,7 @@ repositories {
 dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:mapped")
     // compileOnly("ink.ptms.core:v12004:12004:universal")
+    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     //implementation("org.jetbrains.kotlin:kotlin-libs:2.0.0")
@@ -148,7 +149,6 @@ dependencies {
 
     taboo("ink.ptms:um:1.1.3") // universal mythicmobs
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
-    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     // testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
     taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")

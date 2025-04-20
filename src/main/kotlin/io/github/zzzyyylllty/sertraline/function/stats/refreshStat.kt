@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.AttributeSources.*
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.function.item.getAttribute
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
 import io.github.zzzyyylllty.sertraline.function.item.getSlots
 import io.github.zzzyyylllty.sertraline.function.item.isDepazItemInList
@@ -66,7 +67,7 @@ fun Player.reapplyStat() {
         for (slot in slotList) {
             val i = inv.getItem(slot) ?: continue
             if (i.isDepazItemInList()) {
-                for (atb in i.getDepazItemInst()?.attributes ?: continue) {
+                for (atb in i.getAttribute()) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot, playerData, statMap)
                 }
             }
