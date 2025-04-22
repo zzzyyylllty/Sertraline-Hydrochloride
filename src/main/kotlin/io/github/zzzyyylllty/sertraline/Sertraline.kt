@@ -1,7 +1,5 @@
 package io.github.zzzyyylllty.sertraline
 
-import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependencies
-import ink.ptms.adyeshach.taboolib.common.env.RuntimeDependency
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
@@ -28,7 +26,13 @@ import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import taboolib.common.env.RuntimeDependencies
+import taboolib.common.env.RuntimeDependency
+import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.releaseResourceFile
+import taboolib.module.lang.Language
+import taboolib.module.lang.event.PlayerSelectLocaleEvent
+import taboolib.module.lang.event.SystemSelectLocaleEvent
 import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
 import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
@@ -86,6 +90,8 @@ object Sertraline : Plugin() {
 
     override fun onEnable() {
         infoL("INTERNAL_ONENABLE")
+        Language.enableSimpleComponent = true
+        Language.default = "en_US"
         reloadSertraline()
     }
 
@@ -120,4 +126,15 @@ object Sertraline : Plugin() {
             e.printStackTrace()
         }
     }
+
+    @SubscribeEvent
+    fun lang(event: PlayerSelectLocaleEvent) {
+        event.locale = config.getString("lang", "zh_CN")!!
+    }
+
+    @SubscribeEvent
+    fun lang(event: SystemSelectLocaleEvent) {
+        event.locale = config.getString("lang", "zh_CN")!!
+    }
+
 }

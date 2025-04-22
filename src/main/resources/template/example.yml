@@ -7,3 +7,4 @@ FOOD_TEMPLATE:
       async: true
       content: |
         command inline "effect give {{ sender }} {{ &effect }}" as console
+        depaz consume
