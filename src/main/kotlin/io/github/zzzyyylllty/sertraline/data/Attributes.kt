@@ -33,5 +33,6 @@ data class AttributeInst(
     val uuid: String = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String> = listOf()
+    val requireSlot: List<String> = listOf(),
+    val conditionOnEffect: String?
 )

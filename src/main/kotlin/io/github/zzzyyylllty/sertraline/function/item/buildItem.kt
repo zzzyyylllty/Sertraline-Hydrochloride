@@ -13,9 +13,13 @@ import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
+import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -35,24 +39,43 @@ import taboolib.module.lang.asLangText
 import taboolib.module.nms.ItemTagType
 import taboolib.module.nms.getItemTag
 import java.util.UUID
+import kotlin.collections.toMutableList
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 
 
 fun DepazItemInst.buildItem() : ItemStack {
 
     val depaz = this
+//    Before1.1
+//    item.itemTagReader {
+//        set("SERTRALINE_ID", depaz.id)
+//        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
+//
+//        set("SERTRALINE_DATA", data.toJSONString())
+//        write(item)
+//    }
 
-    item.itemTagReader {
-        set("SERTRALINE_ID", depaz.id)
-        // Before 0.4
-        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
+    // 1.1 Start
 
-        // 0.4 start
-        // itemTag.set("SERTRALINE_ATTRIBUTE",depaz.attributes.toNbt())
-        // 0.4 end
-
-        set("SERTRALINE_DATA", data.toJSONString())
-        write(item)
+    val json = Json {
+        prettyPrint = true
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        allowSpecialFloatingPointValues = true
     }
+    val parsedList : MutableList<LinkedHashMap<String,@Serializable(AnySerializer::class) Any>> = emptyList<LinkedHashMap<String,@Serializable(AnySerializer::class) Any>>().toMutableList()
+    attributes.forEach { parsedList.add(json.decodeFromString(json.encodeToString(it))) }
+
+
+    val itemTag = item.getItemTag()
+    itemTag.putDeep("SERTRALINE_ID", depaz.id)
+    itemTag.putDeep("SERTRALINE_ATTRIBUTE", depaz.id)
+
+    itemTag.saveTo(item)
     /*
     item.itemTagReader {
         devLog((itemTag.get("SERTRALINE_ATTRIBUTE") as List<*> as List<AttributeInst>).toString())
@@ -109,15 +132,16 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
 
     for (attr in depaz.attributeParts) {
         // Attribute Chance
-        if (attr.chance.evalKether(sender).get().toString().toDouble() > random(0.0,99.9)) instAttrs.add(
+        if (attr.conditionOnBuild.evalKetherBoolean(p) && attr.chance.evalKether(sender).get().toString().toDouble() > random(0.0,99.9)) instAttrs.add(
             AttributeInst(
                 attributeSources = attr.attributeSources,
                 attr = attr.attr,
                 definer = attr.definer,
-                uuid = attr.uuid ?: UUID.randomUUID().toString(),
+                uuid = attr.uuid,
                 source = attr.source,
                 mythicLibEquipSlot = attr.mythicLibEquipSlot,
-                requireSlot = attr.requireSlot
+                requireSlot = attr.requireSlot,
+                conditionOnEffect = attr.conditionOnEffect
             )
         )
     }

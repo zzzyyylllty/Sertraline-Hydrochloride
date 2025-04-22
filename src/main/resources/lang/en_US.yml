@@ -39,7 +39,7 @@ DEBUG_STAT_REFRESH: "Refreshing stat for {0}"
 DEBUG_ACTION_APPLY: "Executing action for player {0}"
 DEBUG_NO_PARAM_USE_DEFAULT: "No value for param {0}，will use {1}"
 
-ERROR_NOT_PLAYER: "Sender is not a player."
+ERROR_NOT_PLAYER: "CommandSender is not a player."
 ERROR_PLAYER_NOT_FOUND: "Player {0} Not Found."
 ERROR_UNKNOWN_SKILL: "Unknown mechanic {0}"
 ERROR_UNKNOWN_SKILL_TRIGGER: "Unknown trigger {0}"

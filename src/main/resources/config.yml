@@ -2,8 +2,8 @@ debug: false
 # Debug Mode
 # Performance impact: Normal
 
-
 lang: en_US
+# Language
 
 item:
   no-replacement-consume: true

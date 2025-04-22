@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import kotlinx.serialization.Serializable
@@ -12,6 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
+import taboolib.module.configuration.util.asMap
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
 
@@ -62,10 +64,9 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
     if (itemMap[id] == null || id == null) return null
 
     this.itemTagReader {
-        attribute = getString("SERTRALINE_ATTRIBUTE") ?: "{}"
         data = JSON.parse(getString("SERTRALINE_DATA") ?:"{}") as LinkedHashMap<String, Any>
     }
-    val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
+    val atbInst = this.getAttribute()
 
     return DepazItemInst(
         id = id!!,
@@ -77,10 +78,19 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
 
 fun ItemStack.getAttribute(): MutableList<AttributeInst> {
     var attribute : String = "{}"
+//    1.0.0
+//    this.itemTagReader {
+//        attribute = getString("SERTRALINE_ATTRIBUTE") ?: "{}"
+//    }
 
-    this.itemTagReader {
-        attribute = getString("SERTRALINE_ATTRIBUTE") ?: "{}"
+    // 1.0.1 Start
+    val itemTag = this.getItemTag()
+    itemTag.getDeep("SERTRALINE_ATTRIBUTE")?.asList()?.forEach {
+        devLog("getted attribute $it")
+        attribute = it.asMap().toString()
     }
+    // 1.0.1 End
+
     val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
 
     return atbInst
