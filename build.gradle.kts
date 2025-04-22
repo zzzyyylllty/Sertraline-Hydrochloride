@@ -122,6 +122,7 @@ dependencies {
     compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
     compileOnly("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
+    // compileOnly("io.rokuko.azureflow.api.AzureFlowAPI:1.1.0.1")
 
     // compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
 

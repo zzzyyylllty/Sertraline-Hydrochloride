@@ -21,7 +21,7 @@ import taboolib.common.platform.function.severe
 import taboolib.library.xseries.XMaterial
 import taboolib.library.xseries.parseToItemStack
 import taboolib.module.lang.asLangText
-import top.maplex.arim.tools.itemmanager.source.SourceCraftEngine
+// import io.rokuko.azureflow.api.AzureFlowAPI
 
 fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val split = s.split(":")
@@ -104,8 +104,17 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null
             }
+        }/*
+        "AF","AZUREFLOW" -> {
+            returnItem = try {
+                val factory = AzureFlowAPI.getFactory(param) ?: throw NullPointerException("AzureFlow Item Not Found")
+                factory.build()
+            } catch (e: Exception) {
+                severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
+                null
+            }
         }
-
+*/
         "CE", "CRAFTENGINE" -> {
             returnItem = try {
                 if (p == null) CraftEngineItems.byId(Key.from(param))?.buildItemStack()
