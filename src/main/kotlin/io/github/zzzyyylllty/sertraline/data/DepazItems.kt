@@ -29,7 +29,7 @@ data class DepazItemInst(
 @Serializable
 data class VanillaItemInst(
     val material: String,
-    val name: String?,
+    val name: String? = material,
     val lore: List<String>,
     val model: Int,
     val nbt: List<java.util.LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>,
