@@ -57,7 +57,7 @@ You can obtain unstable versions by building them yourself, or download stable v
 
 ## Build release version
 
-Required Java 17.
+Required Java 21.
 
 The release version is intended for normal use and does not include the TabooLib ontology.
 
@@ -73,4 +73,4 @@ The development version includes the TabooLib ontology for developers to use, bu
 ./gradlew clean taboolibBuildApi -PDeleteCode
 ```
 
-> 参数 -PDeleteCode 表示移除所有逻辑代码以减少体积。
+> The parameter -PDeleteCode indicates the removal of all logical code to reduce volume.
