@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.function.stats.debounceRefreshStat
 import io.github.zzzyyylllty.sertraline.function.stats.refreshStat
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerLoginEvent
+import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submitAsync
 
@@ -24,7 +25,7 @@ fun armorEquipEvent(e: PlayerArmorChangeEvent) {
 }
 
 
-@SubscribeEvent
+@SubscribeEvent(EventPriority.MONITOR)
 fun onLoginUpdate(e: PlayerLoginEvent) {
     submitAsync {
         e.player.refreshStat()
