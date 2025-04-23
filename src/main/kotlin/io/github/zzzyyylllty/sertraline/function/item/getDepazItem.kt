@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.JSONWriter
 import com.alibaba.fastjson2.TypeReference
 import com.alibaba.fastjson2.toJSONString
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
@@ -13,12 +14,23 @@ import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
 import pers.neige.neigeitems.utils.ItemUtils.toNbt
 import taboolib.module.configuration.util.asMap
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
+
+val jsonMain = Json {
+    prettyPrint = true
+    isLenient = true
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+    encodeDefaults = true
+    allowStructuredMapKeys = true
+    allowSpecialFloatingPointValues = true
+}
 
 fun ItemStack?.getDepazItem(): DepazItems? {
     var id : String? = null
@@ -90,19 +102,11 @@ fun ItemStack.getAttribute(): MutableList<AttributeInst> {
     val itemTag = this.getItemTag()
     itemTag.getDeep("SERTRALINE_ATTRIBUTE")?.asList()?.forEach {
         devLog("getted attribute $it")
-        val map = it.toJsonSimplified()
-        devLog("getted Jsonmap $map")
+        //val map: String = it.asCompound().toJson()
+        //devLog("getted Jsonmap $map")  // 输出简洁的 JSON
+
+        val json = jsonMain.decodeFromString<AttributeInst>(it.toString())
         //val json = JSON.parseObject<AttributeInst>(map, object : TypeReference<AttributeInst>() {})
-        val jsonMain = Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            encodeDefaults = true
-            allowStructuredMapKeys = true
-            allowSpecialFloatingPointValues = true
-        }
-        val json = jsonMain.decodeFromString<AttributeInst>(map)
         atbInst.add(json)
         devLog("getted Instance $json")
     }
