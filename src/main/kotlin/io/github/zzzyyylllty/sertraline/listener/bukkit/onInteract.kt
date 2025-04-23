@@ -12,6 +12,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerLoginEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.function.debounce
@@ -38,8 +39,20 @@ data class ThrottleActionParam(
 @SubscribeEvent
 fun onInteract(e: PlayerInteractEvent) {
     submitAsync {
-    throttleAction(ThrottleActionLink(e.player, "onInteract"), ThrottleActionParam(e, e.item, e.hand?.ordinal))
+        throttleAction(ThrottleActionLink(e.player, "onInteract"), ThrottleActionParam(e, e.item, e.hand?.ordinal))
+    }
 }
+@SubscribeEvent
+fun onLeftClick(e: PlayerInteractEvent) {
+    if (e.hand == EquipmentSlot.OFF_HAND) submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onLeftClick"), ThrottleActionParam(e, e.item, e.hand?.ordinal))
+    }
+}
+@SubscribeEvent
+fun onRightClick(e: PlayerInteractEvent) {
+    if (e.hand == EquipmentSlot.HAND) submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onRightClick"), ThrottleActionParam(e, e.item, e.hand?.ordinal))
+    }
 }
 
 @SubscribeEvent

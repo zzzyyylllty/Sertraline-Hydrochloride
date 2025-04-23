@@ -72,6 +72,7 @@ fun DepazItemInst.buildItem() : ItemStack {
     val itemTag = item.getItemTag()
     itemTag.putDeep("SERTRALINE_ID", depaz.id)
     itemTag.putDeep("SERTRALINE_ATTRIBUTE", parsedList)
+    itemTag.putDeep("SERTRALINE_DATA", data.toJSONString())
 
     itemTag.saveTo(item)
     /*

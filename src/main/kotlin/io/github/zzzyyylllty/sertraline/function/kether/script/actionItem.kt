@@ -20,6 +20,12 @@ fun actionItem() = scriptParser {
         case ("consume") {
             actionNow { getScriptItem().item.amount-- }
         }
+        case ("amount") {
+            actionNow { return@actionNow getScriptItem().item.amount }
+        }
+        case ("consumeAll") {
+            actionNow { getScriptItem().item.amount = 0}
+        }
         case ("printitem") {
                 actionNow { devLog(getScriptItem().toString()) }
             }
