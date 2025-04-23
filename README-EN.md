@@ -29,6 +29,10 @@ Sertraline is free, but we do not provide build files for unstable versions.
 
 You can obtain unstable versions by building them yourself, or download stable versions from Release.
 
+## Donate
+
+[Ifdian](https://afdian.com/a/liminalskyline)
+
 ## TODO
 - [x] Read files/folders
 - [x] Give items

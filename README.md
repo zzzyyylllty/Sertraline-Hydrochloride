@@ -29,6 +29,10 @@ Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
 
 你可通过自行构建获取不稳定版本，或是在 Release 下载稳定版本。
 
+## 赞助
+
+[爱发电](https://afdian.com/a/liminalskyline)
+
 ## TODO
 - [x] 读取文件/文件夹
 - [x] 给予物品
