@@ -1,6 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.TypeReference
+import com.alibaba.fastjson2.toJSONString
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
@@ -55,7 +57,7 @@ fun ItemStack?.getDepazItemNBTOrFail(): String? {
 }
 
 fun ItemStack.getDepazItemInst(): DepazItemInst? {
-    var attribute : String = "{}"
+    var attribute : String = "[]"
     var id : String? = null
     var data = LinkedHashMap<String, Any>()
     this.itemTagReader {
@@ -77,21 +79,25 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
 }
 
 fun ItemStack.getAttribute(): MutableList<AttributeInst> {
-    var attribute : String = "{}"
 //    1.0.0
 //    this.itemTagReader {
 //        attribute = getString("SERTRALINE_ATTRIBUTE") ?: "{}"
 //    }
 
+    var atbInst: MutableList<AttributeInst> = mutableListOf()
     // 1.0.1 Start
     val itemTag = this.getItemTag()
     itemTag.getDeep("SERTRALINE_ATTRIBUTE")?.asList()?.forEach {
         devLog("getted attribute $it")
-        attribute = it.asMap().toString()
+        val map = it.asMap().toMap().toJSONString()
+        val json = JSON.parseObject<AttributeInst>(
+            map,
+            object : TypeReference<AttributeInst>() {})
+        atbInst.add(json)
     }
     // 1.0.1 End
 
-    val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
+    // val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>
 
     return atbInst
 }

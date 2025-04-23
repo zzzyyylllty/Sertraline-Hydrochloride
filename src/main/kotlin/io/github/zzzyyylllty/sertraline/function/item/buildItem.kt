@@ -5,6 +5,7 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.TypeReference
 import com.alibaba.fastjson2.toJSONString
 import com.willfp.eco.core.items.toSNBT
 import io.github.zzzyyylllty.sertraline.Sertraline.console
@@ -42,6 +43,8 @@ import java.util.UUID
 import kotlin.collections.toMutableList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.modules.SerializersModule
+import javax.management.Attribute
 
 
 fun DepazItemInst.buildItem() : ItemStack {
@@ -58,22 +61,17 @@ fun DepazItemInst.buildItem() : ItemStack {
 
     // 1.1 Start
 
-    val json = Json {
-        prettyPrint = true
-        isLenient = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-        allowStructuredMapKeys = true
-        allowSpecialFloatingPointValues = true
-    }
-    val parsedList : MutableList<LinkedHashMap<String,@Serializable(AnySerializer::class) Any>> = emptyList<LinkedHashMap<String,@Serializable(AnySerializer::class) Any>>().toMutableList()
-    attributes.forEach { parsedList.add(json.decodeFromString(json.encodeToString(it))) }
+    val parsedList : MutableList<LinkedHashMap<String, Any>> = mutableListOf()
+        attributes.forEach { attr ->
+        val jsonStr = attr.toJSONString()
+        parsedList.add(JSON.parseObject<LinkedHashMap<String, Any>>(jsonStr, object : TypeReference<LinkedHashMap<String, Any>>() {}) as LinkedHashMap<String, Any>)
+        }
+
 
 
     val itemTag = item.getItemTag()
     itemTag.putDeep("SERTRALINE_ID", depaz.id)
-    itemTag.putDeep("SERTRALINE_ATTRIBUTE", depaz.id)
+    itemTag.putDeep("SERTRALINE_ATTRIBUTE", parsedList)
 
     itemTag.saveTo(item)
     /*
@@ -140,7 +138,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
                 uuid = attr.uuid,
                 source = attr.source,
                 mythicLibEquipSlot = attr.mythicLibEquipSlot,
-                requireSlot = attr.requireSlot,
+                requireSlot = attr.requireSlot.toMutableList(),
                 conditionOnEffect = attr.conditionOnEffect
             )
         )

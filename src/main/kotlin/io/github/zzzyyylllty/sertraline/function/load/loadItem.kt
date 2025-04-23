@@ -119,7 +119,7 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
                 chance = chance,
                 source = source,
                 mythicLibEquipSlot = mythicLibEquipSlot,
-                requireSlot = requireSlot.ifEmpty { mutableListOf("UNIVERSAL") },
+                requireSlot = requireSlot.ifEmpty { mutableListOf("UNIVERSAL") }.toMutableList(),
                 conditionOnBuild = conditionOnBuild,
                 conditionOnEffect = conditionOnEffect
             )

@@ -49,3 +49,4 @@ sealed class DataValue {
     @Serializable data class Int(val value: Int) : DataValue()
     @Serializable data class Long(val value: Long) : DataValue()
 }
+

@@ -13,7 +13,7 @@ data class AttributePart(
     val chance: String = "100.0",
     val source: String = "VOID", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String>,
+    val requireSlot: MutableList<String>,
     val conditionOnBuild: String? = null,
     val conditionOnEffect: String? = null
 )
@@ -33,6 +33,6 @@ data class AttributeInst(
     val uuid: String = UUID.randomUUID().toString(),
     val source: String = "OTHER", // MythicLib 等一些玩意有效
     val mythicLibEquipSlot: String = "OTHER", // MythicLib 等一些玩意有效
-    val requireSlot: List<String> = listOf(),
-    val conditionOnEffect: String?
+    val requireSlot: MutableList<String> = mutableListOf(),
+    val conditionOnEffect: String? = null
 )
