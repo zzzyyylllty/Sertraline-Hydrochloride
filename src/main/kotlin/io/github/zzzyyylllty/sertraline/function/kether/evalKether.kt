@@ -149,7 +149,7 @@ fun String?.evalKetherString(
         sets.forEach {
             set(it.first, it.second)
         }
-    }.build()).getNow(def) as String?
+    }.build()).getNow(def).toString()
 }
 
 fun String?.evalKetherBoolean(

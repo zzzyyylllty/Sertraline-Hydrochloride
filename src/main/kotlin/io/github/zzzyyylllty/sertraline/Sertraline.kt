@@ -126,12 +126,6 @@ object Sertraline : Plugin() {
             e.printStackTrace()
         }
     }
-
-    @SubscribeEvent
-    fun lang(event: PlayerSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
-    }
-
     @SubscribeEvent
     fun lang(event: SystemSelectLocaleEvent) {
         event.locale = config.getString("lang", "zh_CN")!!

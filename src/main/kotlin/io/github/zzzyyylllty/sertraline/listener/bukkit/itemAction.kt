@@ -1,21 +1,24 @@
 package io.github.zzzyyylllty.sertraline.listener.bukkit
 
+import com.willfp.eco.core.gui.player
 import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.function.action.applyActions
-import io.github.zzzyyylllty.sertraline.function.stats.refreshStat
-import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent
+import io.papermc.paper.event.player.PlayerPickItemEvent
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerLoginEvent
+import org.bukkit.event.player.PlayerPickupArrowEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import taboolib.common.env.RuntimeDependency
-import taboolib.common.function.debounce
 import taboolib.common.function.throttle
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submitAsync
@@ -76,9 +79,35 @@ fun onConsume(e: PlayerItemConsumeEvent) {
         throttleAction(ThrottleActionLink(e.player, "onConsume"), ThrottleActionParam(e, e.item, e.hand.ordinal))
     }
 }
+
 @SubscribeEvent
-fun onAttack(e: PlayerAttackEvent) {
+fun onBreak(e: PlayerItemBreakEvent) {
     submitAsync {
-        throttleAction(ThrottleActionLink(e.player, "onAttack"), ThrottleActionParam(e, e.player.activeItem, e.player.activeItemHand.ordinal))
+        throttleAction(ThrottleActionLink(e.player, "onBreak"), ThrottleActionParam(e, e.brokenItem))
+    }
+}
+@SubscribeEvent
+fun onDrop(e: PlayerDropItemEvent) {
+    submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onDrop"), ThrottleActionParam(e, e.itemDrop.itemStack))
+    }
+}
+@SubscribeEvent
+fun onPickup(e: PlayerPickupItemEvent) {
+    submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onPickup"), ThrottleActionParam(e, e.item.itemStack, e.remaining))
+    }
+}
+@SubscribeEvent
+fun onClickInventory(e: InventoryClickEvent) {
+    submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onClickInventory"), ThrottleActionParam(e, e.currentItem, e.slot))
+    }
+}
+@SubscribeEvent
+fun onSwap(e: PlayerSwapHandItemsEvent) {
+    submitAsync {
+        throttleAction(ThrottleActionLink(e.player, "onSwapMainHand"), ThrottleActionParam(e, e.mainHandItem, e.player.activeItemHand.ordinal))
+        throttleAction(ThrottleActionLink(e.player, "onSwapOffHand"), ThrottleActionParam(e, e.offHandItem))
     }
 }

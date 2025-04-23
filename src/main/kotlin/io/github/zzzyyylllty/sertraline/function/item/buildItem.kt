@@ -94,18 +94,18 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
     val compLore : MutableList<Component> = mutableListOf()
     val legacy = LegacyComponentSerializer.legacyAmpersand()
 
-    val solvedItem = resolveItemStack(originalItem.material, p)
+    val solvedItem = resolveItemStack(depaz.originalItem.material, p)
 
-    if (originalItem.materialLoreEnabled) solvedItem?.lore()?.forEach {
+    if (depaz.originalItem.materialLoreEnabled) solvedItem?.lore()?.forEach {
         compLore.add(it.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
     }
-    originalItem.lore.forEach {
+    depaz.originalItem.lore.forEach {
         val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
         compLore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
     }
 
     val buildedItem = buildItem(solvedItem ?: ItemStack(Material.STONE)) {
-        val model = originalItem.model ?:(if (solvedItem?.itemMeta?.hasCustomModelData() == true) solvedItem?.itemMeta?.customModelData else null)
+        val model = depaz.originalItem.model ?:(if (solvedItem?.itemMeta?.hasCustomModelData() == true) solvedItem?.itemMeta?.customModelData else null)
         if (model != null) customModelData = model
     }
 
@@ -118,9 +118,9 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
         write(buildedItem)
     }
 
-    if (originalItem.name != null) {
+    if (depaz.originalItem.name != null) {
         val meta = buildedItem.itemMeta
-        val name = mm.deserialize("<white>${originalItem.name}")
+        val name = mm.deserialize("<white>${depaz.originalItem.name}")
             .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
         meta.displayName(name)
         buildedItem.setItemMeta(meta)
@@ -150,7 +150,7 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
         id = depaz.id,
         item = buildedItem,
         attributes = instAttrs,
-        data = data
+        data = depaz.data
     )
 }
 
@@ -188,36 +188,13 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
             val m = f.value
             val section = m.substring(8..(m.length-2))
             devLog("Founded kether shell module $m , $section")
-            section.evalKetherString(p)
+            json = json.replace(m,section.evalKetherString(p, data).toString())
         }
         if (i > 10) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
         }
     }
-    /*
-    while (json.contains("<data:.+?>".toRegex())) {
-        i++
-        val pattern = "<data:(.+?)>".toRegex()
-
-        val found = pattern.findAll(json)
-
-        found.forEach { f ->
-            val m = f.value
-            val section = m.substring(6..(m.length-2))
-            devLog("Founded data module $m , $section")
-            json = json.replace("$m", (parsedData[section] as String? ?: run {
-                severeS(console.asLangText("ITEM_DATA_NOT_FOUND",section))
-                "null"
-            }))
-        }
-        if (i > 10) {
-            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
-            break
-        }
-    }
-
-     */
     devLog("kethered json: $json")
 
     val inst = jsonUtils.decodeFromString<DepazItems>(json)
