@@ -1,7 +1,6 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
 import com.francobm.magicosmetics.api.Cosmetic
-import com.willfp.ecoitems.items.EcoItems
 import dev.lone.itemsadder.api.ItemsAdder
 import github.saukiya.sxitem.SXItem
 import ink.ptms.zaphkiel.Zaphkiel
@@ -11,7 +10,6 @@ import io.th0rgal.oraxen.api.OraxenItems
 import net.Indyuce.mmoitems.MMOItems
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems
 import net.momirealms.craftengine.bukkit.plugin.BukkitCraftEngine
-import net.momirealms.craftengine.core.plugin.CraftEngine
 import net.momirealms.craftengine.core.util.Key
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -34,8 +32,8 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
     val prefix = split[0]
     val param = split[1]
 
-    val miType = param.split(".")[0]
-    val miId = if (param.split(".").size >= 2) param.split(".")[1] else "1"
+    val type = param.split(".")[0]
+    val id = if (param.split(".").size >= 2) param.split(".")[1] else "1"
 
     val prefixu = prefix.uppercase()
 
@@ -47,7 +45,7 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
             }
         }
         "MI", "MMOITEMS" -> {
-            returnItem = try { MMOItems.plugin.getMMOItem(MMOItems.plugin.types.get(miType), miId)?.newBuilder()?.build() } catch (e: Exception) {
+            returnItem = try { MMOItems.plugin.getMMOItem(MMOItems.plugin.types.get(type), id)?.newBuilder()?.build() } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))
                 null
             }
@@ -121,7 +119,7 @@ fun resolveItemStack(s: String, p: Player?): ItemStack? {
                 else {
                     // val api = CraftEngine.instance()
                     val bukkitApi = BukkitCraftEngine.instance()
-                    CraftEngineItems.byId(Key.of(miType,miId))?.buildItemStack(bukkitApi.adapt(p))
+                    CraftEngineItems.byId(Key.of(type,id))?.buildItemStack(bukkitApi.adapt(p))
                 }
             } catch (e: Exception) {
                 severe(console.asLangText("ERROR_UNABLE_TO_GENERATE_ITEM", s, e))

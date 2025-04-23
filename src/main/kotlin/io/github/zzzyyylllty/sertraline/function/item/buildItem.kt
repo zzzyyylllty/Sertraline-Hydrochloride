@@ -104,7 +104,8 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
     }
 
     val buildedItem = buildItem(solvedItem ?: ItemStack(Material.STONE)) {
-        customModelData = originalItem.model
+        val model = originalItem.model ?:(if (solvedItem?.itemMeta?.hasCustomModelData() == true) solvedItem?.itemMeta?.customModelData else null)
+        if (model != null) customModelData = model
     }
 
     buildedItem.itemTagReader {

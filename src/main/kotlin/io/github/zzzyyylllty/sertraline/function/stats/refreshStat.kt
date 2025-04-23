@@ -70,6 +70,8 @@ fun Player.reapplyStat() {
                 for (atb in i.getAttribute()) {
                     if (player.getSlots(atb.requireSlot).contains(slot)) player.applyAtb(atb, slot, playerData, statMap)
                 }
+            } else {
+                devLog("Invaild item found. skip applying attribute.")
             }
         }
     }

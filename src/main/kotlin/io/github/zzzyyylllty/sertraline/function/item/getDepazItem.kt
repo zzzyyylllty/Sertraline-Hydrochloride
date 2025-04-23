@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
+import pers.neige.neigeitems.utils.ItemUtils.toNbt
 import taboolib.module.configuration.util.asMap
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
@@ -89,12 +90,23 @@ fun ItemStack.getAttribute(): MutableList<AttributeInst> {
     val itemTag = this.getItemTag()
     itemTag.getDeep("SERTRALINE_ATTRIBUTE")?.asList()?.forEach {
         devLog("getted attribute $it")
-        val map = it.asMap().toMap().toJSONString()
-        val json = JSON.parseObject<AttributeInst>(
-            map,
-            object : TypeReference<AttributeInst>() {})
+        val map = it.toJsonSimplified()
+        devLog("getted Jsonmap $map")
+        //val json = JSON.parseObject<AttributeInst>(map, object : TypeReference<AttributeInst>() {})
+        val jsonMain = Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            encodeDefaults = true
+            allowStructuredMapKeys = true
+            allowSpecialFloatingPointValues = true
+        }
+        val json = jsonMain.decodeFromString<AttributeInst>(map)
         atbInst.add(json)
+        devLog("getted Instance $json")
     }
+
     // 1.0.1 End
 
     // val atbInst = Json.decodeFromString(attribute) as MutableList<AttributeInst>

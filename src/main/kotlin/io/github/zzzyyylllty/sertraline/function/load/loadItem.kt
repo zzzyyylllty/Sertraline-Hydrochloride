@@ -40,7 +40,7 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
         material = config.get("minecraft.material") as String? ?:"STONE",
         name = config.get("minecraft.name") as String?,
         lore = serializeStringList(config.get("minecraft.lore")),
-        model = config.get("minecraft.model") as Int? ?:0,
+        model = config.get("minecraft.model") as Int?,
         nbt = nbts ?: listOf(),
         materialLoreEnabled = config.get("minecraft.material-lore") as Boolean? ?: true
     )

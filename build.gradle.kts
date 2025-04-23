@@ -157,8 +157,17 @@ dependencies {
     taboo("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.0") { isTransitive = false }
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.7.0") { isTransitive = false }
-    //compileOnly("ink.ptms.core:v12004:12004:mapped")
-    //compileOnly("ink.ptms.core:v12004:12004:universal")
+
+
+    // 本体
+    implementation("org.tabooproject.reflex:analyser:1.1.4")
+    implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
+    implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
+    // 本体依赖
+    implementation("org.ow2.asm:asm:9.2")
+    implementation("org.ow2.asm:asm-util:9.2")
+    implementation("org.ow2.asm:asm-commons:9.2")
+    implementation(kotlin("stdlib"))
 }
 
 tasks.withType<KotlinCompile> {
