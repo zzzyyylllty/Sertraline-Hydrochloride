@@ -25,8 +25,8 @@ attribute:
     - BOOTS
     - ANY_HAND
   # Which grid items will be traversed when refreshing attributes. Not recommended for modification.
-  # Default traversal of all equipment+secondary+primary
-  # Performance impact: Normal
+  # Default traversal of all equipment+offhand+mainhand
+  # Performance impact: High
 
 action:
   throttle-time: 500
@@ -38,5 +38,5 @@ action:
     - BOOTS
     - ANY_HAND
   # Which grid items will be traversed when refreshing actions. Not recommended for modification.
-  # Default traversal of all equipment+secondary+primary
+  # Default traversal of all equipment+offhand+mainhand
   # Performance impact: Normal

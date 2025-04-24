@@ -10,6 +10,7 @@ plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
     id("com.gradleup.shadow") version "9.0.0-beta12"
+    id("maven-publish")
 }
 
 taboolib {
@@ -163,6 +164,7 @@ dependencies {
     implementation("org.tabooproject.reflex:analyser:1.1.4")
     implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
     implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
+
     // 本体依赖
     implementation("org.ow2.asm:asm:9.2")
     implementation("org.ow2.asm:asm-util:9.2")
