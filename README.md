@@ -60,6 +60,18 @@ Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
   <img src="https://stg.contrib.rocks/image?repo=zzzyyylllty/Sertraline-Hydrochloride" />
 </a>
 
+## 添加到依赖
+
+```kotlin
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
+}
+```
+
 ## 构建发行版本
 
 需要 Java 17.

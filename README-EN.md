@@ -59,6 +59,17 @@ You can obtain unstable versions by building them yourself, or download stable v
   <img src="https://stg.contrib.rocks/image?repo=zzzyyylllty/Sertraline-Hydrochloride" />
 </a>
 
+## As Dependency
+
+```kotlin
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
+}
+```
 ## Build release version
 
 Required Java 21.
