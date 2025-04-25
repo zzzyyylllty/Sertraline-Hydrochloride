@@ -189,40 +189,37 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<ShadowJar> {
-        // Options
-        archiveAppendix.set("")
-        archiveClassifier.set("")
-    val rootVersion = "0.3.0"
-    val rootGroup = "io.github.zzzyyylllty.sertraline"
-    val kotlinVersion  = "2.0.0"
-    val skipRelocateKotlinClasses = setOf(
-        "kotlin.annotation.Repeatable",
-        "kotlin.annotation.Retention",
-        "kotlin.annotation.Target",
-        "kotlin.jvm.JvmField",
-        "kotlin.jvm.JvmInline",
-        "kotlin.jvm.JvmStatic",
-        "kotlin.jvm.PurelyImplements",
-        "kotlin.Metadata",
-        "kotlin.Deprecated",
-        "kotlin.ReplaceWith",
-        "kotlin.enums"
-    )
+// 定义源码包任务
+val sourcesJar by tasks.registering(Jar::class) {
+    from(sourceSets.main.get().allJava)
+    archiveClassifier.set("sources")
+}
 
-    /**
-     * 跳过重定向的Kotlin类
-     */
-        archiveVersion.set(rootVersion)
-        destinationDirectory.set(file("$rootDir/outs")) // 输出路径自己设置，不设置也行
-        // Taboolib
-        relocate("taboolib", "$rootGroup.taboolib")
-        relocate("org.tabooproject", "$rootGroup.library")
-    relocate("kotlin.", "kotlin200.") { exclude(skipRelocateKotlinClasses) }
-    relocate("kotlinx.coroutines.", "kotlinx.coroutines173.")
-    relocate("kotlinx.serialization.", "kotlinx.serialization170.")
-    relocate("top.maplex.arim","xxx.xxx.arim")
-    relocate("ink.ptms.um","xx.um")
-    relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
-    relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
+// 定义文档包任务（可选）
+val javadocJar by tasks.registering(Jar::class) {
+    from(tasks.javadoc)
+    archiveClassifier.set("javadoc")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("Sertraline") {
+            // 主构件（自动从 java 组件生成）
+            from(components["java"])
+
+            val rootVersion = "1.1.2"
+            val rootGroup = "io.github.zzzyyylllty.sertraline"
+            // 添加源码包（必须指定分类器）
+            artifact(sourcesJar.get()) {
+                classifier = "sources"
+            }
+
+            // 添加文档包（可选）
+            artifact(javadocJar.get()) {
+                classifier = "javadoc"
+            }
+
+            // 其他构件配置...
+        }
+    }
 }

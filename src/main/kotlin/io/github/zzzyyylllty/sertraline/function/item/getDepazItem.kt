@@ -126,6 +126,14 @@ fun ItemStack?.isDepazItem(): Boolean {
     return idExists
 }
 
+fun ItemStack?.getDepazId(): String? {
+    var id : String? = null
+    this.itemTagReader {
+        id = getString("SERTRALINE_ID")
+    }
+    return id
+}
+
 fun ItemStack?.isDepazItemInList(): Boolean {
     var id : String? = null
     this.itemTagReader {
