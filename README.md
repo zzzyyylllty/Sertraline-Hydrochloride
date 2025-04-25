@@ -74,7 +74,7 @@ dependencies {
 
 ## 构建发行版本
 
-需要 Java 17.
+需要 Java 21.
 
 发行版本用于正常使用, 不含 TabooLib 本体。
 
