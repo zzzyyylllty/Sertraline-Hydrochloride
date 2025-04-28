@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.connect.chemdah.connectChemdah
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
@@ -22,6 +23,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.serializersModule
 import kotlinx.serialization.modules.SerializersModule
 import net.luckperms.api.query.QueryOptions.contextual
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
@@ -65,13 +67,13 @@ class RuntimeEnv
 object Sertraline : Plugin() {
 
     val plugin by lazy { this }
-    val host by lazy { config.getHost("database") }
-    val dataSource by lazy { host.createDataSource() }
     var dataFolder = nativeDataFolder()
-    var templateMap = LinkedHashMap<String, ConfigurationSection>()
-    var itemMap = LinkedHashMap<String, DepazItems>()
     val console by lazy { console() }
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
+    val host by lazy { config.getHost("database") }
+    val dataSource by lazy { host.createDataSource() }
+    var templateMap = LinkedHashMap<String, ConfigurationSection>()
+    var itemMap = LinkedHashMap<String, DepazItems>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     var devMode = false
 
@@ -97,6 +99,11 @@ object Sertraline : Plugin() {
 
     override fun onDisable() {
         infoL("INTERNAL_ONDISABLE")
+    }
+    fun compat() {
+        if (Bukkit.getPluginManager().getPlugin("Chemdah")?.isEnabled ?: false) {
+            connectChemdah()
+        }
     }
 
     fun reloadCustomConfig() {
