@@ -98,6 +98,8 @@ TEST_MYTHIC_SKILL:
       skill: Command
       skill_trigger: DEFAULT
       power: 1
+      require:
+        - MAIN_HAND
       data_param: true
       # use data's vars for params
       params:

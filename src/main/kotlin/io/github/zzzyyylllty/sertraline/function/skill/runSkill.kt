@@ -30,18 +30,18 @@ fun Player.applySkills(trigger: String, e: Event, i2 : ItemStack? = null,islot: 
         for (slot in slotList) {
             var i = if (islot == slot) i2?.getDepazItemInst() ?: continue else inv.getItem(slot)?.getDepazItemInst() ?: continue
             val data = i.data
-                for (action in i.getDepazItem()?.actions ?: continue) {
-                    if (action.trigger == trigger && player.getSlots(action.require).contains(slot)) {
-                        player.applySkill(action, i, data, e)
+                for (skill in i.getDepazItem()?.skills ?: continue) {
+                    if (skill.depazTrigger == trigger && player.getSlots(skill.require).contains(slot)) {
+                        player.applySkill(skill, data)
                     }
                 }
         }
     }
 }
 
-fun Player.applySkill(skill: DSkill, i: DepazItemInst, data : LinkedHashMap<String, Any>, e: Event, params: LinkedHashMap<String, Any>) {
-    val player = this
-    var returnItem: DepazItemInst? = i
+fun Player.applySkill(skill: DSkill, data : LinkedHashMap<String, Any>) {
+    val params = skill.param
+    if (skill.dataForParam) params.putAll(data)
     submit(async = skill.async) {
         when (skill.engine) {
             SkillSource.MYTHIC -> skill.depazCast(this@applySkill, this@applySkill, params)

@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.function.item
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.generate.getDisplayNameOrRegName
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -24,5 +25,5 @@ fun Player.giveDepazItem(id: String,amount: Int = 1) {
         throw NullPointerException()
     }
     this.giveItem(item,amount)
-    sender.infoS(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
+    sender.sendStringAsComponent(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
 }
