@@ -40,3 +40,13 @@ action:
   # Which grid items will be traversed when refreshing actions. Not recommended for modification.
   # Default traversal of all equipment+offhand+mainhand
   # Performance impact: Normal
+skill:
+  throttle-time: 200
+  # same as debounce,but it's throttle.
+  require-enabled-slot:
+    - HELMET
+    - CHESTPLATE
+    - LEGGINGS
+    - BOOTS
+    - ANY_HAND
+  default-engine: MYTHIC

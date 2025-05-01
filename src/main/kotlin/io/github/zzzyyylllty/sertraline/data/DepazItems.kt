@@ -11,6 +11,7 @@ data class DepazItems(
     val actions: MutableList<Action>,
     val attributeParts: MutableList<AttributePart>,
     val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any>,
+    val skills: MutableList<DSkill> = mutableListOf(),
 )
 
 /**
@@ -41,12 +42,4 @@ data class Category(
     val name: String,
     val lore: List<String>
 )
-
-@Serializable
-sealed class DataValue {
-    @Serializable data class Text(val content: String) : DataValue()
-    @Serializable data class Double(val value: Double) : DataValue()
-    @Serializable data class Int(val value: Int) : DataValue()
-    @Serializable data class Long(val value: Long) : DataValue()
-}
 

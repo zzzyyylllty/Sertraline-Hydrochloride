@@ -5,7 +5,9 @@ import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.data.ActionType
 import io.github.zzzyyylllty.sertraline.data.AttributePart
 import io.github.zzzyyylllty.sertraline.data.AttributeSources
+import io.github.zzzyyylllty.sertraline.data.DSkill
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.data.SkillSource
 import io.github.zzzyyylllty.sertraline.data.VanillaItemInst
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.sertralize.serializeStringList
@@ -83,7 +85,9 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
     }
 
     var attributeParts : MutableList<AttributePart> = mutableListOf()
+    var skillParts : MutableList<DSkill> = mutableListOf()
     val atbsections = config.getList("attribute") as List<LinkedHashMap<String, Any>>?
+    val skillsections = config.getList("skill") as List<LinkedHashMap<String, Any>>?
 
     devLog("atbsections: $atbsections")
 
@@ -126,9 +130,26 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
         )
     }
 
+    if (skillsections != null && !skillsections.isEmpty()) for (section in skillsections) {
+        devLog("section: $section")
+
+        val engine = section["engine"] as String? ?: config["skill.default-engine"] as String? ?: "MYTHIC"
+
+        skillParts.add(DSkill(
+            engine = SkillSource.valueOf(engine),
+            depazTrigger = TODO(),
+            async = TODO(),
+            skillName = TODO(),
+            skillTrigger = TODO(),
+            locations = TODO(),
+            origin = TODO(),
+            power = TODO()
+        ))
+    }
+
     val data = config.getConfigurationSection("meta.data")?.getValues(false) as LinkedHashMap<String, Any>? ?: linkedMapOf()
 
     //val data = meta["data"] as LinkedHashMap<String, Any> ?: linkedMapOf()
 
-    return DepazItems(root, item, actions, attributeParts, data)
+    return DepazItems(root, item, actions, attributeParts, data, skillParts)
 }

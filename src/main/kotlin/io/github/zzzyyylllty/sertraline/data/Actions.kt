@@ -13,6 +13,5 @@ data class Action(
 @Serializable
 enum class ActionType {
     KETHER,
-    SKILL_MYTHIC,
     JAVASCRIPT
 }

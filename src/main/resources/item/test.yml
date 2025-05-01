@@ -84,3 +84,22 @@ TEST_MMOITEM:
     material: MI:SWORD.STEEL_SWORD
     material-lore: true
     # keep MMOItem Lore
+TEST_MYTHIC_SKILL:
+  minecraft:
+    material: APPLE
+    name: '<red>Apple'
+    lore: |
+      <red>Bad Black's Great Apple.
+      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
+  skill:
+    - trigger: onRightClick
+      engine: MYTHIC
+      async: true
+      skill: Command
+      skill_trigger: DEFAULT
+      power: 1
+      data_param: true
+      # use data's vars for params
+      params:
+        command: say HELLO <target.name>
+        asTarget: true
