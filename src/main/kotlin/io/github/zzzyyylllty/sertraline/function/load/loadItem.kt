@@ -68,14 +68,14 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
         devLog("requireList is not empty.")
 
         devLog("Trigger $trigger ")
-        devLog("async ${section["async"] as Boolean}")
+        devLog("async ${section["async"] as Boolean? ?: true}")
         devLog("type: $type")
         devLog("require: $requireList")
         devLog("actions $actionList ")
         val ac =
             Action(
                 trigger = trigger,
-                async = (section["async"] as Boolean),
+                async = (section["async"] as Boolean? ?: true),
                 actions = actionList,
                 actionType = type,
                 require = requireList,
@@ -137,13 +137,11 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
 
         skillParts.add(DSkill(
             engine = SkillSource.valueOf(engine),
-            depazTrigger = TODO(),
-            async = TODO(),
-            skillName = TODO(),
-            skillTrigger = TODO(),
-            locations = TODO(),
-            origin = TODO(),
-            power = TODO()
+            depazTrigger = section["trigger"]as String? ?: throw NullPointerException("skill DEPAZ trigger not found"),
+            async = section["async"] as Boolean? ?: true,
+            skillName = section["skill"] as String? ?: throw NullPointerException("Skill name not found"),
+            skillTrigger = section["skill_trigger"] as String? ?: "DEFAULT",
+            power = section["power"] as Float? ?: 0f
         ))
     }
 
