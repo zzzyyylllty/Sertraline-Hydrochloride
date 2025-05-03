@@ -37,6 +37,7 @@ DEBUG_LOADING_ITEM: "Loading file {0} 's item {1}"
 DEBUG_LOADING_TEMPLATE: "Loading file {0} 's template {1}"
 DEBUG_STAT_REFRESH: "Refreshing stat for {0}"
 DEBUG_ACTION_APPLY: "Executing action for player {0}"
+DEBUG_SKILL_APPLY: "Applying skill for {0}"
 DEBUG_NO_PARAM_USE_DEFAULT: "No value for param {0}，will use {1}"
 
 ERROR_NOT_PLAYER: "CommandSender is not a player."

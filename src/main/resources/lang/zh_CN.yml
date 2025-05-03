@@ -37,6 +37,7 @@ DEBUG_LOADING_ITEM: "正在加载文件 {0} 的物品 {1}"
 DEBUG_LOADING_TEMPLATE: "正在加载文件 {0} 的模板 {1}"
 DEBUG_STAT_REFRESH: "正在刷新玩家 {0} 的状态"
 DEBUG_ACTION_APPLY: "正在执行玩家 {0} 的 action"
+DEBUG_SKILL_APPLY: "正在执行玩家 {0} 的 skill"
 DEBUG_NO_PARAM_USE_DEFAULT: "未指定参数 {0}，将使用 {1}"
 
 ERROR_NOT_PLAYER: "发送者不是一个玩家."
