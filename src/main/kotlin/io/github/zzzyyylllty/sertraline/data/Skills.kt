@@ -29,7 +29,6 @@ enum class SkillSource {
 }
 
 fun DSkill.depazCast(p: Player,target: Entity,param: LinkedHashMap<String, Any>) {
-    if (!Mythic.isLoaded()) throw IllegalStateException("Mythic is not loaded")
     val trigger = Mythic.API.getSkillTrigger(skillTrigger)
     val mechanic = Mythic.API.getSkillMechanic(skillName) ?: throw IllegalStateException("unknown skill $skillName")
     mechanic.execute(trigger, p, target, emptySet(), emptySet(), power, param)

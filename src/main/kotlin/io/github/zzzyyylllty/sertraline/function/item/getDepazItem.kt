@@ -1,24 +1,14 @@
 package io.github.zzzyyylllty.sertraline.function.item
 
-import com.alibaba.fastjson2.JSON
-import com.alibaba.fastjson2.JSONWriter
-import com.alibaba.fastjson2.TypeReference
-import com.alibaba.fastjson2.toJSONString
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.DepazItemInst
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
-import pers.neige.neigeitems.utils.ItemUtils.toNbt
-import taboolib.module.configuration.util.asMap
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.itemTagReader
 
@@ -45,7 +35,7 @@ fun DepazItemInst?.getDepazItem(): DepazItems? {
     return itemMap[id]
 }
 
-fun ItemStack?.getData(): LinkedHashMap<String, Any> {
+fun ItemStack?.getDepazData(): LinkedHashMap<String, Any> {
     var data = linkedMapOf<String, Any>()
 
     val jsonUtils = Json {
@@ -58,10 +48,10 @@ fun ItemStack?.getData(): LinkedHashMap<String, Any> {
         allowSpecialFloatingPointValues = true
     }
 
-    this.itemTagReader {
+    val tag = this?.getItemTag()
         //data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(AnySerializer::class) Any>>(getString("SERTRALINE_DATA") ?: "{}")
-        data = JSON.parseObject(getString("SERTRALINE_DATA") ?: "{}") as LinkedHashMap<String, Any>
-    }
+    data = (jsonMain.decodeFromString<LinkedHashMap<String, String>>(tag?.getDeep("SERTRALINE_DATA")?.toJsonSimplified() ?: "{}") as LinkedHashMap<String, Any>)
+
     return data
 }
 
@@ -78,9 +68,7 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
     }
     if (itemMap[id] == null || id == null) return null
 
-    this.itemTagReader {
-        data = JSON.parse(getString("SERTRALINE_DATA") ?:"{}") as LinkedHashMap<String, Any>
-    }
+    data = this.getDepazData()
     val atbInst = this.getAttribute()
 
     return DepazItemInst(

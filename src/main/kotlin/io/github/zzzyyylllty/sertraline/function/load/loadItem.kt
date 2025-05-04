@@ -141,7 +141,7 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : DepazItems {
             async = section["async"] as Boolean? ?: true,
             skillName = section["skill"] as String? ?: throw NullPointerException("Skill name not found"),
             skillTrigger = section["skill_trigger"] as String? ?: "DEFAULT",
-            power = section["power"] as Float? ?: 0f,
+            power = section["power"].toString().toFloatOrNull() ?: 0f,
             require = serializeStringList(section["require"]).toMutableList(),
             param = config.getConfigurationSection("skill.params")?.getValues(false) as LinkedHashMap<String, Any>? ?: linkedMapOf(),
             dataForParam = section["data_param"] as Boolean? ?: false,
