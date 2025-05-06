@@ -44,7 +44,7 @@ Sertraline 是免费的，但我们不提供非稳定版本的构建文件。
 - [x] Kether: 消耗物品
 - [x] Kether: eval
 - [ ] 释放技能
-- [ ] Chemdah 物品识别兼容性
+- [x] Chemdah 物品识别兼容性
 ...
 
 ## 友链   
