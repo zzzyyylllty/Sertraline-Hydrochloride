@@ -8,6 +8,7 @@ import io.papermc.paper.event.player.PlayerPickItemEvent
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -22,6 +23,7 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.function.throttle
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submitAsync
+import taboolib.platform.util.attacker
 
 
 val throttleAction = throttle<ThrottleActionLink, ThrottleActionParam>(config.getLong("action.throttle-time", 500)){ link, data ->
@@ -69,7 +71,16 @@ fun onLogin(e: PlayerLoginEvent) {
 fun onPreAttack(e: PrePlayerAttackEntityEvent) {
     submitAsync {
         throttleAction(ThrottleActionLink(e.player, "onPreAttack"), ThrottleActionParam(e, e.player.activeItem, e.player.activeItemHand.ordinal))
+    }
 }
+
+@SubscribeEvent
+fun onAttack(e: EntityDamageByEntityEvent) {
+    if (e.attacker is Player)
+    submitAsync {
+        val player = e.attacker as Player
+        throttleAction(ThrottleActionLink(player, "onAttack"), ThrottleActionParam(e, player.activeItem, player.activeItemHand.ordinal))
+    }
 }
 
 @SubscribeEvent

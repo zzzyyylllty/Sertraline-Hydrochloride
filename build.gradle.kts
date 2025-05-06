@@ -16,14 +16,14 @@ plugins {
 taboolib {
     description {
         name("Sertraline")
-        desc("An advanced item plugin.")
+        desc("An advanced item plugin. ChoTen item management plugin.")
         contributors {
             // 作者名称
             name("AkaCandyKAngel")
         }
         dependencies {
             // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
-            name("MythicLib")
+            name("MythicLib").optional(true)
             name("TrMenu").optional(true)
             name("Zaphkiel").optional(true)
             name("MMOItems").optional(true)

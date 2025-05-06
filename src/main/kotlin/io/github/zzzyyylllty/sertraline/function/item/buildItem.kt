@@ -178,9 +178,9 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
     devLog("encoded ATTRIBUTE json: $json")
 
     var i = 0
-    while (json.contains("<kether:.+?>".toRegex())) {
+    while (json.contains("\\{\\{(.+?)\\}\\}".toRegex())) {
         i++
-        val pattern = "<kether:(.+?)>".toRegex()
+        val pattern = "\\{\\{(.+?)\\}\\}".toRegex()
 
         val found = pattern.findAll(json)
 
