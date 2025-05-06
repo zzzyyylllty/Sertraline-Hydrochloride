@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.stats
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
+import io.github.zzzyyylllty.sertraline.Sertraline.mythicLibEnabled
 import io.github.zzzyyylllty.sertraline.data.AttributeInst
 import io.github.zzzyyylllty.sertraline.data.AttributeSources.*
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -43,7 +44,7 @@ val debounceRefreshStat = debounce<Player>(config.getLong("attribute.debounce-ti
 fun Player.refreshStat() {
 
     val pl = this
-    submitAsync {
+    if (mythicLibEnabled) submitAsync {
     val playerData: MMOPlayerData = MMOPlayerData.get(pl)
         val statMap = playerData.getStatMap()
             for (instance in statMap.instances) {

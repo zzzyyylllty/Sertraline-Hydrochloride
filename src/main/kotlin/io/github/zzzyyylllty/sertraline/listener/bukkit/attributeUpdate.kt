@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.listener.bukkit
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
+import io.github.zzzyyylllty.sertraline.Sertraline.mythicLibEnabled
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand.refreshStat
 import io.github.zzzyyylllty.sertraline.function.stats.debounceRefreshStat
 import io.github.zzzyyylllty.sertraline.function.stats.refreshStat
@@ -28,6 +29,6 @@ fun armorEquipEvent(e: PlayerArmorChangeEvent) {
 @SubscribeEvent(EventPriority.MONITOR)
 fun onLoginUpdate(e: PlayerLoginEvent) {
     submitAsync {
-        e.player.refreshStat()
+        if (mythicLibEnabled) e.player.refreshStat()
     }
 }

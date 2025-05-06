@@ -76,6 +76,9 @@ object Sertraline : Plugin() {
     var itemMap = LinkedHashMap<String, DepazItems>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     var devMode = false
+    val mythicLibEnabled by lazy {
+        Bukkit.getPluginManager().getPlugin("MythicLib")?.isEnabled ?: false
+    }
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
