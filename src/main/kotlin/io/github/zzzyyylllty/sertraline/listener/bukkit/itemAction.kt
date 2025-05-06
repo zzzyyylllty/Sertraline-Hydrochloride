@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.listener.bukkit
 
-import com.willfp.eco.core.gui.player
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.function.action.applyActions
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent
@@ -111,8 +110,9 @@ fun onPickup(e: PlayerPickupItemEvent) {
 }
 @SubscribeEvent
 fun onClickInventory(e: InventoryClickEvent) {
+    if (e.whoClicked is Player)
     submitAsync {
-        throttleAction(ThrottleActionLink(e.player, "onClickInventory"), ThrottleActionParam(e, e.currentItem, e.slot))
+        throttleAction(ThrottleActionLink(e.whoClicked as Player, "onClickInventory"), ThrottleActionParam(e, e.currentItem, e.slot))
     }
 }
 @SubscribeEvent

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline
 
 import io.github.zzzyyylllty.connect.chemdah.connectChemdah
 import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
@@ -77,7 +78,8 @@ object Sertraline : Plugin() {
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     var devMode = false
     val mythicLibEnabled by lazy {
-        Bukkit.getPluginManager().getPlugin("MythicLib")?.isEnabled ?: false
+        devLog("Mythiclib Stat:${(Bukkit.getPluginManager().getPlugin("MythicLib") != null)}")
+        (Bukkit.getPluginManager().getPlugin("MythicLib") != null)
     }
 
     // Arim Start
@@ -104,7 +106,7 @@ object Sertraline : Plugin() {
         infoL("INTERNAL_ONDISABLE")
     }
     fun compat() {
-        if (Bukkit.getPluginManager().getPlugin("Chemdah")?.isEnabled ?: false) {
+        if (Bukkit.getPluginManager().getPlugin("Chemdah") != null) {
             connectChemdah()
         }
     }
