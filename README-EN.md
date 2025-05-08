@@ -31,7 +31,7 @@ You can obtain unstable versions by building them yourself, or download stable v
 
 ## Donate
 
-[Ifdian](https://afdian.com/a/liminalskyline)
+[afdian](https://afdian.com/a/liminalskyline)
 
 ## TODO
 - [x] Read files/folders
