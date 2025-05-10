@@ -2,13 +2,25 @@
 
 项目使用 TabooLib Start Jar 创建
 
-超天物品管理系统 (Liminal Skyline v4.0 服务)
+超天物品管理系统服务 (Liminal Skyline v4.0 服务)
 
 <div align="center">
 
 [CHINESE README](README-ZH.md) | [ENGLISH README](README-EN.md)
 
 </div>
+
+## 添加到依赖
+
+```kotlin
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
+}
+```
 
 ## 构建发行版本
 
