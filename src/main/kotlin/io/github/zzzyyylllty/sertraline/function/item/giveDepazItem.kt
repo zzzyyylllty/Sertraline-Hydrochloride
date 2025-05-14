@@ -11,19 +11,19 @@ import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 import kotlin.math.floor
 
-fun Player?.giveDepazItem(id: String,amount: Int = 1,playerName: String) {
+fun Player?.giveDepazItem(id: String,amount: Int = 1,playerName: String,silent: Boolean) {
     if (this == null) {
         severeL("PLAYER_NOT_FOUND", playerName)
         return
     }
-    this.giveDepazItem(id, amount)
+    this.giveDepazItem(id, amount, silent)
 }
-fun Player.giveDepazItem(id: String,amount: Int = 1) {
+fun Player.giveDepazItem(id: String,amount: Int = 1,silent: Boolean) {
     val sender = this
     var item = itemMap[id]?.buildInstance(sender)?.buildItem() ?: run {
         sender.infoS(sender.asLangText("ITEM_NOT_FOUND", id))
         throw NullPointerException()
     }
     this.giveItem(item,amount)
-    sender.sendStringAsComponent(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
+    if (silent) sender.sendStringAsComponent(sender.asLangText("ITEM_GIVE", amount, item.getDisplayNameOrRegName(), id))
 }

@@ -140,15 +140,15 @@ fun CommandComponent.createModernHelper(checkPermissions: Boolean = true) {
                         builder.appendLine()
                         builder.append(space(offset))
                         if (level > 1) {
-                            builder.append(if (end) " " else "<gray>│")
+                            builder.append(if (end) " " else "<#888888>│")
                         }
                         builder.append(space(level))
                         if (index + 1 < size) {
-                            builder.append("<gradient:gray:#ccccccc>├── </gradient>")
+                            builder.append("<gradient:#888888:#cccccc>├── </gradient>")
                         } else {
-                            builder.append("<gradient:gray:#ccccccc>└── </gradient>")
+                            builder.append("<gradient:#888888:#cccccc>└── </gradient>")
                         }
-                        builder.append("<gradient:#66ccff:#ffffff>${compound.aliases[0]}")
+                        builder.append("<gradient:#66ccff:#ffffff>${compound.aliases[0]}</gradient>")
                     }
                     option = false
                     comment = compound.aliases[0].length
@@ -161,7 +161,7 @@ fun CommandComponent.createModernHelper(checkPermissions: Boolean = true) {
                     }
                     comment = if (compound.optional || option) {
                         option = true
-                        builder.append(" ").append("<#66ffcc>>[<$value>]")
+                        builder.append(" ").append("<#66ffcc>[<$value>]")
                         compound.comment.length + 4
                     } else {
                         builder.append(" ").append("<#ffcc66><$value>")

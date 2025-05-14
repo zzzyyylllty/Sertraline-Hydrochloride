@@ -33,6 +33,8 @@ import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.releaseResourceFile
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.ConfigFile
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
@@ -87,19 +89,14 @@ object Sertraline : Plugin() {
     val fixedCalculator by lazy { FixedCalculator() }
     val variableCalculator by lazy { VariableCalculator() }
 
-    val config by lazy {
-        if (!File(getDataFolder(), "config.yml").exists()) {
-            warningL("CONFIG_REGEN")
-            releaseResourceFile("config.yml")
-        }
-        Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = false), Type.YAML)
-    }
+    @Config("config.yml")
+    lateinit var config: ConfigFile
 
     override fun onEnable() {
         infoL("INTERNAL_ONENABLE")
+        reloadSertraline()
         Language.enableSimpleComponent = true
         Language.default = "en_US"
-        reloadSertraline()
     }
 
     override fun onDisable() {
