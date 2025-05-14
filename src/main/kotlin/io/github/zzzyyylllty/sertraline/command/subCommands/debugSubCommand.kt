@@ -4,6 +4,7 @@ import com.beust.klaxon.Klaxon
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.templateMap
+import io.github.zzzyyylllty.sertraline.command.createModernHelper
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemInst
 import io.github.zzzyyylllty.sertraline.function.item.getDepazItemNBTOrFail
@@ -40,12 +41,12 @@ object DepazDebugCommand {
 
     @CommandBody
     val main = mainCommand {
-        createHelper()
+        createModernHelper()
     }
 
     @CommandBody
     val help = subCommand {
-        createHelper()
+        createModernHelper()
     }
 
     @CommandBody

@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
+import io.github.zzzyyylllty.sertraline.command.createModernHelper
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.runKether
@@ -28,12 +29,12 @@ object DepazApiCommand {
 
     @CommandBody
     val main = mainCommand {
-        createHelper()
+        createModernHelper()
     }
 
     @CommandBody
     val help = subCommand {
-        createHelper()
+        createModernHelper()
     }
 
     /** 解析 Minimessage */

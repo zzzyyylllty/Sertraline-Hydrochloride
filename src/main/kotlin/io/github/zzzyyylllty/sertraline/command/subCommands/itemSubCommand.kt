@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.command.createModernHelper
 import io.github.zzzyyylllty.sertraline.function.item.giveDepazItem
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
@@ -28,12 +29,12 @@ object DepazItemCommand {
 
     @CommandBody
     val main = mainCommand {
-        createHelper()
+        createModernHelper()
     }
 
     @CommandBody
     val help = subCommand {
-        createHelper()
+        createModernHelper()
     }
 
     @CommandBody
