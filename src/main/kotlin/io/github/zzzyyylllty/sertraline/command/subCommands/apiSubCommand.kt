@@ -9,9 +9,11 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
+import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.submitAsync
+import taboolib.expansion.createHelper
 
 @CommandHeader(
     name = "sertralineapi",
@@ -23,6 +25,16 @@ import taboolib.common.platform.function.submitAsync
     newParser = false,
 )
 object DepazApiCommand {
+
+    @CommandBody
+    val main = mainCommand {
+        createHelper()
+    }
+
+    @CommandBody
+    val help = subCommand {
+        createHelper()
+    }
 
     /** 解析 Minimessage */
     @CommandBody

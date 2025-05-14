@@ -14,9 +14,11 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
+import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.util.asList
+import taboolib.expansion.createHelper
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.util.asMap
 import taboolib.module.nms.getItemTag
@@ -35,6 +37,16 @@ import kotlin.String
     newParser = false,
 )
 object DepazDebugCommand {
+
+    @CommandBody
+    val main = mainCommand {
+        createHelper()
+    }
+
+    @CommandBody
+    val help = subCommand {
+        createHelper()
+    }
 
     @CommandBody
     val getItem = subCommand {
