@@ -150,7 +150,7 @@ dependencies {
 
     taboo("com.beust:klaxon:5.6")
 
-    taboo("ink.ptms:um:1.2.0u") // universal mythicmobs
+    taboo("ink.ptms:um:1.1.3") // universal mythicmobs
     //compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     // testImplementation(kotlin("test"))
