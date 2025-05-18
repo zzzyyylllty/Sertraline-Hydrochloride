@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.izzel.taboolib.gradle.*
 import io.izzel.taboolib.gradle.BukkitNMSUtil
 import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

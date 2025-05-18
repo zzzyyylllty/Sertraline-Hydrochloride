@@ -29,7 +29,7 @@ MEDICINAL_PILLS:
     lore: |
       <white>Look I’m taking my medicine like a good girl.
       <white>
-      <white>On Consume: {{ &effect }}
+      <white>On Consume: <k>&effect<ke>
   extend:
     - template: FOOD_TEMPLATE
 IRON_SWORD:

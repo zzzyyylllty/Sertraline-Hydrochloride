@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.kether
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
+import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

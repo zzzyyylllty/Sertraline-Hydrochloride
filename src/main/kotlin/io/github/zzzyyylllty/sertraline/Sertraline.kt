@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline
 
 import io.github.zzzyyylllty.connect.chemdah.connectChemdah
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.DepazItems
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.fineS
@@ -90,13 +91,12 @@ object Sertraline : Plugin() {
     val variableCalculator by lazy { VariableCalculator() }
 
     @Config("config.yml")
-    lateinit var config: ConfigFile
+    lateinit var config: Configuration
 
     override fun onEnable() {
         infoL("INTERNAL_ONENABLE")
-        reloadSertraline()
         Language.enableSimpleComponent = true
-        Language.default = "en_US"
+        reloadSertraline()
     }
 
     override fun onDisable() {
@@ -135,9 +135,16 @@ object Sertraline : Plugin() {
             e.printStackTrace()
         }
     }
-    @SubscribeEvent
-    fun lang(event: SystemSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
-    }
 
+
+}
+
+@SubscribeEvent
+fun lang(event: PlayerSelectLocaleEvent) {
+    event.locale = config.getString("lang", "zh_CN")!!
+}
+
+@SubscribeEvent
+fun lang(event: SystemSelectLocaleEvent) {
+    event.locale = config.getString("lang", "zh_CN")!!
 }

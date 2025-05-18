@@ -13,7 +13,6 @@ import taboolib.platform.util.asLangText
 import java.io.File
 
 fun reloadSertraline(inputSender: CommandSender = console.castSafely<CommandSender>()!!) {
-    infoL("INTERNAL_INFO_RELOADING")
     val sender = inputSender
     sender.infoS(sender.asLangText("INTERNAL_INFO_RELOADING"))
     try {

@@ -16,6 +16,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
@@ -178,9 +179,9 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
     devLog("encoded ATTRIBUTE json: $json")
 
     var i = 0
-    while (json.contains("\\{\\{(.+?)\\}\\}".toRegex())) {
+    while (json.contains("<k>(.+?)<ke>".toRegex())) {
         i++
-        val pattern = "\\{\\{(.+?)\\}\\}".toRegex()
+        val pattern = "<k>(.+?)<ke>".toRegex()
 
         val found = pattern.findAll(json)
 
@@ -188,9 +189,9 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
             val m = f.value
             val section = m.substring(8..(m.length-2))
             devLog("Founded kether shell module $m , $section")
-            json = json.replace(m,section.evalKetherString(p, data).toString())
+            json = json.replace(m,section.evalKetherValue(p, data) as String)
         }
-        if (i > 10) {
+        if (i > 50) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
             break
         }

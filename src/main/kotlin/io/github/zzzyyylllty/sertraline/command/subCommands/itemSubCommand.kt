@@ -59,24 +59,25 @@ object DepazItemCommand {
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
                     bukkitPlayer?.giveDepazItem(id = id, silent = false)
                 }
-            }
-            dynamic("amount") {
-                execute<CommandSender> { sender, context, argument ->
-                    val id = context["id"]
-                    val amount = context["amount"]
-                    if (sender is Player) sender.giveDepazItem(id, amount.evalKetherString(sender)?.toInt() ?:1, false)
-                }
-                suggestion<CommandSender>(uncheck = true) { sender, context ->
-                    listOf("1","64","16")
-                }
-                bool("silent") {
+
+                dynamic("amount") {
                     execute<CommandSender> { sender, context, argument ->
                         val id = context["id"]
-                        val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
-                        val bukkitPlayer = tabooPlayer.castSafely<Player>()
                         val amount = context["amount"]
-                        bukkitPlayer?.giveDepazItem(id = id, amount.evalKetherString(sender)?.toInt() ?:1, context.bool("silent"))
+                        if (sender is Player) sender.giveDepazItem(id, amount.evalKetherString(sender)?.toInt() ?:1, false)
+                    }
+                    suggestion<CommandSender>(uncheck = true) { sender, context ->
+                        listOf("1","64","16")
+                    }
+                    bool("silent") {
+                        execute<CommandSender> { sender, context, argument ->
+                            val id = context["id"]
+                            val tabooPlayer = context.player("player")
+                            // 转化为Bukkit的Player
+                            val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                            val amount = context["amount"]
+                            bukkitPlayer?.giveDepazItem(id = id, amount.evalKetherString(sender)?.toInt() ?:1, context.bool("silent"))
+                        }
                     }
                 }
             }
