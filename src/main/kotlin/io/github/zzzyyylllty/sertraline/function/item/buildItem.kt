@@ -187,9 +187,9 @@ fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any
 
         found.forEach { f ->
             val m = f.value
-            val section = m.substring(8..(m.length-2))
+            val section = m.substring(3..(m.length-5))
             devLog("Founded kether shell module $m , $section")
-            json = json.replace(m,section.evalKetherValue(p, data) as String)
+            json = json.replace(m,section.evalKetherValue(p, data).toString())
         }
         if (i > 50) {
             warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
