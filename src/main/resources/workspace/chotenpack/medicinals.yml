@@ -13,3 +13,5 @@ chotenpack:depaz_pills:
       - trigger: onConsume
         action:
           - minitell "<rainbow>Hello World!"
+    data:
+      pills: 6
