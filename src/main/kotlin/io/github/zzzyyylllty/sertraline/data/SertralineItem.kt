@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import kotlinx.serialization.Serializable
+import org.bukkit.Material
 
 @Serializable
 data class SertralineItem(
@@ -14,7 +15,7 @@ data class SertralineItem(
 
 @Serializable
 data class SertralineMeta(
-    val parent: SertralineItem
+    val parent: Key
 )
 
 @Serializable

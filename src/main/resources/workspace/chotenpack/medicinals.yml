@@ -1,16 +1,15 @@
-items:
-  depaz_pills:
-    minecraft:
-      material: COOKED_BEEF
-      display-name: "Depaz Pills"
-      lore: |
-        <gray>Tell you <yellow>Hello World!</yellow> After Consume.
-      nbt:
-        needy.girl: "Deep-able NBT"
-        overdose: 114514
-    sertraline:
-      parent: null
-      action:
-        - trigger: onConsume
-          action:
-            - minitell "<rainbow>Hello World!"
+chotenpack:depaz_pills:
+  minecraft:
+    material: COOKED_BEEF
+    display-name: "Depaz Pills"
+    lore: |
+      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
+    nbt:
+      needy.girl: "Deep-able NBT"
+      overdose: 114514
+  sertraline:
+    parent: null
+    action:
+      - trigger: onConsume
+        action:
+          - minitell "<rainbow>Hello World!"
