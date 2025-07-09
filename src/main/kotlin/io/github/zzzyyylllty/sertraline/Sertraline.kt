@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.data.SertralinePack
 import io.github.zzzyyylllty.sertraline.load.loadPackFiles
 import taboolib.common.io.newFile
@@ -68,7 +69,8 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
-    var packMap = LinkedHashMap<String, SertralinePack>()
+    var packMap = LinkedHashMap<Key, SertralinePack>()
+    var itemMap = LinkedHashMap<Key, SertralineItem>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     var devMode = true
 

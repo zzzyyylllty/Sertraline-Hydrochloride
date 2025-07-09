@@ -6,16 +6,25 @@ import org.bukkit.Material
 
 @Serializable
 data class SertralineItem(
-    val key: Key,
-    val minecraftItem: Material,
+    val minecraftItem: SertralineMaterial,
     val sertralineMeta: SertralineMeta,
-    val customMeta: LinkedHashMap<Key, @Serializable(AnySerializer::class) Any>,
 ) {
 }
 
 @Serializable
 data class SertralineMeta(
-    val parent: Key
+    val key: Key,
+    val parent: Key,
+    val data: LinkedHashMap<String, @Serializable(AnySerializer::class) Any>,
+    val customMeta: LinkedHashMap<Key, @Serializable(AnySerializer::class) Any>,
+)
+
+@Serializable
+data class SertralineMaterial(
+    val material: String,
+    val displayName: String,
+    val lore: List<String>,
+    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any>
 )
 
 @Serializable

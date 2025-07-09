@@ -1,12 +1,17 @@
 PackLoad: "正在加载包..."
 PackLoadRegen: "尚未找到包文件,正在重新生成."
-PackLoadNotFound: "如果您希望重新生成,请删除整个  文件夹."
+PackLoadNotFound: "未找到任何包文件... 如果您希望重新生成,请删除整个 packs 文件夹."
 PackLoadComplete: "已成功加载了 {0} 个包..."
+ItemLoad: "正在加载物品..."
+ItemLoadRegen: "尚未找到物品文件,正在重新生成."
+ItemLoadNotFound: "未找到任何物品文件... 如果您希望重新生成,请删除整个 workspace 文件夹."
+ItemLoadComplete: "已成功加载了 {0} 个物品..."
 PackNoAuthor: "未在包 {0} 内找到作者,已忽略."
 PackNoDesc: "未在包 {0} 内找到作者,已忽略."
 
 DebugLoadingFile: "正在加载文件 {0}"
 DebugLoadingPack: "正在加载文件 {0} 中的包 {0} ..."
+DebugLoadingItem: "正在加载文件 {0} 中的物品 {0} ..."
 
 CommandDebugGetPack: "包: {0}"
 CommandDebugGetPackMap: "包映射: {0}"
