@@ -148,8 +148,6 @@ dependencies {
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
 
-    taboo("com.beust:klaxon:5.6")
-
     taboo("ink.ptms:um:1.2.0") // universal mythicmobs
     //compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
