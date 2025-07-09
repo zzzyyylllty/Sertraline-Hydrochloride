@@ -1,8 +1,10 @@
 package io.github.zzzyyylllty.sertraline.command
 
 import ink.ptms.adyeshach.core.entity.type.minecraftVersion
+import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
+import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import taboolib.common.platform.command.component.CommandComponentDynamic
@@ -92,7 +94,14 @@ object SertralineMainCommand {
     @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            // reloadSertraline(sender)
+            sender.infoS("Reloading...")
+            try {
+                reloadCustomConfig()
+                sender.fineS("Reloaded.")
+            }
+            catch (e: Exception) {
+
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.sertraline.data.Key
 import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.data.SertralinePack
+import io.github.zzzyyylllty.sertraline.load.loadItemFiles
 import io.github.zzzyyylllty.sertraline.load.loadPackFiles
 import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
@@ -69,7 +71,7 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
-    var packMap = LinkedHashMap<Key, SertralinePack>()
+    var packMap = LinkedHashMap<String, SertralinePack>()
     var itemMap = LinkedHashMap<Key, SertralineItem>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     var devMode = true
@@ -99,23 +101,26 @@ object Sertraline : Plugin() {
     }*/
 
     fun reloadCustomConfig() {
+        itemMap.clear()
+        packMap.clear()
         loadPackFiles()
+        loadItemFiles()
         plugin.config.reload()
         // devMode = config.getBoolean("debug",false)
     }
-
-
-    fun createCustomConfig() {
-        infoL("INTERNAL_INFO_CREATING_CONFIG")
-        try {
-            Configuration.loadFromFile(newFile(getDataFolder(), "placeholders.yml", create = true), Type.YAML)
-            Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = true), Type.YAML)
-            infoL("INTERNAL_INFO_CREATED_CONFIG")
-        } catch (e: Exception) {
-            severeL("INTERNAL_SEVERE_CREATE_CONFIG_ERROR")
-            e.printStackTrace()
-        }
-    }
+//
+//
+//    fun createCustomConfig() {
+//        infoL("INTERNAL_INFO_CREATING_CONFIG")
+//        try {
+//            Configuration.loadFromFile(newFile(getDataFolder(), "placeholders.yml", create = true), Type.YAML)
+//            Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = true), Type.YAML)
+//            infoL("INTERNAL_INFO_CREATED_CONFIG")
+//        } catch (e: Exception) {
+//            severeL("INTERNAL_SEVERE_CREATE_CONFIG_ERROR")
+//            e.printStackTrace()
+//        }
+//    }
 
 
     @SubscribeEvent

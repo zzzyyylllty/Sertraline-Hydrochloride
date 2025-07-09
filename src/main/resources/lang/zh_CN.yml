@@ -6,12 +6,15 @@ ItemLoad: "正在加载物品..."
 ItemLoadRegen: "尚未找到物品文件,正在重新生成."
 ItemLoadNotFound: "未找到任何物品文件... 如果您希望重新生成,请删除整个 workspace 文件夹."
 ItemLoadComplete: "已成功加载了 {0} 个物品..."
+ItemEnchantSkipped: "物品 {0} 生成出错: 附魔无效,已跳过."
+ItemPotionSkipped: "物品 {0} 生成出错: 药水无效,已跳过."
+
 PackNoAuthor: "未在包 {0} 内找到作者,已忽略."
 PackNoDesc: "未在包 {0} 内找到作者,已忽略."
 
 DebugLoadingFile: "正在加载文件 {0}"
-DebugLoadingPack: "正在加载文件 {0} 中的包 {0} ..."
-DebugLoadingItem: "正在加载文件 {0} 中的物品 {0} ..."
+DebugLoadingPack: "正在加载文件 {0} 中的包 {1} ..."
+DebugLoadingItem: "正在加载文件 {0} 中的物品 {1} ..."
 
 CommandDebugGetPack: "包: {0}"
 CommandDebugGetPackMap: "包映射: {0}"

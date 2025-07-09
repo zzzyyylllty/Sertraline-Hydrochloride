@@ -17,7 +17,7 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : SertralineItem {
 
     val config = iconfig.getConfigurationSection(root)!!
 
-    var customMeta = iconfig.get(root)!! as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
+    var customMeta = iconfig.getConfigurationSection(root)?.getValues(false)!! as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
 
     customMeta.remove("minecraft")
     customMeta.remove("sertraline")
@@ -26,14 +26,16 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : SertralineItem {
         material = config.getString("minecraft.material"),
         displayName = config.getString("minecraft.display-name") ,
         lore = serializeStringList(config.get("minecraft.lore")),
-        nbt = config.get("minecraft.nbt") as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
+        model = config.getInt("minecraft.model") ,
+        nbt = (config.getConfigurationSection("minecraft.nbt")?.getValues(false) ?: linkedMapOf<String, @Serializable(AnySerializer::class) Any>()) as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
+        extra = (config.getConfigurationSection("minecraft.extra")?.getValues(false) ?: linkedMapOf<String, @Serializable(AnySerializer::class) Any>()) as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
     )
     return SertralineItem(
         minecraftItem = item,
         sertralineMeta = SertralineMeta(
             key = keyEntry,
             parent = config.getString("sertraline.parent")?.getKey(),
-            data = config.get("sertraline.data") as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
+            data = (config.getConfigurationSection("sertraline.data")?.getValues(false) ?: linkedMapOf<String, @Serializable(AnySerializer::class) Any>()) as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
         ),
         customMeta = customMeta
     )

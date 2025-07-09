@@ -126,9 +126,6 @@ fun DepazItems.buildInstance(p: Player) : DepazItemInst {
         meta.displayName(name)
         buildedItem.setItemMeta(meta)
     }
-
-
-
     buildedItem.lore(compLore)
 
     for (attr in depaz.attributeParts) {

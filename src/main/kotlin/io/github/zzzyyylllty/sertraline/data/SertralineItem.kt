@@ -22,8 +22,10 @@ data class SertralineMeta(
 data class SertralineMaterial(
     val material: String?,
     val displayName: String?,
-    val lore: List<String>,
-    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
+    val lore: List<String>?,
+    val model: Int?,
+    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
+    val extra: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
 )
 
 @Serializable

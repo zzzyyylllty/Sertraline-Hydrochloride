@@ -1,10 +1,9 @@
 package io.github.zzzyyylllty.sertraline.load
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.Sertraline.ItemMap
+import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
-import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
@@ -18,7 +17,7 @@ fun loadItemFiles() {
     infoL("ItemLoad")
     if (!File(getDataFolder(), "workspace").exists()) {
         warningL("ItemLoadRegen")
-        releaseResourceFile("workspace/chotenItem.yml")
+        releaseResourceFile("workspace/chotenpack/test.yml")
     }
     val files = File(getDataFolder(), "workspace").listFiles()
     if (files == null) {
@@ -42,8 +41,8 @@ fun loadItemFile(file: File) {
     for (iroot in config.getKeys(false)) {
 
         devLog(console.asLangText("DebugLoadingItem", file.name.toString(), iroot.toString()))
-        val Item = loadItem(config, iroot)
-        itemMap[iroot] = Item
+        val item = loadItem(config, iroot)
+        itemMap[iroot.getKey()] = item
 
     }
 }
