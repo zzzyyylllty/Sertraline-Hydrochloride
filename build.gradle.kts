@@ -153,7 +153,7 @@ dependencies {
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     // testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
-    taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
+    taboo("com.google.code.gson:gson:2.10.1")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     taboo("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.0") { isTransitive = false }

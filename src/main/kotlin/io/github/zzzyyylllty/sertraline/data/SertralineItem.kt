@@ -7,25 +7,25 @@ import kotlinx.serialization.Serializable
 data class SertralineItem(
     val minecraftItem: SertralineMaterial,
     val sertralineMeta: SertralineMeta,
-    val customMeta: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
+    val customMeta: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?> = linkedMapOf(),
 ) {
 }
 
 @Serializable
 data class SertralineMeta(
     val key: Key,
-    val parent: Key?,
+    val parent: Key? = null,
     val data: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?>,
 )
 
 @Serializable
 data class SertralineMaterial(
-    val material: String?,
-    val displayName: String?,
-    val lore: List<String>?,
-    val model: Int?,
-    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
-    val extra: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
+    val material: String? = "STONE",
+    val displayName: String? = null,
+    val lore: List<String>? = null,
+    val model: Int? = null,
+    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?> = linkedMapOf(),
+    val extra: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?> = linkedMapOf()
 )
 
 @Serializable

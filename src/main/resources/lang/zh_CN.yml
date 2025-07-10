@@ -7,6 +7,8 @@ ItemLoadRegen: "尚未找到物品文件,正在重新生成."
 ItemLoadNotFound: "未找到任何物品文件... 如果您希望重新生成,请删除整个 workspace 文件夹."
 ItemLoadComplete: "已成功加载了 {0} 个物品..."
 ItemEnchantSkipped: "物品 {0} 生成出错: 附魔无效,已跳过."
+ItemFlagSkipped: "物品 {0} 生成出错: Flag无效,已跳过."
+ItemPatternSkipped: "物品 {0} 生成出错: 旗帜无效,已跳过."
 ItemPotionSkipped: "物品 {0} 生成出错: 药水无效,已跳过."
 
 PackNoAuthor: "未在包 {0} 内找到作者,已忽略."
