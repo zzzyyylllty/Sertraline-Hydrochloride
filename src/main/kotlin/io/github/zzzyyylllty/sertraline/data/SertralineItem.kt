@@ -24,8 +24,8 @@ data class SertralineMaterial(
     val displayName: String? = null,
     val lore: List<String>? = null,
     val model: Int? = null,
-    val nbt: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?> = linkedMapOf(),
-    val extra: LinkedHashMap<String, @Serializable(AnySerializer::class) Any?> = linkedMapOf()
+    val nbt: List<java.util.LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>>? = listOf(),
+    val extra: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?> = linkedMapOf()
 )
 
 @Serializable

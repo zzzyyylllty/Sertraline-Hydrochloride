@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.data.SertralineMeta
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
 import kotlinx.serialization.Serializable
 import org.bukkit.configuration.file.YamlConfiguration
+import java.util.LinkedHashMap
 
 fun loadItem(iconfig: YamlConfiguration, root: String) : SertralineItem {
 
@@ -22,12 +23,14 @@ fun loadItem(iconfig: YamlConfiguration, root: String) : SertralineItem {
     customMeta.remove("minecraft")
     customMeta.remove("sertraline")
 
+    val nbts = config.getList("minecraft.nbt") as List<LinkedHashMap<String, Any>>?
+
     val item = SertralineMaterial(
         material = config.getString("minecraft.material"),
         displayName = config.getString("minecraft.display-name") ,
         lore = serializeStringList(config.get("minecraft.lore")),
         model = config.getInt("minecraft.model") ,
-        nbt = (config.getConfigurationSection("minecraft.nbt")?.getValues(false) ?: linkedMapOf<String, @Serializable(AnySerializer::class) Any>()) as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
+        nbt = nbts,
         extra = (config.getConfigurationSection("minecraft.extra")?.getValues(false) ?: linkedMapOf<String, @Serializable(AnySerializer::class) Any>()) as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>,
     )
     return SertralineItem(

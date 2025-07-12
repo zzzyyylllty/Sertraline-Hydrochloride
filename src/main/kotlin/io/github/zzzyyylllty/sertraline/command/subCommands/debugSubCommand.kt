@@ -54,7 +54,7 @@ object DepazDebugCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                var message = sender.asLangText("CommandDebugGetPack", itemMap[id.getKey()].toString())
+                var message = sender.asLangText("CommandDebugGetItem", itemMap[id.getKey()].toString())
                 sender.infoS(message)
             }
         }

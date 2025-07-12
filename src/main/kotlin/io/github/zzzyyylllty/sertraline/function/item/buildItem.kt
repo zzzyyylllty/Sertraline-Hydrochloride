@@ -8,6 +8,8 @@ import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
+import io.github.zzzyyylllty.sertraline.function.sertralize.PatternTypeAdapter
+import io.github.zzzyyylllty.sertraline.function.sertralize.TimeZoneTypeAdapter
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -44,6 +46,8 @@ import java.util.Locale
 import kotlin.math.min
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import java.util.TimeZone
+import kotlin.jvm.java
 
 val jsonUtils = Json {
     prettyPrint = true
@@ -63,12 +67,15 @@ val gsonBuilder = GsonBuilder()
     .setPrettyPrinting()
     .excludeFieldsWithModifiers()
     .setLenient()
+    .registerTypeAdapter(TimeZone::class.java, TimeZoneTypeAdapter())
+    .registerTypeAdapter(Pattern::class.java, PatternTypeAdapter())
     .create()
 
 fun SertralineItem.buildItem(player: Player?): ItemStack {
-    val sertraline = this
 
-    var datajson = gsonBuilder.toJson(sertraline)
+    devLog("prepare encode item: $this")
+
+    var datajson = gsonBuilder.toJson(this)
 
     while (datajson.contains("\\{\\{(.+?)\\}\\}".toRegex())) {
         val pattern = "\\{\\{(.+?)\\}\\}".toRegex()
@@ -79,13 +86,13 @@ fun SertralineItem.buildItem(player: Player?): ItemStack {
             val m = f.value
             val section = m.substring(2..(m.length-3))
             devLog("Founded data kether shell module $m , $section")
-            datajson = datajson.replace(m,section.evalKetherValue(player, sertraline.sertralineMeta.data).toString())
+            datajson = datajson.replace(m,section.evalKetherValue(player, this.sertralineMeta.data).toString())
         }
     }
 
     val data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?>>(datajson)
 
-    var json = gsonBuilder.toJson(sertraline)
+    var json = gsonBuilder.toJson(this)
 
     devLog("encoded item json: $json")
 
@@ -196,7 +203,7 @@ fun SertralineItem.initializeItem(player: Player?): ItemStack {
 
     // write nbt
     val tag = material.getItemTag()
-    mc.nbt.forEach { tag.put(it.key, it.value) }
+    mc.nbt?.forEach { for (i in it) { tag.put(i.key, i.value) } }
     tag.saveTo(material)
 
     val mm = MiniMessage.miniMessage()

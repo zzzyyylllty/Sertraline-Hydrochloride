@@ -2,6 +2,10 @@ PackLoad: "正在加载包..."
 PackLoadRegen: "尚未找到包文件,正在重新生成."
 PackLoadNotFound: "未找到任何包文件... 如果您希望重新生成,请删除整个 packs 文件夹."
 PackLoadComplete: "已成功加载了 {0} 个包..."
+
+InfoPack: "<yellow>\n命名空间:<gray> {0} \n<yellow>介绍:<gray> {0} \n<yellow>作者:<gray> {0}"
+InfoPackNotFound: "未找到对应的包"
+
 ItemLoad: "正在加载物品..."
 ItemLoadRegen: "尚未找到物品文件,正在重新生成."
 ItemLoadNotFound: "未找到任何物品文件... 如果您希望重新生成,请删除整个 workspace 文件夹."
