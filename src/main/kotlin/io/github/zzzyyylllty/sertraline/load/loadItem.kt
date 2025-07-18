@@ -44,16 +44,19 @@ fun loadItem(iconfig: Configuration, root: String) : SertralineItem {
 
     val config = iconfig.getConfigurationSection(root)!!
 
-    var customMeta = iconfig.getConfigurationSection(root)?.getValues(false)!! as kotlin.collections.LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
+    var customMeta = iconfig.getConfigurationSection(root)?.getValues(false)!! as LinkedHashMap<String, @Serializable(AnySerializer::class) Any?>
 
     customMeta.remove("minecraft")
     customMeta.remove("sertraline")
 
-    val str = gsonBuilder.toJson(config.getConfigurationSection("minecraft.nbt"))
-    devLog(str.toString())
-    val pNbts = gsonBuilder.fromJson<List<HashMap<String, @Serializable(AnySerializer::class) Any?>>>(str ?: "[{}]", List::class.java)
-    val nbts = HashMap<String, Any?>()
-    for (map in pNbts) {
+    // load nbt map
+    val nbtConfig = config.get("minecraft.nbt")
+    devLog("nbtConfig: ${nbtConfig}")
+    val str = gsonBuilder.toJson(nbtConfig)
+    devLog("json: ${str.toString()}")
+    val pNbts = gsonBuilder.fromJson<List<Map<String, @Serializable(AnySerializer::class) Any?>>?>(str ?: "[{}]", List::class.java)
+    val nbts = LinkedHashMap<String, Any?>()
+    for (map in pNbts ?: emptyList()) {
         for (entry in map) {
             nbts.put(entry.key, entry.value)
         }
