@@ -24,6 +24,7 @@ taboolib {
         }
         dependencies {
             // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
+            name("DylsemHokma").optional(true)
             name("MythicLib").optional(true)
             name("TrMenu").optional(true)
             name("Zaphkiel").optional(true)
@@ -141,6 +142,7 @@ dependencies {
 //    compileOnly("net.luckperms:api:5.4")
 //    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
+    implementation("org.yaml:snakeyaml:1.30")
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
     implementation("net.kyori:adventure-api:4.19.0")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")

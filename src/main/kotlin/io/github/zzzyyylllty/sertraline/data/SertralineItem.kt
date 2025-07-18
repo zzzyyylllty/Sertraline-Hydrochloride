@@ -24,7 +24,7 @@ data class SertralineMaterial(
     val displayName: String? = null,
     val lore: List<String>? = null,
     val model: Int? = null,
-    val nbt: List<java.util.LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any>>? = listOf(),
+    val nbt: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?>? = linkedMapOf(),
     val extra: LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?> = linkedMapOf()
 )
 
@@ -32,4 +32,8 @@ data class SertralineMaterial(
 data class Key(
     val namespace: String,
     val name: String,
-)
+) {
+    fun serialize(): String {
+        return "$namespace:$name"
+    }
+}

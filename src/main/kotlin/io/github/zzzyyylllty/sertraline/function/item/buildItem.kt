@@ -203,7 +203,11 @@ fun SertralineItem.initializeItem(player: Player?): ItemStack {
 
     // write nbt
     val tag = material.getItemTag()
-    mc.nbt?.forEach { for (i in it) { tag.put(i.key, i.value) } }
+    mc.nbt?.forEach {
+        val key = it.key.replace("__",".")
+        tag.put(key, it.value)
+        devLog("writing nbt ${it.key} = ${it.value}")
+    }
     tag.saveTo(material)
 
     val mm = MiniMessage.miniMessage()

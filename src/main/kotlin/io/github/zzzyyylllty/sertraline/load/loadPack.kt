@@ -10,9 +10,18 @@ fun loadPack(iconfig: YamlConfiguration, root: String) : SertralinePack {
     return SertralinePack(
         namespace = root,
         description = iconfig.getString("$root.description") ?: run {
-        warningS(console.asLangText("PackNoDesc", root))
-        "No desc provided."
-    },
-        authors = iconfig.getStringList("$root.authors")
+            warningS(console.asLangText("PackNoDesc", root))
+            "No desc provided."
+        },
+        authors = iconfig.getStringList("$root.authors"),
+        version = iconfig.getString("$root.authors") ?: run {
+            warningS(console.asLangText("PackNoVersion", root))
+            "1.0.0"
+        },
+        enabled = iconfig.getBoolean("$root.enabled", true),
+        name = iconfig.getString("$root.name") ?: run {
+            warningS(console.asLangText("PackNoName", root))
+            root
+        },
     )
 }

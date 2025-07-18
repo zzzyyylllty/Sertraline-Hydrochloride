@@ -47,7 +47,7 @@ object DepazPackCommand {
                 val id = context["id"]
                 val pack = packMap[id]
                 if (pack != null){
-                    var message = sender.asLangText("InfoPack", pack.namespace)
+                    var message = sender.asLangText("InfoPack",pack.name, pack.namespace, pack.description, pack.authors.joinToString(","), pack.version, if (pack.enabled) "<green><bold>✔" else "<red><bold>❌")
                     sender.infoS(message)
                 } else {
                     sender.infoS(sender.asLangText("InfoPackNotFound"))

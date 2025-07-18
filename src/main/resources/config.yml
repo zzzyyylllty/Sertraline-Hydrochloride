@@ -5,48 +5,12 @@ debug: false
 lang: en_US
 # Language
 
-item:
-  no-replacement-consume: true
-  # Close return items such as honey bottles returns glass bottles after use.
-attribute:
-  debounce-time: 500
-  # The execution frequency of the status refresh debounce function, in milliseconds,
-  # indicates how long after the player refreshes the attribute by moving the item for the last time.
-  # For example, if the player moves the item again within 500ms, the attribute will not be calculated until 500ms after the last move.
-  # Lowering this value can avoid delayed attribute calculation, but it may affect performance
-  # default: 500
-  # Performance impact: Normal
-  default-definer: sertraline_<slot>
-  # Default attribute registration keywords.
-  require-enabled-slot:
-    - HELMET
-    - CHESTPLATE
-    - LEGGINGS
-    - BOOTS
-    - ANY_HAND
-  # Which grid items will be traversed when refreshing attributes. Not recommended for modification.
-  # Default traversal of all equipment+offhand+mainhand
-  # Performance impact: High
-
-action:
-  throttle-time: 500
-  # same as debounce,but it's throttle.
-  require-enabled-slot:
-    - HELMET
-    - CHESTPLATE
-    - LEGGINGS
-    - BOOTS
-    - ANY_HAND
-  # Which grid items will be traversed when refreshing actions. Not recommended for modification.
-  # Default traversal of all equipment+offhand+mainhand
-  # Performance impact: Normal
-skill:
-  throttle-time: 200
-  # same as debounce,but it's throttle.
-  require-enabled-slot:
-    - HELMET
-    - CHESTPLATE
-    - LEGGINGS
-    - BOOTS
-    - ANY_HAND
-  default-engine: MYTHIC
+database:
+  type: SQLITE # SQLITE or MYSQL
+  mysql:
+    host: needy.girl.overdose
+    port: 22127
+    user: raincandy_u
+    password: angelkawaii2
+    database: sertraline
+# Not enabled yet!
