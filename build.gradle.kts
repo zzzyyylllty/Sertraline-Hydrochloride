@@ -24,6 +24,7 @@ taboolib {
         }
         dependencies {
             // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
+            name("DylsemHokma").optional(true)
             name("MythicLib").optional(true)
             name("TrMenu").optional(true)
             name("Zaphkiel").optional(true)
@@ -48,7 +49,7 @@ taboolib {
         // 中央仓库地址
         repoCentral = "https://maven.aliyun.com/repository/central"
         // TabooLib 仓库地址
-        // repoTabooLib = "http://ptms.ink:8081/repository/releases"
+        repoTabooLib = "https://repo.tabooproject.org/repository/releases"
         // 依赖下载目录
         fileLibs = "libraries"
         // 资源下载目录
@@ -117,30 +118,31 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     //implementation("org.jetbrains.kotlin:kotlin-libs:2.0.0")
-    compileOnly("net.momirealms:craft-engine-core:0.0.41")
-    compileOnly("net.momirealms:craft-engine-bukkit:0.0.41")
-    // implementation("me.clip:placeholderapi:2.11.5")
-    compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
-    compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
-    compileOnly("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
-    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
-    // compileOnly("io.rokuko.azureflow.api.AzureFlowAPI:1.1.0.1")
+//    compileOnly("net.momirealms:craft-engine-core:0.0.41")
+//    compileOnly("net.momirealms:craft-engine-bukkit:0.0.41")
+//    // implementation("me.clip:placeholderapi:2.11.5")
+//    compileOnly("io.lumine:Mythic-Dist:5.6.1") { isTransitive = false }
+//    compileOnly("ink.ptms:Zaphkiel:2.0.14") { isTransitive = false }
+//    compileOnly("io.th0rgal:oraxen:1.189.0") { isTransitive = false }
+//    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.3-beta-14") { isTransitive = false }
+//    // compileOnly("io.rokuko.azureflow.api.AzureFlowAPI:1.1.0.1")
+//
+//    // compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
+//
+//    compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
+//    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
+//    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
+//    compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
+//    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
+//    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
+//    compileOnly("com.github.Saukiya:SX-Item:4.4.0")
+//
+//    compileOnly("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
+//
+//    compileOnly("net.luckperms:api:5.4")
+//    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
-    // compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1") { isTransitive = false }
-
-    compileOnly("com.github.FrancoBM12:API-MagicCosmetics:2.2.7") { isTransitive = false }
-    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT") { isTransitive = false }
-    compileOnly("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
-    compileOnly("pers.neige.neigeitems:NeigeItems:1.17.24") { isTransitive = false }
-    compileOnly("com.willfp:eco:6.71.3") { isTransitive = false }
-    compileOnly("com.willfp:EcoItems:5.49.1") { isTransitive = false }
-    compileOnly("com.github.Saukiya:SX-Item:4.4.0")
-
-    compileOnly("ink.ptms.chemdah:api:1.1.8") { isTransitive = false }
-
-    compileOnly("net.luckperms:api:5.4")
-    compileOnly("io.lumine:Mythic-Dist:5.6.1")
-
+    implementation("org.yaml:snakeyaml:1.30")
     implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
     implementation("net.kyori:adventure-api:4.19.0")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
@@ -148,14 +150,12 @@ dependencies {
     // implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     // implementation("com.beust:klaxon:5.5")
 
-    taboo("com.beust:klaxon:5.6")
-
-    taboo("ink.ptms:um:1.2.0") // universal mythicmobs
+    taboo("ink.ptms:um:1.1.3") // universal mythicmobs
     //compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("ink.ptms.adyeshach:api:2.0.24")
     // testImplementation(kotlin("test"))
     taboo("top.maplex.arim:Arim:1.2.13")
-    taboo("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
+    taboo("com.google.code.gson:gson:2.10.1")
     //taboo("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     taboo("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0")
     taboo("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.7.0") { isTransitive = false }

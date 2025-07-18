@@ -1,0 +1,35 @@
+chotenpack:depaz_pills:
+  minecraft:
+    material: COOKED_BEEF
+    display-name: "Depaz Pills"
+    model: 10000
+    lore: |
+      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
+    nbt:
+      needy.girl: "Deep-able NBT"
+      overdose: 114514
+    extra:
+      damage: 1
+      flags:
+        - HIDE_ENCHANTS
+  sertraline:
+    parent: null
+    action:
+      - trigger: onConsume
+        action:
+          - minitell "<rainbow>Hello World!"
+    data:
+      pills: 6
+
+chotenpack:test_banner:
+  minecraft:
+    material: WHITE_BANNER
+    extra:
+      patterns:
+        - BLACK,SQUARE_BOTTOM_LEFT
+chotenpack:test_potion:
+  minecraft:
+    material: POTION
+    extra:
+      potions:
+        - SPEED,10,10

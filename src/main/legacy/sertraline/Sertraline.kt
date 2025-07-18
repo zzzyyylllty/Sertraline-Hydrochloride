@@ -1,10 +1,14 @@
 package io.github.zzzyyylllty.sertraline
 
-import io.github.zzzyyylllty.sertraline.data.Key
-import io.github.zzzyyylllty.sertraline.data.SertralineItem
-import io.github.zzzyyylllty.sertraline.data.SertralinePack
-import io.github.zzzyyylllty.sertraline.load.loadItemFiles
-import io.github.zzzyyylllty.sertraline.load.loadPackFiles
+import io.github.zzzyyylllty.connect.chemdah.connectChemdah
+import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.data.DepazItems
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.logger.fineS
+import io.github.zzzyyylllty.sertraline.function.load.loadItemFiles
+import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFile
+import io.github.zzzyyylllty.sertraline.function.load.loadTemplateFiles
+import io.github.zzzyyylllty.sertraline.function.load.reloadSertraline
 import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
@@ -20,6 +24,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.serializersModule
 import kotlinx.serialization.modules.SerializersModule
+import net.luckperms.api.query.QueryOptions.contextual
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
@@ -71,10 +76,14 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
-    var packMap = LinkedHashMap<String, SertralinePack>()
-    var itemMap = LinkedHashMap<Key, SertralineItem>()
+    var templateMap = LinkedHashMap<String, ConfigurationSection>()
+    var itemMap = LinkedHashMap<String, DepazItems>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    var devMode = true
+    var devMode = false
+    val mythicLibEnabled by lazy {
+        devLog("Mythiclib Stat:${(Bukkit.getPluginManager().getPlugin("MythicLib") != null)}")
+        (Bukkit.getPluginManager().getPlugin("MythicLib") != null)
+    }
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -87,49 +96,55 @@ object Sertraline : Plugin() {
     override fun onEnable() {
         infoL("INTERNAL_ONENABLE")
         Language.enableSimpleComponent = true
-        reloadCustomConfig()
+        reloadSertraline()
     }
 
     override fun onDisable() {
         infoL("INTERNAL_ONDISABLE")
     }
-    /*
     fun compat() {
         if (Bukkit.getPluginManager().getPlugin("Chemdah") != null) {
             connectChemdah()
         }
-    }*/
+    }
 
     fun reloadCustomConfig() {
-        itemMap.clear()
-        packMap.clear()
-        loadPackFiles()
-        loadItemFiles()
+        infoL("INTERNAL_INFO_CREATING_CONFIG")
+        try {
+            infoL("INTERNAL_INFO_CREATED_CONFIG")
+        } catch (e: Exception) {
+            severeL("INTERNAL_SEVERE_CREATE_CONFIG_ERROR")
+            e.printStackTrace()
+        }
         plugin.config.reload()
-        // devMode = config.getBoolean("debug",false)
-    }
-//
-//
-//    fun createCustomConfig() {
-//        infoL("INTERNAL_INFO_CREATING_CONFIG")
-//        try {
-//            Configuration.loadFromFile(newFile(getDataFolder(), "placeholders.yml", create = true), Type.YAML)
-//            Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = true), Type.YAML)
-//            infoL("INTERNAL_INFO_CREATED_CONFIG")
-//        } catch (e: Exception) {
-//            severeL("INTERNAL_SEVERE_CREATE_CONFIG_ERROR")
-//            e.printStackTrace()
-//        }
-//    }
-
-
-    @SubscribeEvent
-    fun lang(event: PlayerSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
+        devMode = config.getBoolean("debug",false)
+        itemMap = linkedMapOf()
+        loadTemplateFiles()
+        loadItemFiles()
     }
 
-    @SubscribeEvent
-    fun lang(event: SystemSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
+
+    fun createCustomConfig() {
+        infoL("INTERNAL_INFO_CREATING_CONFIG")
+        try {
+            Configuration.loadFromFile(newFile(getDataFolder(), "placeholders.yml", create = true), Type.YAML)
+            Configuration.loadFromFile(newFile(getDataFolder(), "config.yml", create = true), Type.YAML)
+            infoL("INTERNAL_INFO_CREATED_CONFIG")
+        } catch (e: Exception) {
+            severeL("INTERNAL_SEVERE_CREATE_CONFIG_ERROR")
+            e.printStackTrace()
+        }
     }
+
+
+}
+
+@SubscribeEvent
+fun lang(event: PlayerSelectLocaleEvent) {
+    event.locale = config.getString("lang", "zh_CN")!!
+}
+
+@SubscribeEvent
+fun lang(event: SystemSelectLocaleEvent) {
+    event.locale = config.getString("lang", "zh_CN")!!
 }

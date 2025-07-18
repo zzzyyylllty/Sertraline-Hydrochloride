@@ -1,205 +1,231 @@
-/*@file:RuntimeDependency(
-    value = "com.beust:klaxon:5.5",
-    test = "com.beust.klaxon.Klaxon"
-)*/
 package io.github.zzzyyylllty.sertraline.function.item
 
-import com.alibaba.fastjson2.JSON
-import com.alibaba.fastjson2.TypeReference
-import com.alibaba.fastjson2.toJSONString
-import com.willfp.eco.core.items.toSNBT
-import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.data.AttributeInst
-import io.github.zzzyyylllty.sertraline.data.DepazItemInst
-import io.github.zzzyyylllty.sertraline.data.DepazItems
+import com.google.gson.GsonBuilder
+import ink.ptms.adyeshach.taboolib.library.xseries.XEnchantment
+import ink.ptms.adyeshach.taboolib.library.xseries.XPotion
+import io.github.zzzyyylllty.sertraline.Sertraline
+import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.function.kether.evalKether
-import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
-import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
-import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.function.sertralize.PatternTypeAdapter
+import io.github.zzzyyylllty.sertraline.function.sertralize.TimeZoneTypeAdapter
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
+import kotlinx.serialization.json.Json
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.bukkit.Bukkit
+import org.bukkit.Color
+import org.bukkit.DyeColor
 import org.bukkit.Material
-import org.bukkit.command.CommandSender
+import org.bukkit.block.banner.Pattern
+import org.bukkit.block.banner.PatternType
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import taboolib.common.util.random
-import taboolib.module.nms.itemTagReader
-import taboolib.platform.util.buildItem
-import kotlinx.serialization.json.Json
-import pers.neige.neigeitems.utils.ItemUtils.getNbt
-import pers.neige.neigeitems.utils.ItemUtils.getNbtOrNull
-import pers.neige.neigeitems.utils.ItemUtils.toNbt
+import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.potion.PotionData
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import org.bukkit.potion.PotionType
+import taboolib.common.platform.function.console
+import taboolib.library.configuration.ConfigurationSection
+import taboolib.library.xseries.XItemFlag
+import taboolib.library.xseries.XMaterial
+import taboolib.library.xseries.XPatternType
 import taboolib.module.lang.asLangText
-import taboolib.module.nms.ItemTagType
 import taboolib.module.nms.getItemTag
-import java.util.UUID
-import kotlin.collections.toMutableList
-import kotlinx.serialization.encodeToString
+import taboolib.platform.util.buildItem
+import taboolib.platform.util.modifyMeta
+import java.util.Locale
+import kotlin.math.min
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.modules.SerializersModule
-import javax.management.Attribute
+import kotlinx.serialization.encodeToString
+import java.util.TimeZone
+import kotlin.jvm.java
 
-
-fun DepazItemInst.buildItem() : ItemStack {
-
-    val depaz = this
-//    Before1.1
-//    item.itemTagReader {
-//        set("SERTRALINE_ID", depaz.id)
-//        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
-//
-//        set("SERTRALINE_DATA", data.toJSONString())
-//        write(item)
-//    }
-
-    // 1.1 Start
-
-    val parsedList : MutableList<LinkedHashMap<String, Any>> = mutableListOf()
-        attributes.forEach { attr ->
-        val jsonStr = attr.toJSONString()
-        parsedList.add(JSON.parseObject<LinkedHashMap<String, Any>>(jsonStr, object : TypeReference<LinkedHashMap<String, Any>>() {}) as LinkedHashMap<String, Any>)
-        }
-
-
-
-    val itemTag = item.getItemTag()
-    itemTag.putDeep("SERTRALINE_ID", depaz.id)
-    itemTag.putDeep("SERTRALINE_ATTRIBUTE", parsedList)
-    itemTag.putDeep("SERTRALINE_DATA", data)
-
-    itemTag.saveTo(item)
-    /*
-    item.itemTagReader {
-        devLog((itemTag.get("SERTRALINE_ATTRIBUTE") as List<*> as List<AttributeInst>).toString())
-    }
-    */
-
-    return item
+val jsonUtils = Json {
+    prettyPrint = true
+    isLenient = true
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+    encodeDefaults = true
+    allowStructuredMapKeys = true
+    allowSpecialFloatingPointValues = true
 }
 
-fun DepazItems.buildInstance(p: Player) : DepazItemInst {
+val gsonBuilder = GsonBuilder()
+    .setVersion(1.0)
+    .disableJdkUnsafe()
+    .disableHtmlEscaping()
+    .disableInnerClassSerialization()
+    .setPrettyPrinting()
+    .excludeFieldsWithModifiers()
+    .setLenient()
+    .registerTypeAdapter(TimeZone::class.java, TimeZoneTypeAdapter())
+    .registerTypeAdapter(Pattern::class.java, PatternTypeAdapter())
+    .create()
 
-    val depaz = this.solvePlaceholders(p)
-    val instAttrs = mutableListOf<AttributeInst>()
-    val sender = p as CommandSender
+fun SertralineItem.buildItem(player: Player?): ItemStack {
 
-    val mm = MiniMessage.miniMessage()
-    val compLore : MutableList<Component> = mutableListOf()
-    val legacy = LegacyComponentSerializer.legacyAmpersand()
+    devLog("prepare encode item: $this")
 
-    val solvedItem = resolveItemStack(depaz.originalItem.material, p)
+    var datajson = gsonBuilder.toJson(this)
 
-    if (depaz.originalItem.materialLoreEnabled) solvedItem?.lore()?.forEach {
-        compLore.add(it.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
-    }
-    depaz.originalItem.lore.forEach {
-        val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
-        compLore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
-    }
+    while (datajson.contains("\\{\\{(.+?)\\}\\}".toRegex())) {
+        val pattern = "\\{\\{(.+?)\\}\\}".toRegex()
 
-    val buildedItem = buildItem(solvedItem ?: ItemStack(Material.STONE)) {
-        val model = depaz.originalItem.model ?:(if (solvedItem?.itemMeta?.hasCustomModelData() == true) solvedItem.itemMeta?.customModelData else null)
-        if (model != null) customModelData = model
-    }
+        val found = pattern.findAll(datajson)
 
-    buildedItem.itemTagReader {
-        for (nbtp in depaz.originalItem.nbt) {
-            for (nbtSingle in nbtp) {
-                set(nbtSingle.key, nbtSingle.value)
-            }
+        found.forEach { f ->
+            val m = f.value
+            val section = m.substring(2..(m.length-3))
+            devLog("Founded data kether shell module $m , $section")
+            datajson = datajson.replace(m,section.evalKetherValue(player, this.sertralineMeta.data).toString())
         }
-        write(buildedItem)
     }
 
-    if (depaz.originalItem.name != null) {
-        val meta = buildedItem.itemMeta
-        val name = mm.deserialize("<white>${depaz.originalItem.name}")
-            .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-        meta.displayName(name)
-        buildedItem.setItemMeta(meta)
-    }
+    val data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?>>(datajson)
 
+    var json = gsonBuilder.toJson(this)
 
+    devLog("encoded item json: $json")
 
-    buildedItem.lore(compLore)
-
-    for (attr in depaz.attributeParts) {
-        // Attribute Chance
-        if (attr.conditionOnBuild.evalKetherBoolean(p) && attr.chance.evalKether(sender).get().toString().toDouble() > random(0.0,99.9)) instAttrs.add(
-            AttributeInst(
-                attributeSources = attr.attributeSources,
-                attr = attr.attr,
-                definer = attr.definer,
-                uuid = attr.uuid,
-                source = attr.source,
-                mythicLibEquipSlot = attr.mythicLibEquipSlot,
-                requireSlot = attr.requireSlot.toMutableList(),
-                conditionOnEffect = attr.conditionOnEffect
-            )
-        )
-    }
-
-    return DepazItemInst(
-        id = depaz.id,
-        item = buildedItem,
-        attributes = instAttrs,
-        data = depaz.data
-    )
-}
-
-
-// 未写入 NBT
-fun DepazItems.solvePlaceholders(p: Player, inputData: LinkedHashMap<String, Any>? = null) : DepazItems {
-
-    devLog("solving $this")
-
-    val jsonUtils = Json {
-        prettyPrint = true
-        isLenient = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-        allowStructuredMapKeys = true
-        allowSpecialFloatingPointValues = true
-    }
-    val parsedData = inputData ?: this.data
-
-    devLog("ParsedData: $parsedData InputData: $inputData")
-
-    var json = this.toJSONString()
-
-    devLog("encoded ATTRIBUTE json: $json")
-
-    var i = 0
-    while (json.contains("<k>(.+?)<ke>".toRegex())) {
-        i++
-        val pattern = "<k>(.+?)<ke>".toRegex()
+    while (json.contains("\\{\\{(.+?)\\}\\}".toRegex())) {
+        val pattern = "\\{\\{(.+?)\\}\\}".toRegex()
 
         val found = pattern.findAll(json)
 
         found.forEach { f ->
             val m = f.value
-            val section = m.substring(3..(m.length-5))
+            val section = m.substring(2..(m.length-3))
             devLog("Founded kether shell module $m , $section")
-            json = json.replace(m,section.evalKetherValue(p, data).toString())
-        }
-        if (i > 50) {
-            warningS(console.asLangText("ITEM_ATTRIBUTE_LIMITED_KETHER"))
-            break
+            json = json.replace(m,section.evalKetherValue(player, data).toString())
         }
     }
     devLog("kethered json: $json")
 
-    val inst = jsonUtils.decodeFromString<DepazItems>(json)
+    val parsed = jsonUtils.decodeFromString<SertralineItem>(json)
 
-    devLog("inst: $inst")
-    return inst
+    devLog("parsed: $parsed")
+    return parsed.initializeItem(player)
+}
+
+fun SertralineItem.initializeItem(player: Player?): ItemStack {
+
+    val mc = minecraftItem
+    val smeta = sertralineMeta
+
+    var material = buildItem(XMaterial.valueOf(mc.material ?: "STONE")) {
+        mc.displayName?.let { name = it }
+        mc.model?.let { customModelData = it }
+        mc.extra.forEach {
+            val value = it.value
+            when (it.key.lowercase(Locale.getDefault())) {
+                "damage","dam" -> damage = value.toString().toInt()
+                "unbreak","unbreakable","isunbreakable" -> isUnbreakable = value.toString().toBoolean()
+                "flag","flags","hideflags" -> (value as List<String>).let {
+                    for (s in it) {
+                        XItemFlag.valueOf(s).get()?.let { e -> flags.add(e) } ?: run {
+                            warningS(
+                                console().asLangText(
+                                    "ItemFlagSkipped",
+                                    "${smeta.key}"
+                                )
+                            )
+                            null
+                        }
+                    }
+                }
+                "color","colour" -> (value.toString()).let {
+                    color = if (it.contains(",")) {
+                        val split = it.split(",")
+                        org.bukkit.Color.fromRGB(split[0].toInt(), split[1].toInt(), split[2].toInt())
+                    } else {
+                        org.bukkit.Color.fromRGB(it.toInt())
+                    }
+                }
+                "pattern", "patterns" -> (value as List<String>).let {
+                    for (s in it) {
+                        val dyeColor = DyeColor.valueOf(s.split(",")[0])
+                        val pattern = XPatternType.of(s.split(",")[1]).get().get()
+                        pattern?.let { it1 -> patterns.add(Pattern(dyeColor, it1)) } ?: run {
+                            warningS(
+                                console().asLangText(
+                                    "ItemPatternSkipped",
+                                    "${smeta.key}"
+                                )
+                            )
+                            null
+                        }
+                    }
+                }
+                "ench","enchant","enchants" -> (value as List<String>).let {
+                    for (s in it) {
+                        val enchant = taboolib.library.xseries.XEnchantment.of(s.split(",")[0]).get().get() ?: run {
+                            warningS(
+                                console().asLangText(
+                                    "ItemEnchantSkipped",
+                                    "${smeta.key}"
+                                )
+                            )
+                            null
+                        }
+                        val level = (s.split(",")[1]).toInt()
+                        enchant?.let { key -> enchants.put(key, level) }
+                    }
+                }
+                "effect", "potion", "potions" -> (value as List<String>).let {
+                    for (s in it) {
+                        val potion = XPotion.valueOf(s.split(",")[0]).potionEffectType ?: run {
+                            warningS(
+                                console().asLangText(
+                                    "ItemPotionSkipped",
+                                    "${smeta.key}"
+                                )
+                            )
+                            null
+                        }
+                        val duration = s.split(",")[1].toString().toInt()
+                        val amp =s.split(",")[2].toString().toInt()
+                        potion?.let { potions.add(PotionEffect(it, duration, amp)) }
+                    }
+                }
+
+            }
+        }
+    }
+
+    // write nbt
+    val tag = material.getItemTag()
+    mc.nbt?.forEach {
+        val key = it.key.replace("__",".")
+        tag.put(key, it.value)
+        devLog("writing nbt ${it.key} = ${it.value}")
+    }
+    tag.saveTo(material)
+
+    val mm = MiniMessage.miniMessage()
+    val legacy = LegacyComponentSerializer.legacyAmpersand()
+    var compLore : MutableList<Component>? = null
+    mc.lore?.forEach {
+        if (compLore == null) compLore = mutableListOf()
+        val comp = mm.deserialize(legacy.serialize(legacy.deserialize(it.replace("§", "&"))))
+        compLore.add(comp.decorationIfAbsent(TextDecoration.ITALIC,TextDecoration.State.FALSE))
+    }
+
+    if (mc.displayName != null) {
+        val meta = material.itemMeta
+        val name = mm.deserialize(mc.displayName).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+        meta.displayName(name)
+        material.setItemMeta(meta)
+    }
+    material.lore(compLore)
+
+    return material
 }

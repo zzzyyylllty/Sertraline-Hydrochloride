@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import taboolib.module.lang.asLangText
 
+val prefix = "[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>]"
 
 
 fun infoL(node: String,vararg args: Any) {
@@ -25,48 +26,48 @@ fun warningL(node: String,vararg args: Any) {
 }
 
 fun CommandSender?.fineS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
-    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
+    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
 }
 
 fun CommandSender?.debugS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
-    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
+    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
 }
 
 fun CommandSender?.infoS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
-    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
+    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
 }
 
 fun CommandSender?.warningS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
-    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
+    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
 }
 
 fun CommandSender?.severeS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
-    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
+    if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
 }
 
 fun fineS(message: String) {
-    consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
+    consoleSender.sendStringAsComponent("<gray>$prefix [<#66ffcc>FINE</#66ffcc>]</gray> <reset>$message")
 }
 
 fun debugS(message: String) {
-    consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
+    consoleSender.sendStringAsComponent("<gray>$prefix [<#ddaa77>DEBUG</#ddaa77>]</gray> <#aaaaaa>$message")
 }
 
 fun infoS(message: String) {
-    consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
+    consoleSender.sendStringAsComponent("<gray>$prefix [<#66ccff>INFO</#66ccff>]</gray> <reset>$message")
 }
 
 fun warningS(message: String) {
-    consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
+    consoleSender.sendStringAsComponent("<gray>$prefix [<#ffee66>WARN</#ffee66>]</gray> <#eeeeaa>$message")
 }
 
 fun severeS(message: String) {
-    consoleSender.sendStringAsComponent("<gray>[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>] [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
+    consoleSender.sendStringAsComponent("<gray>$prefix [<#ff6600>ERROR</#ff6600>]</gray> <#ffccbb>$message")
 }
 
 fun CommandSender.sendStringAsComponent(message: String) {
