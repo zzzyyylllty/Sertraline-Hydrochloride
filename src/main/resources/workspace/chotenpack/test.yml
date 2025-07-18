@@ -4,14 +4,13 @@ chotenpack:depaz_pills:
     display-name: "Depaz Pills"
     model: 10000
     lore: |
-      <gray>Tell you <yellow>Hello World!</yellow> After Consume.
+      <gray>Hello, {{ sender }}!
     nbt:
-      needy.girl: "Deep-able NBT"
-      overdose: 114514
+      needy:
+        girl: "Deep-able NBT"
+        overdose: 114514
     extra:
       damage: 1
-      flags:
-        - HIDE_ENCHANTS
   sertraline:
     parent: null
     action:
@@ -19,12 +18,24 @@ chotenpack:depaz_pills:
         action:
           - minitell "<rainbow>Hello World!"
     data:
-      pills: 6
+      pills: 60000
 
+chotenpack:test_helmet:
+  minecraft:
+    material: LEATHER_HELMET
+    extra:
+      damage: 1
+      color: 255,255,255
+      # color: 123456
 chotenpack:test_banner:
   minecraft:
     material: WHITE_BANNER
     extra:
+      unbreakable: true
+      enchants:
+        - SHARPNESS,10
+      flags:
+        - HIDE_ENCHANTS
       patterns:
         - BLACK,SQUARE_BOTTOM_LEFT
 chotenpack:test_potion:
@@ -32,4 +43,4 @@ chotenpack:test_potion:
     material: POTION
     extra:
       potions:
-        - SPEED,10,10
+        - SPEED,100,100

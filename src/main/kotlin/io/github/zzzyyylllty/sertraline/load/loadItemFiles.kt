@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.logger.warningL
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFile
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.asLangText
 import java.io.File
 import kotlin.collections.set
@@ -34,7 +35,7 @@ fun loadItemFiles() {
     }
 }
 fun loadItemFile(file: File) {
-    val config = YamlConfiguration.loadConfiguration(file)
+    val config = Configuration.loadFromFile(file)
 
     devLog(console.asLangText("DebugLoadingFile", file.name))
 

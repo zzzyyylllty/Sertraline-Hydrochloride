@@ -4,9 +4,11 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.data.SertralinePack
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.asLangText
 
-fun loadPack(iconfig: YamlConfiguration, root: String) : SertralinePack {
+fun loadPack(iconfig: Configuration, root: String) : SertralinePack {
     return SertralinePack(
         namespace = root,
         description = iconfig.getString("$root.description") ?: run {
