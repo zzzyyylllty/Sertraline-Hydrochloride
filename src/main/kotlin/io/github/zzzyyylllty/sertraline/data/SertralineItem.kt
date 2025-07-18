@@ -15,7 +15,15 @@ data class SertralineItem(
 data class SertralineMeta(
     val key: Key,
     val parent: Key? = null,
+    val actions: List<Action>?,
     val data: HashMap<String, @Serializable(with = AnySerializer::class) Any?> = hashMapOf(),
+)
+
+@Serializable
+data class Action(
+    var trigger: String,
+    var condition: List<String>?,
+    var kether: List<String>?
 )
 
 @Serializable
