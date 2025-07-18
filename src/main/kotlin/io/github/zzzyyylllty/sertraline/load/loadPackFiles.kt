@@ -11,6 +11,7 @@ import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.lang.asLangText
 import java.io.File
+import taboolib.module.configuration.Configuration
 import kotlin.collections.set
 
 
@@ -35,7 +36,7 @@ fun loadPackFiles() {
     }
 }
 fun loadpackFile(file: File) {
-    val config = YamlConfiguration.loadConfiguration(file)
+    val config = Configuration.loadFromFile(file)
 
     devLog(console.asLangText("DebugLoadingFile", file.name))
 

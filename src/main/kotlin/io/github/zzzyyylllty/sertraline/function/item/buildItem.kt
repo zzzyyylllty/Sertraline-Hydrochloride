@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.function.sertralize.AnySerializer
+import io.github.zzzyyylllty.sertraline.function.sertralize.ConfigurationSerializableAdapter
 import io.github.zzzyyylllty.sertraline.function.sertralize.PatternTypeAdapter
 import io.github.zzzyyylllty.sertraline.function.sertralize.TimeZoneTypeAdapter
 import io.github.zzzyyylllty.sertraline.logger.warningS
@@ -69,6 +70,7 @@ val gsonBuilder = GsonBuilder()
     .setLenient()
     .registerTypeAdapter(TimeZone::class.java, TimeZoneTypeAdapter())
     .registerTypeAdapter(Pattern::class.java, PatternTypeAdapter())
+    .registerTypeAdapter(ConfigurationSerializableAdapter::class.java, PatternTypeAdapter())
     .create()
 
 fun SertralineItem.buildItem(player: Player?): ItemStack {
