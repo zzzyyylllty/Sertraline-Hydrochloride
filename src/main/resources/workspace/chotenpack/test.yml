@@ -5,20 +5,37 @@ chotenpack:depaz_pills:
     model: 10000
     lore: |
       <gray>Hello, {{ sender }}!
+      <gray>When right clicking consumes this item,
+      <gray>Items randomly have 1-10 pills of medication,
+      <gray>Each medication provides you with 10 sec. strength effect.
+      <gray>This item have <yellow>{{ &pills }} <gray>pills.
     nbt:
-      needy:
-        girl: "Deep-able NBT"
-        overdose: 114514
+      - needy:
+          girl: "Deep-able NBT"
+          overdose: 114514
     extra:
       damage: 1
   sertraline:
     parent: null
     action:
-      - trigger: onConsume
-        action:
-          - minitell "<rainbow>Hello World!"
+      - trigger: onRightClick
+        condition: null
+        # condition:
+        #   - check papi "%player_health%" >= 20
+        kether:
+          - depaz-itemstack consume
+          - minitell Consumed!
+          - command inline "effect give {{ sender }} strength {{ math mul [ &pills 10 ] }}" as console
+          - 'minitell inline "Issued server command: <gray><i>effect give {{ sender }} strength {{ math mul [ &pills 10 ] }}"'
+          - minitell inline "<aqua>It has <yellow>{{ &pills }} <aqua>pills."
+      - trigger: onPreAttack
+        condition: null
+        # condition:
+        #   - check papi "%player_health%" >= 20
+        kether:
+          - tell "PreAttack!"
     data:
-      pills: 60000
+      pills: '{{ random 1 to 10 }}'
 
 chotenpack:test_helmet:
   minecraft:

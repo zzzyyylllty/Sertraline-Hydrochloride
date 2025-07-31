@@ -4,6 +4,8 @@ import ink.ptms.adyeshach.core.entity.type.minecraftVersion
 import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand
 import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazItemCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazPackCommand
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
@@ -90,6 +92,10 @@ object SertralineMainCommand {
 
     @CommandBody
     val debug = DepazDebugCommand
+    @CommandBody
+    val item = DepazItemCommand
+    @CommandBody
+    val pack = DepazPackCommand
 
     @CommandBody
     val reload = subCommand {

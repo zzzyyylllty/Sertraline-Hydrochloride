@@ -4,7 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.packMap
 import io.github.zzzyyylllty.sertraline.command.createModernHelper
-import io.github.zzzyyylllty.sertraline.function.item.buildItem
+import buildItem
 import io.github.zzzyyylllty.sertraline.load.getKey
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import org.bukkit.command.CommandSender
@@ -14,7 +14,6 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
-import taboolib.module.configuration.util.asMap
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 
@@ -70,7 +69,7 @@ object DepazDebugCommand {
     @CommandBody
     val getItemMap = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            var message = sender.asLangText("CommandDebugGetPackMap", itemMap.toString())
+            var message = sender.asLangText("CommandDebugGetItemMap", itemMap.toString())
             sender.infoS(message)
         }
     }

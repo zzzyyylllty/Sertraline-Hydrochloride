@@ -85,13 +85,13 @@ object Sertraline : Plugin() {
     lateinit var config: Configuration
 
     override fun onEnable() {
-        infoL("INTERNAL_ONENABLE")
+        infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
     }
 
     override fun onDisable() {
-        infoL("INTERNAL_ONDISABLE")
+        infoL("Disable")
     }
     /*
     fun compat() {

@@ -1,14 +1,9 @@
 package io.github.zzzyyylllty.sertraline.command.subCommands
 
-import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.Sertraline.packMap
 import io.github.zzzyyylllty.sertraline.command.createModernHelper
-import io.github.zzzyyylllty.sertraline.data.SertralineItem
-import io.github.zzzyyylllty.sertraline.function.item.buildItem
+import io.github.zzzyyylllty.sertraline.function.item.giveSertralineItem
 import io.github.zzzyyylllty.sertraline.load.getKey
-import io.github.zzzyyylllty.sertraline.logger.infoS
-import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -18,11 +13,7 @@ import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
-import taboolib.common.util.asList
-import taboolib.module.configuration.util.asMap
 import taboolib.platform.util.asLangText
-import taboolib.platform.util.giveItem
-import taboolib.platform.util.sendError
 
 @CommandHeader(
     name = "sertralineitem",
@@ -102,15 +93,4 @@ object DepazItemCommand {
         }
     }
 
-}
-
-fun giveSertralineItem(item: SertralineItem,sender: CommandSender,receiver: Player? = sender as Player,amount: Int = 1) {
-    if (receiver == null) {
-        sender.infoS(sender.asLangText("PlayerNotFound"))
-        return
-    }
-    var message = sender.asLangText("ItemGiveSender", sender.name, item.buildItem(receiver).displayName(), amount)
-    sender.infoS(message)
-    receiver.sendStringAsComponent(receiver.asLangText("ItemGive", sender.name, item.buildItem(receiver).displayName(), amount))
-    receiver.giveItem(item.buildItem(receiver),amount)
 }

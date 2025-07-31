@@ -1,11 +1,10 @@
 package io.github.zzzyyylllty.sertraline.function.sertralize
-
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
+import kotlinx.serialization.modules.SerializersModule
 
 object AnySerializer : KSerializer<Any> {
     override val descriptor: SerialDescriptor =

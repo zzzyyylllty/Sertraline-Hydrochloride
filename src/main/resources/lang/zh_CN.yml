@@ -20,12 +20,22 @@ ItemNotFound: "物品不存在"
 PlayerNotFound: "玩家不存在"
 NotPlayer: "非玩家不允许执行"
 
+ItemNoPackFound: "无法找到物品 {0} 的包 {1}"
+
 PackNoAuthor: "未在包 {0} 内找到作者,已忽略."
 PackNoDesc: "未在包 {0} 内找到作者,已忽略."
+PackNoName: "未在包 {0} 内找到名称,已忽略."
+PackNoVersion: "未在包 {0} 内找到版本,已忽略."
 
 DebugLoadingFile: "正在加载文件 {0}"
 DebugLoadingPack: "正在加载文件 {0} 中的包 {1} ..."
 DebugLoadingItem: "正在加载文件 {0} 中的物品 {1} ..."
+DebugActionApply: "正在为玩家 {0} 执行动作 {1}"
 
 CommandDebugGetPack: "包: {0}"
+CommandDebugGetItem: "物品: {0}"
 CommandDebugGetPackMap: "包映射: {0}"
+CommandDebugGetItemMap: "物品: {0}"
+
+Enable: "正在启用插件..."
+Disable: "正在禁用插件..."
