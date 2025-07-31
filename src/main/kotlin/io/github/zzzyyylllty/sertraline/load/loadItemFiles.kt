@@ -41,7 +41,6 @@ fun loadItemFile(file: File) {
 
     for (iroot in config.getKeys(false)) {
 
-        devLog(console.asLangText("DebugLoadingItem", file.name.toString(), iroot.toString()))
         val item = loadItem(config, iroot)
         itemMap[iroot.getKey()] = item
 

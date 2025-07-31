@@ -1,7 +1,6 @@
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import com.google.gson.GsonBuilder
-import gsonBuilder
 import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
@@ -11,7 +10,6 @@ import io.github.zzzyyylllty.sertraline.function.sertralize.PatternTypeAdapter
 import io.github.zzzyyylllty.sertraline.function.sertralize.TimeZoneTypeAdapter
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -55,7 +53,24 @@ val jsonUtils = Json {
 
 val gsonBuilder = GsonBuilder()
     .setVersion(1.0)
+    .disableJdkUnsafe()
     .disableHtmlEscaping()
+    .excludeFieldsWithModifiers(Modifier.STATIC) // 添加这一行，排除静态字段
+    .excludeFieldsWithModifiers(Modifier.TRANSIENT) // 排除transient字段
+    .setExclusionStrategies(object : ExclusionStrategy {
+        override fun shouldSkipField(f: FieldAttributes): Boolean {
+            // 排除可能导致问题的Java内部类
+            return f.declaredType.typeName.startsWith("java.") ||
+                    f.declaredType.typeName.startsWith("sun.") ||
+                    f.declaredType.typeName.startsWith("com.sun.")
+        }
+
+        override fun shouldSkipClass(clazz: Class<*>): Boolean {
+            // 排除特定问题类
+            return clazz == Random::class.java ||
+                    clazz == Pattern::class.java
+        }
+    })
     .disableInnerClassSerialization()
     .setPrettyPrinting()
     .excludeFieldsWithModifiers()
@@ -86,9 +101,9 @@ fun SertralineItem.buildItem(player: Player?): ItemStack {
         }
     }
 
-    val data = gsonBuilder.fromJson(datajson, LinkedHashMap::class.java)
+    val data = jsonUtils.decodeFromString<LinkedHashMap<String, @Serializable(with = AnySerializer::class) Any?>>(datajson)
 
-    var json = gsonBuilder.toJson(this.copy(sertralineMeta = this.sertralineMeta.copy(data = data as LinkedHashMap<String, Any?>)))
+    var json = gsonBuilder.toJson(this)
 
     devLog("encoded item json: $json")
 
@@ -106,7 +121,7 @@ fun SertralineItem.buildItem(player: Player?): ItemStack {
     }
     devLog("kethered json: $json")
 
-    val parsed = gsonBuilder.fromJson(json, SertralineItem::class.java)
+    val parsed = jsonUtils.decodeFromString<SertralineItem>(json)
 
     devLog("parsed: $parsed")
     return parsed.initializeItem(player)
@@ -125,7 +140,7 @@ fun SertralineItem.initializeItem(player: Player?): ItemStack {
         mc.extra.forEach {
             val value = it.value
             when (it.key.lowercase(Locale.getDefault())) {
-                "damage","dam" -> damage = value.toString().toDouble().toInt()
+                "damage","dam" -> damage = value.toString().toInt()
                 "unbreak","unbreakable","isunbreakable" -> isUnbreakable = value.toString().toBoolean()
                 "flag","flags","hideflags" -> (value as List<String>).let {
                     for (s in it) {

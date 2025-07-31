@@ -74,6 +74,7 @@ taboolib {
     relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
     relocate("kotlinx.serialization", "kotlinx.serialization170")
+    relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
 }
 
 repositories {
