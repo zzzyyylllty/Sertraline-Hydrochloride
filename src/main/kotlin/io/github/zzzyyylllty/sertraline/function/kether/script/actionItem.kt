@@ -1,30 +1,20 @@
 package io.github.zzzyyylllty.sertraline.function.kether.script
 
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.function.item.getSavedData
 import io.github.zzzyyylllty.sertraline.function.kether.getScriptItemStack
 import io.github.zzzyyylllty.sertraline.function.kether.getScriptSertralineItem
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.ComponentLike
-import net.kyori.adventure.text.minimessage.MiniMessage
-import org.bukkit.command.CommandSender
-import taboolib.common5.scriptEngine
-import taboolib.library.kether.Parser.frame
 import taboolib.module.kether.KetherParser
-import taboolib.module.kether.ParserHolder.now
-import taboolib.module.kether.ParserHolder.text
 import taboolib.module.kether.actionNow
-import taboolib.module.kether.combinationParser
-import taboolib.module.kether.script
 import taboolib.module.kether.scriptParser
 import taboolib.module.kether.switch
-import org.bukkit.entity.Player
+import taboolib.module.configuration.util.asMap
 import taboolib.module.kether.*
 import taboolib.module.nms.ItemTagType
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
-import java.util.concurrent.CompletableFuture
 
 //
 @KetherParser(["depaz-item"], shared = true)
@@ -32,48 +22,74 @@ fun actionItem() = scriptParser {
     it.switch {
         case ("data") {
             val type = it.nextToken()
-            val key = it.nextParsedAction()
-            devLog("type: ${type}, key: $key")
+            val keyAction = it.nextParsedAction()
             when (type) {
                 "get" -> actionNow {
-                    return@actionNow getScriptSertralineItem().sertralineMeta.data[run(key).get()]
-                }
-                "set" -> actionNow {
-                    val value = run(it.nextParsedAction()).get()
-                    val tag = getScriptItemStack().getItemTag()
-                    tag[run(key).get().toString()] = value
-                }
-                "add","plus" -> actionNow {
-                    val value = run(it.nextParsedAction()).get()
+                    val key = run(keyAction).get()
+                    devLog("type: ${type}, key: $key")
                     val i = getScriptItemStack()
                     val tag = i.getItemTag()
+                    devLog("Tag reading completed: ${key} = $tag")
+                    return@actionNow i.getSavedData()[key]
+                }
+                "get-original" -> actionNow {
+                    val key = run(keyAction).get()
+                    devLog("type: ${type}, key: $key")
+                    return@actionNow getScriptSertralineItem().sertralineMeta.data[key]
+                }
+                "set","=" -> actionNow {
+                    val key = run(keyAction).get()
+                    val value = run(it.nextParsedAction()).get()
+                    devLog("type: ${type}, key: $key, value: $value")
+                    val i = getScriptItemStack()
+                    var data = i.getSavedData()
+                    data[key.toString()] = value
+                    val tag = i.getItemTag()
+                    tag["SERTRALINE_DATA"] = data
+                    getScriptItemStack().setItemTag(tag)
+                    devLog("Tag writing completed: $data")
+                }
+                "add","plus","+","+=" -> actionNow {
+                    val key = run(keyAction).get()
+                    val value = run(it.nextParsedAction()).get()
+                    devLog("type: ${type}, key: $key, value: $value")
+                    val i = getScriptItemStack()
+                    var data = i.getSavedData()
                     try {
-                    tag[run(key).get().toString()] =
-                        if (tag[run(key).get().toString()]?.type == ItemTagType.LONG) (tag[run(key).get()
-                            .toString()]?.asLong()?.plus(value.toString().toLong()))
-                        else if (tag[run(key).get().toString()]?.type == ItemTagType.FLOAT || tag[run(key).get()
-                                .toString()]?.type == ItemTagType.DOUBLE
-                        ) (tag[run(key).get().toString()]?.asDouble()?.plus(value.toString().toDouble()))
-                        else throw IllegalArgumentException("Value must be long or float or double.")
+                        data[key.toString()] =
+                            if (data[key] is Long) (data[key]?.toString()?.toLong()?.plus(value.toString().toLong()))
+                            else if (data[key] is Double) (data[key]?.toString()?.toDouble()?.plus(value.toString().toDouble()))
+                            else if (data[key] is Float) (data[key]?.toString()?.toFloat()?.plus(value.toString().toFloat()))
+                            else if (data[key] is Int) (data[key]?.toString()?.toInt()?.plus(value.toString().toInt()))
+                            else throw IllegalArgumentException("Value must be long or float or double or int.")
+                        val tag = i.getItemTag()
+                        tag["SERTRALINE_DATA"] = data
+                        getScriptItemStack().setItemTag(tag)
                     } catch (e: Exception) {
                         severeS("Value must be long or float or double.")
                     }
+                    devLog("Tag writing completed: $data")
                 }
-                "remove","rem","take","minus" -> actionNow {
+                "minus","remove","-","-=" -> actionNow {
+                    val key = run(keyAction).get()
                     val value = run(it.nextParsedAction()).get()
+                    devLog("type: ${type}, key: $key, value: $value")
                     val i = getScriptItemStack()
-                    val tag = i.getItemTag()
+                    var data = i.getSavedData()
                     try {
-                        tag[run(key).get().toString()] =
-                            if (tag[run(key).get().toString()]?.type == ItemTagType.LONG) (tag[run(key).get()
-                                .toString()]?.asLong()?.minus(value.toString().toLong()))
-                            else if (tag[run(key).get().toString()]?.type == ItemTagType.FLOAT || tag[run(key).get()
-                                    .toString()]?.type == ItemTagType.DOUBLE
-                            ) (tag[run(key).get().toString()]?.asDouble()?.minus(value.toString().toDouble()))
-                            else throw IllegalArgumentException("Value must be long or float or double.")
+                        data[key.toString()] =
+                            if (data[key] is Long) (data[key]?.toString()?.toLong()?.minus(value.toString().toLong()))
+                            else if (data[key] is Double) (data[key]?.toString()?.toDouble()?.minus(value.toString().toDouble()))
+                            else if (data[key] is Float) (data[key]?.toString()?.toFloat()?.minus(value.toString().toFloat()))
+                            else if (data[key] is Int) (data[key]?.toString()?.toInt()?.minus(value.toString().toInt()))
+                            else throw IllegalArgumentException("Value must be long or float or double or int.")
+                        val tag = i.getItemTag()
+                        tag["SERTRALINE_DATA"] = data
+                        getScriptItemStack().setItemTag(tag)
                     } catch (e: Exception) {
                         severeS("Value must be long or float or double.")
                     }
+                    devLog("Tag writing completed: $data")
                 }
                 else -> error("out of when case.")
             }
@@ -105,23 +121,4 @@ fun actionItemStack() = scriptParser {
         }
     }
 }
-
-/*
-@KetherParser(["depazitemstack"], shared = true)
-fun actionItemStack() = scriptParser {
-    it.switch {
-        case ("consume") {
-            actionNow { getScriptItemStack().amount-- }
-        }
-        case ("amount") {
-            actionNow { return@actionNow getScriptItemStack().amount }
-        }
-        case ("consumeAll") {
-            actionNow { getScriptItemStack().amount = 0}
-        }
-        case ("printitem") {
-            actionNow { devLog(getScriptItemStack().toString()) }
-        }
-    }
-}*/
 

@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
 import io.github.zzzyyylllty.sertraline.data.Key
 import io.github.zzzyyylllty.sertraline.data.SertralineItem
 import io.github.zzzyyylllty.sertraline.data.SertralinePack
@@ -25,8 +26,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import taboolib.common.LifeCycle.ENABLE
 import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
+import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.configuration.Config
@@ -40,28 +43,12 @@ import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.io.File
 import java.util.*
 
-@RuntimeDependencies(
-    RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.6.3",
-        test = "!kotlinx.serialization.Serializer",
-        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization163."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        "!org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3",
-        test = "!kotlinx.serialization.json.Json",
-        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlinx.serialization.", "!kotlinx.serialization163."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        "!org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.0",
-        test = "!kotlin.enums.EnumEntries",
-        relocate = ["!kotlin.", "!kotlin1822.", "!kotlin1922.", "!kotlin200.", "!kotlin200.enums."],
-        transitive = false
-    )
-)
-class RuntimeEnv
-
+@Awake(ENABLE)
+fun onEnable(){
+    infoL("Enable")
+    Language.enableSimpleComponent = true
+    reloadCustomConfig()
+}
 
 object Sertraline : Plugin() {
 
@@ -85,9 +72,6 @@ object Sertraline : Plugin() {
     lateinit var config: Configuration
 
     override fun onEnable() {
-        infoL("Enable")
-        Language.enableSimpleComponent = true
-        reloadCustomConfig()
     }
 
     override fun onDisable() {

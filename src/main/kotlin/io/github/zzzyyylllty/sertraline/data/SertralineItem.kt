@@ -29,7 +29,9 @@ data class SertralineMeta(
 data class Action(
     var trigger: String = "onRightClick",
     var condition: List<String>? = null,
-    var kether: List<String>? = null
+    var kether: List<String>? = null,
+    var javaScript: List<String>? = null
+
 ) {
     fun runAction(player: Player, data: HashMap<String,  Any?>, i: ItemStack?, e: Event?, sqlI: SertralineItem) {
         val parsedData = data.toMutableMap()
@@ -38,6 +40,7 @@ data class Action(
         parsedData["@SertralineEvent"] = e
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)
+            
         }
     }
 }

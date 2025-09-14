@@ -27,7 +27,7 @@ import java.util.UUID
 
 val throttleAction = throttle<ThrottleActionLink, ThrottleActionParam>(config.getLong("action.throttle-time", 500)){ link, data ->
     devLog("Throttling action for Time ${config.getLong("action.throttle-time", 500)} | $link | $data")
-    data.p.applyActions(link.str, data.e, data.i2)
+    if (data.i2 == null || data.i2.isEmpty) devLog("ItemStack is null or air or amount == 0,Skipping actions.") else data.p.applyActions(link.str, data.e, data.i2)
 }
 
 

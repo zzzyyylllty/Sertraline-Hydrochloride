@@ -13,20 +13,20 @@ import taboolib.module.configuration.util.asMap
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.getItemTag
 
-fun Player.applyActions(trigger: String, e: Event, i: ItemStack?,islot: Int? = null) {
+fun Player.applyActions(trigger: String, e: Event, i: ItemStack,islot: Int? = null) {
     val player = this
     submitAsync {
         val inv = player.inventory
         devLog(console.asLangText("DebugActionApply", player.player?.name ?:"Unknown", trigger))
         devLog("Item: $i")
-        val nbt = i?.getItemTag()
+        val nbt = i.getItemTag()
         devLog("Nbt: $nbt")
-        val id = (nbt?.get("SERTRALINE_ID") ?: return@submitAsync).asString()
+        val id = (nbt.get("SERTRALINE_ID") ?: return@submitAsync).asString()
         devLog("Id: $id (${deSerializeKey(id)})")
         val data = (nbt.get("SERTRALINE_DATA") ?: emptyMap<String, Any>()).asMap()
         devLog("Id: $id (${deSerializeKey(id)})")
         val item = itemMap[deSerializeKey(id)] ?: return@submitAsync
         devLog("Sertraline: $item")
-        item.sertralineMeta.actions?.forEach { if (it.trigger.toUpperCase() == trigger.toUpperCase()) it.runAction(player, i.getSavedData() , i, e, item) }
+        item.sertralineMeta.actions?.forEach { if (it.trigger.equals(trigger, ignoreCase = true)) it.runAction(player, i.getSavedData() , i, e, item) }
     }
 }
