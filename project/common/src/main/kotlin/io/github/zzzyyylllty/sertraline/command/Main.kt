@@ -17,6 +17,7 @@ import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.pluginVersion
 import taboolib.common.platform.function.runningPlatform
+import taboolib.module.nms.MinecraftVersion.versionId
 
 /**
  * Usage: /sertraline
@@ -57,9 +58,9 @@ object SertralineMainCommand {
 
     @CommandBody
     val about = subCommand {
-        execute<CommandSender> { sender, context, argument -> //
+        execute<CommandSender> { sender, context, argument ->
             sender.infoS("<gradient:aqua:blue>Sertraline Hydrochloride</gradient> <#ccccff>$pluginVersion")
-            sender.infoS("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name}")
+            sender.infoS("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name} - $versionId")
             sender.infoS("<#660099>Plugin by AkaCandyKAngel.")
             sender.infoS("<#660099>Use <blue>/sertraline help</blue> for help.")
         }

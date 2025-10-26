@@ -40,6 +40,6 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
 
 
 
-fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStack? = itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)) {
-
+fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStack? = itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)): ItemStack {
+    return ItemStack(Material.STONE)
 }

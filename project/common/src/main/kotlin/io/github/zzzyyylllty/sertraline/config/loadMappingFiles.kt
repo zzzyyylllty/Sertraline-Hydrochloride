@@ -34,14 +34,12 @@ fun loadMappingFiles() {
 fun loadMappingFile(file: File) {
     devLog("Loading file ${file.name}")
 
-    val yaml = Yaml()
-    val obj = yaml.load<Map<String?, List<String>?>?>(file.inputStream())
-    val entries = obj.entries
+    val map = multiExtensionLoader(file)
+    val entries = map?.entries ?: emptyList()
     for (it in entries) {
         val key = it.key ?: continue
-        val value = obj[key]
-        devLog("Mapping Key: $key")
-        devLog("Mapping Value: $value")
+        val value = map?.get(key) as List<String>
+        devLog("Mapping Loaded: $key - $value")
         mappings.put(key, value)
     }
 }

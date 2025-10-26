@@ -47,18 +47,10 @@ fun loadItemFile(file: File) {
         devLog("Value: $value")
         ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
     }*/
-    val extension = file.extension.toLowerCase()
-    val format = when (extension) {
-        "yml" -> "yaml"
-        else -> extension
-    }
-    val map = parseToMap(file.readText(), format)
-    infoS(map.toString())
+    val map = multiExtensionLoader(file)
     if (map != null) for (it in map.entries) {
         val key = it.key
         val value = map[key]
-        devLog("Key: $key")
-        devLog("Value: $value")
         ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
     } else {
         devLog("Map is null, skipping.")

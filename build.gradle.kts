@@ -13,33 +13,14 @@ plugins {
     id("maven-publish")
 }
 
+subprojects {
+
+    apply(plugin = "java")
+    apply(plugin = "java-library")
+    apply(plugin = "io.izzel.taboolib")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "maven-publish")
 taboolib {
-    description {
-        name("Sertraline")
-        desc("An advanced item plugin. ChoTen item management plugin.")
-        contributors {
-            // 作者名称
-            name("AkaCandyKAngel")
-        }
-        dependencies {
-            // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
-            name("DylsemHokma").optional(true)
-            name("MythicLib").optional(true)
-            name("TrMenu").optional(true)
-            name("Zaphkiel").optional(true)
-            name("MMOItems").optional(true)
-            name("SX-Item").optional(true)
-            name("MythicMobs").optional(true)
-            name("NeigeItems").optional(true)
-            name("Chemdah").optional(true)
-            name("CraftEngine").optional(true)
-            name("ItemsAdder").optional(true)
-            name("Oxaren").optional(true)
-            name("MagicCosmetics").optional(true)
-            // 可选依赖
-            // name("XXX").optional(true)
-        }
-    }
     env {
         // 调试模式
         debug = true
@@ -68,14 +49,6 @@ taboolib {
         skipTabooLibRelocate = false
 
     }
-    relocate("top.maplex.arim","xxx.xxx.arim")
-    relocate("ink.ptms.um","xx.um")
-    relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
-    relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
-    relocate("kotlinx.serialization", "kotlinx.serialization170")
-    relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
-    relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
-
 }
 
 repositories {
@@ -202,4 +175,5 @@ publishing {
             // 其他构件配置...
         }
     }
+}
 }
