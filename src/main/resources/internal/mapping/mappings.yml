@@ -1,0 +1,502 @@
+# 请勿直接修改这个文件
+# 如想要添加映射请在此目录下建立更多文件添加
+# Please do not directly modify this file
+# If you want to add mappings, please create more files in this directory to add
+
+sertraline:tier:
+  - sertraline:tier
+sertraline:vals:
+  - sertraline:val
+  - sertraline:vals
+sertraline:vars:
+  - sertraline:var
+  - sertraline:vars
+sertraline:dynamics:
+  - sertraline:dynamic
+  - sertraline:dynamics
+sertraline:actions:
+  - sertraline:action
+  - sertraline:actions
+sertraline:lore-format:
+  - sertraline:loreFormat
+  - sertraline:lore-format
+xbuilder:name:
+  - xbuilder:name
+xbuilder:lore:
+  - xbuilder:lore
+xbuilder:material:
+  - xbuilder:material
+xbuilder:amount:
+  - xbuilder:amount
+xbuilder:damage:
+  - xbuilder:damage
+xbuilder:unbreakable:
+  - xbuilder:unbreakable
+xbuilder:glow:
+  - xbuilder:glow
+xbuilder:custom-model-data:
+  - xbuilder:custom-model-data
+xbuilder:item-model:
+  - xbuilder:item-model
+xbuilder:enchants:
+  - xbuilder:enchants
+xbuilder:stored-enchants:
+  - xbuilder:stored-enchants
+xbuilder:flags:
+  - xbuilder:flags
+xbuilder:attributes:
+  - xbuilder:attributes
+xbuilder:skull:
+  - xbuilder:skull
+xbuilder:patterns:
+  - xbuilder:patterns
+xbuilder:color:
+  - xbuilder:color
+xbuilder:pattern-color:
+  - xbuilder:pattern-color
+xbuilder:pattern:
+  - xbuilder:pattern
+xbuilder:contents:
+  - xbuilder:contents
+xbuilder:spawner:
+  - xbuilder:spawner
+xbuilder:projectiles:
+  - xbuilder:projectiles
+xbuilder:generation:
+  - xbuilder:generation
+xbuilder:author:
+  - xbuilder:author
+xbuilder:title:
+  - xbuilder:title
+xbuilder:location:
+  - xbuilder:location
+xbuilder:lodestone:
+  - xbuilder:lodestone
+xbuilder:power:
+  - xbuilder:power
+xbuilder:firework:
+  - xbuilder:firework
+xbuilder:pages:
+  - xbuilder:pages
+minecraft:attribute_modifiers:
+  - minecraft:attribute_modifiers
+  - minecraft:attribute
+  - minecraft:attributes
+  - minecraft:modifiers
+  - minecraft:attr
+minecraft:banner_patterns:
+  - minecraft:banner_patterns
+  - minecraft:banner
+  - minecraft:patterns
+  - minecraft:banner_design
+minecraft:base_color:
+  - minecraft:base_color
+  - minecraft:color
+minecraft:dyed_color:
+  - minecraft:dyed_color
+  - minecraft:dye
+  - minecraft:dye_color
+minecraft:bees:
+  - minecraft:bees
+  - minecraft:bee
+  - minecraft:bee_nest
+minecraft:block_entity_data:
+  - minecraft:block_entity_data
+  - minecraft:block_entity
+  - minecraft:block_data
+  - minecraft:tile_entity
+minecraft:block_state:
+  - minecraft:block_state
+  - minecraft:state
+  - minecraft:block_variant
+minecraft:blocks_attacks:
+  - minecraft:blocks_attacks
+  - minecraft:blocking
+  - minecraft:shield
+minecraft:break_sound:
+  - minecraft:break_sound
+  - minecraft:break_sfx
+  - minecraft:break_audio
+minecraft:bucket_entity_data:
+  - minecraft:bucket_entity_data
+  - minecraft:bucket_entity
+  - minecraft:bucket_data
+minecraft:bundle_contents:
+  - minecraft:bundle_contents
+  - minecraft:bundle
+  - minecraft:bundle_items
+minecraft:container:
+  - minecraft:container
+  - minecraft:container_data
+minecraft:container_loot:
+  - minecraft:container_loot
+  - minecraft:loot
+  - minecraft:loot_table
+minecraft:can_break:
+  - minecraft:can_break
+  - minecraft:breakable
+  - minecraft:can_break_blocks
+minecraft:can_place_on:
+  - minecraft:can_place_on
+  - minecraft:placeable
+  - minecraft:can_place_blocks
+minecraft:charged_projectiles:
+  - minecraft:charged_projectiles
+  - minecraft:charged
+  - minecraft:projectiles
+  - minecraft:loaded_projectiles
+minecraft:consumable:
+  - minecraft:consumable
+  - minecraft:consumable_item
+  - minecraft:use_item
+minecraft:custom_data:
+  - minecraft:custom_data
+  - minecraft:custom_nbt
+  - minecraft:component
+  - minecraft:data
+minecraft:custom_model_data:
+  - minecraft:custom_model_data
+  - minecraft:model_data
+  - minecraft:model
+  - minecraft:cmd
+minecraft:custom_name:
+  - minecraft:custom_name
+  - minecraft:name
+  - minecraft:displayname
+  - minecraft:display_name
+  - minecraft:title
+  - minecraft:label
+minecraft:damage:
+  - minecraft:damage
+  - minecraft:durability
+  - minecraft:item_damage
+minecraft:damage_resistant:
+  - minecraft:damage_resistant
+  - minecraft:damage_resistance
+  - minecraft:resistant
+minecraft:damage_type:
+  - minecraft:damage_type
+  - minecraft:dmg_type
+minecraft:debug_stick_state:
+  - minecraft:debug_stick_state
+  - minecraft:debug_stick
+  - minecraft:debug
+minecraft:death_protection:
+  - minecraft:death_protection
+  - minecraft:keep_inventory
+  - minecraft:death_keep
+minecraft:enchantable:
+  - minecraft:enchantable
+  - minecraft:enchantable_item
+  - minecraft:can_enchant
+minecraft:enchantment_glint_override:
+  - minecraft:enchantment_glint_override
+  - minecraft:glint_override
+  - minecraft:glint
+minecraft:enchantments:
+  - minecraft:enchantments
+  - minecraft:enchants
+  - minecraft:enchant
+minecraft:entity_data:
+  - minecraft:entity_data
+  - minecraft:entity_nbt
+  - minecraft:entity_custom_data
+minecraft:equippable:
+  - minecraft:equippable
+  - minecraft:equipable
+  - minecraft:can_equip
+minecraft:firework_explosion:
+  - minecraft:firework_explosion
+  - minecraft:firework_effect
+  - minecraft:firework_star
+minecraft:fireworks:
+  - minecraft:fireworks
+  - minecraft:firework
+  - minecraft:firework_rocket
+minecraft:food:
+  - minecraft:food
+  - minecraft:food_properties
+  - minecraft:edible
+minecraft:glider:
+  - minecraft:glider
+  - minecraft:glider_item
+  - minecraft:elytra
+minecraft:instrument:
+  - minecraft:instrument
+  - minecraft:music_instrument
+minecraft:intangible_projectile:
+  - minecraft:intangible_projectile
+  - minecraft:intangible
+  - minecraft:no_collision_projectile
+minecraft:item_model:
+  - minecraft:item_model
+  - minecraft:item_render
+  - minecraft:render
+minecraft:item_name:
+  - minecraft:item_name
+  - minecraft:item_id
+  - minecraft:item_type
+minecraft:jukebox_playable:
+  - minecraft:jukebox_playable
+  - minecraft:jukebox
+  - minecraft:playable
+minecraft:kinetic_weapon:
+  - minecraft:kinetic_weapon
+  - minecraft:kinetic
+  - minecraft:momentum
+minecraft:lock:
+  - minecraft:lock
+  - minecraft:locking
+  - minecraft:item_lock
+minecraft:lodestone_tracker:
+  - minecraft:lodestone_tracker
+  - minecraft:lodestone
+  - minecraft:compass_tracker
+minecraft:lore:
+  - minecraft:lore
+  - minecraft:description
+  - minecraft:lore_text
+  - minecraft:tooltip
+minecraft:map_color:
+  - minecraft:map_color
+  - minecraft:map_tint
+minecraft:map_decorations:
+  - minecraft:map_decorations
+  - minecraft:map_marks
+  - minecraft:map_markers
+minecraft:map_id:
+  - minecraft:map_id
+minecraft:max_damage:
+  - minecraft:max_damage
+  - minecraft:max_durability
+  - minecraft:durability_max
+minecraft:max_stack_size:
+  - minecraft:max_stack_size
+  - minecraft:stack_size
+  - minecraft:stack
+minecraft:minimum_attack_charge:
+  - minecraft:minimum_attack_charge
+  - minecraft:attack_charge
+  - minecraft:min_charge
+minecraft:note_block_sound:
+  - minecraft:note_block_sound
+  - minecraft:note_sound
+  - minecraft:note_instrument
+minecraft:ominous_bottle_amplifier:
+  - minecraft:ominous_bottle_amplifier
+  - minecraft:bad_omen
+  - minecraft:omen
+minecraft:piercing_weapon:
+  - minecraft:piercing_weapon
+  - minecraft:piercing
+  - minecraft:penetrate
+minecraft:pot_decorations:
+  - minecraft:pot_decorations
+  - minecraft:flower_pot
+  - minecraft:pot_plants
+minecraft:potion_contents:
+  - minecraft:potion_contents
+  - minecraft:potion
+  - minecraft:potion_effects
+minecraft:potion_duration_scale:
+  - minecraft:potion_duration_scale
+  - minecraft:potion_duration
+  - minecraft:duration_scale
+minecraft:profile:
+  - minecraft:profile
+  - minecraft:player_profile
+  - minecraft:skull_owner
+minecraft:provides_banner_patterns:
+  - minecraft:provides_banner_patterns
+  - minecraft:banner_pattern_provider
+  - minecraft:pattern_provider
+minecraft:provides_trim_material:
+  - minecraft:provides_trim_material
+  - minecraft:trim_material
+  - minecraft:armor_trim
+minecraft:rarity:
+  - minecraft:rarity
+  - minecraft:item_rarity
+  - minecraft:quality
+minecraft:recipes:
+  - minecraft:recipes
+  - minecraft:recipe
+  - minecraft:crafting
+minecraft:repairable:
+  - minecraft:repairable
+  - minecraft:repairable_item
+  - minecraft:can_repair
+minecraft:repair_cost:
+  - minecraft:repair_cost
+  - minecraft:anvil_cost
+  - minecraft:repair_xp
+minecraft:stored_enchantments:
+  - minecraft:stored_enchantments
+  - minecraft:stored_enchants
+  - minecraft:book_enchants
+minecraft:suspicious_stew_effects:
+  - minecraft:suspicious_stew_effects
+  - minecraft:stew_effects
+  - minecraft:suspicious_effects
+minecraft:swing_animation:
+  - minecraft:swing_animation
+  - minecraft:swing
+  - minecraft:swing_speed
+minecraft:tool:
+  - minecraft:tool
+  - minecraft:tool_properties
+  - minecraft:tool_type
+minecraft:tooltip_display:
+  - minecraft:tooltip_display
+  - minecraft:tooltip_show
+  - minecraft:show_tooltip
+minecraft:tooltip_style:
+  - minecraft:tooltip_style
+  - minecraft:tooltip_format
+  - minecraft:tooltip_design
+minecraft:trim:
+  - minecraft:trim
+  - minecraft:armor_trim_pattern
+  - minecraft:trim_pattern
+minecraft:unbreakable:
+  - minecraft:unbreakable
+  - minecraft:indestructible
+  - minecraft:unbreak
+minecraft:use_cooldown:
+  - minecraft:use_cooldown
+  - minecraft:cooldown
+  - minecraft:item_cooldown
+minecraft:use_effects:
+  - minecraft:use_effects
+  - minecraft:use_effect
+  - minecraft:item_effects
+minecraft:use_remainder:
+  - minecraft:use_remainder
+  - minecraft:remainder
+  - minecraft:leftover
+minecraft:weapon:
+  - minecraft:weapon
+  - minecraft:weapon_properties
+  - minecraft:weapon_type
+minecraft:writable_book_content:
+  - minecraft:writable_book_content
+  - minecraft:writable_book
+  - minecraft:book_editable
+minecraft:written_book_content:
+  - minecraft:written_book_content
+  - minecraft:written_book
+  - minecraft:book_text
+mmo:attack-damage:
+  - mmo:attack-damage
+mmo:attack-speed:
+  - mmo:attack-speed
+mmo:critical-strike-chance:
+  - mmo:critical-strike-chance
+mmo:critical-strike-power:
+  - mmo:critical-strike-power
+mmo:skill-critical-strike-chance:
+  - mmo:skill-critical-strike-chance
+mmo:skill-critical-strike-power:
+  - mmo:skill-critical-strike-power
+mmo:range:
+  - mmo:range
+mmo:mana-cost:
+  - mmo:mana-cost
+mmo:stamina-cost:
+  - mmo:stamina-cost
+mmo:arrow-velocity:
+  - mmo:arrow-velocity
+mmo:blunt-power:
+  - mmo:blunt-power
+mmo:blunt-rating:
+  - mmo:blunt-rating
+mmo:two-handed:
+  - mmo:two-handed
+mmo:handworn:
+  - mmo:handworn
+mmo:knockback:
+  - mmo:knockback
+mmo:recoil:
+  - mmo:recoil
+mmo:note-weight:
+  - mmo:note-weight
+mmo:lifesteal:
+  - mmo:lifesteal
+mmo:spell-vampirism:
+  - mmo:spell-vampirism
+mmo:pve-damage:
+  - mmo:pve-damage
+mmo:pvp-damage:
+  - mmo:pvp-damage
+mmo:magic-damage:
+  - mmo:magic-damage
+mmo:weapon-damage:
+  - mmo:weapon-damage
+mmo:undead-damage:
+  - mmo:undead-damage
+mmo:skill-damage:
+  - mmo:skill-damage
+mmo:physical-damage:
+  - mmo:physical-damage
+mmo:projectile-damage:
+  - mmo:projectile-damage
+mmo:faction-damage-undead:
+  - mmo:faction-damage-undead
+mmo:ability-format:
+  - mmo:ability-format
+mmo:ability-modifier:
+  - mmo:ability-modifier
+mmo:ability-splitter:
+  - mmo:ability-splitter
+mmo:block-power:
+  - mmo:block-power
+mmo:block-rating:
+  - mmo:block-rating
+mmo:block-cooldown-reduction:
+  - mmo:block-cooldown-reduction
+mmo:dodge-rating:
+  - mmo:dodge-rating
+mmo:dodge-cooldown-reduction:
+  - mmo:dodge-cooldown-reduction
+mmo:parry-rating:
+  - mmo:parry-rating
+mmo:parry-cooldown-reduction:
+  - mmo:parry-cooldown-reduction
+mmo:armor:
+  - mmo:armor
+mmo:armor-toughness:
+  - mmo:armor-toughness
+mmo:knockback-resistance:
+  - mmo:knockback-resistance
+mmo:movement-speed:
+  - mmo:movement-speed
+mmo:defense:
+  - mmo:defense
+mmo:damage-reduction:
+  - mmo:damage-reduction
+mmo:fall-damage-reduction:
+  - mmo:fall-damage-reduction
+mmo:fire-damage-reduction:
+  - mmo:fire-damage-reduction
+mmo:magic-damage-reduction:
+  - mmo:magic-damage-reduction
+mmo:projectile-damage-reduction:
+  - mmo:projectile-damage-reduction
+mmo:physical-damage-reduction:
+  - mmo:physical-damage-reduction
+mmo:pve-damage-reduction:
+  - mmo:pve-damage-reduction
+mmo:pvp-damage-reduction:
+  - mmo:pvp-damage-reduction
+mmo:max-health:
+  - mmo:max-health
+mmo:health-regeneration:
+  - mmo:health-regeneration
+mmo:max-mana:
+  - mmo:max-mana
+mmo:mana-regeneration:
+  - mmo:mana-regeneration
+mmo:max-stamina:
+  - mmo:max-stamina
+mmo:stamina-regeneration:
+  - mmo:stamina-regeneration

@@ -1,0 +1,304 @@
+# 请勿直接修改这个文件
+# 如想要添加映射请在此目录下建立更多文件添加
+# Please do not directly modify this file
+# If you want to add mappings, please create more files in this directory to add
+
+ACTION:
+  provider: ACTION
+LIST:
+  provider: LIST
+BYTE:
+  provider: BYTE
+UUID:
+  provider: UUID
+TEXT:
+  provider: TEXT
+DOUBLE:
+  provider: DOUBLE
+BOOLEAN:
+  provider: BOOLEAN
+STRING:
+  provider: STRING
+INT:
+  provider: INT
+LONG:
+  provider: LONG
+FLOAT:
+  provider: FLOAT
+SLOT:
+  provider: ENUM
+  element:
+    - any
+    - hand
+    - mainhand
+    - offhand
+    - armor
+    - head
+    - chest
+    - legs
+    - feet
+    - head
+    - body
+DAMAGE_REDUCTION:
+  provider: LIST
+  element:
+    base: FLOAT
+    factor: FLOAT
+    horizontal_blocking_angle: FLOAT
+    type: LIST_OR_STRING
+ATTRIBUTE_OPERATION:
+  provider: ENUM
+  element:
+    - add_value
+    - add_multiplied_base
+    - add_multiplied_total
+ATTRIBUTE_DISPLAY_TYPE:
+  provider: ENUM
+  element:
+    - add_value
+    - default
+    - hidden
+    - override
+LOOTTABLE:
+  provider: ENUM
+  element:
+    - minecraft:chests/ancient_city
+CONSUME_EFFECT_TYPE:
+  provider: ENUM
+  element:
+    ambient: BOOLEAN
+    amplifier: BYTE
+    duration: INT
+DYECOLOR:
+  provider: ENUM
+  element:
+    - red
+    - brown
+    - orange
+    - yellow
+    - lime
+    - green
+    - light_blue
+    - cyan
+    - blue
+    - purple
+    - magenta
+    - pink
+    - white
+    - light_gray
+    - gray
+    - black
+COLOR:
+  provider: COLOR
+EFFECT:
+  provider: SECTION
+  element:
+    id*: NAMESPACEID
+    ambient: BOOLEAN
+    amplifier: BYTE
+    duration: INT
+    show_icon: BOOLEAN
+    show_particles: BOOLEAN
+ATTRIBUTE:
+  provider: ENUM
+  element:
+    - armor
+    - armor_toughness
+    - attack_damage
+    - attack_knockback
+    - attack_speed
+    - block_break_speed
+    - block_interaction_range
+    - burning_time
+    - camera_distance
+    - entity_interaction_range
+    - explosion_knockback_resistance
+    - fall_damage_multiplier
+    - flying_speed
+    - follow_range
+    - gravity
+    - jump_strength
+    - knockback_resistance
+    - luck
+    - max_absorption
+    - max_health
+    - mining_efficiency
+    - movement_efficiency
+    - movement_speed
+    - oxygen_bonus
+    - safe_fall_distance
+    - scale
+    - spawn_reinforcements
+    - sneaking_speed
+    - step_height
+    - submerged_mining_speed
+    - sweeping_damage_ratio
+    - tempt_range
+    - water_movement_efficiency
+    - waypoint_transmit_range
+    - waypoint_receive_range
+ENCHANTMENTS:
+  provider: MAP
+  keyType: STRING
+  valueType: INT
+  element:
+    - sweeping_edge
+    - aqua_affinity 
+    - depth_strider 
+    - respiration
+    - lure
+    - fire_aspect
+    - looting
+    - channeling
+    - luck_of_the_sea
+    - smite
+    - feather_falling
+    - efficiency
+    - impaling
+    - thorns
+    - flame
+    - bane_of_arthropods
+    - fortune
+    - punch
+    - quick_charge
+    - multishot
+    - piercing
+    - riptide
+    - infinity
+    - loyalty 
+    - binding_curse 
+    - vanishing_curse 
+    - protection
+    - blast_protection
+    - fire_protection
+    - projectile_protection
+    - power
+    - mending
+    - knockback
+    - frost_walker
+    - unbreaking
+    - silk_touch
+    - sharpness
+    - soul_speed
+    - swift_sneak
+    - breach
+    - density
+    - wind_burst
+    - (VER:>=12111)lunge
+  
+EATING_ANIMATION:
+  provider: ENUM
+  element:
+    - none
+    - eat
+    - drink
+    - block
+    - bow
+    - brush
+    - crossbow
+    - spear
+    - trident
+    - spyglass
+    - toot_horn
+    - (ver:>12104)bundle
+NAMESPACEID:
+  provider: NAMESPACEID
+PATTERN_TAG:
+  provider: ENUM
+  element:
+    - stripe_center
+SHORT:
+  provider: SHORT
+DAMAGE_TAG:
+  provider: ENUM
+  element:
+    - always_hurts_ender_dragons
+    - always_kills_armor_standsp
+    - always_most_significant_fall
+    - always_triggers_silverfish
+    - avoids_guardian_thorns
+    - burn_from_stepping
+    - burns_armor_stands
+    - bypasses_armor
+    - bypasses_cooldown
+    - bypasses_effects
+    - bypasses_enchantments
+    - bypasses_invulnerabilit
+    - bypasses_resistance
+    - bypasses_shield
+    - bypasses_wolf_armor
+    - can_break_armor_stand
+    - damages_helmet
+    - ignites_armor_stands
+    - is_drowning
+    - is_explosion
+    - is_fall
+    - is_fire
+    - is_freezing
+    - is_lightning
+    - is_player_attack
+    - is_projectile
+    - mace_smash
+    - no_anger
+    - no_impact
+    - no_knockback
+    - panic_causes
+    - panic_environmental_causes
+    - witch_resistant_to
+    - wither_immune_to
+ENTITYENUM:
+  provider: ENUM
+  element:
+    - creeper
+FIREWORK_SHAPE:
+  provider: ENUM
+  element:
+    - small_ball
+    - large_ball
+    - star
+    - creeper
+    - burst
+ENTITY_CONDITION:
+  provider: SECTION
+  element:
+    max_duration_ticks: INT
+    min_speed: FLOAT
+    min_relative_speed: FLOAT
+ITEM:
+  provider: SECTION
+  element:
+    id: NAMESPACEID
+    components: SECTION
+    count: INT
+ITEMSTACK:
+  provider: SECTION
+  element:
+    component: SECTION
+    (EXTRA:INT)count:
+      min: INT
+      max: INT
+    (EXTRA:LIST)items: STRING
+    predicates: SECTION
+NOT_SUPPORT:
+  provider: NOT_SUPPORT
+RARITY:
+  provider: ENUM
+  element:
+    - common
+    - uncommon
+    - rare
+    - epic
+SWING_ANIMATION_TYPE:
+  provider: ENUM
+  element:
+    - none
+    - whack
+    - slab
+BLOCK:
+  provider: BLOCK
+TIER:
+  provider: TIER
+SOUND:
+  provider: SOUND
+RECIPE:
+  provider: RECIPE

@@ -1,0 +1,29 @@
+# 格式:
+# node: TYPE - 普通参数
+# node*: TYPE - 必填参数
+# 如果下列是一个列表 在前面加上(LIST)
+# (LIST)root:
+#   1: xxx
+#   2: xxc
+# = root:[{1:xxx,2:xxx},{1:xxx,2:xxx}]...
+
+# 请勿直接修改这个文件
+# 如想要添加映射请在此目录下建立更多文件添加
+# Please do not directly modify this file
+# If you want to add mappings, please create more files in this directory to add
+
+
+_info:
+  native: 12104
+  support:
+    min: 0
+    max: 99999
+sertraline:tier: TIER
+sertraline:vals:
+  _: ANY
+sertraline:vars:
+  _: ANY
+sertraline:dynamics:
+  _: ANY
+sertraline:actions:
+  (LIST)*: ACTION

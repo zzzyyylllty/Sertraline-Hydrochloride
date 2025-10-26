@@ -1,0 +1,333 @@
+# 格式:
+# node: TYPE
+
+# node*: TYPE - 必填参数
+# 如果下列是一个列表 在前面加上(LIST)
+# (LIST)root:
+#   1: xxx
+#   2: xxc
+# = root:[{1:xxx,2:xxx},{1:xxx,2:xxx}]...
+
+
+_info:
+  native: 12104
+  support:
+    min: 12101
+    max: 12110
+minecraft:attribute_modifiers:
+  amount*: DOUBLE
+  (VER:<12104)show_in_tooltip: BOOLEAN
+  (VER:>=12106)display:
+    type: ATTRIBUTE_DISPLAY_TYPE
+    value: TEXT
+  (VER:>=12100)id: STRING
+  (VER:<12100)name*: STRING
+  (VER:<12100)uuid*: UUID
+  operation*: ATTRIBUTE_OPERATION
+  slot: SLOT
+  type*: ATTRIBUTE
+(LIST)minecraft:banner_patterns:
+  color*: DYECOLOR
+  pattern*:
+    - STRING
+    - asset_id: STRING
+      translation_key: STRING
+minecraft:base_color: DYECOLOR
+minecraft:bees:
+  entity_data:
+    id*: STRING
+    _: ANY
+  min_ticks_in_hive*: INT
+  ticks_in_hive*: INT
+minecraft:block_entity_data:
+  id*: STRING
+  _: ANY
+minecraft:block_state: MAP
+minecraft:blocks_attacks:
+  (POSITIVE)block_delay_seconds: FLOAT
+  block_sound: SOUND
+  (VER:>=12105)bypassed_by: DAMAGE_TAG
+  (LIST)damage_reductions:
+    base*: FLOAT
+    factor*: FLOAT
+    (VER:>=12105)horizontal_blocking_angle: FLOAT
+    type: 
+      - STRING
+      - LIST|STRING
+  (POSITIVE)disable_cooldown_scale: FLOAT
+  disabled_sound: SOUND
+  item_damage:
+    base*: FLOAT
+    factor*: FLOAT
+    threshold*: FLOAT
+minecraft:break_sound: SOUND
+minecraft:bucket_entity_data:
+  (VER:<12105)BucketVariantTag: INT
+  (VER:<12105)type: STRING
+  Glowing: BOOLEAN
+  Health: FLOAT
+  Invulnerable: BOOLEAN
+  NoAi: BOOLEAN
+  NoGravity: BOOLEAN
+  Silent: BOOLEAN
+  (OPTIONAL)Age: INT
+  (OPTIONAL)HuntingCooldown: LONG
+(LIST)minecraft:bundle_contents: ITEM
+(LIST)minecraft:container:
+  item*: ITEM
+  slot*: INT
+minecraft:container_loot:
+  loot_table*: LOOTTABLE
+  seed: LONG
+(MAPLIST)minecraft:can_break:
+  (VER:<12104)show_in_tooltip: BOOLEAN
+  blocks: 
+    - STRING
+    - LIST|STRING
+  components: MAP|STRING,ANY<
+  nbt: 
+    - STRING
+    - MAP|STRING,ANY
+  predicates: ANY
+  state:
+    - STRING
+    - *:
+        min: STRING
+        max: STRING
+(MAPLIST)minecraft:can_place_on:
+  (VER:<12104)show_in_tooltip: BOOLEAN
+  blocks: 
+    - STRING
+    - LIST|STRING
+  components: MAP|STRING,ANY
+  nbt: 
+    - STRING
+    - MAP|STRING,ANY
+  predicates: ANY
+  state:
+    - STRING
+    - *:
+        min: STRING
+        max: STRING
+(LIST)minecraft:charged_projectiles: ITEM
+minecraft:consumable:
+  animation: EATING_ANIMATION
+  (POSITIVE)consume_seconds: FLOAT
+  has_consume_particles: BOOLEAN
+  (LIST)on_consume_effects:
+    type*: CONSUME_EFFECT_TYPE
+    (OPTIONAL,LIST)effects: POTIONEFFECT
+    (PERCENTAGE)probability: FLOAT
+    (OPTIONAL)sound: SOUND
+    (OPTIONAL,POSITIVE)diameter: FLOAT
+minecraft:custom_data: 
+  - MAP|STRING,ANY
+  - (VER:>12100)STRING
+minecraft:custom_model_data:
+  (LIST)flags: BOOLEAN
+  (LIST)floats: FLOAT
+  (LIST)strings: STRING
+  (LIST)colors: 
+    - INT
+    - LIST|FLOAT
+minecraft:custom_name: TEXT
+minecraft:damage: INT
+minecraft:damage_resistant:
+  types*: DAMAGE_TAG
+minecraft:damage_type: NAMESPACEID
+minecraft:debug_stick_state: MAP|BLOCK,STRING
+(LIST)minecraft:death_protection:
+  type*: CONSUME_EFFECT_TYPE
+  (OPTIONAL,LIST)effects: POTIONEFFECT
+  (PERCENTAGE)probability: FLOAT
+  (OPTIONAL)sound: SOUND
+  (OPTIONAL)diameter: FLOAT
+minecraft:dyed_color:
+  - INT
+  - LIST|FLOAT
+minecraft:enchantable:
+  value*: INT
+minecraft:enchantment_glint_override: BOOLEAN
+minecraft:enchantments: ENCHANTMENTS
+minecraft:entity_data:
+  id: ENTITYENUM
+  _: ANY
+minecraft:equippable:
+  allowed_entities: 
+    - LIST|ENTITYENUM
+    - ENTITYENUM
+  (VER:>=12104)asset_id: STRING
+  (VER:<=12103)model: STRING
+  (VER:>=12102)camera_overlay: STRING
+  (VER:>=12106)can_be_sheared: BOOLEAN
+  (VER:>=12102)damage_on_hurt: BOOLEAN
+  (VER:>12105)equip_on_interact: BOOLEAN
+  equip_sound: SOUND
+  dispensable: BOOLEAN
+  (VER:>=12106)shearing_sound: SOUND
+  slot*: SLOT
+  (VER:>=12102)swappable: BOOLEAN
+minecraft:firework_explosion:
+  (LIST)colors: INT
+  (LIST)fade_colors: INT
+  has_trail: BOOLEAN
+  has_twinkle: BOOLEAN
+  shape*: FIREWORK_SHAPE
+minecraft:fireworks:
+  flight_duration: BYTE
+  (LIST)explosions:
+    (LIST)colors: INT
+    (LIST)fade_colors: INT
+    has_trail: BOOLEAN
+    has_twinkle: BOOLEAN
+    shape*: FIREWORK_SHAPE
+minecraft:food:
+  can_always_eat: BOOLEAN
+  nutrition*: INT
+  saturation*: FLOAT
+  (VER:12100..12101)using_converts_to: ITEM
+  (VER:<=12001,LIST)effects:
+    effect: EFFECT
+    (PERCENTAGE)probability: FLOAT
+minecraft:glider: {}
+minecraft:instrument:
+  description*: TEXT
+  sound_event*: SOUND
+  range*: FLOAT
+  use_duration*: INT
+minecraft:intangible_projectile: {}
+minecraft:item_model: STRING
+minecraft:item_name: TEXT
+minecraft:jukebox_playable: STRING
+minecraft:kinetic_weapon:
+  (POSITIVE)min_reach: FLOAT
+  (POSITIVE)max_reach: FLOAT
+  (POSITIVE)hitbox_margin: FLOAT
+  (POSITIVE)delay_ticks: INT
+  forward_movement: FLOAT
+  damage_multiplier: FLOAT
+  sound: SOUND
+  hit_sound: SOUND
+  dismount_conditions*: ENTITY_CONDITION
+  knockback_conditions*: ENTITY_CONDITION
+  damage_conditions*: ENTITY_CONDITION
+minecraft:lock: {}
+minecraft:lodestone_tracker:
+  target:
+    dimension*: STRING
+    (LIST)pos*: INT
+  tracked: BOOLEAN
+(LIST)minecraft:lore: TEXT
+minecraft:map_color: INT
+minecraft:map_decorations:
+  *:
+    rotation*: FLOAT
+    type*: STRING
+    x*: DOUBLE
+    z*: DOUBLE
+minecraft:map_id: INT
+minecraft:max_damage: INT
+minecraft:max_stack_size: INT
+minecraft:minimum_attack_charge: FLOAT
+minecraft:note_block_sound: STRING
+minecraft:ominous_bottle_amplifier: INT
+minecraft:piercing_weapon:
+  min_reach: FLOAT
+  max_reach: FLOAT
+  hitbox_margin: FLOAT
+  sound: SOUND
+  hit_sound: SOUND
+  deals_knockback: BOOLEAN
+  dismounts: BOOLEAN
+(LIST)minecraft:pot_decorations: STRING
+minecraft:potion_contents:
+  - STRING
+  - custom_color: INT
+    (LIST)custom_effects: EFFECT
+    (VER:>=12102)custom_name: STRING
+    potion: STRING
+minecraft:potion_duration_scale: FLOAT
+minecraft:profile:
+  - STRING 
+  - id: UUID
+    name: STRING
+    properties: STRING
+    cape: STRING
+    elytra: STRING
+    model: STRING
+    texture: STRING
+minecraft:provides_banner_patterns: PATTERN_TAG
+minecraft:provides_trim_material:
+  asset_name*: STRING
+  description*: TEXT
+  override_armor_assets: MAP|STRING,STRING
+minecraft:rarity: RARITY
+(LIST)minecraft:recipes: RECIPE
+minecraft:repairable:
+  items*: 
+    - STRING
+    - LIST|STRING
+minecraft:repair_cost: INT
+minecraft:stored_enchantments: ENCHANTMENTS
+(LIST)minecraft:suspicious_stew_effects:
+  duration: INT
+  id*: STRING
+minecraft:swing_animation:
+  type: SWING_ANIMATION_TYPE
+  id: INT
+minecraft:tool:
+  (VER:>12105)can_destroy_blocks_in_creative: BOOLEAN
+  (POSITIVE)damage_per_block: INT
+  (POSITIVE)default_mining_speed: FLOAT
+  (LIST)rules*:
+    blocks*: 
+      - STRING
+      - LIST|STRING
+    correct_for_drops: BOOLEAN
+    speed: FLOAT
+minecraft:tooltip_display:
+  hide_tooltip: BOOLEAN
+  (LIST)hidden_components: STRING
+minecraft:tooltip_style: NAMESPACEID
+minecraft:trim: 
+  material:
+    - asset_name*: STRING
+      (LIST)description*: TEXT
+      override_armor_assets: 
+        _: STRING
+    - NAMESPACE
+  pattern:
+    - asset_id*: NAMESPACE
+      decal: BOOLEAN
+      description*: TEXT
+minecraft:unbreakable:
+  (VER:<12104)show_in_tooltip: BOOLEAN
+minecraft:use_cooldown:
+  (VER:>=12102)cooldown_group: STRING
+  (VER:<=12101)cooldownGroup: STRING
+  (POSITIVE)seconds*: FLOAT
+minecraft:use_effects:
+  can_sprint: BOOLEAN
+  (PERCENTAGE)speed_multiplier: FLOAT
+minecraft:use_remainder: ITEM
+minecraft:weapon:
+  (VER:>=12105,POSITIVE)disable_blocking_for_seconds: FLOAT
+  (VER:<12105)can_disable_blocking: BOOLEAN
+  (POSITIVE)item_damage_per_attack: INT
+minecraft:writable_book_content:
+  (LIST)pages:
+    - STRING
+    - filtered: STRING
+      raw*: STRING
+minecraft:written_book_content:
+  author*: STRING
+  generation: INT
+  (LIST)pages:
+    - TEXT
+    - filtered: TEXT
+      raw*: TEXT
+  resolved: BOOLEAN
+  title*:
+    - STRING
+    - filtered: STRING
+      raw*: STRING

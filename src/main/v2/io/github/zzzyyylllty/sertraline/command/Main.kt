@@ -1,6 +1,10 @@
 package io.github.zzzyyylllty.sertraline.command
 
 import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazDebugCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazApiCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazItemCommand
+import io.github.zzzyyylllty.sertraline.command.subCommands.DepazPackCommand
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
@@ -82,14 +86,22 @@ object SertralineMainCommand {
     */
 
     @CommandBody
+    val api = DepazApiCommand
+
+
+    @CommandBody
     val debug = DepazDebugCommand
+    @CommandBody
+    val item = DepazItemCommand
+    @CommandBody
+    val pack = DepazPackCommand
 
     @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.infoS("Reloading...")
             try {
-                reloadCustomConfig(true)
+                reloadCustomConfig()
                 sender.fineS("Reloaded.")
             }
             catch (e: Exception) {

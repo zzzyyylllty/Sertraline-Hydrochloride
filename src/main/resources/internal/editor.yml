@@ -1,0 +1,974 @@
+sertraline:tier:
+  config: sertraline.tier
+  material: diamond
+  tags:
+    - SERTRALINE
+sertraline:vals:
+  config: sertraline.vals
+  material: anvil
+  tags:
+    - SERTRALINE
+    - VARIABLES
+sertraline:vars:
+  config: sertraline.vals
+  material: anvil
+  tags:
+    - SERTRALINE
+    - VARIABLES
+sertraline:dynamics:
+  config: sertraline.dynamics
+  material: anvil
+  tags:
+    - SERTRALINE
+    - VARIABLES
+sertraline:actions:
+  config: sertraline.action
+  material: gold_ingot
+  tags:
+    - SERTRALINE
+    - KETHER
+minecraft:material:
+  config: minecraft.material
+  material: DIAMOND
+  tags:
+    - MATERIAL
+minecraft:legacy_nbt:
+  config: minecraft.legacy_nbt
+  material: OAK_SIGN
+  tags:
+    - LEGACY
+minecraft:attribute_modifiers:
+  config: minecraft.attribute_modifiers
+  material: ANVIL
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:banner_patterns:
+  config: minecraft.banner_patterns
+  material: WHITE_BANNER
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:base_color:
+  config: minecraft.base_color
+  material: LEATHER
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:dyed_color:
+  config: minecraft.dyed_color
+  material: ORANGE_DYE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:bees:
+  config: minecraft.bees
+  material: HONEYCOMB
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:block_entity_data:
+  config: minecraft.block_entity_data
+  material: CHEST
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:block_state:
+  config: minecraft.block_state
+  material: STONE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:blocks_attacks:
+  config: minecraft.blocks_attacks
+  material: SHIELD
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:break_sound:
+  config: minecraft.break_sound
+  material: NOTE_BLOCK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:bucket_entity_data:
+  config: minecraft.bucket_entity_data
+  material: WATER_BUCKET
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:bundle_contents:
+  config: minecraft.bundle_contents
+  material: BUNDLE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:container:
+  config: minecraft.container
+  material: CHEST
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:container_loot:
+  config: minecraft.container_loot
+  material: CHEST_MINECART
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:can_break:
+  config: minecraft.can_break
+  material: DIAMOND_PICKAXE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:can_place_on:
+  config: minecraft.can_place_on
+  material: GRASS_BLOCK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:charged_projectiles:
+  config: minecraft.charged_projectiles
+  material: CROSSBOW
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:consumable:
+  config: minecraft.consumable
+  material: APPLE
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:custom_data:
+  config: minecraft.custom_data
+  material: KNOWLEDGE_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:custom_model_data:
+  config: minecraft.custom_model_data
+  material: STONE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:custom_name:
+  config: minecraft.custom_name
+  material: NAME_TAG
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:damage:
+  config: minecraft.damage
+  material: WOODEN_SWORD
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:damage_resistant:
+  config: minecraft.damage_resistant
+  material: NETHERITE_CHESTPLATE
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:damage_type:
+  config: minecraft.damage_type
+  material: WITHER_SKULL
+  from: 12111
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:debug_stick_state:
+  config: minecraft.debug_stick_state
+  material: DEBUG_STICK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:death_protection:
+  config: minecraft.death_protection
+  material: TOTEM_OF_UNDYING
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:enchantable:
+  config: minecraft.enchantable
+  material: ENCHANTING_TABLE
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:enchantment_glint_override:
+  config: minecraft.enchantment_glint_override
+  material: ENCHANTED_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:enchantments:
+  config: minecraft.enchantments
+  material: ENCHANTED_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:entity_data:
+  config: minecraft.entity_data
+  material: ZOMBIE_SPAWN_EGG
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:equippable:
+  config: minecraft.equippable
+  material: DIAMOND_CHESTPLATE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:firework_explosion:
+  config: minecraft.firework_explosion
+  material: FIREWORK_STAR
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:fireworks:
+  config: minecraft.fireworks
+  material: FIREWORK_ROCKET
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:food:
+  config: minecraft.food
+  material: APPLE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:glider:
+  config: minecraft.glider
+  material: ELYTRA
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:instrument:
+  config: minecraft.instrument
+  material: GOAT_HORN
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:intangible_projectile:
+  config: minecraft.intangible_projectile
+  material: SPECTRAL_ARROW
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:item_model:
+  config: minecraft.item_model
+  material: ITEM_FRAME
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:item_name:
+  config: minecraft.item_name
+  material: PAPER
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:jukebox_playable:
+  config: minecraft.jukebox_playable
+  material: MUSIC_DISC_13
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:kinetic_weapon:
+  config: minecraft.kinetic_weapon
+  material: TRIDENT
+  from: 12111
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:lock:
+  config: minecraft.lock
+  material: TRIPWIRE_HOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:lodestone_tracker:
+  config: minecraft.lodestone_tracker
+  material: LODESTONE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:lore:
+  config: minecraft.lore
+  material: PAPER
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:map_color:
+  config: minecraft.map_color
+  material: MAP
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:map_decorations:
+  config: minecraft.map_decorations
+  material: FILLED_MAP
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:map_id:
+  config: minecraft.map_id
+  material: MAP
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:max_damage:
+  config: minecraft.max_damage
+  material: DIAMOND_SWORD
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:max_stack_size:
+  config: minecraft.max_stack_size
+  material: STONE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:minimum_attack_charge:
+  config: minecraft.minimum_attack_charge
+  material: BOW
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:note_block_sound:
+  config: minecraft.note_block_sound
+  material: NOTE_BLOCK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:ominous_bottle_amplifier:
+  config: minecraft.ominous_bottle_amplifier
+  material: OMINOUS_BOTTLE
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:piercing_weapon:
+  config: minecraft.piercing_weapon
+  material: ARROW
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:pot_decorations:
+  config: minecraft.pot_decorations
+  material: FLOWER_POT
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:potion_contents:
+  config: minecraft.potion_contents
+  material: POTION
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:potion_duration_scale:
+  config: minecraft.potion_duration_scale
+  material: CLOCK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:profile:
+  config: minecraft.profile
+  material: PLAYER_HEAD
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:provides_banner_patterns:
+  config: minecraft.provides_banner_patterns
+  material: BANNER_PATTERN
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:provides_trim_material:
+  config: minecraft.provides_trim_material
+  material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:rarity:
+  config: minecraft.rarity
+  material: DIAMOND
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:recipes:
+  config: minecraft.recipes
+  material: CRAFTING_TABLE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:repairable:
+  config: minecraft.repairable
+  material: ANVIL
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:repair_cost:
+  config: minecraft.repair_cost
+  material: EXPERIENCE_BOTTLE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:stored_enchantments:
+  config: minecraft.stored_enchantments
+  material: ENCHANTED_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:suspicious_stew_effects:
+  config: minecraft.suspicious_stew_effects
+  material: SUSPICIOUS_STEW
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:swing_animation:
+  config: minecraft.swing_animation
+  material: CLOCK
+  from: 12111
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:tool:
+  config: minecraft.tool
+  material: IRON_PICKAXE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:tooltip_display:
+  config: minecraft.tooltip_display
+  material: OAK_SIGN
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:tooltip_style:
+  config: minecraft.tooltip_style
+  material: WRITABLE_BOOK
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:trim:
+  config: minecraft.trim
+  material: NETHERITE_CHESTPLATE
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:unbreakable:
+  config: minecraft.unbreakable
+  material: BEDROCK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:use_cooldown:
+  config: minecraft.use_cooldown
+  material: CLOCK
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:use_effects:
+  config: minecraft.use_effects
+  material: POTION
+  from: 12111
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:use_remainder:
+  config: minecraft.use_remainder
+  material: BUCKET
+  from: 12100
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:weapon:
+  config: minecraft.weapon
+  material: DIAMOND_SWORD
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:writable_book_content:
+  config: minecraft.writable_book_content
+  material: WRITABLE_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+minecraft:written_book_content:
+  config: minecraft.written_book_content
+  material: WRITTEN_BOOK
+  from: 12005
+  tags:
+    - COMPONENT
+  unstable: true
+mmo:attack-damage:
+  config: mmo.attack-damage
+  material: IRON_SWORD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:attack-speed:
+  config: mmo.attack-speed
+  material: GOLDEN_AXE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:critical-strike-chance:
+  config: mmo.critical-strike-chance
+  material: REDSTONE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:critical-strike-power:
+  config: mmo.critical-strike-power
+  material: GLOWSTONE_DUST
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:skill-critical-strike-chance:
+  config: mmo.skill-critical-strike-chance
+  material: SUGAR
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:skill-critical-strike-power:
+  config: mmo.skill-critical-strike-power
+  material: GUNPOWDER
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:range:
+  config: mmo.range
+  material: BOW
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:mana-cost:
+  config: mmo.mana-cost
+  material: LAPIS_LAZULI
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:stamina-cost:
+  config: mmo.stamina-cost
+  material: BEEF
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:arrow-velocity:
+  config: mmo.arrow-velocity
+  material: ARROW
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:blunt-power:
+  config: mmo.blunt-power
+  material: ANVIL
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:blunt-rating:
+  config: mmo.blunt-rating
+  material: BRICK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:two-handed:
+  config: mmo.two-handed
+  material: NETHERITE_AXE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:handworn:
+  config: mmo.handworn
+  material: LEATHER
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:knockback:
+  config: mmo.knockback
+  material: PISTON
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:recoil:
+  config: mmo.recoil
+  material: CROSSBOW
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:note-weight:
+  config: mmo.note-weight
+  material: BOOK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:lifesteal:
+  config: mmo.lifesteal
+  material: RED_MUSHROOM
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:spell-vampirism:
+  config: mmo.spell-vampirism
+  material: BLUE_ORCHID
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:pve-damage:
+  config: mmo.pve-damage
+  material: ZOMBIE_HEAD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:pvp-damage:
+  config: mmo.pvp-damage
+  material: PLAYER_HEAD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:magic-damage:
+  config: mmo.magic-damage
+  material: ENCHANTED_BOOK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:weapon-damage:
+  config: mmo.weapon-damage
+  material: STONE_SWORD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:undead-damage:
+  config: mmo.undead-damage
+  material: BONE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:skill-damage:
+  config: mmo.skill-damage
+  material: GOLD_BLOCK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:physical-damage:
+  config: mmo.physical-damage
+  material: IRON_INGOT
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:projectile-damage:
+  config: mmo.projectile-damage
+  material: SPECTRAL_ARROW
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:faction-damage-undead:
+  config: mmo.faction-damage-undead
+  material: WITHER_SKELETON_SKULL
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:ability-format:
+  config: mmo.ability-format
+  material: BOOKSHELF
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:ability-modifier:
+  config: mmo.ability-modifier
+  material: ENCHANTING_TABLE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:ability-splitter:
+  config: mmo.ability-splitter
+  material: KNOWLEDGE_BOOK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:block-power:
+  config: mmo.block-power
+  material: SHIELD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:block-rating:
+  config: mmo.block-rating
+  material: OAK_PLANKS
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:block-cooldown-reduction:
+  config: mmo.block-cooldown-reduction
+  material: CLOCK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:dodge-rating:
+  config: mmo.dodge-rating
+  material: FEATHER
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:dodge-cooldown-reduction:
+  config: mmo.dodge-cooldown-reduction
+  material: SUGAR
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:parry-rating:
+  config: mmo.parry-rating
+  material: IRON_SWORD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:parry-cooldown-reduction:
+  config: mmo.parry-cooldown-reduction
+  material: IRON_PICKAXE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:armor:
+  config: mmo.armor
+  material: IRON_CHESTPLATE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:armor-toughness:
+  config: mmo.armor-toughness
+  material: DIAMOND_CHESTPLATE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:knockback-resistance:
+  config: mmo.knockback-resistance
+  material: ANVIL
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:max-health:
+  config: mmo.max-health
+  material: APPLE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:movement-speed:
+  config: mmo.movement-speed
+  material: LEATHER_BOOTS
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:defense:
+  config: mmo.defense
+  material: SHIELD
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:damage-reduction:
+  config: mmo.damage-reduction
+  material: OBSIDIAN
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:fall-damage-reduction:
+  config: mmo.fall-damage-reduction
+  material: HAY_BLOCK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:fire-damage-reduction:
+  config: mmo.fire-damage-reduction
+  material: FIRE_CHARGE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:magic-damage-reduction:
+  config: mmo.magic-damage-reduction
+  material: ENDER_PEARL
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:projectile-damage-reduction:
+  config: mmo.projectile-damage-reduction
+  material: ARROW
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:physical-damage-reduction:
+  config: mmo.physical-damage-reduction
+  material: IRON_BLOCK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:pve-damage-reduction:
+  config: mmo.pve-damage-reduction
+  material: CHAINMAIL_CHESTPLATE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:pvp-damage-reduction:
+  config: mmo.pvp-damage-reduction
+  material: DIAMOND_CHESTPLATE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:health-regeneration:
+  config: mmo.health-regeneration
+  material: POTION
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:max-mana:
+  config: mmo.max-mana
+  material: LAPIS_BLOCK
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:mana-regeneration:
+  config: mmo.mana-regeneration
+  material: SUGAR
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:max-stamina:
+  config: mmo.max-stamina
+  material: COOKED_BEEF
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+mmo:stamina-regeneration:
+  config: mmo.stamina-regeneration
+  material: COOKIE
+  unstable: true
+  unsupport: true
+  tags:
+    - MYTHICLIB
+
+
+
+

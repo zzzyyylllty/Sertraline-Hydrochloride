@@ -1,28 +1,42 @@
 package io.github.zzzyyylllty.sertraline
 
 import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
-import io.github.zzzyyylllty.sertraline.config.loadItemFiles
-import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
-import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.data.Key
+import io.github.zzzyyylllty.sertraline.data.SertralineItem
+import io.github.zzzyyylllty.sertraline.data.SertralinePack
+import io.github.zzzyyylllty.sertraline.load.loadItemFiles
+import io.github.zzzyyylllty.sertraline.load.loadPackFiles
+import taboolib.common.io.newFile
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
+import taboolib.common.platform.function.getDataFolder
+import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Type
 import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.yaml.snakeyaml.Yaml
+import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import taboolib.common.LifeCycle.ENABLE
+import taboolib.common.env.RuntimeDependencies
+import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.submit
+import taboolib.common.platform.function.releaseResourceFile
 import taboolib.module.configuration.Config
+import taboolib.module.configuration.ConfigFile
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
 import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
 import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
+import java.io.File
 import java.util.*
 
 @Awake(ENABLE)
@@ -40,10 +54,9 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
-    var itemMap = LinkedHashMap<String, ModernSItem>()
-    var mappings = LinkedHashMap<String, List<String>?>()
+    var packMap = LinkedHashMap<String, SertralinePack>()
+    var itemMap = LinkedHashMap<Key, SertralineItem>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val yamlUtil = Yaml()
     var devMode = true
 
     // Arim Start
@@ -67,15 +80,13 @@ object Sertraline : Plugin() {
         }
     }*/
 
-    fun reloadCustomConfig(async: Boolean = false) {
-        submit(async) {
-            itemMap.clear()
-            mappings.clear()
-            loadMappingFiles()
-            loadItemFiles()
-            plugin.config.reload()
+    fun reloadCustomConfig() {
+        itemMap.clear()
+        packMap.clear()
+        loadPackFiles()
+        loadItemFiles()
+        plugin.config.reload()
         // devMode = config.getBoolean("debug",false)
-        }
     }
 //
 //

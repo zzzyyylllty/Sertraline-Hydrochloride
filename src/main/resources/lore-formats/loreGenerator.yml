@@ -1,0 +1,29 @@
+zhcnloreformat:
+  settings:
+    # 覆盖原版lore
+    overwrite: true
+  elements:
+    # 不填写key或是key为always则该行总是出现
+    - content: "<#aabbcc>--------------------" 
+    # 如果是列表 则是列表中的每一行
+    - key: "minecraft.lore"
+      content: "{value}"    
+    # 如果是单项 则是该内容toString之后的内容
+    # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
+    # 如果是负数 minus会被替换为-（其他内容可在config内决定）
+    - key: "mmo.attack-damage"
+      content: "<aqua>攻击伤害 {plus}{minus}{value}"      
+    # 同样支持kether
+    - key: "mmo.attack-speed"
+      content: "<aqua>攻击速度 {plus}{minus}{value} (评级: {{ if {value} >= 1.6 then 快 else 慢 }})" 
+    # key为line，则当列出的内容满足判定条件时该行才会出现
+    - key: "line"
+      content: "效果列表:"
+      # any包含一条即显示, all全部包含, not不包含任何一条才会显示
+      lineMode: any
+      lineRequire:
+        - "vals:effect"    
+      # 调用常量和变量需要使用特殊格式  
+    - key: "vals:effect"
+      content: "<blue>效果: {value}"
+    - content: "<#aabbcc>--------------------"
