@@ -41,3 +41,9 @@ tasks {
         rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
     }
 }
+
+dependencies {
+    // compileOnly("ink.ptms.core:v12004:12004:mapped")
+    // compileOnly("ink.ptms.core:v12004:12004:universal")
+    implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+}

@@ -83,7 +83,10 @@ object SertralineMainCommand {
     */
 
     @CommandBody
-    val debug = DepazDebugCommand
+    val debug = DebugCommand
+
+    @CommandBody
+    val item = ItemCommand
 
     @CommandBody
     val reload = subCommand {

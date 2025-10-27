@@ -36,7 +36,7 @@ taboolib {
         fileAssets = "assets"
         // 是否启用隔离加载器（即完全隔离模式）
         enableIsolatedClassloader = false
-        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript)
+        install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, NMS, NMS_UTIL)
     }
     version {
         taboolib = "6.2.3-d4a5f0ea" // 6.2.3-20d868d
@@ -65,6 +65,8 @@ repositories {
     mavenCentral()
     jcenter()
 
+    maven { url = uri("https://repo.tabooproject.org/repository/releases/") }
+    mavenCentral()
     maven("https://dl.bintray.com/kotlin/kotlinx/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.papermc.io/repository/maven-snapshots/")
@@ -108,6 +110,14 @@ dependencies {
     compileOnly(fileTree("libs"))
     //implementation("org.yaml:snakeyaml:2.2")
 
+    implementation("org.tabooproject.reflex:analyser:1.1.4")
+    implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
+    implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
+    // 本体依赖
+    implementation("org.ow2.asm:asm:9.2")
+    implementation("org.ow2.asm:asm-util:9.2")
+    implementation("org.ow2.asm:asm-commons:9.2")
+    implementation(kotlin("stdlib"))
     taboo("top.maplex.arim:Arim:1.3.2")
     taboo("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
     taboo("com.fasterxml.jackson.core:jackson-databind:2.16.1")
@@ -119,7 +129,7 @@ dependencies {
     implementation("net.kyori:adventure-nbt:4.19.0")
     compileOnly("net.momirealms:craft-engine-core:0.0.64")
     compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
-    implementation("io.github.projectunified:uni-item-all:2.2.1")
+    taboo("io.github.projectunified:uni-item-all:2.2.1")
 
 
     taboo("com.google.code.gson:gson:2.10.1")

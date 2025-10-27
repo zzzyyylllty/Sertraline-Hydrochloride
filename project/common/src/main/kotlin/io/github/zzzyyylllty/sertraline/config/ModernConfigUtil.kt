@@ -4,6 +4,10 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyUtil
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import io.github.zzzyyylllty.sertraline.util.serialize.isListOfType
 import taboolib.module.lang.asLangText
 
 public class ConfigUtil {
@@ -40,18 +44,22 @@ public class ConfigUtil {
             throw IllegalArgumentException("Error: No mappings for $feature found. Are you putting an new version item config to old version sertraline? Try delete plugins/Sertraline/internal/mapping/mappings.yml to solve.")
         }
         for (i in mapping) {
-            val m = i.split(":").last()
-            if (input.contains(m)) {
+            val n = i.split(":").first() // 获得Namespace，例如minecraft
+            val m = i.split(":").last()  // 获得id，例如tier
+            val section = (input[n] as? Map<*, *>)
+            if (section?.contains(m) ?: false) {
                 devLog("Mapping $m for $feature found.")
-                return input.get(m)
+                return section[m]
             }
         }
         return null
     }
-    fun getFeatures(input: Map<*,*>?, features: List<String>, final: Map<String, Any?> = linkedMapOf<String, Any?>()): Map<String, Any?> {
+    fun getFeatures(input: Map<*,*>?, features: List<String>, final: Map<String, Any?> = linkedMapOf()): Map<String, Any?> {
         val goal = final.toMutableMap()
         for (f in features) {
-            goal[f] = getFeature(input, f)
+            val unparsed = getFeature(input, f)
+            goal[f] = if (unparsed is String) unparsed.legacyToMiniMessage()
+            else if (unparsed is List<*>&& isListOfType<String>(unparsed)) unparsed.legacyToMiniMessage() else unparsed
         }
         return goal
     }

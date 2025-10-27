@@ -1,19 +1,18 @@
 package io.github.zzzyyylllty.sertraline
 
-import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
+import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
+import io.github.zzzyyylllty.sertraline.reflect.getBuiltInRegistries
 import org.bukkit.command.CommandSender
-import org.yaml.snakeyaml.Yaml
-import taboolib.common.LifeCycle.ENABLE
-import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
@@ -25,12 +24,6 @@ import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.util.*
 
-@Awake(ENABLE)
-fun onEnable(){
-    infoL("Enable")
-    Language.enableSimpleComponent = true
-    reloadCustomConfig()
-}
 
 object Sertraline : Plugin() {
 
@@ -43,8 +36,9 @@ object Sertraline : Plugin() {
     var itemMap = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val yamlUtil = Yaml()
+    val itemManager = ItemProcessorManager()
     var devMode = true
+    val componentRegistry by lazy { getBuiltInRegistries() }
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -55,6 +49,11 @@ object Sertraline : Plugin() {
     lateinit var config: Configuration
 
     override fun onEnable() {
+
+        infoL("Enable")
+        Language.enableSimpleComponent = true
+        reloadCustomConfig()
+        infoS("$componentRegistry")
     }
 
     override fun onDisable() {
@@ -74,6 +73,8 @@ object Sertraline : Plugin() {
             loadMappingFiles()
             loadItemFiles()
             plugin.config.reload()
+            itemManager.unregisterAllProcessor()
+            registerNativeAdapter()
         // devMode = config.getBoolean("debug",false)
         }
     }

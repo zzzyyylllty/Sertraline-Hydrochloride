@@ -1,4 +1,4 @@
 rootProject.name = "Sertraline"
-include(":project:common")
-include(":project:common-files")
-include(":plugin")
+include("project:common")
+include("project:common-files")
+include("plugin")
