@@ -16,6 +16,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.getItemTag
+import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
 
 
@@ -28,7 +30,7 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
     val item = try {
         if (!str.contains(":") || str.startsWith("minecraft:")) {
             devLog("Using vanilla item")
-            buildItem(XMaterial.valueOf(if (split.isNotEmpty()) split[0] else str))
+            buildItem(XMaterial.valueOf(if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK"))
         } else if (str.startsWith("craftengine:")) {
             if (player == null) CraftEngineItems.byId(Key.from(split.joinToString(":")))?.buildItemStack()
             else {
@@ -57,5 +59,8 @@ fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStac
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
+    val tag = item.getItemTag()
+    tag.put("SERTRALINE_ID", template.key)
+    tag.saveTo(item)
     return item
 }

@@ -8,6 +8,7 @@ import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 
 data class ModernSItem(
+    val key: String,
     val data: Map<String, Any?> = mapOf(),
     val config: Map<String, Any?> = mapOf()
 )

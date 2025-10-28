@@ -1,7 +1,9 @@
 package io.github.zzzyyylllty.sertraline
 
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
+import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
+import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
@@ -11,6 +13,7 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
+import io.github.zzzyyylllty.sertraline.reflect.ReflectTargets
 import io.github.zzzyyylllty.sertraline.reflect.getBuiltInRegistries
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.event.SubscribeEvent
@@ -35,10 +38,11 @@ object Sertraline : Plugin() {
     val dataSource by lazy { host.createDataSource() }
     var itemMap = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>()
+    var loreFormats = LinkedHashMap<String, LoreFormat>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     val itemManager = ItemProcessorManager()
     var devMode = true
-    val componentRegistry by lazy { getBuiltInRegistries() }
+    val reflect = ReflectTargets()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -53,7 +57,8 @@ object Sertraline : Plugin() {
         infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
-        infoS("$componentRegistry")
+        infoS("${reflect.componentRegistry}")
+        infoS("${reflect.componentCodec}")
     }
 
     override fun onDisable() {
@@ -72,6 +77,7 @@ object Sertraline : Plugin() {
             mappings.clear()
             loadMappingFiles()
             loadItemFiles()
+            loadLoreFormatFiles()
             plugin.config.reload()
             itemManager.unregisterAllProcessor()
             registerNativeAdapter()

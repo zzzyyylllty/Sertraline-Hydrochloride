@@ -21,6 +21,7 @@ taboolib {
             name("ItemsAdder").optional(true)
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
+            name("packetevents").optional(true)
             // 可选依赖
             // name("XXX").optional(true)
         }

@@ -22,6 +22,7 @@ public class ConfigUtil {
         return if (input == null) null else input.toString().toLong()
     }
     fun getDeep(input: Map<*,*>?, location: String): Any? {
+        devLog("input: $input")
         val list = location.split(".").toMutableList()
         devLog("ConfigUtil getDeep List: $list")
         val current = input?.get(list[0])

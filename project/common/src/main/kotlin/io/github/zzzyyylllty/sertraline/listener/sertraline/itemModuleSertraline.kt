@@ -10,9 +10,15 @@ import taboolib.platform.BukkitListener.BukkitListener
 @SubscribeEvent(priority = EventPriority.LOWEST)
 fun itemModuleSertraline(e: ItemLoadEvent) {
     //if (settings.)
+
+    val prefix = "sertraline"
     val c = ConfigUtil()
 
-    val features = listOf("sertraline:tier")
+    val features = listOf(
+        "$prefix:tier",
+        "$prefix:lore-format",
+    )
+
 
     e.itemData.putAll(c.getFeatures(e.arguments, features, e.itemData))
 }

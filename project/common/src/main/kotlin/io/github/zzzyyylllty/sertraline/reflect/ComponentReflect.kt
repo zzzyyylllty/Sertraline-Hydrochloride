@@ -2,7 +2,12 @@ package io.github.zzzyyylllty.sertraline.reflect
 
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.papermc.paper.datacomponent.DataComponentType
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import taboolib.library.reflex.Reflex.Companion.getProperty
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 val className = Class.forName("net.minecraft.resources.ResourceLocation")
 fun getBuiltInRegistries(): Any? {
@@ -38,6 +43,18 @@ fun getGetValueMethod(): java.lang.reflect.Method? {
         method
     } catch (e: Exception) {
         severeS("Registry#getValue reflect getMethod failed.")
+        e.printStackTrace()
+        null
+    }
+}
+
+fun getCodecMethod(): java.lang.reflect.Method? {
+    return try {
+        val compClass = Class.forName("net.minecraft.core.component.DataComponents")
+        val method = compClass.getMethod("codec", Any::class.java, className)
+        method
+    } catch (e: Exception) {
+        severeS("DataComponentType#codec reflect getMethod failed.")
         e.printStackTrace()
         null
     }

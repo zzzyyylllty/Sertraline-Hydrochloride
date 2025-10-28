@@ -12,6 +12,7 @@ import taboolib.platform.BukkitListener.BukkitListener
 @SubscribeEvent(priority = EventPriority.MONITOR)
 fun itemModuleSave(e: ItemLoadEvent) {
     itemMap[e.itemKey] = ModernSItem(
+        e.itemKey,
         data = e.itemData,
         config = e.arguments
     )

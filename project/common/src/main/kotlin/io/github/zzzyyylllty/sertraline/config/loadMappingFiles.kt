@@ -37,9 +37,9 @@ fun loadMappingFile(file: File) {
     val map = multiExtensionLoader(file)
     val entries = map?.entries ?: emptyList()
     for (it in entries) {
-        val key = it.key ?: continue
+        val key = it.key
         val value = map?.get(key) as List<String>
         devLog("Mapping Loaded: $key - $value")
-        mappings.put(key, value)
+        mappings[key] = value
     }
 }

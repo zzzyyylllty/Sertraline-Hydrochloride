@@ -18,7 +18,7 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
         val get = input?.get(location) ?: return null
         val list = get as? List<*> ?: listOf(get.toString())
         val retList : MutableList<Component> = mutableListOf()
-        list.asListEnhanded().forEach { retList.add(it.toString().toComponent()) }
+        list.asListEnhanded()?.forEach { retList.add(it.toString().toComponent()) }
         return retList
     }
     fun getInt(location: String): Int? {
@@ -42,11 +42,15 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
     }
 }
 
-fun List<Any?>.asListEnhanded() : List<String> {
+fun Any?.asListEnhanded() : List<String>? {
+    if (this == null) return null
     val list = mutableListOf<String>()
-    for (string in this) {
+    val thisList = if (this is List<*>) this else listOf(this)
+    for (string in thisList) {
         if (string == null) continue
         list.addAll(string.toString().split("\n"))
     }
+    if (list.last() == "") list.removeLast()
     return list
 }
+

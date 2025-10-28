@@ -17,7 +17,7 @@ fun xbuilderAdapter(item: ItemStack,arg: ModernSItem): ItemStack {
     if (name != null) meta.displayName(name)
     val lore = c.getTextComponentList("$prefix:lore")
     if (lore != null) meta.lore(lore)
-    xItem.setItemMeta(meta)
+    xItem.itemMeta = meta
     xItem.type = i.type
     return xItem
 }

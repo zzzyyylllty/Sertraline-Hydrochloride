@@ -100,6 +100,9 @@ repositories {
 
     maven("https://repo.momirealms.net/releases/")
     maven("https://repo.momirealms.net/releases/")
+    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+
+    maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
 }
 
 dependencies {
@@ -109,7 +112,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     //implementation("org.yaml:snakeyaml:2.2")
-
+    compileOnly("com.github.retrooper:packetevents-spigot:2.10.0")
     implementation("org.tabooproject.reflex:analyser:1.1.4")
     implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
     implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
@@ -133,7 +136,7 @@ dependencies {
 
 
     taboo("com.google.code.gson:gson:2.10.1")
-    implementation(kotlin("stdlib"))
+    taboo(kotlin("stdlib"))
 }
 
 tasks.withType<KotlinCompile> {
