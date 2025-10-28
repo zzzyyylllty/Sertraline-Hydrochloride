@@ -89,6 +89,6 @@ fun handleItemStack(
     val id = item.getItemTag()["SERTRALINE_ID"]?.asString() ?: return itemStack
     devLog("Handling Item Stack for item $id.")
     val sItem: ModernSItem = itemMap[id] ?: return itemStack
-    itemStack.setComponent(ComponentTypes.LORE, ItemLore(handleLoreFormat(sItem, player)))
+    handleLoreFormat(sItem, player)?.let { itemStack.setComponent(ComponentTypes.LORE, ItemLore(it)) }
     return itemStack
 }
