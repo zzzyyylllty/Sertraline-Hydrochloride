@@ -1,55 +1,99 @@
 package io.github.zzzyyylllty.sertraline.util.component
 
-import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.logger.warningL
-import io.github.zzzyyylllty.sertraline.util.VersionHelper
-import io.papermc.paper.datacomponent.DataComponentType
+import com.google.common.hash.HashCode
+import com.google.gson.JsonElement
+import com.mojang.serialization.DynamicOps
+import net.momirealms.craftengine.bukkit.plugin.reflection.minecraft.CoreReflections
 import org.bukkit.inventory.ItemStack
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
-import taboolib.module.lang.asLangText
-
-interface ItemComponentProvider {
-    val key: String
-    val componentType: Any?
-    fun applyComponent(item: ItemStack, value: Any?): ItemStack
-}
+import java.util.*
 
 
+abstract class UnitItemComponentProvider(item: ItemStack) {
+    open val item: ItemStack? = null
 
-class ItemComponentRegistry {
-    private val providers: MutableMap<String, ItemComponentProvider> = mutableMapOf()
+    open val NBTS: DynamicOps<Any?>? = null
+    open val JAVA: DynamicOps<Any?>? = null
+    open val JSON: DynamicOps<JsonElement?>? = null
+    open val HASHCODE: DynamicOps<HashCode?>? = null // 1.21.5+
 
-    fun register(provider: ItemComponentProvider) {
-        if (providers.containsKey(provider.key)) {
-            severeS(console.asLangText("Warning_Component_Provider_Overwrite", provider.key))
-        }
-        providers[provider.key] = provider
-    }
+    abstract fun getComponent(component: String)
+    abstract fun getComponents()
 
-    fun unregister(key: String) {
-        providers.remove(key)
-    }
+    abstract fun setJsonComponent(component: String, value: Any?)
+    abstract fun setNBTComponent(component: String, value: Any?)
+    abstract fun setJavaComponent(component: String, value: Any?)
 
-    fun getProvider(key: String): ItemComponentProvider? {
-        return providers[key]
-    }
-
-    fun addCustomData(item: ItemStack, key: String, value: Any?): ItemStack {
-        val provider = getProvider(key)
-        return if (provider != null) {
-            provider.applyComponent(item, value)
+    fun setComponent(component: String, value: Any?) {
+        if (value is JsonElement) {
+            setJsonComponent(component, value)
+        } else if (CoreReflections.`clazz$Tag`.isInstance(value)) {
+            setNBTComponent(component, value)
         } else {
-            severeS(console.asLangText("Error_Component_Provider_Not_Found", key))
-            item
+            setJavaComponent(component, value)
         }
     }
 }
+/*
+object MRegistryOps {
+    val NBT: DynamicOps<Any?>?
+    val SPARROW_NBT: DynamicOps<Tag?>?
+    val JAVA: DynamicOps<Any?>?
+    val JSON: DynamicOps<JsonElement?>?
+    val HASHCODE: DynamicOps<HashCode?>? // 1.21.5+
 
-fun initComponentProvider() {
-    val ver = VersionHelper().getVer()
-    if (ver <= 12004) {
+    // 1.20.5+
+    val `clazz$JavaOps`: Class<*>? = ReflectionUtils.getClazz("com.mojang.serialization.JavaOps")
 
+    val `clazz$NbtOps`: Class<*> = Objects.requireNonNull(
+        BukkitReflectionUtils.findReobfOrMojmapClass(
+            "nbt.DynamicOpsNBT",
+            "nbt.NbtOps"
+        )
+    )
+
+    init {
+        try {
+            if (`clazz$JavaOps` != null) {
+                // 1.20.5+
+                val javaOps = ReflectionUtils.getDeclaredField(`clazz$JavaOps`, `clazz$JavaOps`, 0)!!.get(null)
+                JAVA = CoreReflections.`method$RegistryOps$create`.invoke(
+                    null,
+                    javaOps,
+                    FastNMS.INSTANCE.registryAccess()
+                ) as DynamicOps<Any?>?
+            } else if (!VersionHelper.isOrAbove1_20_5()) {
+                // 1.20.1-1.20.4
+                JAVA = CoreReflections.`method$RegistryOps$create`.invoke(
+                    null,
+                    LegacyJavaOps.INSTANCE,
+                    FastNMS.INSTANCE.registryAccess()
+                ) as DynamicOps<Any?>?
+            } else {
+                throw ReflectionInitException("Could not find JavaOps")
+            }
+            NBT = CoreReflections.`method$$create`.invoke(
+                null,
+                ReflectionUtils.getDeclaredField(`clazz$NbtOps`, `clazz$NbtOps`, 0)!!.get(null),
+                FastNMS.INSTANCE.registryAccess()
+            ) as DynamicOps<Any?>?
+            JSON = CoreReflections.`method$RegistryOps$create`.invoke(
+                null,
+                JsonOps.INSTANCE,
+                FastNMS.INSTANCE.registryAccess()
+            ) as DynamicOps<JsonElement?>?
+            SPARROW_NBT = CoreReflections.`method$RegistryOps$create`.invoke(
+                null,
+                if (VersionHelper.isOrAbove1_20_5()) NBTOps.INSTANCE else LegacyNBTOps.INSTANCE,
+                FastNMS.INSTANCE.registryAccess()
+            ) as DynamicOps<Tag?>?
+            HASHCODE = if (VersionHelper.isOrAbove1_21_5()) CoreReflections.`method$RegistryOps$create`.invoke(
+                null,
+                CoreReflections.`instance$HashOps$CRC32C_INSTANCE`,
+                FastNMS.INSTANCE.registryAccess()
+            ) as DynamicOps<HashCode?>? else null
+        } catch (e: ReflectiveOperationException) {
+            throw ReflectionInitException("Failed to init DynamicOps", e)
+        }
     }
 }
+*/

@@ -52,6 +52,10 @@ taboolib {
 }
 
 repositories {
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
     maven("https://central.sonatype.com/repository/maven-snapshots")
     maven("https://mvnrepository.com/artifact/")
     maven {
@@ -106,9 +110,13 @@ repositories {
 }
 
 dependencies {
+    taboo("de.tr7zw:item-nbt-api:2.15.3")
     // compileOnly("ink.ptms.core:v12004:12004:mapped")
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+
+    //compileOnly("ink.ptms.core:v12104:12104:mapped")
+    //compileOnly("ink.ptms.core:v12104:12104:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     //implementation("org.yaml:snakeyaml:2.2")

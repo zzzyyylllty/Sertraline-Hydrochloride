@@ -59,6 +59,7 @@ fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStac
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
+
     val tag = item.getItemTag()
     tag.put("SERTRALINE_ID", template.key)
     tag.saveTo(item)

@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import taboolib.common.platform.Plugin
@@ -14,7 +15,6 @@ import taboolib.module.database.getHost
 import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
 import io.github.zzzyyylllty.sertraline.reflect.ReflectTargets
-import io.github.zzzyyylllty.sertraline.reflect.getBuiltInRegistries
 import org.bukkit.command.CommandSender
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
@@ -42,7 +42,7 @@ object Sertraline : Plugin() {
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     val itemManager = ItemProcessorManager()
     var devMode = true
-    val reflect = ReflectTargets()
+    val reflects = ReflectTargets()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -57,8 +57,14 @@ object Sertraline : Plugin() {
         infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
-        infoS("${reflect.componentRegistry}")
-        infoS("${reflect.componentCodec}")
+        devLog("registryAccess ${reflects.registryAccess}")
+        devLog("reflect.componentRegistry ${reflects.`BuiltInRegistries#DATA_COMPONENT_TYPE`}")
+        devLog("reflect.itemComponent ${reflects.`DataComponentHolder#get`}")
+        devLog("reflect.fromNamespaceAndPath ${reflects.`ResourceLocation#fromNamespaceAndPath`}")
+        devLog("reflect.getGetValue ${reflects.`Registry#getValue`}")
+        devLog("reflect.componentCodecF ${reflects.componentCodecField}")
+        devLog("reflect.componentCodecV ${reflects.componentCodecValue}")
+
     }
 
     override fun onDisable() {

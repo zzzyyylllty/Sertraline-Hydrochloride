@@ -192,7 +192,7 @@ test_component_item:
       components: {}
       nbt:
         test: 1
-      predicates:
+      predicates: {}
       state:
         orientation:
           min: up_north
@@ -204,24 +204,24 @@ test_component_item:
       components: {}
       nbt:
         test: 1
-      predicates: ANY
+      predicates: {}
       state: orientation
     charged_projectiles:
       - id: arrow
     consumable:
       animation: use
-      (POSITIVE)consume_seconds: 1.0
+      consume_seconds: 1.0
       has_consume_particles: true
-      (LIST)on_consume_effects:
+      on_consume_effects:
         type: apply_effects
-        (OPTIONAL,LIST)effects:
+        effects:
           - id: minecraft:instant_health
             duration: 666
-        (PERCENTAGE)probability: 1.0
+        probability: 1.0
         sound:
           sound_id: ambient.cave
           range: 1.0
-    (OPTIONAL,POSITIVE)diameter: 1.0
+    diameter: 1.0
     custom_data:
       needy: 1.0
     custom_model_data:
@@ -369,10 +369,10 @@ test_component_item:
       custom_effects:
         - id: "speed"
           duration: 114
-      (VER:>=12102)custom_name: "TEST"
+      custom_name: "TEST"
       potion: "slowness"
     potion_duration_scale: 1.0
-    (EXTRA:STRING)minecraft:profile:
+    minecraft:profile:
       name: raincandy_U
     provides_banner_patterns: PATTERN_TAG
     provides_trim_material:
@@ -381,7 +381,7 @@ test_component_item:
       override_armor_assets:
         humanoid: "minecraft:item/test"
     rarity: epic
-    (LIST)minecraft:recipes:
+    minecraft:recipes:
       - minecraft:iron_sword
     repairable:
       items:
@@ -396,10 +396,10 @@ test_component_item:
       type: whack
       id: 1
     tool:
-      (VER:>12105)can_destroy_blocks_in_creative: true
-      (POSITIVE)damage_per_block: INT
-      (POSITIVE)default_mining_speed: 1.0
-      (LIST)rules:
+      can_destroy_blocks_in_creative: true
+      damage_per_block: INT
+      default_mining_speed: 1.0
+      rules:
         blocks:
           - BLOCK
           - LIST|BLOCK

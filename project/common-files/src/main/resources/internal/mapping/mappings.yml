@@ -26,6 +26,8 @@ xbuilder:lore:
   - xbuilder:lore
 xbuilder:material:
   - xbuilder:material
+minecraft:material:
+  - minecraft:material
 minecraft:attribute_modifiers:
   - minecraft:attribute_modifiers
   - minecraft:attribute
