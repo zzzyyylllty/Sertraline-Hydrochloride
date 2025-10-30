@@ -96,6 +96,7 @@ repositories {
         name = "sonatype-oss-snapshots"
     }
 
+    maven("https://libraries.minecraft.net")
     maven {
         // 枫溪的仓库
         url = uri("https://nexus.maplex.top/repository/maven-public/")
@@ -141,6 +142,7 @@ dependencies {
     compileOnly("net.momirealms:craft-engine-core:0.0.64")
     compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
     taboo("io.github.projectunified:uni-item-all:2.2.1")
+    taboo("com.mojang:datafixerupper:8.0.16")
 
 
     taboo("com.google.code.gson:gson:2.10.1")

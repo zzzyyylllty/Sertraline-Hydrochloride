@@ -5,6 +5,7 @@ taboolib {
         contributors {
             // 作者名称
             name("AkaCandyKAngel")
+            name("jhqwqmc")
         }
         dependencies {
             // 依赖插件名称（不要误会成写自己，会触发 self-loop 错误）
@@ -28,13 +29,13 @@ taboolib {
     }
     relocate("top.maplex.arim","xxx.xxx.arim")
     relocate("ink.ptms.um","xx.um")
-    // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.com.google")
+    relocate("com.google", "io.github.zzzyyylllty.sertraline.library.com.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
     relocate("kotlinx.serialization", "kotlinx.serialization170")
     relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.de.tr7zw.changeme.nbtapi")
     relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
     relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
-
+    relocate("com.mojang.datafixerupper","io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper")
 }
 
 tasks {
@@ -48,6 +49,4 @@ dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:mapped")
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-
-    taboo("com.google.code.gson:gson:2.10.1")
 }

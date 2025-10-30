@@ -1,28 +1,26 @@
 package io.github.zzzyyylllty.sertraline.reflect
 
-import com.mojang.serialization.DynamicOps
-import io.github.zzzyyylllty.sertraline.util.simpleGetClazz
+import com.mojang.serialization.JavaOps
+import com.mojang.serialization.JsonOps
 
 
 class ReflectTargets {
 
-    //val javaOps: Class<*>? by lazy { simpleGetClazz("com.mojang.serialization.JavaOps") }
-    val jsonOps by lazy { simpleGetClazz("com.mojang.serialization.JsonOps")
-        .getField("INSTANCE")
-        .get(null) as DynamicOps<*>
-    }
+    val javaOps by lazy { JavaOps.INSTANCE }
+    val jsonOps by lazy { JsonOps.INSTANCE }
     //val nbtOps: Class<*>? by lazy { simpleGetClazz("net.minecraft.nbt.DynamicOpsNBT") }
-
-    val `BuiltInRegistries#DATA_COMPONENT_TYPE` by lazy { `getBuiltInRegistries#DATA_COMPONENT_TYPE`() }
-    val `DataComponentHolder#get` by lazy { `getDataComponentHolder#get`() }
-    val `ResourceLocation#fromNamespaceAndPath` by lazy { `getResourceLocation#fromNamespaceAndPath`() }
-    val `Registry#getValue` by lazy { `getRegistry#getId`() }
-    val componentCodecValue by lazy { `getDataComponentType#CODEC#Field`() }
-    val componentCodecField by lazy { `getDataComponentType#CODEC#Field`() }
-
-    val registryCreateOps by lazy { getRegistryOpsCreateMethod() }
-
-    val registryAccess = { registryAccess() }
+//
+//    val `BuiltInRegistries#DATA_COMPONENT_TYPE` by lazy { `BuiltInRegistries#DATA_COMPONENT_TYPE`() }
+//    val `DataComponentHolder#get` by lazy { `getDataComponentHolder#get`() }
+//    val `ResourceLocation#fromNamespaceAndPath` by lazy { `getResourceLocation#fromNamespaceAndPath`() }
+//    val `Registry#getValue` by lazy { `getRegistry#getId`() }
+//    val componentCodecValue by lazy { `getDataComponentType#CODEC#Field`() }
+//    val componentCodecField by lazy { `getDataComponentType#CODEC#Field`() }
+//
+//    val registryCreateOps by lazy { getRegistryOpsCreateMethod() }
+//    val BuiltInRegistries by lazy { getBuiltInRegistries() }
+//
+//    val registryAccess = { registryAccess() }
 }
 /*
 object MRegistryOps {

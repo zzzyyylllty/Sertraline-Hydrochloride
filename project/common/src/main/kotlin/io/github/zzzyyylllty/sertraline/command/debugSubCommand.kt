@@ -9,7 +9,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.reflects
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
-import io.github.zzzyyylllty.sertraline.reflect.demoSetComponentInternal
+import io.github.zzzyyylllty.sertraline.reflect.Test
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.parseStringToMinecraftJsonElement
 import org.bukkit.Material
@@ -80,11 +80,7 @@ object DebugCommand {
     @CommandBody
     val testComponent = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            val itemStack = ItemStack(Material.STONE)
-            val jsonString = "test"
-            val mcJsonElement = parseStringToMinecraftJsonElement(jsonString)  // 反射调用Minecraft的JsonParser.parseString
-
-            demoSetComponentInternal(itemStack, "minecraft:custom_data", reflects.jsonOps, mcJsonElement)
+            Test().main()
         }
     }
 

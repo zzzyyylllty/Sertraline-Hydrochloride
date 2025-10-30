@@ -3,127 +3,225 @@ package io.github.zzzyyylllty.sertraline.reflect
 import com.google.gson.JsonElement
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DynamicOps
-import io.github.zzzyyylllty.sertraline.Sertraline.reflects
+import com.mojang.serialization.JavaOps
+import com.mojang.serialization.JsonOps
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.util.assembleCBClass
+import io.github.zzzyyylllty.sertraline.util.assembleMCClass
 import io.github.zzzyyylllty.sertraline.util.getStaticMethod
-import io.github.zzzyyylllty.sertraline.util.jsonUtils
-import io.github.zzzyyylllty.sertraline.util.parseJsonStringWithMCGson
-import io.github.zzzyyylllty.sertraline.util.parseStringToMinecraftJsonElement
-import io.github.zzzyyylllty.sertraline.util.simpleGetClazz
-import io.github.zzzyyylllty.sertraline.util.simpleReflect
-import io.papermc.paper.datacomponent.DataComponentType
-import taboolib.library.reflex.Reflex.Companion.getProperty
+import io.github.zzzyyylllty.sertraline.util.getClazz
+import io.github.zzzyyylllty.sertraline.util.getDeclaredField
+import io.github.zzzyyylllty.sertraline.util.getMethod
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Method
-// import net.minecraft.core.component.DataComponentType.CODEC
+import java.util.Objects.requireNonNull
+import java.util.Optional
 
-val MCKeyClassName = Class.forName("net.minecraft.resources.MinecraftKey")
-fun `getBuiltInRegistries#DATA_COMPONENT_TYPE`(): Any? {
-    return try {
-        val builtInRegistriesClass = Class.forName("net.minecraft.core.registries.BuiltInRegistries")
-        val component = builtInRegistriesClass.getProperty<Any?>("DATA_COMPONENT_TYPE", isStatic = true)
-        component
-    } catch (e: Exception) {
-        severeS("BuiltInRegistries#DATA_COMPONENT_TYPE reflect getMethod failed.")
-        e.printStackTrace()
-        null
+
+val `clazz$ResourceLocation` = requireNonNull(getClazz(
+    assembleMCClass("resources.ResourceLocation")
+))!!
+
+val `clazz$Registry` = requireNonNull(getClazz(
+    assembleMCClass("core.Registry")
+))!!
+
+val `clazz$BuiltInRegistries` = requireNonNull(getClazz(
+    assembleMCClass("core.registries.BuiltInRegistries")
+))!!
+
+val `clazz$DataComponentType` = requireNonNull(getClazz(
+    assembleMCClass("core.component.DataComponentType")
+))!!
+
+val `clazz$DataComponentHolder` = requireNonNull(getClazz(
+    assembleMCClass("core.component.DataComponentHolder")
+))!!
+
+val `clazz$MinecraftServer` = requireNonNull(getClazz(
+    assembleMCClass("server.MinecraftServer")
+))!!
+
+val `field$BuiltInRegistries$DATA_COMPONENT_TYPE` = requireNonNull(getDeclaredField(
+    `clazz$BuiltInRegistries`, "DATA_COMPONENT_TYPE"
+))!!
+
+val `instance$BuiltInRegistries$DATA_COMPONENT_TYPE` = `field$BuiltInRegistries$DATA_COMPONENT_TYPE`.get(null)!!
+
+val `method$ResourceLocation$fromNamespaceAndPath` = requireNonNull(getStaticMethod(
+    `clazz$ResourceLocation`, `clazz$ResourceLocation`, String::class.java, String::class.java
+))!!
+
+val `method$Registry$getValue` = requireNonNull(getMethod(
+    `clazz$Registry`, Any::class.java, 0, `clazz$ResourceLocation`
+))!!
+
+val `clazz$RegistryOps` = requireNonNull(getClazz(
+    assembleMCClass("resources.RegistryOps")
+))!!
+
+val `clazz$HolderLookup$Provider` = requireNonNull(getClazz(
+    assembleMCClass("core.HolderLookup\$Provider")
+))!!
+
+val `method$RegistryOps$create` = requireNonNull(getMethod(
+    `clazz$RegistryOps`, `clazz$RegistryOps`, 0, DynamicOps::class.java, `clazz$HolderLookup$Provider`
+))!!
+
+val `method$MinecraftServer$getServer` = requireNonNull(getStaticMethod(
+    `clazz$MinecraftServer`, `clazz$MinecraftServer`
+))!!
+
+val `instance$MinecraftServer$SERVER` = `method$MinecraftServer$getServer`.invoke(null)!!
+
+val `clazz$RegistryAccess$Frozen` = requireNonNull(getClazz(
+    assembleMCClass("core.RegistryAccess\$Frozen")
+))!!
+
+val `method$MinecraftServer$registryAccess` = requireNonNull(getMethod(
+    `clazz$MinecraftServer`, `clazz$RegistryAccess$Frozen`, 0
+))!!
+
+val `instance$MinecraftServer$registryAccess` = `method$MinecraftServer$registryAccess`.invoke(`instance$MinecraftServer$SERVER`)!!
+
+val `method$DataComponentType$codec` = requireNonNull(getMethod(
+    `clazz$DataComponentType`, Codec::class.java, 0
+))!!
+
+val `method$DataComponentHolder$getDataComponentType` = requireNonNull(getMethod(
+    `clazz$DataComponentHolder`, Any::class.java, 0, `clazz$DataComponentType`
+))!!
+
+val `clazz$ItemStack` = requireNonNull(getClazz(
+    assembleMCClass("world.item.ItemStack")
+))!!
+
+val `method$ItemStack$setComponent` = requireNonNull(getMethod(
+    `clazz$ItemStack`, Any::class.java, 0, `clazz$DataComponentType`, Any::class.java
+))!!
+
+val `clazz$CraftItemStack` = requireNonNull(getClazz(
+    assembleCBClass("inventory.CraftItemStack")
+))!!
+
+val `field$CraftItemStack$handle` = requireNonNull(getDeclaredField(
+    `clazz$CraftItemStack`, `clazz$ItemStack`, 0
+))!!
+
+val `clazz$NbtOps` = requireNonNull(getClazz(
+    assembleMCClass("nbt.NbtOps")
+))!!
+
+val `field$NbtOps$INSTANCE` = requireNonNull(getDeclaredField(
+    `clazz$NbtOps`, `clazz$NbtOps`, 0
+))!!
+
+val `instance$NbtOps$INSTANCE` = `field$NbtOps$INSTANCE`.get(null)!!
+
+@Suppress("UNCHECKED_CAST")
+val `instance$DynamicOps$NBT` = `method$RegistryOps$create`.invoke(null, `instance$NbtOps$INSTANCE`, `instance$MinecraftServer$registryAccess`)!! as DynamicOps<Any>
+
+@Suppress("UNCHECKED_CAST")
+val `instance$DynamicOps$JAVA` = `method$RegistryOps$create`.invoke(null, JavaOps.INSTANCE, `instance$MinecraftServer$registryAccess`)!! as DynamicOps<Any>
+
+@Suppress("UNCHECKED_CAST")
+val `instance$DynamicOps$JSON` = `method$RegistryOps$create`.invoke(null, JsonOps.INSTANCE, `instance$MinecraftServer$registryAccess`)!! as DynamicOps<JsonElement>
+
+val `clazz$Tag` = requireNonNull(getClazz(
+    assembleMCClass("nbt.Tag")
+))!!
+
+val `method$ResourceLocation$tryParse` = requireNonNull(getStaticMethod(
+    `clazz$ResourceLocation`, `clazz$ResourceLocation`, String::class.java
+))!!
+
+val `method$ItemStack$removeComponent` = requireNonNull(getMethod(
+    `clazz$ItemStack`, Any::class.java, 1, `clazz$DataComponentType`, Any::class.java
+))!!
+
+@Suppress("UNCHECKED_CAST")
+fun <T> getComponent(itemStack: Any, type: Any, ops: DynamicOps<*>): Optional<T> {
+    val codec = `method$DataComponentType$codec`.invoke(ensureDataComponentType(type)) as Codec<Any>
+    val componentData = `method$DataComponentHolder$getDataComponentType`.invoke(itemStack, type)
+    return (componentData?.let {
+        codec.encodeStart(ops as DynamicOps<Any>, it).result().orElseGet { Optional.empty<T>() }
+    } ?: Optional.empty<T>()) as Optional<T>
+}
+
+@Suppress("UNCHECKED_CAST")
+fun setComponent(itemStack: Any, type: Any, ops: DynamicOps<*>, value: Any) {
+    val codec = `method$DataComponentType$codec`.invoke(ensureDataComponentType(type)) as Codec<Any>
+    val result = codec.parse(ops as DynamicOps<Any>, value)
+    if (result.isError) throw IllegalArgumentException(result.toString())
+    result.result().ifPresent { `method$ItemStack$setComponent`.invoke(itemStack, type, it) }
+}
+
+fun ensureDataComponentType(type: Any): Any = when {
+    `clazz$DataComponentType`.isInstance(type) -> type
+    `clazz$ResourceLocation`.isInstance(type) ->
+        `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, type)
+    else -> {
+        val rl = `method$ResourceLocation$tryParse`.invoke(type.toString())
+        `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, rl)
     }
 }
 
-fun `getResourceLocation#fromNamespaceAndPath`(): Method? {
-    return try {
-        MCKeyClassName.getMethod("fromNamespaceAndPath", String::class.java, String::class.java)
-    } catch (e: Exception) {
-        severeS("MinecraftKey#fromNamespaceAndPath reflect getMethod failed.")
-        e.printStackTrace()
-        null
+fun setComponent(itemStack: Any, type: Any, value: Any) {
+    when (value) {
+        is JsonElement -> setComponent(itemStack, type, `instance$DynamicOps$JSON`, value)
+        `clazz$Tag`.isInstance(value) -> setComponent(itemStack, type, `instance$DynamicOps$NBT`, value)
+        else -> setComponent(itemStack, type, `instance$DynamicOps$JAVA`, value)
     }
 }
 
-
-fun `getRegistry#getId`(): java.lang.reflect.Method? {
-    return simpleReflect("net.minecraft.core.Registry","getId")
+fun <T> getJavaComponent(itemStack: Any, type: Any): Optional<T> {
+    return getComponent(itemStack, type, `instance$DynamicOps$JAVA`)
 }
 
-fun getRegistryOpsCreateMethod(): Method? {
-    return getStaticMethod(registryOps, registryOps, DynamicOps::class.java, holderLookupProvider)
+fun getJsonComponent(itemStack: Any, type: Any): Optional<JsonElement> {
+    return getComponent(itemStack, type, `instance$DynamicOps$JSON`)
 }
 
-fun getRegistryOpsFun(): Class<*> {
-    return registryOps
-}
-val registryOps by lazy {
-    simpleGetClazz("net.minecraft.resources.RegistryOps")
-}
-val holderLookupProvider by lazy {
-    simpleGetClazz("net.minecraft.core.HolderLookup")
+fun getNBTComponent(itemStack: Any, type: Any): Optional<Any> {
+    return getComponent(itemStack, type, `instance$DynamicOps$NBT`)
 }
 
-fun `getDataComponentType#CODEC#Field`(): java.lang.reflect.Field? {
-    return try {
-        val compClass = Class.forName("net.minecraft.core.component.DataComponentType")
-        val codecField = compClass.getField("CODEC")
+fun removeComponent(itemStack: Any, type: Any) {
+    `method$ItemStack$removeComponent`.invoke(itemStack, type)
+}
 
-        // 3. (可选) 如果你需要设置字段可访问（对于 private 字段是必须的，对于 public 字段是好习惯）
-        // codecField.isAccessible = true
-
-        codecField
-    } catch (e: Exception) {
-        severeS("DataComponentType#CODEC reflect getField failed.")
-        e.printStackTrace()
-        null
+class Test {
+    fun main() {
+        val itemStack = ItemStack(Material.DIAMOND_AXE);
+        val nmsStack = `field$CraftItemStack$handle`.get(itemStack)
+        setComponent(nmsStack, "minecraft:damage", 10)
+        val json = getJsonComponent(nmsStack, "minecraft:damage").orElse(null)
+        devLog(json.toString())
     }
 }
 
-val registryAccess by lazy { getMinecraftServer()!!::class.java.getMethod("registryAccess") }
+//private fun ensureDataComponentType(type: Any): Any? {
+//    val dataComponentTypeClass = getClazz("net.minecraft.core.component.DataComponentType")
+//
+//    if (!dataComponentTypeClass.isInstance(type)) {
+//        val key = type.toString().split(":")
+//        if (key.size < 2) return null
+//        val fromNamespaceAndPath = `getResourceLocation#fromNamespaceAndPath`() ?: return null
+//
+//        val resourceLocation = fromNamespaceAndPath.invoke(null, key[0], key[1])
+//
+//        val registry = `getBuiltInRegistries#DATA_COMPONENT_TYPE`() ?: return null
+//
+//        // 这里调用实际存在的 get 方法
+//        val getMethod = registry.javaClass.getMethod("get", resourceLocation.javaClass)
+//        return getMethod.invoke(registry, resourceLocation)
+//    }
+//    return type
+//}
 
-fun registryAccess(): Any? {
-    return registryAccess
-}
-
-fun getMinecraftServer(): Any? {
-    try {
-        val nmsClassName = "net.minecraft.server.MinecraftServer"
-        val minecraftServerClass = Class.forName(nmsClassName)
-        val getServerMethod = minecraftServerClass.getMethod("getServer")
-        return getServerMethod.invoke(null)
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
-
-fun `getDataComponentType#CODEC#Value`(): Codec<DataComponentType>? {
-    val codecField = `getDataComponentType#CODEC#Field`()
-    if (codecField != null) {
-        try {
-            // 因为 CODEC 是静态字段，所以在 get() 方法中传入 null
-            // 将返回的 Object 转型为你需要的 Codec 类型
-            @Suppress("UNCHECKED_CAST")
-            return codecField.get(null) as? Codec<DataComponentType>
-        } catch (e: Exception) {
-            severeS("Failed to get value from DataComponentType#CODEC field.")
-            e.printStackTrace()
-        }
-    }
-    return null
-}
-
-
-
-fun `getDataComponentHolder#get`(): Method? {
-    return try {
-        val holderClass = Class.forName("net.minecraft.core.component.DataComponentHolder")
-        val paramClass = Class.forName("net.minecraft.core.component.DataComponentType")
-
-        holderClass.getMethod("get", paramClass)
-
-    } catch (e: Exception) {
-        severeS("DataComponentHolder#get reflect getMethod failed.")
-        e.printStackTrace()
-        null
-    }
-}
+/*
 private fun setComponentInternal(itemStack: Any, type: Any, ops: DynamicOps<*>?, value: Any?) {
     if (value == null) return
 
@@ -152,24 +250,7 @@ private fun setComponentInternal(itemStack: Any, type: Any, ops: DynamicOps<*>?,
 
 
 // 直接用注册表的 get(ResourceKey) 而非 getValue(ResourceKey, ResourceLocation)
-private fun ensureDataComponentType(type: Any): Any? {
-    val dataComponentTypeClass = simpleGetClazz("net.minecraft.core.component.DataComponentType")
 
-    if (!dataComponentTypeClass.isInstance(type)) {
-        val key = type.toString().split(":")
-        if (key.size < 2) return null
-        val fromNamespaceAndPath = `getResourceLocation#fromNamespaceAndPath`() ?: return null
-
-        val resourceLocation = fromNamespaceAndPath.invoke(null, key[0], key[1])
-
-        val registry = `getBuiltInRegistries#DATA_COMPONENT_TYPE`() ?: return null
-
-        // 这里调用实际存在的 get 方法
-        val getMethod = registry.javaClass.getMethod("get", resourceLocation.javaClass)
-        return getMethod.invoke(registry, resourceLocation)
-    }
-    return type
-}
 
 
 /**
@@ -206,65 +287,4 @@ fun getCodecFromComponentType(componentType: Any): Codec<Any?>? {
         codecField.get(null) as Codec<Any?>
     }
 }
-
-/**
- * 通过 codec 解析输入（value，通常是 Dynamic<?> JSON 或类似格式）成组件实例
- */
-fun parseComponent(codec: Codec<Any?>, ops: DynamicOps<*>?, value: String?): Any? {
-    val parseMethod = codec.javaClass.getMethod("parse", DynamicOps::class.java, Any::class.java)
-
-    val mcJsonElement = value?.let { parseJsonStringWithMCGson(it) }
-
-    val dataResultRaw = parseMethod.invoke(codec, ops, mcJsonElement)
-
-    val resultMethod = dataResultRaw.javaClass.getMethod("result")
-    val optionalResult = resultMethod.invoke(dataResultRaw) as java.util.Optional<*>
-
-    require(optionalResult.isPresent) { "Parsing component failed: $dataResultRaw" }
-
-    return optionalResult.get()
-}
-
-/**
- * 通过反射调用 ItemStack.setComponent 将组件写入物品
- */
-fun setItemStackComponent(itemStack: Any, componentType: Any, componentInstance: Any) {
-    val itemStackClass = itemStack.javaClass
-    val setComponentMethod = itemStackClass.getMethod(
-        "setComponent",
-        componentType.javaClass,
-        Object::class.java
-    )
-    setComponentMethod.invoke(itemStack, componentType, componentInstance)
-}
-
-/**
- * 一个示范调用全过程：
- *
- * @param itemStack Minecraft 的 ItemStack 实例
- * @param componentKey 组件对应注册表key，比如 "minecraft:health"
- * @param ops DynamicOps 实例，用于 Codec 解析
- * @param value 需要解析的输入值（通常是某种JSON节点或者NBT）
- */
-fun demoSetComponentInternal(itemStack: Any, componentKey: String, ops: DynamicOps<*>?, value: JsonElement?) {
-    if (value == null) return
-    val componentType = getDataComponentTypeByKey(componentKey)
-        ?: throw RuntimeException("Component type for key $componentKey not found")
-    val codec = getCodecFromComponentType(componentType)
-        ?: throw RuntimeException("Codec not found")
-    devLog("Codec class: ${codec.javaClass}")
-    devLog("Codec type: ${codec.toString()}")
-
-    val parseMethod = codec.javaClass.getMethod("parse", DynamicOps::class.java, Any::class.java)
-    val dataResultRaw = parseMethod.invoke(codec, ops, value) // value 是 JsonElement
-
-    val resultMethod = dataResultRaw.javaClass.getMethod("result")
-    val optionalResult = resultMethod.invoke(dataResultRaw) as java.util.Optional<*>
-
-    require(optionalResult.isPresent) { "Parsing failed: $dataResultRaw" }
-
-    val componentInstance = optionalResult.get()
-
-    setItemStackComponent(itemStack, componentType, componentInstance)
-}
-
+*/

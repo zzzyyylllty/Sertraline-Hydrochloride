@@ -57,13 +57,13 @@ object Sertraline : Plugin() {
         infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
-        devLog("registryAccess ${reflects.registryAccess}")
-        devLog("reflect.componentRegistry ${reflects.`BuiltInRegistries#DATA_COMPONENT_TYPE`}")
-        devLog("reflect.itemComponent ${reflects.`DataComponentHolder#get`}")
-        devLog("reflect.fromNamespaceAndPath ${reflects.`ResourceLocation#fromNamespaceAndPath`}")
-        devLog("reflect.getGetValue ${reflects.`Registry#getValue`}")
-        devLog("reflect.componentCodecF ${reflects.componentCodecField}")
-        devLog("reflect.componentCodecV ${reflects.componentCodecValue}")
+//        devLog("registryAccess ${reflects.registryAccess}")
+//        devLog("reflect.componentRegistry ${reflects.`BuiltInRegistries#DATA_COMPONENT_TYPE`}")
+//        devLog("reflect.itemComponent ${reflects.`DataComponentHolder#get`}")
+//        devLog("reflect.fromNamespaceAndPath ${reflects.`ResourceLocation#fromNamespaceAndPath`}")
+//        devLog("reflect.getGetValue ${reflects.`Registry#getValue`}")
+//        devLog("reflect.componentCodecF ${reflects.componentCodecField}")
+//        devLog("reflect.componentCodecV ${reflects.componentCodecValue}")
 
     }
 

@@ -5,7 +5,3 @@ taboolib { subproject = true }
 dependencies {
 
 }
-
-gradle.buildFinished {
-    buildDir.deleteRecursively()
-}
