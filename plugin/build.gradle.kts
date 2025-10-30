@@ -37,14 +37,14 @@ taboolib {
     relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
     relocate("com.mojang.datafixerupper","io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper")
 }
-
+/*
 tasks {
     jar {
         archiveFileName.set("${rootProject.name}-${archiveFileName.get().substringAfter('-')}")
         rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
     }
 }
-
+*/
 dependencies {
     // compileOnly("ink.ptms.core:v12004:12004:mapped")
     // compileOnly("ink.ptms.core:v12004:12004:universal")
