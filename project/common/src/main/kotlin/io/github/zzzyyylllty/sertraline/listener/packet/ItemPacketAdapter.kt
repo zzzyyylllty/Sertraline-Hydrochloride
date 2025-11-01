@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.listener.packet
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.reflect.setComponent
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
@@ -31,7 +32,23 @@ fun resumeItem(itemStack: ItemStack): ItemStack{
 
 @SubscribeEvent
 fun onPacketReceive(event: taboolib.module.nms.PacketReceiveEvent) {
-    if (event.packet.name != "ServerboundContainerClickPacket") return
+
+    /*
+    when (event.packet.name) {
+        "ServerboundContainerClickPacket" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Any?>(carriedItemFieldInContainerClick, remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write(carriedItemFieldInContainerClick, it) }
+        }
+    }
+    */
+
+    /*
     val items = Int2ObjectOpenHashMap<Any>()
     items[114514] = event.packet.read(carriedItemFieldInContainerClick) ?: return
     if (VersionHelper().isUniversal) {
@@ -59,13 +76,21 @@ fun onPacketReceive(event: taboolib.module.nms.PacketReceiveEvent) {
         items.remove(114514)
         event.packet.write("changedSlots", items)
     }
+
+     */
 }
 
 @SubscribeEvent
 fun onPacketSend(event: taboolib.module.nms.PacketSendEvent) {
+    if (event.packet.name.contains("Container")) devLog("Finded Container Packet: ${event.packet.name}")
     when (event.packet.name) {
         "ClientboundContainerSetSlotPacket" -> {
             devLog("Handling Packet: ${event.packet.name}")
+
+            event.packet.source.javaClass.declaredFields.forEach { field ->
+                field.isAccessible = true
+                warningS("${field.name} = ${field.get(event.packet.source)}")
+            }
             val itemStack = event.packet.read<Any?>("itemStack", remap = true) ?: return
             devLog("Packet ItemStack: $itemStack")
             val item = handleItemStack(event.player, asBukkitCopy(itemStack))
@@ -76,13 +101,23 @@ fun onPacketSend(event: taboolib.module.nms.PacketSendEvent) {
         }
         "ClientboundContainerSetContentPacket" -> {
             devLog("Handling Packet: ${event.packet.name}")
+            event.packet.source.javaClass.declaredFields.forEach { field ->
+                field.isAccessible = true
+                warningS("${field.name} = ${field.get(event.packet.source)}")
+            }
             val itemStack = event.packet.read<Any?>("carriedItem", remap = true) ?: return
+            val itemList = event.packet.read<List<Any?>>("items", remap = true) ?: return
+            val list = mutableListOf<Any>()
+            for (item in itemList) {
+                item?.let { (handleItemStack(event.player, asBukkitCopy(it)) ?: ItemStack(Material.AIR)).let { it1 -> list.add(asNMSCopy(it1)) } }
+            }
             devLog("Packet ItemStack: $itemStack")
             val item = handleItemStack(event.player, asBukkitCopy(itemStack))
             devLog("Packet item: $item")
             val nmsItem = item?.let { asNMSCopy(it) }
             devLog("Packet NMSitem: $nmsItem")
             nmsItem?.let { event.packet.write("carriedItem", it) }
+            event.packet.write("items", list)
         }
         "PacketPlayOutSetPlayerInventory","PacketPlayServerSetPlayerInventory","ClientboundSetPlayerInventoryPacket" -> {
             devLog("Handling Packet: ${event.packet.name}")
@@ -151,9 +186,9 @@ fun handleItemStack(
     input: ItemStack?
 ): ItemStack? {
     var item = input
-    if (item == null || item.type == Material.AIR) return item
-    val id = item.getItemTag()["SERTRALINE_ID"]?.asString() ?: return item
-    val sItem: ModernSItem = itemMap[id] ?: return item
+    if (item == null || item.type == Material.AIR) return null
+    val id = item.getItemTag()["SERTRALINE_ID"]?.asString() ?: return null
+    val sItem: ModernSItem = itemMap[id] ?: return null
     handleLoreFormat(sItem, player)?.let { item.lore(it) }
     item = visualComponentSetter(item, sItem)
     val tag = item.getItemTag(true)
