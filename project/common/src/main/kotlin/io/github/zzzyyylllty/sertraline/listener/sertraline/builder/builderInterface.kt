@@ -31,7 +31,7 @@ class ItemProcessorManager {
     fun processItem(item: ModernSItem,itemStack: ItemStack, player: Player?): ItemStack {
         var currentItem = itemStack
         for (processor in processors) {
-            currentItem = processor.value.process(item, currentItem, player)
+            if (item.config.contains(processor.key)) currentItem = processor.value.process(item, currentItem, player)
         }
         return currentItem
     }

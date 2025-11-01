@@ -26,8 +26,319 @@ xbuilder:lore:
   - xbuilder:lore
 xbuilder:material:
   - xbuilder:material
+visual:material:
+  - visual:material
 minecraft:material:
   - minecraft:material
+visual:attribute_modifiers:
+  - visual:attribute_modifiers
+  - visual:attribute
+  - visual:attributes
+  - visual:modifiers
+  - visual:attr
+visual:banner_patterns:
+  - visual:banner_patterns
+  - visual:banner
+  - visual:patterns
+  - visual:banner_design
+visual:base_color:
+  - visual:base_color
+  - visual:color
+visual:dyed_color:
+  - visual:dyed_color
+  - visual:dye
+  - visual:dye_color
+visual:bees:
+  - visual:bees
+  - visual:bee
+  - visual:bee_nest
+visual:block_entity_data:
+  - visual:block_entity_data
+  - visual:block_entity
+  - visual:block_data
+  - visual:tile_entity
+visual:block_state:
+  - visual:block_state
+  - visual:state
+  - visual:block_variant
+visual:blocks_attacks:
+  - visual:blocks_attacks
+  - visual:blocking
+  - visual:shield
+visual:break_sound:
+  - visual:break_sound
+  - visual:break_sfx
+  - visual:break_audio
+visual:bucket_entity_data:
+  - visual:bucket_entity_data
+  - visual:bucket_entity
+  - visual:bucket_data
+visual:bundle_contents:
+  - visual:bundle_contents
+  - visual:bundle
+  - visual:bundle_items
+visual:container:
+  - visual:container
+  - visual:container_data
+visual:container_loot:
+  - visual:container_loot
+  - visual:loot
+  - visual:loot_table
+visual:can_break:
+  - visual:can_break
+  - visual:breakable
+  - visual:can_break_blocks
+visual:can_place_on:
+  - visual:can_place_on
+  - visual:placeable
+  - visual:can_place_blocks
+visual:charged_projectiles:
+  - visual:charged_projectiles
+  - visual:charged
+  - visual:projectiles
+  - visual:loaded_projectiles
+visual:consumable:
+  - visual:consumable
+  - visual:consumable_item
+  - visual:use_item
+visual:custom_data:
+  - visual:custom_data
+  - visual:custom_nbt
+  - visual:component
+  - visual:data
+visual:custom_model_data:
+  - visual:custom_model_data
+  - visual:model_data
+  - visual:model
+  - visual:cmd
+visual:custom_name:
+  - visual:custom_name
+  - visual:name
+  - visual:displayname
+  - visual:display_name
+  - visual:title
+  - visual:label
+visual:damage:
+  - visual:damage
+  - visual:durability
+  - visual:item_damage
+visual:damage_resistant:
+  - visual:damage_resistant
+  - visual:damage_resistance
+  - visual:resistant
+visual:damage_type:
+  - visual:damage_type
+  - visual:dmg_type
+visual:debug_stick_state:
+  - visual:debug_stick_state
+  - visual:debug_stick
+  - visual:debug
+visual:death_protection:
+  - visual:death_protection
+  - visual:keep_inventory
+  - visual:death_keep
+visual:enchantable:
+  - visual:enchantable
+  - visual:enchantable_item
+  - visual:can_enchant
+visual:enchantment_glint_override:
+  - visual:enchantment_glint_override
+  - visual:glint_override
+  - visual:glint
+visual:enchantments:
+  - visual:enchantments
+  - visual:enchants
+  - visual:enchant
+visual:entity_data:
+  - visual:entity_data
+  - visual:entity_nbt
+  - visual:entity_custom_data
+visual:equippable:
+  - visual:equippable
+  - visual:equipable
+  - visual:can_equip
+visual:firework_explosion:
+  - visual:firework_explosion
+  - visual:firework_effect
+  - visual:firework_star
+visual:fireworks:
+  - visual:fireworks
+  - visual:firework
+  - visual:firework_rocket
+visual:food:
+  - visual:food
+  - visual:food_properties
+  - visual:edible
+visual:glider:
+  - visual:glider
+  - visual:glider_item
+  - visual:elytra
+visual:instrument:
+  - visual:instrument
+  - visual:music_instrument
+visual:intangible_projectile:
+  - visual:intangible_projectile
+  - visual:intangible
+  - visual:no_collision_projectile
+visual:item_model:
+  - visual:item_model
+  - visual:item_render
+  - visual:render
+visual:item_name:
+  - visual:item_name
+  - visual:item_id
+  - visual:item_type
+visual:jukebox_playable:
+  - visual:jukebox_playable
+  - visual:jukebox
+  - visual:playable
+visual:kinetic_weapon:
+  - visual:kinetic_weapon
+  - visual:kinetic
+  - visual:momentum
+visual:lock:
+  - visual:lock
+  - visual:locking
+  - visual:item_lock
+visual:lodestone_tracker:
+  - visual:lodestone_tracker
+  - visual:lodestone
+  - visual:compass_tracker
+visual:lore:
+  - visual:lore
+  - visual:description
+  - visual:lore_text
+  - visual:tooltip
+visual:map_color:
+  - visual:map_color
+  - visual:map_tint
+visual:map_decorations:
+  - visual:map_decorations
+  - visual:map_marks
+  - visual:map_markers
+visual:map_id:
+  - visual:map_id
+visual:max_damage:
+  - visual:max_damage
+  - visual:max_durability
+  - visual:durability_max
+visual:max_stack_size:
+  - visual:max_stack_size
+  - visual:stack_size
+  - visual:stack
+visual:minimum_attack_charge:
+  - visual:minimum_attack_charge
+  - visual:attack_charge
+  - visual:min_charge
+visual:note_block_sound:
+  - visual:note_block_sound
+  - visual:note_sound
+  - visual:note_instrument
+visual:ominous_bottle_amplifier:
+  - visual:ominous_bottle_amplifier
+  - visual:bad_omen
+  - visual:omen
+visual:piercing_weapon:
+  - visual:piercing_weapon
+  - visual:piercing
+  - visual:penetrate
+visual:pot_decorations:
+  - visual:pot_decorations
+  - visual:flower_pot
+  - visual:pot_plants
+visual:potion_contents:
+  - visual:potion_contents
+  - visual:potion
+  - visual:potion_effects
+visual:potion_duration_scale:
+  - visual:potion_duration_scale
+  - visual:potion_duration
+  - visual:duration_scale
+visual:profile:
+  - visual:profile
+  - visual:player_profile
+  - visual:skull_owner
+visual:provides_banner_patterns:
+  - visual:provides_banner_patterns
+  - visual:banner_pattern_provider
+  - visual:pattern_provider
+visual:provides_trim_material:
+  - visual:provides_trim_material
+  - visual:trim_material
+  - visual:armor_trim
+visual:rarity:
+  - visual:rarity
+  - visual:item_rarity
+  - visual:quality
+visual:recipes:
+  - visual:recipes
+  - visual:recipe
+  - visual:crafting
+visual:repairable:
+  - visual:repairable
+  - visual:repairable_item
+  - visual:can_repair
+visual:repair_cost:
+  - visual:repair_cost
+  - visual:anvil_cost
+  - visual:repair_xp
+visual:stored_enchantments:
+  - visual:stored_enchantments
+  - visual:stored_enchants
+  - visual:book_enchants
+visual:suspicious_stew_effects:
+  - visual:suspicious_stew_effects
+  - visual:stew_effects
+  - visual:suspicious_effects
+visual:swing_animation:
+  - visual:swing_animation
+  - visual:swing
+  - visual:swing_speed
+visual:tool:
+  - visual:tool
+  - visual:tool_properties
+  - visual:tool_type
+visual:tooltip_display:
+  - visual:tooltip_display
+  - visual:tooltip_show
+  - visual:show_tooltip
+visual:tooltip_style:
+  - visual:tooltip_style
+  - visual:tooltip_format
+  - visual:tooltip_design
+visual:trim:
+  - visual:trim
+  - visual:armor_trim_pattern
+  - visual:trim_pattern
+visual:unbreakable:
+  - visual:unbreakable
+  - visual:indestructible
+  - visual:unbreak
+visual:use_cooldown:
+  - visual:use_cooldown
+  - visual:cooldown
+  - visual:item_cooldown
+visual:use_effects:
+  - visual:use_effects
+  - visual:use_effect
+  - visual:item_effects
+visual:use_remainder:
+  - visual:use_remainder
+  - visual:remainder
+  - visual:leftover
+visual:weapon:
+  - visual:weapon
+  - visual:weapon_properties
+  - visual:weapon_type
+visual:writable_book_content:
+  - visual:writable_book_content
+  - visual:writable_book
+  - visual:book_editable
+visual:written_book_content:
+  - visual:written_book_content
+  - visual:written_book
+  - visual:book_text
+
 minecraft:attribute_modifiers:
   - minecraft:attribute_modifiers
   - minecraft:attribute

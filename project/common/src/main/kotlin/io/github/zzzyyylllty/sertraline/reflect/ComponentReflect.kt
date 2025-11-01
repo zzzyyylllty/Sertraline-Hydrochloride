@@ -5,28 +5,32 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.JavaOps
 import com.mojang.serialization.JsonOps
+import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.assembleCBClass
 import io.github.zzzyyylllty.sertraline.util.assembleMCClass
 import io.github.zzzyyylllty.sertraline.util.getStaticMethod
 import io.github.zzzyyylllty.sertraline.util.getClazz
 import io.github.zzzyyylllty.sertraline.util.getDeclaredField
 import io.github.zzzyyylllty.sertraline.util.getMethod
+import io.github.zzzyyylllty.sertraline.util.unwrapValue
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import java.lang.reflect.Method
+import taboolib.module.lang.asLangText
 import java.util.Objects.requireNonNull
 import java.util.Optional
-
 
 val `clazz$ResourceLocation` = requireNonNull(getClazz(
     assembleMCClass("resources.ResourceLocation")
 ))!!
 
-val `clazz$Registry` = requireNonNull(getClazz(
-    assembleMCClass("core.Registry")
-))!!
+val `clazz$Registry` = requireNonNull(
+        getClazz(
+            assembleMCClass("core.IRegistryWritable")
+        )
+    )!!
 
 val `clazz$BuiltInRegistries` = requireNonNull(getClazz(
     assembleMCClass("core.registries.BuiltInRegistries")
@@ -54,9 +58,14 @@ val `method$ResourceLocation$fromNamespaceAndPath` = requireNonNull(getStaticMet
     `clazz$ResourceLocation`, `clazz$ResourceLocation`, String::class.java, String::class.java
 ))!!
 
-val `method$Registry$getValue` = requireNonNull(getMethod(
-    `clazz$Registry`, Any::class.java, 0, `clazz$ResourceLocation`
-))!!
+val `method$Registry$getValue` = run {
+    devLog(`clazz$Registry`.toString())
+    requireNonNull(
+        getMethod(
+            `clazz$Registry`, Any::class.java, 0, `clazz$ResourceLocation`
+        )
+    )!!
+}
 
 val `clazz$RegistryOps` = requireNonNull(getClazz(
     assembleMCClass("resources.RegistryOps")
@@ -141,44 +150,70 @@ val `method$ItemStack$removeComponent` = requireNonNull(getMethod(
     `clazz$ItemStack`, Any::class.java, 1, `clazz$DataComponentType`, Any::class.java
 ))!!
 
-@Suppress("UNCHECKED_CAST")
-fun <T> getComponent(itemStack: Any, type: Any, ops: DynamicOps<*>): Optional<T> {
-    val codec = `method$DataComponentType$codec`.invoke(ensureDataComponentType(type)) as Codec<Any>
-    val componentData = `method$DataComponentHolder$getDataComponentType`.invoke(itemStack, type)
-    return (componentData?.let {
-        codec.encodeStart(ops as DynamicOps<Any>, it).result().orElseGet { Optional.empty<T>() }
-    } ?: Optional.empty<T>()) as Optional<T>
-}
+
+val holderClass by lazy { getClazz("net.minecraft.core.Holder")!! }
+val holderMethod by lazy { holderClass.getDeclaredMethod("get")!! }
 
 @Suppress("UNCHECKED_CAST")
-fun setComponent(itemStack: Any, type: Any, ops: DynamicOps<*>, value: Any) {
-    val codec = `method$DataComponentType$codec`.invoke(ensureDataComponentType(type)) as Codec<Any>
+fun <T> getComponent(itemStack: Any, type: Any, ops: DynamicOps<T>): Optional<T> {
+    val res = ensureDataComponentType(type)
+    val codec = `method$DataComponentType$codec`.invoke(res) as Codec<T>
+    val componentData = `method$DataComponentHolder$getDataComponentType`.invoke(itemStack, res)
+    ?: return Optional.empty<T>() as Optional<T>
+    val castComponentData = componentData as T
+    val dataResult = codec.encodeStart(ops, castComponentData)
+    return dataResult.result()
+}
+
+
+
+
+@Suppress("UNCHECKED_CAST")
+fun setComponentInternal(itemStack: Any, type: Any, ops: DynamicOps<*>, value: Any) {
+    val res = ensureDataComponentType(type)
+    if (res == null) {
+        warningS(console.asLangText("Warning_Component_Setting_Failed", type, value))
+        return
+    }
+    devLog("ensureDataComponentType(type) -> $res, type: ${res.javaClass.name}, is DataComponentType instance: ${`clazz$DataComponentType`.isInstance(res)}")
+    val codec = `method$DataComponentType$codec`.invoke(res) as Codec<Any>
     val result = codec.parse(ops as DynamicOps<Any>, value)
     if (result.isError) throw IllegalArgumentException(result.toString())
-    result.result().ifPresent { `method$ItemStack$setComponent`.invoke(itemStack, type, it) }
-}
-
-fun ensureDataComponentType(type: Any): Any = when {
-    `clazz$DataComponentType`.isInstance(type) -> type
-    `clazz$ResourceLocation`.isInstance(type) ->
-        `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, type)
-    else -> {
-        val rl = `method$ResourceLocation$tryParse`.invoke(type.toString())
-        `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, rl)
+    result.result().ifPresent {
+        devLog("itemStack: ${itemStack.javaClass.name}, type (res): ${res.javaClass.name}, value: ${it.javaClass.name}")
+        `method$ItemStack$setComponent`.invoke(itemStack, res, it)
     }
 }
 
-fun setComponent(itemStack: Any, type: Any, value: Any) {
+fun ensureDataComponentType(type: Any): Any? {
+    val rawResult = when {
+        `clazz$DataComponentType`.isInstance(type) -> type
+        `clazz$ResourceLocation`.isInstance(type) -> `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, type)
+        else -> {
+            val rl = `method$ResourceLocation$tryParse`.invoke(null, type.toString())
+            `method$Registry$getValue`.invoke(`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`, rl)
+        }
+    }
+    return unwrapValue(rawResult)
+}
+
+
+
+
+
+fun setComponentInternal(itemStack: Any, type: Any, value: Any) {
     when (value) {
-        is JsonElement -> setComponent(itemStack, type, `instance$DynamicOps$JSON`, value)
-        `clazz$Tag`.isInstance(value) -> setComponent(itemStack, type, `instance$DynamicOps$NBT`, value)
-        else -> setComponent(itemStack, type, `instance$DynamicOps$JAVA`, value)
+        is JsonElement -> setComponentInternal(itemStack, type, `instance$DynamicOps$JSON`, value)
+        `clazz$Tag`.isInstance(value) -> setComponentInternal(itemStack, type, `instance$DynamicOps$NBT`, value)
+        else -> setComponentInternal(itemStack, type, `instance$DynamicOps$JAVA`, value)
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T> getJavaComponent(itemStack: Any, type: Any): Optional<T> {
-    return getComponent(itemStack, type, `instance$DynamicOps$JAVA`)
+    return getComponent(itemStack, type, `instance$DynamicOps$JAVA`) as Optional<T>
 }
+
 
 fun getJsonComponent(itemStack: Any, type: Any): Optional<JsonElement> {
     return getComponent(itemStack, type, `instance$DynamicOps$JSON`)
@@ -192,99 +227,39 @@ fun removeComponent(itemStack: Any, type: Any) {
     `method$ItemStack$removeComponent`.invoke(itemStack, type)
 }
 
-class Test {
-    fun main() {
-        val itemStack = ItemStack(Material.DIAMOND_AXE);
-        val nmsStack = `field$CraftItemStack$handle`.get(itemStack)
-        setComponent(nmsStack, "minecraft:damage", 10)
-        val json = getJsonComponent(nmsStack, "minecraft:damage").orElse(null)
-        devLog(json.toString())
-    }
-}
 
-//private fun ensureDataComponentType(type: Any): Any? {
-//    val dataComponentTypeClass = getClazz("net.minecraft.core.component.DataComponentType")
-//
-//    if (!dataComponentTypeClass.isInstance(type)) {
-//        val key = type.toString().split(":")
-//        if (key.size < 2) return null
-//        val fromNamespaceAndPath = `getResourceLocation#fromNamespaceAndPath`() ?: return null
-//
-//        val resourceLocation = fromNamespaceAndPath.invoke(null, key[0], key[1])
-//
-//        val registry = `getBuiltInRegistries#DATA_COMPONENT_TYPE`() ?: return null
-//
-//        // 这里调用实际存在的 get 方法
-//        val getMethod = registry.javaClass.getMethod("get", resourceLocation.javaClass)
-//        return getMethod.invoke(registry, resourceLocation)
-//    }
-//    return type
-//}
+val craftItemStackClass by lazy { getClazz(assembleCBClass("inventory.CraftItemStack"))!! }
+val asNMSCopyMethod by lazy { craftItemStackClass.getMethod("asNMSCopy", ItemStack::class.java) }
+val asBukkitCopyMethod by lazy { craftItemStackClass.getMethod("asBukkitCopy", `clazz$ItemStack`) }
 
-/*
-private fun setComponentInternal(itemStack: Any, type: Any, ops: DynamicOps<*>?, value: Any?) {
-    if (value == null) return
+fun ItemStack.setComponent(componentId: String,value: Any): ItemStack {
 
-    val componentType = ensureDataComponentType(type) ?: return
-
-    val codec = getCodecFromComponentType(componentType)
-        ?: throw RuntimeException("Cannot get codec for component type: $componentType")
-
+    val itemStack = this
+    // 转换Bukkit ItemStack 为 NMS ItemStack
     try {
-        val parseMethod = codec.javaClass.getMethod("parse", DynamicOps::class.java, Any::class.java)
-        val dataResultRaw = parseMethod.invoke(codec, ops, jsonUtils.toJson(value))
+        val nmsStack = asNMSCopyMethod.invoke(null, itemStack)
 
-        // 通过反射调用 result() 获取 Optional
-        val resultMethod = dataResultRaw.javaClass.getMethod("result")
-        val optionalResult = resultMethod.invoke(dataResultRaw) as java.util.Optional<*>
-
-        require(optionalResult.isPresent) { dataResultRaw.toString() }
-
-        optionalResult.ifPresent { parsedComponent ->
-            setItemStackComponent(itemStack, componentType, parsedComponent)
-        }
-    } catch (t: Throwable) {
-        throw RuntimeException("Cannot parse component $type", t)
-    }
-}
-
-
-// 直接用注册表的 get(ResourceKey) 而非 getValue(ResourceKey, ResourceLocation)
-
-
-
-/**
- * 通过 keyName（String，例如 "minecraft:health"）获取 DataComponentType 实例
- */
-fun getDataComponentTypeByKey(keyName: String): Any? {
-    println("Looking up DataComponentType by key: $keyName") // 日志
-    val builtInRegistriesClass = Class.forName("net.minecraft.core.registries.BuiltInRegistries")
-    val dataComponentTypeRegistry = builtInRegistriesClass.getDeclaredField("DATA_COMPONENT_TYPE").apply {
-        isAccessible = true
-    }.get(null)
-
-    // MinecraftKey 使用静态 parse(String) 来构造
-    val parseMethod = MCKeyClassName.getMethod("parse", String::class.java)
-    val minecraftKey = parseMethod.invoke(null, keyName)
-
-    val getMethod = dataComponentTypeRegistry.javaClass.getMethod("get", MCKeyClassName)
-    return getMethod.invoke(dataComponentTypeRegistry, minecraftKey)
-}
-
-/**
- * 根据 componentType 获取对应的 Codec<Any?>
- */
-@Suppress("UNCHECKED_CAST")
-fun getCodecFromComponentType(componentType: Any): Codec<Any?>? {
-    // 优先尝试调用 componentType.codec() 方法
-    return try {
-        val codecMethod = componentType.javaClass.getMethod("codec")
-        codecMethod.invoke(componentType) as Codec<Any?>
+        setComponentInternal(nmsStack, componentId, value)
+        val bukkitStack = asBukkitCopyMethod.invoke(null, nmsStack) as ItemStack
+        return bukkitStack
     } catch (e: Exception) {
-        // fallback：使用静态 CODEC 字段
-        val dataComponentTypeClass = Class.forName("net.minecraft.core.component.DataComponentType")
-        val codecField = dataComponentTypeClass.getDeclaredField("CODEC").apply { isAccessible = true }
-        codecField.get(null) as Codec<Any?>
+        warningS(console.asLangText("Warning_Component_Setting_Failed_Exception",componentId,value,e))
+        return itemStack
     }
+
 }
-*/
+fun ItemStack.getComponent(componentId: String): JsonElement? {
+
+    val itemStack = this
+    // 转换Bukkit ItemStack 为 NMS ItemStack
+
+    val nmsStack = try {
+        asNMSCopyMethod.invoke(null, itemStack)
+    }
+    catch (e: Exception) {
+        warningS(console.asLangText("Warning_Component_Getting_Failed_Exception",componentId,e))
+        throw e
+    }
+
+    return getJsonComponent(nmsStack, componentId).orElse(null)
+}

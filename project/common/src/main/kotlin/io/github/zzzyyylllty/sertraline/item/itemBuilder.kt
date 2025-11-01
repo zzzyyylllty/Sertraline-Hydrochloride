@@ -30,7 +30,7 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
     val item = try {
         if (!str.contains(":") || str.startsWith("minecraft:")) {
             devLog("Using vanilla item")
-            buildItem(XMaterial.valueOf(if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK"))
+            buildItem(XMaterial.valueOf((if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()))
         } else if (str.startsWith("craftengine:")) {
             if (player == null) CraftEngineItems.byId(Key.from(split.joinToString(":")))?.buildItemStack()
             else {

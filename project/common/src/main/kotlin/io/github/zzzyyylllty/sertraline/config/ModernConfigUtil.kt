@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
@@ -41,8 +42,8 @@ public class ConfigUtil {
         }
         val mapping = mappings[feature]
         if (mapping == null) {
-            severeS(console.asLangText("Error_No_Mapping", feature))
-            throw IllegalArgumentException("Error: No mappings for $feature found. Are you putting an new version item config to old version sertraline? Try delete plugins/Sertraline/internal/mapping/mappings.yml to solve.")
+            warningS(console.asLangText("Warning_No_Mapping", feature))
+            return null
         }
         for (i in mapping) {
             val n = i.split(":").first() // 获得Namespace，例如minecraft

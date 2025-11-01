@@ -7,6 +7,9 @@ class VersionHelper {
     fun getVer(): Int{
         return versionId
     }
+    val isUniversal: Boolean by lazy {
+        MinecraftVersion.isUniversal
+    }
     fun isOrAbove12005(): Boolean{
         return MinecraftVersion.isHigherOrEqual(12005)
     }
@@ -27,5 +30,8 @@ class VersionHelper {
     }
     fun isOrAbove12104(): Boolean{
         return MinecraftVersion.isHigherOrEqual(12104)
+    }
+    fun isOrAbove12105(): Boolean{
+        return MinecraftVersion.isHigherOrEqual(12105)
     }
 }

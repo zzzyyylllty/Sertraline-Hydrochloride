@@ -122,17 +122,17 @@ test_component_item:
     material: CHEST
   minecraft:
     attribute_modifiers:
-      amount: 1.0
-      show_in_tooltip: true
-      display:
-        type: override
-        value: "<rainbow>Hello World"
-      id: "sertraline:test"
-      name: "sertraline:test"
-      uuid: 20e234a2-8541-47ea-9a67-4549ce0132c4
-      operation: add_multiplied_base
-      slot: any
-      type: "attack_damage"
+      - amount: 1.0
+        show_in_tooltip: true
+        display:
+          type: override
+          value: "<rainbow>Hello World"
+        id: "sertraline:test"
+        name: "sertraline:test"
+        uuid: 20e234a2-8541-47ea-9a67-4549ce0132c4
+        operation: add_multiplied_base
+        slot: any
+        type: "attack_damage"
     banner_patterns:
       - color: lime
         pattern: stripe_center

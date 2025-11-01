@@ -5,6 +5,7 @@ import de.tr7zw.changeme.nbtapi.iface.NBTHandler
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.reflect.setComponent
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.platform.util.giveItem
@@ -17,7 +18,7 @@ fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemSt
     }
     if (filtered.isEmpty()) return item
     filtered.forEach {
-
+        item = item.setComponent(it.key, it.value!!)
     }
     devLog("Item: $item")
     return item

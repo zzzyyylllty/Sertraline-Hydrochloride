@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.util
 
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import net.momirealms.craftengine.core.util.ReflectionUtils
 import taboolib.library.reflex.Reflex
@@ -20,10 +21,43 @@ fun assembleCBClass(className: String): String {
     return CB_PREFIX + className
 }
 
+
+fun unwrapValue(obj: Any): Any {
+    devLog("unwrapValue called on: ${obj.javaClass.name}")
+    if (obj is java.util.Optional<*>) {
+        if (obj.isPresent) return unwrapValue(obj.get()!!)
+        throw IllegalArgumentException("Optional empty")
+    }
+    val holderClass = getClazz("net.minecraft.core.Holder")
+    devLog("Holder class: ${holderClass?.name}, isInstance: ${holderClass?.isInstance(obj)}")
+    if (holderClass != null && holderClass.isInstance(obj)) {
+        val methodNameCandidates = listOf("get", "value")
+        val getMethod = methodNameCandidates.asSequence()
+            .mapNotNull {
+                try {
+                    holderClass.getDeclaredMethod(it)
+                } catch (_: NoSuchMethodException) {
+                    null
+                }
+            }
+            .firstOrNull()
+
+        if (getMethod != null) {
+            getMethod.isAccessible = true
+            return unwrapValue(getMethod.invoke(obj)!!)
+        } else {
+            throw IllegalStateException("No suitable get method found on Holder class")
+        }
+    }
+    return obj
+}
+
+
 fun getClazz(className: String): Class<*>? {
     return try {
         Class.forName(className)
     } catch (e: Throwable) {
+        severeS("GetClazz for $className failed. Stacktrace: $e")
         null
     }
 }

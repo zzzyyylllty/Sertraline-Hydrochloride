@@ -1,94 +1,181 @@
 package io.github.zzzyyylllty.sertraline.listener.packet
 
-import com.github.retrooper.packetevents.event.PacketListener
-import com.github.retrooper.packetevents.event.PacketReceiveEvent
-import com.github.retrooper.packetevents.event.PacketSendEvent
-import com.github.retrooper.packetevents.protocol.component.ComponentType
-import com.github.retrooper.packetevents.protocol.component.ComponentTypes
-import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemLore
-import com.github.retrooper.packetevents.protocol.item.type.ItemTypes
-import com.github.retrooper.packetevents.protocol.nbt.NBTCompound
-import com.github.retrooper.packetevents.protocol.packettype.PacketType
-import com.github.retrooper.packetevents.protocol.player.User
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientChatMessage
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUseItem
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerHeldItemChange
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetCursorItem
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPlayerInventory
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
-import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.reflect.setComponent
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.library.xseries.XMaterial
+import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
+import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
-import kotlin.jvm.optionals.getOrDefault
+import taboolib.module.nms.setItemTag
+import taboolib.platform.util.isAir
 
+private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 
-class PacketEventsPacketListener : PacketListener {
-
-
-    override fun onPacketSend(event: PacketSendEvent) {
-        val player = event.getPlayer<Player>()
-
-        when (event.packetType) {
-            PacketType.Play.Server.WINDOW_ITEMS -> {
-                val packet = WrapperPlayServerWindowItems(event)
-
-                val items = packet.items
-                if (items == null || items.isEmpty()) return
-                items.forEach { handleItemStack(player, it) }
-
-                event.lastUsedWrapper = packet
-                event.markForReEncode(true)
-            }
-
-            PacketType.Play.Server.SET_PLAYER_INVENTORY -> {
-                val packet = WrapperPlayServerSetPlayerInventory(event)
-
-                handleItemStack(player, packet.stack)
-
-                event.lastUsedWrapper = packet
-                event.markForReEncode(true)
-            }
-
-            PacketType.Play.Server.SET_CURSOR_ITEM -> {
-                val packet = WrapperPlayServerSetCursorItem(event)
-
-                handleItemStack(player, packet.stack)
-
-                event.lastUsedWrapper = packet
-                event.markForReEncode(true)
-            }
-
-            PacketType.Play.Server.SET_SLOT -> {
-                val packet = WrapperPlayServerSetSlot(event)
-
-                handleItemStack(player, packet.item)
-
-                event.lastUsedWrapper = packet
-                event.markForReEncode(true)
-            }
-        }
-    }
+/**
+ * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
+ * */
+fun resumeItem(itemStack: ItemStack): ItemStack{
+    return ItemStack.deserializeBytes(itemStack.getItemTag(true)["SERTRALINE_OITEM"] as? ByteArray ?: return itemStack)
 }
 
 
+@SubscribeEvent
+fun onPacketReceive(event: taboolib.module.nms.PacketReceiveEvent) {
+    if (event.packet.name != "ServerboundContainerClickPacket") return
+    val items = Int2ObjectOpenHashMap<Any>()
+    items[114514] = event.packet.read(carriedItemFieldInContainerClick) ?: return
+    if (VersionHelper().isUniversal) {
+        event.packet.read<Map<Int, Any>>("changedSlots")?.let { items.putAll(it) }
+    }
+    devLog("Handling Packet: ${event.packet.name}")
+    if (VersionHelper().isOrAbove12105()) {
+        throw IllegalStateException("Unsupported minecraft version") // TODO 1.21.5
+    } else {
+        // 1.21.4-
+        items.forEach { (i, item) ->
+            // 恢复物品
+            devLog("rewriting items $i - $item")
+            val bItem = asBukkitCopy(item)
+            if (!(bItem.isAir || bItem.isEmpty)) {
+                items[i] = asNMSCopy(resumeItem(bItem))
+                devLog("rewritted items $i - ${items[i]}")
+            } else {
+                devLog("Item is null or air,skipping rewriting.")
+            }
+        }
+    }
+    event.packet.write(carriedItemFieldInContainerClick, items[114514])
+    if (VersionHelper().isUniversal) {
+        items.remove(114514)
+        event.packet.write("changedSlots", items)
+    }
+}
 
+@SubscribeEvent
+fun onPacketSend(event: taboolib.module.nms.PacketSendEvent) {
+    when (event.packet.name) {
+        "ClientboundContainerSetSlotPacket" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Any?>("itemStack", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("itemStack", it) }
+        }
+        "ClientboundContainerSetContentPacket" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Any?>("carriedItem", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("carriedItem", it) }
+        }
+        "PacketPlayOutSetPlayerInventory","PacketPlayServerSetPlayerInventory","ClientboundSetPlayerInventoryPacket" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Pair<*, Any?>>("contents", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack.second ?: return))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("contents", it) }
+        }
+        "PacketPlayOutWindowItems","PacketPlayServerWindowItems" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Pair<*, Any?>>("carriedItem", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack.second ?: return))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("carriedItem", it) }
+        }
+        "PacketPlayInWindowClick" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Pair<*, Any?>>("changedSlots", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack.second ?: return))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("changedSlots", it) }
+        }
+        "PacketPlayOutSetSlot","PacketPlayServerSetSlot" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Pair<*, Any?>>("itemStack", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack.second ?: return))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("itemStack", it) }
+        }
+        "PacketPlayInSetCreativeSlot" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Pair<*, Any?>>("itemStack", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack.second ?: return))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("itemStack", it) }
+        }
+        "ClientboundSetCursorItemPacket" -> {
+            devLog("Handling Packet: ${event.packet.name}")
+            val itemStack = event.packet.read<Any?>("contents", remap = true) ?: return
+            devLog("Packet ItemStack: $itemStack")
+            val item = handleItemStack(event.player, asBukkitCopy(itemStack))
+            devLog("Packet item: $item")
+            val nmsItem = item?.let { asNMSCopy(it) }
+            devLog("Packet NMSitem: $nmsItem")
+            nmsItem?.let { event.packet.write("contents", it) }
+        }
+    }
+}
 fun handleItemStack(
     player: Player,
-    itemStack: com.github.retrooper.packetevents.protocol.item.ItemStack?
-): com.github.retrooper.packetevents.protocol.item.ItemStack? {
-    if (itemStack == null || itemStack.type == ItemTypes.AIR) return itemStack
-    val item = SpigotConversionUtil.toBukkitItemStack(itemStack)
-    val id = item.getItemTag()["SERTRALINE_ID"]?.asString() ?: return itemStack
-    devLog("Handling Item Stack for item $id.")
-    val sItem: ModernSItem = itemMap[id] ?: return itemStack
-    handleLoreFormat(sItem, player)?.let { itemStack.setComponent(ComponentTypes.LORE, ItemLore(it)) }
-    return itemStack
+    input: ItemStack?
+): ItemStack? {
+    var item = input
+    if (item == null || item.type == Material.AIR) return item
+    val id = item.getItemTag()["SERTRALINE_ID"]?.asString() ?: return item
+    val sItem: ModernSItem = itemMap[id] ?: return item
+    handleLoreFormat(sItem, player)?.let { item.lore(it) }
+    item = visualComponentSetter(item, sItem)
+    val tag = item.getItemTag(true)
+    tag.put("SERTRALINE_OITEM", input.serializeAsBytes())
+    item.setItemTag(tag, true)
+    return item
+}
+
+fun visualComponentSetter(item: ItemStack,sItem: ModernSItem): ItemStack {
+    var item = item
+    val filtered = sItem.data.filter {
+        it.key.startsWith("visual:") && (it.value != null)
+    }.toMutableMap()
+    if (filtered.isEmpty()) return item
+    if (filtered.contains("visual:material")) {
+        item.type = XMaterial.valueOf((filtered["visual:material"] ?: "STONE").toString()).get() ?: Material.STONE
+        filtered.remove("visual:material")
+    }
+    filtered.forEach {
+        item = item.setComponent(it.key.replace("visual","minecraft"), it.value!!)
+    }
+    devLog("Visual Item: $item")
+    return item
+
 }

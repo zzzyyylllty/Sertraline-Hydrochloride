@@ -7,13 +7,13 @@ import io.github.zzzyyylllty.sertraline.item.adapter.xbuilderAdapter
 
 fun registerNativeAdapter() {
 
-    itemManager.registerProcessor("minecraft") { sItem, item, player ->
-        devLog("Adapting minecraft")
-        minecraftAdapter(item, sItem, player)
-    }
     itemManager.registerProcessor("xbuilder") { sItem, item, player ->
         devLog("Adapting xbuilder")
         xbuilderAdapter(item, sItem, player)
+    }
+    itemManager.registerProcessor("minecraft") { sItem, item, player ->
+        devLog("Adapting minecraft")
+        minecraftAdapter(item, sItem, player)
     }
 
 }

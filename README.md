@@ -1,21 +1,33 @@
 # Sertraline
 
-项目使用 TabooLib Start Jar 创建
-
 超天物品管理系统服务 (Liminal Skyline v4.0 服务)
 
-<div align="center">
+ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
-[CHINESE README](README-ZH.md) | [ENGLISH README](README-EN.md)
+<div align="center">
 
 ![](https://img.shields.io/github/last-commit/zzzyyylllty/Sertraline-Hydrochloride?logo=artstation&style=for-the-badge)  ![](https://img.shields.io/github/issues/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&logo=slashdot)  ![](https://img.shields.io/github/release/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&color=CC66FF&logo=ionic)
 
 </div>
 
+## Special Thanks
 
-## 添加到依赖
+### Thanks for other Projects
 
-```kotlin
+* [TabooLib](https://github.com/TabooLib/taboolib) - plugin's framework.
+* [Ratziel](https://github.com/TheFloodDragon/Ratziel-Beta) - some visual feature's reference.
+* [CraftEngine](https://github.com/Xiao-MoMi/craft-engine) - some component feature's reference.
+* [TrMenu](https://github.com/CoderKuo/TrMenu) - packet feature's reference.
+
+### Thanks for other Developers
+
+* [JhqwqMc](https://github.com/jhqwqmc) - some component feature's contributor.
+* [ChengZhiMeow](https://github.com/ChengZhiMeow/) - visual feature's reference.
+* [Xiao-MoMi](https://github.com/Xiao-MoMi/) - craft-engine's author, craft-engine is this plugin's reference.
+
+## As dependency
+
+```Gradle kotlin
 repositories {
     maven { url = uri("https://jitpack.io") }
 }
@@ -25,23 +37,25 @@ dependencies {
 }
 ```
 
-## 构建发行版本
+## Build Runtime Version
 
-需要 Java 21.
+Required Java 21.
 
-发行版本用于正常使用, 不含 TabooLib 本体。
+Runtime version for normal use.
+
+Build artifact is in `plugin/build/libs` folder.
 
 ```
 ./gradlew clean build
 ```
 
-## 构建开发版本
+## Build Api Version
 
-开发版本包含 TabooLib 本体, 用于开发者使用, 但不可运行。
+The api version includes the TabooLib core, intended for developers' use but not runnable.
 
 ```
 ./gradlew clean taboolibBuildApi -PDeleteCode
 ```
 
-> 参数 -PDeleteCode 表示移除所有逻辑代码以减少体积。
+> The parameter `-PDeleteCode` indicates the removal of all logic code to reduce size.
 

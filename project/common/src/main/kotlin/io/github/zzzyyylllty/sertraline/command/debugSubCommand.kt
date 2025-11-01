@@ -9,10 +9,6 @@ import io.github.zzzyyylllty.sertraline.Sertraline.reflects
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
-import io.github.zzzyyylllty.sertraline.reflect.Test
-import io.github.zzzyyylllty.sertraline.util.jsonUtils
-import io.github.zzzyyylllty.sertraline.util.parseStringToMinecraftJsonElement
-import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -75,12 +71,6 @@ object DebugCommand {
     val processors = subCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.sendStringAsComponent(itemManager.listProcessors().toString())
-        }
-    }
-    @CommandBody
-    val testComponent = subCommand {
-        execute<CommandSender> { sender, context, argument ->
-            Test().main()
         }
     }
 
