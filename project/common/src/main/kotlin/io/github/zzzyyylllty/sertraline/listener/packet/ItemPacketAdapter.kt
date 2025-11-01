@@ -86,11 +86,6 @@ fun onPacketSend(event: taboolib.module.nms.PacketSendEvent) {
     when (event.packet.name) {
         "ClientboundContainerSetSlotPacket" -> {
             devLog("Handling Packet: ${event.packet.name}")
-
-            event.packet.source.javaClass.declaredFields.forEach { field ->
-                field.isAccessible = true
-                warningS("${field.name} = ${field.get(event.packet.source)}")
-            }
             val itemStack = event.packet.read<Any?>("itemStack", remap = true) ?: return
             devLog("Packet ItemStack: $itemStack")
             val item = handleItemStack(event.player, asBukkitCopy(itemStack))
@@ -101,10 +96,6 @@ fun onPacketSend(event: taboolib.module.nms.PacketSendEvent) {
         }
         "ClientboundContainerSetContentPacket" -> {
             devLog("Handling Packet: ${event.packet.name}")
-            event.packet.source.javaClass.declaredFields.forEach { field ->
-                field.isAccessible = true
-                warningS("${field.name} = ${field.get(event.packet.source)}")
-            }
             val itemStack = event.packet.read<Any?>("carriedItem", remap = true) ?: return
             val itemList = event.packet.read<List<Any?>>("items", remap = true) ?: return
             val list = mutableListOf<Any>()
