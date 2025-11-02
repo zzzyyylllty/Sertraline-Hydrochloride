@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.listener.packet
 /*
+
 import com.github.retrooper.packetevents.event.PacketListener
 import com.github.retrooper.packetevents.event.PacketSendEvent
 import com.github.retrooper.packetevents.protocol.component.ComponentTypes
@@ -21,7 +22,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XMaterial
 import taboolib.module.nms.getItemTag
-
 
 @Deprecated("Packetevents nmsl")
 class PacketEventsPacketListener : PacketListener {
@@ -65,7 +65,7 @@ class PacketEventsPacketListener : PacketListener {
 
                 handleItemStack(player, packet.item)
 
-           
+            }}}}
 fun handleItemStack(
     player: Player,
     itemStack: com.github.retrooper.packetevents.protocol.item.ItemStack?
@@ -80,21 +80,4 @@ fun handleItemStack(
     item = visualComponentSetter(item, sItem)
     return SpigotConversionUtil.fromBukkitItemStack(item)
 }
-
-fun visualComponentSetter(item: ItemStack,sItem: ModernSItem): ItemStack {
-    var item = item
-    val filtered = sItem.data.filter {
-        it.key.startsWith("visual:") && (it.value != null)
-    }.toMutableMap()
-    if (filtered.isEmpty()) return item
-    if (filtered.contains("visual:material")) {
-        item.type = XMaterial.valueOf((filtered["visual:material"] ?: "STONE").toString()).get() ?: Material.STONE
-        filtered.remove("visual:material")
-    }
-    filtered.forEach {
-        item = item.setComponent(it.key.replace("visual","minecraft"), it.value!!)
-    }
-    devLog("Visual Item: $item")
-    return item
-
-}*/
+*/

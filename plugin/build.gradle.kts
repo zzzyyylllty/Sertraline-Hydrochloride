@@ -22,7 +22,8 @@ taboolib {
             name("ItemsAdder").optional(true)
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
-            name("packetevents").optional(true)
+            // name("packetevents").optional(true)
+            name("ProtocolLib").optional(true)
             // 可选依赖.
             // name("XXX").optional(true)
         }
@@ -41,6 +42,7 @@ taboolib {
 tasks {
     jar {
         archiveFileName.set("${rootProject.name}-${archiveFileName.get().substringAfter('-')}")
+//        destinationDirectory.set(file("F:\\20250207\\Ets\\plugins"))
         rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
     }
 }

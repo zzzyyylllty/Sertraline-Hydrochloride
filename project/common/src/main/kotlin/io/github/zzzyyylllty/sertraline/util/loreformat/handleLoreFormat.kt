@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util.loreformat
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
@@ -13,30 +14,27 @@ import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
 
-fun handleLoreFormat(item: ModernSItem,player: Player?): List<Component>? {
+fun handleLoreFormat(item: ModernSItem, player: Player?): List<Component>? {
     val loreFormat = loreFormats[item.data["sertraline:lore-format"]] ?: return null
-    val list = mutableListOf<Component>()
-    val c = ConfigUtil()
-    for (element in loreFormat.elements) {
+
+    return loreFormat.elements.flatMap { element ->
         val key = element.key
         if (key != null) {
-            val keyValue =
-                if (key.startsWith("*")) {
-                    c.getDeep(item.config, key.removePrefix("*")).asListEnhanded()
-                } else {
-                    item.data[key].asListEnhanded()
-                }
-                    ?: continue
-            keyValue.forEach {
-                list.add(it.performNormalPlaceholders(element.content, player, item).toComponent())
+            val keyValueList = if (key.startsWith("*")) {
+                configUtil.getDeep(item.config, key.removePrefix("*")).asListEnhanded()
+            } else {
+                item.data[key].asListEnhanded()
+            } ?: emptyList()
+
+            keyValueList.mapNotNull { value ->
+                value.performNormalPlaceholders(element.content, player, item)?.toComponent()
             }
         } else {
-            element.content.performPlaceholders(item, player)?.let { list.add(it.toComponent()) }
+            element.content.performPlaceholders(item, player)?.toComponent()?.let { listOf(it) } ?: emptyList()
         }
-    }
-    devLog("Handled lore format $list")
-    return list
+    }.also { devLog("Handled lore format $it") }
 }
+
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
     val numeral = this.toString().toDoubleOrNull()
     val string = this.toString()

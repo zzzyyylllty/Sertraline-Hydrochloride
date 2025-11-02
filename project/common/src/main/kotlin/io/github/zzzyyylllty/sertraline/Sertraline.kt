@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
@@ -8,56 +9,23 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
-import taboolib.common.platform.Plugin
-import taboolib.common.platform.function.console
-import taboolib.module.configuration.Configuration
-import taboolib.module.database.getHost
-import java.time.format.DateTimeFormatter
 import io.github.zzzyyylllty.sertraline.logger.*
-import io.github.zzzyyylllty.sertraline.reflect.ReflectTargets
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$BuiltInRegistries`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$CraftItemStack`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$DataComponentHolder`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$DataComponentType`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$HolderLookup$Provider`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$ItemStack`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$MinecraftServer`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$NbtOps`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$Registry`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$RegistryAccess$Frozen`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$RegistryOps`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$ResourceLocation`
-import io.github.zzzyyylllty.sertraline.reflect.`clazz$Tag`
-import io.github.zzzyyylllty.sertraline.reflect.`field$BuiltInRegistries$DATA_COMPONENT_TYPE`
-import io.github.zzzyyylllty.sertraline.reflect.`field$CraftItemStack$handle`
-import io.github.zzzyyylllty.sertraline.reflect.`field$NbtOps$INSTANCE`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$BuiltInRegistries$DATA_COMPONENT_TYPE`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$DynamicOps$JAVA`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$DynamicOps$JSON`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$DynamicOps$NBT`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$MinecraftServer$SERVER`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$MinecraftServer$registryAccess`
-import io.github.zzzyyylllty.sertraline.reflect.`instance$NbtOps$INSTANCE`
-import io.github.zzzyyylllty.sertraline.reflect.`method$DataComponentHolder$getDataComponentType`
-import io.github.zzzyyylllty.sertraline.reflect.`method$DataComponentType$codec`
-import io.github.zzzyyylllty.sertraline.reflect.`method$ItemStack$removeComponent`
-import io.github.zzzyyylllty.sertraline.reflect.`method$ItemStack$setComponent`
-import io.github.zzzyyylllty.sertraline.reflect.`method$MinecraftServer$getServer`
-import io.github.zzzyyylllty.sertraline.reflect.`method$MinecraftServer$registryAccess`
-import io.github.zzzyyylllty.sertraline.reflect.`method$Registry$getValue`
-import io.github.zzzyyylllty.sertraline.reflect.`method$RegistryOps$create`
-import io.github.zzzyyylllty.sertraline.reflect.`method$ResourceLocation$fromNamespaceAndPath`
-import io.github.zzzyyylllty.sertraline.reflect.`method$ResourceLocation$tryParse`
+import io.github.zzzyyylllty.sertraline.reflect.*
 import org.bukkit.command.CommandSender
+import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
+import taboolib.module.configuration.Configuration
+import taboolib.module.database.getHost
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
 import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
 import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -76,6 +44,7 @@ object Sertraline : Plugin() {
     val itemManager = ItemProcessorManager()
     var devMode = true
     val reflects = ReflectTargets()
+    val configUtil = ConfigUtil()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -84,6 +53,7 @@ object Sertraline : Plugin() {
 
     @Config("config.yml")
     lateinit var config: Configuration
+
 
     override fun onEnable() {
 

@@ -13,57 +13,71 @@ import taboolib.module.lang.asLangText
 
 public class ConfigUtil {
     fun getString(input: Any?): String? {
-        return if (input == null) null else input.toString()
+        return input?.toString()
     }
     fun getInt(input: Any?): Int? {
-        return if (input == null) null else input.toString().toInt()
+        return input?.toString()?.toInt()
     }
 
     fun getLong(input: Any?): Long? {
-        return if (input == null) null else input.toString().toLong()
+        return input?.toString()?.toLong()
     }
-    fun getDeep(input: Map<*,*>?, location: String): Any? {
+    fun getDeep(input: Map<*, *>?, location: String): Any? {
         devLog("input: $input")
-        val list = location.split(".").toMutableList()
-        devLog("ConfigUtil getDeep List: $list")
-        val current = input?.get(list[0])
-        devLog("ConfigUtil getDeep Current: $current")
-        return if (current is Map<*, *> && list.size > 1) {
-            list.removeFirst()
-            getDeep(current, list.joinToString("."))
-        } else {
-            current
+        if (input == null || location.isEmpty()) return null
+
+        val keys = location.split(".")
+        var current: Any? = input
+
+        for (key in keys) {
+            if (current !is Map<*, *>) return null
+            devLog("ConfigUtil getDeep Current at key '$key': $current")
+            current = current[key]
         }
+        return current
     }
-    fun getFeature(input: Map<*,*>?, feature: String): Any? {
+
+    fun getFeature(input: Map<*, *>?, feature: String): Any? {
         if (input == null) {
             devLog("Get feature of input is null, skipping feature loading")
             return null
         }
+
         val mapping = mappings[feature]
         if (mapping == null) {
             warningS(console.asLangText("Warning_No_Mapping", feature))
             return null
         }
-        for (i in mapping) {
-            val n = i.split(":").first() // 获得Namespace，例如minecraft
-            val m = i.split(":").last()  // 获得id，例如tier
-            val section = (input[n] as? Map<*, *>)
-            if (section?.contains(m) ?: false) {
-                devLog("Mapping $m for $feature found.")
-                return section[m]
+
+        for (entry in mapping) {
+            val (namespace, id) = entry.split(":", limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+            val section = input[namespace] as? Map<*, *>
+            if (section?.contains(id) == true) {
+                devLog("Mapping $id for $feature found.")
+                return section[id]
             }
         }
         return null
     }
-    fun getFeatures(input: Map<*,*>?, features: List<String>, final: Map<String, Any?> = linkedMapOf()): Map<String, Any?> {
-        val goal = final.toMutableMap()
-        for (f in features) {
-            val unparsed = getFeature(input, f)
-            goal[f] = if (unparsed is String) unparsed.legacyToMiniMessage()
-            else if (unparsed is List<*>&& isListOfType<String>(unparsed)) unparsed.legacyToMiniMessage() else unparsed
+
+    fun getFeatures(
+        input: Map<*, *>?,
+        features: List<String>,
+        final: Map<String, Any?>? = null
+    ): Map<String, Any?> {
+        val baseMap = final?.toMutableMap() ?: linkedMapOf()
+        features.forEach { feature ->
+            val unparsed = getFeature(input, feature)
+            baseMap[feature] = unparsed?.let { transformValue(it) }
         }
-        return goal
+        return baseMap
     }
+
+    private fun transformValue(value: Any): Any = when {
+        value is String -> value.legacyToMiniMessage()
+        value is List<*> && isListOfType<String>(value) -> value.legacyToMiniMessage()
+        else -> value
+    }
+
 
 }

@@ -108,10 +108,13 @@ repositories {
     maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
 
     maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
+
+    maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
 }
 
 dependencies {
     taboo("de.tr7zw:item-nbt-api:2.15.3")
+//    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     // compileOnly("ink.ptms.core:v12004:12004:mapped")
     // compileOnly("ink.ptms.core:v12004:12004:universal")
     implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
