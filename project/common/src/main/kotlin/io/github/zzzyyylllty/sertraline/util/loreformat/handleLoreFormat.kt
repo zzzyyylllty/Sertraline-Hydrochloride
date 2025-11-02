@@ -13,7 +13,7 @@ import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
 
-fun handleLoreFormat(item: ModernSItem,player: Player): List<Component>? {
+fun handleLoreFormat(item: ModernSItem,player: Player?): List<Component>? {
     val loreFormat = loreFormats[item.data["sertraline:lore-format"]] ?: return null
     val list = mutableListOf<Component>()
     val c = ConfigUtil()
@@ -37,7 +37,7 @@ fun handleLoreFormat(item: ModernSItem,player: Player): List<Component>? {
     devLog("Handled lore format $list")
     return list
 }
-fun Any?.performNormalPlaceholders(content: String,player: Player,sItem: ModernSItem): String {
+fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
     val numeral = this.toString().toDoubleOrNull()
     val string = this.toString()
     devLog("Numeral: $numeral | string: $string")

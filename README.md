@@ -23,6 +23,7 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 * [JhqwqMc](https://github.com/jhqwqmc) - some component feature's contributor.
 * [ChengZhiMeow](https://github.com/ChengZhiMeow/) - visual feature's reference.
+* [TheFloodDragon](https://github.com/TheFloodDragon) - ratziel's author.
 * [Xiao-MoMi](https://github.com/Xiao-MoMi/) - craft-engine's author, craft-engine is this plugin's reference.
 
 ## As dependency
