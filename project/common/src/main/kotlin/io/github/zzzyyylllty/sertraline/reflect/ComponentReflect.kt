@@ -246,7 +246,19 @@ fun ItemStack.setComponent(componentId: String,value: Any): ItemStack {
         warningS(console.asLangText("Warning_Component_Setting_Failed_Exception",componentId,value,e))
         return itemStack
     }
+}
+fun Any.setComponentNMS(componentId: String,value: Any): Any {
+    try {
+        setComponentInternal(this, componentId, value)
+        return this
+    } catch (e: Exception) {
+        warningS(console.asLangText("Warning_Component_Setting_Failed_Exception",componentId,value,e))
+        return this
+    }
+}
 
+fun Any.getComponentNMS(componentId: String): JsonElement? {
+    return getJsonComponent(this, componentId).orElse(null)
 }
 fun ItemStack.getComponent(componentId: String): JsonElement? {
 

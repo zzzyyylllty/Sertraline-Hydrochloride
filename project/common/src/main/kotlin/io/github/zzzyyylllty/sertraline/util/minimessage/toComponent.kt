@@ -8,6 +8,9 @@ import kotlin.collections.component2
 fun String.toComponent(): Component {
     return mmUtil.deserialize(this)
 }
+fun String.toComponentJson(): String {
+    return mmJsonUtil.serialize(this.toComponent())
+}
 
 fun List<String>.toComponent(): List<Component> {
     return this.map { mmUtil.deserialize(it) }

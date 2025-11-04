@@ -30,7 +30,7 @@ fun resumeItem(itemStack: ItemStack): ItemStack{
     return ItemStack.deserializeBytes(itemStack.getItemTag(true)["SERTRALINE_OITEM"] as? ByteArray ?: return itemStack)
 }
 
-
+/*
 @SubscribeEvent
 fun onPacketReceive(event: taboolib.module.nms.PacketReceiveEvent) {
 
@@ -138,4 +138,4 @@ private fun handlePacketItem(
     nmsItem.let { packet.write(readKey, it) }
 }
 
-
+*/

@@ -124,7 +124,8 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     //implementation("org.yaml:snakeyaml:2.2")
-    // compileOnly("com.github.retrooper:packetevents-spigot:2.10.0")
+    compileOnly("io.netty:netty-all:4.1.127.Final")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.10.0")
     implementation("org.tabooproject.reflex:analyser:1.1.4")
     implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
     implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块

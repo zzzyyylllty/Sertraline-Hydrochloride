@@ -22,8 +22,8 @@ taboolib {
             name("ItemsAdder").optional(true)
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
-            // name("packetevents").optional(true)
-            name("ProtocolLib").optional(true)
+            name("packetevents").optional(true)
+            // name("ProtocolLib").optional(true)
             // 可选依赖.
             // name("XXX").optional(true)
         }
@@ -37,6 +37,10 @@ taboolib {
     relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
     relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
     relocate("com.mojang.datafixerupper","io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper")
+    relocate("io.netty.handler.codec.http", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.http")
+    relocate("io.netty.handler.codec.rtsp", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.rtsp")
+    relocate("io.netty.handler.codec.spdy", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.spdy")
+    relocate("io.netty.handler.codec.http2", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.http2")
 }
 
 tasks {

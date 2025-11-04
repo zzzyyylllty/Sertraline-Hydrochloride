@@ -3,12 +3,12 @@ package io.github.zzzyyylllty.sertraline.util.loreformat
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
-import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
+import io.github.zzzyyylllty.sertraline.util.minimessage.toComponentJson
 import org.bukkit.entity.Player
 import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions

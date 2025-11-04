@@ -22,15 +22,16 @@ fun assembleCBClass(className: String): String {
 }
 
 
+val holderClass by lazy { getClazz("net.minecraft.core.Holder")!! }
+
 fun unwrapValue(obj: Any): Any {
     devLog("unwrapValue called on: ${obj.javaClass.name}")
     if (obj is java.util.Optional<*>) {
         if (obj.isPresent) return unwrapValue(obj.get()!!)
         throw IllegalArgumentException("Optional empty")
     }
-    val holderClass = getClazz("net.minecraft.core.Holder")
-    devLog("Holder class: ${holderClass?.name}, isInstance: ${holderClass?.isInstance(obj)}")
-    if (holderClass != null && holderClass.isInstance(obj)) {
+    devLog("Holder class: ${holderClass.name}, isInstance: ${holderClass.isInstance(obj)}")
+    if (holderClass.isInstance(obj)) {
         val methodNameCandidates = listOf("get", "value")
         val getMethod = methodNameCandidates.asSequence()
             .mapNotNull {

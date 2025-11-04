@@ -1,5 +1,5 @@
 package io.github.zzzyyylllty.sertraline.util.dependencies
-/*
+
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
@@ -33,4 +33,3 @@ fun onDisablePacketEvents() {
     //Terminate the instance (clean up process)
     PacketEvents.getAPI().terminate()
 }
-*/
