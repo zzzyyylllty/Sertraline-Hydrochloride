@@ -4,7 +4,8 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.listener.packet.PacketEventsPacketListener
+import io.github.zzzyyylllty.sertraline.listener.packet.PacketEventsReceiveListener
+import io.github.zzzyyylllty.sertraline.listener.packet.PacketEventsSendListener
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.platform.util.bukkitPlugin
@@ -17,8 +18,12 @@ fun onInitPacketEvents() {
 
     devLog("Registering packet listeners...")
     PacketEvents.getAPI().eventManager.registerListener(
-        PacketEventsPacketListener(), PacketListenerPriority.NORMAL
+        PacketEventsSendListener(), PacketListenerPriority.HIGHEST
     )
+    PacketEvents.getAPI().eventManager.registerListener(
+        PacketEventsReceiveListener(), PacketListenerPriority.HIGHEST
+    )
+
 
 }
 

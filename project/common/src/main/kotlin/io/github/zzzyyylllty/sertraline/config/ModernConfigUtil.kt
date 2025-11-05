@@ -23,7 +23,6 @@ public class ConfigUtil {
         return input?.toString()?.toLong()
     }
     fun getDeep(input: Map<*, *>?, location: String): Any? {
-        devLog("input: $input")
         if (input == null || location.isEmpty()) return null
 
         val keys = location.split(".")
@@ -31,7 +30,6 @@ public class ConfigUtil {
 
         for (key in keys) {
             if (current !is Map<*, *>) return null
-            devLog("ConfigUtil getDeep Current at key '$key': $current")
             current = current[key]
         }
         return current
@@ -39,7 +37,6 @@ public class ConfigUtil {
 
     fun getFeature(input: Map<*, *>?, feature: String): Any? {
         if (input == null) {
-            devLog("Get feature of input is null, skipping feature loading")
             return null
         }
 
@@ -53,7 +50,6 @@ public class ConfigUtil {
             val (namespace, id) = entry.split(":", limit = 2).let { it[0] to it.getOrElse(1) { "" } }
             val section = input[namespace] as? Map<*, *>
             if (section?.contains(id) == true) {
-                devLog("Mapping $id for $feature found.")
                 return section[id]
             }
         }

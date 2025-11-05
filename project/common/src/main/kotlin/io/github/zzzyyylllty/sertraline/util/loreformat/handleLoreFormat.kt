@@ -26,19 +26,18 @@ fun handleLoreFormat(item: ModernSItem, player: Player?): List<Component>? {
                 item.data[key].asListEnhanded()
             } ?: emptyList()
 
-            keyValueList.mapNotNull { value ->
-                value.performNormalPlaceholders(element.content, player, item)?.toComponent()
+            keyValueList.map { value ->
+                value.performNormalPlaceholders(element.content, player, item).toComponent()
             }
         } else {
             element.content.performPlaceholders(item, player)?.toComponent()?.let { listOf(it) } ?: emptyList()
         }
-    }.also { devLog("Handled lore format $it") }
+    }
 }
 
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
     val numeral = this.toString().toDoubleOrNull()
     val string = this.toString()
-    devLog("Numeral: $numeral | string: $string")
     var content = content
     if (numeral != null) {
         if (numeral > 0.0) config.getString("placeholders.plus", "+")?.let { content = content.replace("{plus}", it) }
@@ -49,11 +48,9 @@ fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: Modern
 }
 fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
     var content = this ?: run {
-        devLog("content is null, returning null.")
         return null
     }
 
-    devLog("Ready to Perform content: $content")
     player?.let { content = content.replacePlaceholder(it) }
 
     // inline kether
@@ -63,6 +60,5 @@ fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
             player?.let { sender(it) }
         }
     )
-    devLog("Performed content: $content")
     return content
 }

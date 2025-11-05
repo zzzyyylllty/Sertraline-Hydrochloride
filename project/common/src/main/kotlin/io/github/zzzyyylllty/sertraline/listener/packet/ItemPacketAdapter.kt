@@ -23,13 +23,6 @@ import taboolib.platform.util.isAir
 
 private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 
-/**
- * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
- * */
-fun resumeItem(itemStack: ItemStack): ItemStack{
-    return ItemStack.deserializeBytes(itemStack.getItemTag(true)["SERTRALINE_OITEM"] as? ByteArray ?: return itemStack)
-}
-
 /*
 @SubscribeEvent
 fun onPacketReceive(event: taboolib.module.nms.PacketReceiveEvent) {

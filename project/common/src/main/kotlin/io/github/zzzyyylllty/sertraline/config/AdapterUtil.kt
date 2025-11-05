@@ -33,9 +33,7 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
     }
     fun getDeep(location: String): Any? {
         val list = location.split(".").toMutableList()
-        devLog("ConfigUtil getDeep List: $list")
         val current = input?.get(list[0])
-        devLog("ConfigUtil getDeep Current: $current")
         return if (current is Map<*, *> && list.size > 1) {
             list.removeFirst()
             getDeep(list.joinToString("."))
