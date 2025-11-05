@@ -41,3 +41,9 @@ placeholders:
   plus: "+"
   minus: "-"
 
+packet:
+  # 是否注册包处理器
+  # 不启用或不安装packetevents 2.10+ 所有发包功能均不会生效
+  register: true
+  # 是否启用发包Lore
+  packet-lore: true

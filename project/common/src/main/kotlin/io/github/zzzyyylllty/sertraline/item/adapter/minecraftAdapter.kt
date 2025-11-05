@@ -1,8 +1,5 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
-import de.tr7zw.changeme.nbtapi.NBT
-import de.tr7zw.changeme.nbtapi.iface.NBTHandler
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.reflect.setComponent

@@ -1,4 +1,4 @@
-package io.github.zzzyyylllty.sertraline.listener.packet
+package io.github.zzzyyylllty.sertraline.util.dependencies
 
 import com.github.retrooper.packetevents.event.PacketListener
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
@@ -11,14 +11,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPlayerInventory
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
-import com.google.common.base.Optional
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
+import io.github.zzzyyylllty.sertraline.listener.packet.c2s
+import io.github.zzzyyylllty.sertraline.listener.packet.s2c
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import taboolib.platform.util.isAir
-import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
 class PacketEventsReceiveListener : PacketListener {
@@ -30,7 +29,6 @@ class PacketEventsReceiveListener : PacketListener {
                 val packet = WrapperPlayClientClickWindow(event)
 
                 packet.carriedItemStack = packet.carriedItemStack.let {
-                    consoleSender.sendStringAsComponent("<rainbow>itemStack: $it")
                     val bItem = SpigotConversionUtil.toBukkitItemStack(it ?: return)
                     if (bItem.isAir || bItem.isEmpty) return
                     SpigotConversionUtil.fromBukkitItemStack(bItem.c2s())
@@ -44,7 +42,6 @@ class PacketEventsReceiveListener : PacketListener {
                 val packet = WrapperPlayClientCreativeInventoryAction(event)
 
                 packet.itemStack = packet.itemStack.let {
-                    consoleSender.sendStringAsComponent("<rainbow>itemStack: $it")
                     val bItem = SpigotConversionUtil.toBukkitItemStack(it ?: return)
                     if (bItem.isAir || bItem.isEmpty) return
                     SpigotConversionUtil.fromBukkitItemStack(bItem.c2s())

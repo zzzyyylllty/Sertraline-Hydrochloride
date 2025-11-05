@@ -15,8 +15,11 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
+import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.util.asList
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -71,6 +74,28 @@ object DebugCommand {
     val processors = subCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.sendStringAsComponent(itemManager.listProcessors().toString())
+        }
+    }
+
+    @CommandBody
+    val buildDisplay = subCommand {
+        dynamic("id") {
+            execute<CommandSender> { sender, context, argument ->
+                val id = context["id"]
+                if (sender is Player) sender.sendMessage(sertralineItemBuilder(itemMap[id]!!,sender).displayName()) else sender.sendStringAsComponent("Must a player.")
+            }
+            suggestion<CommandSender>(uncheck = true) { sender, context ->
+                itemMap.keys.asList()
+            }
+            player("player") {
+                execute<CommandSender> { sender, context, argument ->
+                    val id = context["id"]
+                    val tabooPlayer = context.player("player")
+                    // 转化为Bukkit的Player
+                    val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                    sender.sendMessage(sertralineItemBuilder(itemMap[id]!!,bukkitPlayer).displayName())
+                }
+            }
         }
     }
 

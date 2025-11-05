@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.util
 
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import net.momirealms.craftengine.core.util.ReflectionUtils
 import taboolib.library.reflex.Reflex
@@ -9,8 +8,8 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
 val ref = Reflex
-val MC_PREFIX = "net.minecraft."
-val CB_PREFIX = "org.bukkit.craftbukkit."
+const val MC_PREFIX = "net.minecraft."
+const val CB_PREFIX = "org.bukkit.craftbukkit."
 
 fun assembleMCClass(className: String): String {
     return MC_PREFIX + className
@@ -25,12 +24,10 @@ fun assembleCBClass(className: String): String {
 val holderClass by lazy { getClazz("net.minecraft.core.Holder")!! }
 
 fun unwrapValue(obj: Any): Any {
-    devLog("unwrapValue called on: ${obj.javaClass.name}")
     if (obj is java.util.Optional<*>) {
-        if (obj.isPresent) return unwrapValue(obj.get()!!)
+        if (obj.isPresent) return unwrapValue(obj.get())
         throw IllegalArgumentException("Optional empty")
     }
-    devLog("Holder class: ${holderClass.name}, isInstance: ${holderClass.isInstance(obj)}")
     if (holderClass.isInstance(obj)) {
         val methodNameCandidates = listOf("get", "value")
         val getMethod = methodNameCandidates.asSequence()

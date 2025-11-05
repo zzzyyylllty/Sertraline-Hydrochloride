@@ -4,6 +4,7 @@ depaz_pills:
     lore-format: zhcnloreformat
     vals:
       effect: INSTANT_DAMAGE
+      custom: 100
     vars:
       pills: 6
     dynamics:
@@ -85,6 +86,9 @@ depaz_pills:
     stamina-regeneration: null
 
 cool_sword:
+  sertraline:
+    tier: D
+    lore-format: zhcnloreformat
   xbuilder:
     name: "&2酷炫之剑"
     lore: |
@@ -116,11 +120,42 @@ magical_book:
       FIRE_ASPECT: 5
     glow: true
 
+diamond_chestplate:
+  xbuilder:
+    material: DIAMOND_CHESTPLATE
+  minecraft:
+    trim:
+      material: minecraft:amethyst
+      # override_armor_assets:
+      #   test: test
+      pattern:
+        template_item: diamond
+        asset_id: ward
+        decal: true
+        description: 'hello ChoTen!'
+
+test_model_item:
+  xbuilder:
+    material: DIAMOND_SWORD
+  minecraft:
+    custom_model_data:
+      flags:
+        - true
+      floats:
+        - 1.0
+      strings:
+        - test
+      colors:
+        - 114
+        - 51
+        - 4
 
 test_component_item:
   xbuilder:
-    material: CHEST
-  minecraft:
+    material: DIAMOND_SWORD
+    lore: |
+      Hello %player_name%
+  minecraft: # 支持 1.20.5+ 组件
     attribute_modifiers:
       - amount: 1.0
         show_in_tooltip: true
@@ -138,14 +173,14 @@ test_component_item:
         pattern: stripe_center
     base_color: lime
     bees:
-      entity_data:
-        id: "not_set"
-        CustomName: "<yellow>Bee"
-      min_ticks_in_hive: 1
-      ticks_in_hive: 1
+      - entity_data:
+          id: "bee"
+          CustomName: "<yellow>Bee"
+        min_ticks_in_hive: 1
+        ticks_in_hive: 1
     block_entity_data:
       id: "container_loot"
-      LootTable: minecraft:chests/ancient_city
+      LootTable: chests/ancient_city
     blocks_attacks:
       block_delay_seconds: 1.0
       block_sound:
@@ -177,51 +212,47 @@ test_component_item:
       Silent: true
       Age: 1
     bundle_contents:
-      - id: DIAMOND
+      - id: diamond
         amount: 1
     container:
-      - item: ITEM
+      - item:
+          id: diamond
         slot: 1
     container_loot:
-      loot_table: minecraft:chests/ancient_city
+      loot_table: chests/ancient_city
       seed: 114514
     can_break:
       show_in_tooltip: true
       blocks:
-        - jigsaw_block
+        - diamond_block
       components: {}
-      nbt:
-        test: 1
+      nbt: {}
       predicates: {}
-      state:
-        orientation:
-          min: up_north
-          max: east_up
+      state: {}
     can_place_on:
       show_in_tooltip: true
       blocks:
-        - jigsaw_block
+        - diamond_block
       components: {}
-      nbt:
-        test: 1
+      nbt: {}
       predicates: {}
-      state: orientation
+      state: {}
     charged_projectiles:
       - id: arrow
     consumable:
-      animation: use
+      animation: eat
       consume_seconds: 1.0
       has_consume_particles: true
       on_consume_effects:
-        type: apply_effects
-        effects:
-          - id: minecraft:instant_health
-            duration: 666
-        probability: 1.0
-        sound:
-          sound_id: ambient.cave
-          range: 1.0
-    diameter: 1.0
+        - type: apply_effects
+          effects:
+            - id: instant_health
+              duration: 666
+          probability: 1.0
+          sound:
+            sound_id: ambient.cave
+            range: 1.0
+      diameter: 1.0
     custom_data:
       needy: 1.0
     custom_model_data:
@@ -232,18 +263,20 @@ test_component_item:
       strings:
         - test
       colors:
-        - 112233
+        - 114
+        - 51
+        - 4
     custom_name: "<rainbow>test"
     damage: 1
     damage_resistant:
-      types: always_triggers_silverfish
+      types: "#always_hurts_ender_dragons"
     damage_type: void
     debug_stick_state:
       iron_door: powered
     death_protection:
       type: apply_effects
       effects:
-        - id: minecraft:instant_damage
+        - id: instant_damage
           duration: 114514
       probability: 1.0
       sound: ambient.cave
@@ -253,65 +286,78 @@ test_component_item:
       value: 1
     enchantment_glint_override: true
     enchantments:
-      SHARPNESS: 1
+      sharpness: 1
     entity_data:
       id: zombie
       CustomName: "<yellow>Test"
-    equippable:
-      allowed_entities:
-        - creeper
-      asset_id: "minecraft:item/bow"
-      model: "minecraft:item/bow"
-      camera_overlay: "not_set"
-      can_be_sheared: true
-      damage_on_hurt: true
-      equip_on_1eract: true
-      equip_sound: ambient.cave
-      dispensable: true
-      shearing_sound:
-        sound_id: ambient.cave
-        range: 1.0
-      slot: any
-      swappable: true
+    # equippable:
+    #   allowed_entities:
+    #     - creeper
+    #   asset_id: "item/bow"
+    #   model: "item/bow"
+    #   camera_overlay: "not_set"
+    #   can_be_sheared: true
+    #   damage_on_hurt: true
+    #   equip_on_1eract: true
+    #   equip_sound: ambient.cave
+    #   dispensable: true
+    #   shearing_sound:
+    #     sound_id: ambient.cave
+    #     range: 1.0
+    #   slot: "armor.*"
+    #   swappable: true
     firework_explosion:
-      colors: 1
-      fade_colors: 1
+      colors:
+        - 1
+        - 23
+        - 45
+      fade_colors:
+        - 1
+        - 23
+        - 45
       has_trail: true
       has_twinkle: true
-      shape: FIREWORK_SHAPE
+      shape: creeper
     fireworks:
       flight_duration: 2
       explosions:
-        - colors: 1
-          fade_colors: 1
+        - colors:
+            - 1
+            - 23
+            - 45
+          fade_colors:
+            - 1
+            - 23
+            - 45
           has_trail: true
           has_twinkle: true
-          shape: FIREWORK_SHAPE
+          shape: creeper
     food:
       can_always_eat: true
       nutrition: 1
       saturation: 1.0
       using_converts_to:
-        id: DIAMOND
+        id: diamond
       effects:
         - effect: absorption
           probability: 1.0
     glider: {}
     instrument:
-      description: "Hello ChoTen!"
+      description: '{"text":"hello ChoTen!"}'
       sound_event:
         sound_id: ambient.cave
         range: 1.0
       use_duration: 1
+      range: 100
     intangible_projectile: {}
-    item_model: "minecraft:"
-    item_name: "Hello ChoTen!"
-    jukebox_playable: "minecraft:cat"
+    item_model: "minecraft:bow"
+    item_name: '{"text":"Hello ChoTen!"}'
+    # jukebox_playable: "minecraft:cat"
     kinetic_weapon:
       min_reach: 1.0
       max_reach: 1.0
       hitbox_margin: 1.0
-      delay_ticks: 1
+      delay_ticks: creeper
       forward_movement: 1.0
       damage_multiplier: 1.0
       sound: ambient.cave
@@ -329,15 +375,8 @@ test_component_item:
         min_speed: 1.0
         min_relative_speed: 1.0
     lock: {}
-    lodestone_tracker:
-      target:
-        dimension: "nether"
-        pos:
-          - 2022
-          - 1
-          - 27
-      tracked: true
-    lore: "Hello ChoTen!"
+    lore:
+      - '{"text":"Hello ChoTen!"}'
     map_color: 16777215
     map_decorations:
       test:
@@ -360,10 +399,10 @@ test_component_item:
       deals_knockback: true
       dismounts: true
     pot_decorations:
-      - minecraft:brick
-      - minecraft:brick
-      - minecraft:brick
-      - minecraft:brick
+      - brick
+      - brick
+      - brick
+      - brick
     potion_contents:
       custom_color: 111111
       custom_effects:
@@ -372,23 +411,23 @@ test_component_item:
       custom_name: "TEST"
       potion: "slowness"
     potion_duration_scale: 1.0
-    minecraft:profile:
+    profile:
       name: raincandy_U
-    provides_banner_patterns: PATTERN_TAG
+    provides_banner_patterns: creeper
     provides_trim_material:
-      asset_name: STRING
-      description: TEXT
+      asset_name: amethyst
+      description: 'hello ChoTen!'
       override_armor_assets:
-        humanoid: "minecraft:item/test"
+        humanoid: "item/test"
     rarity: epic
-    minecraft:recipes:
-      - minecraft:iron_sword
+    recipes:
+      - iron_sword
     repairable:
       items:
         - diamond
     repair_cost: 11
     stored_enchantments:
-      SHARPNESS: 1
+      sharpness: 1
     suspicious_stew_effects:
       - duration: 1
         id: speed
@@ -397,30 +436,27 @@ test_component_item:
       id: 1
     tool:
       can_destroy_blocks_in_creative: true
-      damage_per_block: INT
+      damage_per_block: 1
       default_mining_speed: 1.0
       rules:
-        blocks:
-          - BLOCK
-          - LIST|BLOCK
-        correct_for_drops: true
-        speed: 1.0
+        - blocks:
+            - diamond_block
+          correct_for_drops: true
+          speed: 1.0
     tooltip_display:
       hide_tooltip: false
       hidden_components:
         - trim
-    tooltip_style: minecraft:topaz
+    tooltip_style: topaz
     trim:
-      material:
-        asset_name: amethyst
-        description: |
-          <gray>Hello ChoTen!
-        override_armor_assets:
-          test: test
+      material: minecraft:amethyst
+      # override_armor_assets:
+      #   test: test
       pattern:
-        asset_id: coast
+        template_item: diamond
+        asset_id: ward
         decal: true
-        description: "hello ChoTen!"
+        description: 'hello ChoTen!'
     unbreakable:
       show_in_tooltip: true
     use_cooldown:
@@ -438,12 +474,14 @@ test_component_item:
       item_damage_per_attack: 2.0
     writable_book_content:
       pages:
-        - "hello choten"
+        - "1"
     written_book_content:
       author: "AmeChan"
       generation: 3
       pages:
-        - "hello ChoTen"
+        - filtered: '{"text":"hello ChoTen!"}'
+          raw: '{"text":"hello ChoTen!"}'
       resolved: true
       title:
-        - "hello choten"
+        filtered: '{"text":"hello ChoTen!"}'
+        raw: '{"text":"hello ChoTen!"}'

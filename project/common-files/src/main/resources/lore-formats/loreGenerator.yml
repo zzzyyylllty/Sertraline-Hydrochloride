@@ -3,27 +3,25 @@ zhcnloreformat:
     # 覆盖原版lore
     overwrite: true
   elements:
-    # 不填写key或是key为always则该行总是出现
+    # 不填写key则该行总是出现
     - content: "<#aabbcc>--------------------"
     # 如果是列表 则是列表中的每一行
     - key: "xbuilder:lore"
-      content: "{value}"
+      content: "<!i><#999999>| {value}"
     - key: "sertraline:tier"
-      content: "<aqua>品质: {value}"
+      content: "<!i><white>品质: <blue>{value}"
     # 如果是单项 则是该内容toString之后的内容
     # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
     # 如果是负数 minus会被替换为-（其他内容可在config内决定）
-    - key: "mmo:attack-damage"
+    - key: "mmo:attack-damage" # [config]sertraline.lore-format # zhcnloreformat
       content: "<aqua>攻击伤害 {plus}{minus}{value}"
-    # 同样支持kether
-    - key: "mmo:attack-speed"
-      content: "<aqua>攻击速度 {plus}{minus}{value} (评级: {{ if {value} >= 1.6 then 快 else 慢 }})"
-    - content: "效果列表:"
+    - key: "*sertraline.vals.custom" # 从配置文件直接读取
+      content: "<aqua>自定义内容:从配置文件读取 <gray>{plus}{value}"
+      # - content: "效果列表:"
       # any包含一条即显示, all全部包含, not不包含任何一条才会显示,not_all不包含全部
-      lineMode: ANY
-      lineRequire:
-        - "vals:effect"
-      # 调用常量和变量需要使用特殊格式  
-    - key: "vals:effect"
+      #   lineMode: ANY
+      #   lineRequire:
+      #     - "*sertraline.vals.effect"
+    - key: "*sertraline.vals.effect"
       content: "<blue>效果: {value}"
     - content: "<#aabbcc>--------------------"

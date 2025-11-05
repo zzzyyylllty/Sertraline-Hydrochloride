@@ -30,7 +30,6 @@ private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUni
  * */
 fun ItemStack.c2s(): ItemStack {
     val deserialized = (this.getItemTag()["SERTRALINE_OITEM"]?.asCompound()?.get("ITEMSTACK")?.asByteArray())?.deserializeToItemStack() ?: return this
-    consoleSender.sendStringAsComponent("<rainbow>serialized: $deserialized")
     return deserialized
 }
 /**
@@ -70,7 +69,7 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
     return resultBItem
 }
 
-@Deprecated("Performance")
+@Deprecated("Performance Issue")
 fun visualComponentSetter(item: ItemStack, sItem: ModernSItem): ItemStack {
     val filtered = sItem.data.filter { it.key.startsWith("visual:") && it.value != null }.toMutableMap()
     if (filtered.isEmpty()) return item

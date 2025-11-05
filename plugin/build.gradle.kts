@@ -22,7 +22,7 @@ taboolib {
             name("ItemsAdder").optional(true)
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
-            name("packetevents")
+            name("packetevents").optional(true)
             // name("ProtocolLib").optional(true)
             // 可选依赖.
             // name("XXX").optional(true)
@@ -33,7 +33,7 @@ taboolib {
     // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.com.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
     relocate("kotlinx.serialization", "kotlinx.serialization170")
-    relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.de.tr7zw.changeme.nbtapi")
+    // relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.de.tr7zw.changeme.nbtapi")
     relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
     relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
     relocate("com.mojang.datafixerupper","io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper")

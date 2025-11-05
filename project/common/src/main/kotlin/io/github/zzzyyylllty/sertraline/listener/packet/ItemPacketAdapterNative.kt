@@ -1,25 +1,6 @@
 package io.github.zzzyyylllty.sertraline.listener.packet
 
-import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.logger.warningS
-import io.github.zzzyyylllty.sertraline.reflect.setComponent
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
-import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.bukkit.Material
-import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import taboolib.common.platform.event.SubscribeEvent
-import taboolib.library.xseries.XMaterial
-import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
-import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
-import taboolib.module.nms.PacketSendEvent
-import taboolib.module.nms.getItemTag
-import taboolib.module.nms.setItemTag
-import taboolib.platform.util.isAir
 
 private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 

@@ -22,7 +22,7 @@ public class ConfigUtil {
     fun getLong(input: Any?): Long? {
         return input?.toString()?.toLong()
     }
-    fun getDeep(input: Map<*, *>?, location: String): Any? {
+    fun getDeep(input: Any?, location: String): Any? {
         if (input == null || location.isEmpty()) return null
 
         val keys = location.split(".")
@@ -33,6 +33,18 @@ public class ConfigUtil {
             current = current[key]
         }
         return current
+    }
+    fun existDeep(input: Any?, location: String): Boolean {
+        if (input == null || location.isEmpty()) return false
+
+        val keys = location.split(".")
+        var current: Any? = input
+
+        for (key in keys) {
+            if (current !is Map<*, *>) return (current != null)
+            current = current[key]
+        }
+        return (current != null)
     }
 
     fun getFeature(input: Map<*, *>?, feature: String): Any? {

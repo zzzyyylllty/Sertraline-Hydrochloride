@@ -19,6 +19,8 @@ import io.github.zzzyyylllty.sertraline.util.unwrapValue
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
+import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import java.util.Objects.requireNonNull
 import java.util.Optional
 
@@ -59,7 +61,6 @@ val `method$ResourceLocation$fromNamespaceAndPath` = requireNonNull(getStaticMet
 ))!!
 
 val `method$Registry$getValue` = run {
-    devLog(`clazz$Registry`.toString())
     requireNonNull(
         getMethod(
             `clazz$Registry`, Any::class.java, 0, `clazz$ResourceLocation`
@@ -152,7 +153,7 @@ val `method$ItemStack$removeComponent` = requireNonNull(getMethod(
 
 
 val holderClass by lazy { getClazz("net.minecraft.core.Holder")!! }
-val holderMethod by lazy { holderClass.getDeclaredMethod("get")!! }
+val holderMethod by lazy { holderClass.getDeclaredMethod("get") }
 
 @Suppress("UNCHECKED_CAST")
 fun <T> getComponent(itemStack: Any, type: Any, ops: DynamicOps<T>): Optional<T> {
@@ -175,12 +176,10 @@ fun setComponentInternal(itemStack: Any, type: Any, ops: DynamicOps<*>, value: A
         warningS(console.asLangText("Warning_Component_Setting_Failed", type, value))
         return
     }
-    devLog("ensureDataComponentType(type) -> $res, type: ${res.javaClass.name}, is DataComponentType instance: ${`clazz$DataComponentType`.isInstance(res)}")
     val codec = `method$DataComponentType$codec`.invoke(res) as Codec<Any>
     val result = codec.parse(ops as DynamicOps<Any>, value)
     if (result.isError) throw IllegalArgumentException(result.toString())
     result.result().ifPresent {
-        devLog("itemStack: ${itemStack.javaClass.name}, type (res): ${res.javaClass.name}, value: ${it.javaClass.name}")
         `method$ItemStack$setComponent`.invoke(itemStack, res, it)
     }
 }
@@ -237,10 +236,10 @@ fun ItemStack.setComponent(componentId: String,value: Any): ItemStack {
     val itemStack = this
     // 转换Bukkit ItemStack 为 NMS ItemStack
     try {
-        val nmsStack = asNMSCopyMethod.invoke(null, itemStack)
+        val nmsStack = asNMSCopy(itemStack)
 
         setComponentInternal(nmsStack, componentId, value)
-        val bukkitStack = asBukkitCopyMethod.invoke(null, nmsStack) as ItemStack
+        val bukkitStack = asBukkitCopy(nmsStack)
         return bukkitStack
     } catch (e: Exception) {
         warningS(console.asLangText("Warning_Component_Setting_Failed_Exception",componentId,value,e))
@@ -263,10 +262,9 @@ fun Any.getComponentNMS(componentId: String): JsonElement? {
 fun ItemStack.getComponent(componentId: String): JsonElement? {
 
     val itemStack = this
-    // 转换Bukkit ItemStack 为 NMS ItemStack
 
     val nmsStack = try {
-        asNMSCopyMethod.invoke(null, itemStack)
+        asNMSCopy(itemStack)
     }
     catch (e: Exception) {
         warningS(console.asLangText("Warning_Component_Getting_Failed_Exception",componentId,e))
