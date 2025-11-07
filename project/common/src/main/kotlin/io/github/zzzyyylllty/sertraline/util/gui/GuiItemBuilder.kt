@@ -8,11 +8,21 @@ import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
 
-fun GuiItemBuilder(nodeName: String,material: String): ItemStack {
-    val item = ItemStack(XMaterial.valueOf(material).get() ?: Material.STONE)
+data class GuiItem(
+    val nodeName: String,
+    val material: String,
+    val name: String = console.asLangText("Editor_${nodeName}_Name"),
+    val lore: List<String> = console.asLangText("Editor_${nodeName}_Lore").asListEnhanded() ?: emptyList(),
+)
+
+
+
+fun GuiItem.build(): ItemStack {
+    val item = ItemStack(XMaterial.valueOf(material.toUpperCase()).get() ?: Material.STONE)
     val itemMeta = item.itemMeta
-    itemMeta.displayName(console.asLangText("Editor_${nodeName}_Name").toComponent())
-    itemMeta.lore(console.asLangText("Editor_${nodeName}_Lore").asListEnhanded()?.toComponent())
+    val lore = lore.asListEnhanded()?.toComponent()
+    itemMeta.displayName(name.toComponent())
+    itemMeta.lore(lore)
     item.setItemMeta(itemMeta)
     return item
 }

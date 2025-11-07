@@ -1,17 +1,29 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import com.google.gson.reflect.TypeToken
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
+import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 
+val sItemType by lazy { object : TypeToken<ModernSItem?>() {}.type }
+
 data class ModernSItem(
     val key: String,
     val data: Map<String, Any?> = mapOf(),
-    val config: Map<String, Any?> = mapOf()
-)
+    val config: Map<String, Any?> = mapOf(),
+) {
+    fun serialize(): String? {
+        return jsonUtils.toJson(this)
+    }
+}
+
+fun deserializeSItem(string: String): String? {
+    return jsonUtils.fromJson(string, sItemType)
+}
 
 data class SertralineData(
     val type: String = "unidentified",
@@ -19,13 +31,13 @@ data class SertralineData(
     val vals: LinkedHashMap<String, Any> = linkedMapOf(),
     val vars: LinkedHashMap<String, Any> = linkedMapOf(),
     val dynamics: LinkedHashMap<String, List<String>> = linkedMapOf(),
-    val material: Material = Material.STONE
+    val material: Material = Material.STONE,
 )
 
 data class Action(
     var condition: List<String>? = null,
     var kether: List<String>? = null,
-    var javaScript: List<String>? = null
+    var javaScript: List<String>? = null,
 ) {
     fun runAction(player: Player, data: HashMap<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
         val parsedData = data.toMutableMap()

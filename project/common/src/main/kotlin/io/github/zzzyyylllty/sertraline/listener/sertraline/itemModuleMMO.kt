@@ -15,6 +15,7 @@ fun itemModuleMMO(e: ItemLoadEvent) {
     val c = ConfigUtil()
 
     val features = listOf(
+        "$prefix:uuid",
         "$prefix:attack-damage",
         "$prefix:attack-speed",
         "$prefix:critical-strike-chance",

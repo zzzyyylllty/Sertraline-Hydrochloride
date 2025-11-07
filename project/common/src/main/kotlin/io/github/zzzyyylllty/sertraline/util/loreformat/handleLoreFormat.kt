@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponentJson
 import org.bukkit.entity.Player
+import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder

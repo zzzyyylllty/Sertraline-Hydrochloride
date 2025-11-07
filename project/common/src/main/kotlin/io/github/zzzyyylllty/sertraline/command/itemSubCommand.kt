@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.command
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
+import io.github.zzzyyylllty.sertraline.gui.ItemExplorer
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -34,6 +35,12 @@ object ItemCommand {
     @CommandBody
     val help = subCommand {
         createModernHelper()
+    }
+    @CommandBody
+    val browse = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            if (sender is Player) ItemExplorer().mainItemExplorer(sender)
+        }
     }
 
     @CommandBody

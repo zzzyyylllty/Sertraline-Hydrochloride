@@ -647,6 +647,9 @@ minecraft:written_book_content:
   - minecraft:written_book_content
   - minecraft:written_book
   - minecraft:book_text
+mmo:uuid:
+  - mmo:uniqueid
+  - mmo:uuid
 mmo:attack-damage:
   - mmo:attack-damage
 mmo:attack-speed:

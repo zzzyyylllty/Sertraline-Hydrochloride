@@ -41,9 +41,17 @@ placeholders:
   plus: "+"
   minus: "-"
 
+# 发包相关功能
 packet:
   # 是否注册包处理器
   # 不启用或不安装packetevents 2.10+ 所有发包功能均不会生效
+  # 修改后需要重启服务器
   register: true
+
   # 是否启用发包Lore
+  # 修改后需要重启服务器
   packet-lore: true
+
+  # 是否启用发包组件
+  # 修改后需要重启服务器
+  packet-component: true

@@ -36,7 +36,7 @@ subprojects {
             fileAssets = "assets"
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
-            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, NMS, NMS_UTIL)
+            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil)
         }
         version {
             taboolib = "6.2.3-d4a5f0ea" // 6.2.3-20d868d
@@ -110,6 +110,7 @@ subprojects {
         maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
 
         maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
+        maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     }
 
     dependencies {
@@ -123,6 +124,7 @@ subprojects {
         //compileOnly("ink.ptms.core:v12104:12104:universal")
         compileOnly(kotlin("stdlib"))
         compileOnly(fileTree("libs"))
+        compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
         //implementation("org.yaml:snakeyaml:2.2")
         compileOnly("io.netty:netty-all:4.1.127.Final")
         compileOnly("com.github.retrooper:packetevents-spigot:2.10.0")

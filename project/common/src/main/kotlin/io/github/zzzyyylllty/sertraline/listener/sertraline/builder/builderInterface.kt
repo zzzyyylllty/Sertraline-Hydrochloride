@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.listener.sertraline.builder
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -15,7 +16,7 @@ class ItemProcessorManager {
 
     // 注册处理器，名称作为key，方便管理
     fun registerProcessor(name: String, processor: ItemProcessor) {
-        processors[name] = processor
+        if (config.getBoolean("modules.$name.feature", true)) processors[name] = processor
     }
 
     // 移除处理器
