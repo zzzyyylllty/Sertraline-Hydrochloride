@@ -25,7 +25,7 @@ val jsonMain = Json {
 fun ItemStack?.getDepazItem(): DepazItems? {
     var id : String? = null
     this.itemTagReader {
-        id = getString("SERTRALINE_ID")
+        id = getString("sertraline_id")
     }
     return itemMap[id]
 }
@@ -64,7 +64,7 @@ fun ItemStack.getDepazItemInst(): DepazItemInst? {
     var id : String? = null
     var data = LinkedHashMap<String, Any>()
     this.itemTagReader {
-        id = getString("SERTRALINE_ID")
+        id = getString("sertraline_id")
     }
     if (itemMap[id] == null || id == null) return null
 
@@ -109,7 +109,7 @@ fun ItemStack.getAttribute(): MutableList<AttributeInst> {
 fun ItemStack?.isDepazItem(): Boolean {
     var idExists = false
     this.itemTagReader {
-        idExists = (getString("SERTRALINE_ID")?.isEmpty() == true)
+        idExists = (getString("sertraline_id")?.isEmpty() == true)
     }
     return idExists
 }
@@ -117,7 +117,7 @@ fun ItemStack?.isDepazItem(): Boolean {
 fun ItemStack?.getDepazId(): String? {
     var id : String? = null
     this.itemTagReader {
-        id = getString("SERTRALINE_ID")
+        id = getString("sertraline_id")
     }
     return id
 }
@@ -125,7 +125,7 @@ fun ItemStack?.getDepazId(): String? {
 fun ItemStack?.isDepazItemInList(): Boolean {
     var id : String? = null
     this.itemTagReader {
-        id = getString("SERTRALINE_ID")
+        id = getString("sertraline_id")
     }
     return itemMap[id] != null
 }

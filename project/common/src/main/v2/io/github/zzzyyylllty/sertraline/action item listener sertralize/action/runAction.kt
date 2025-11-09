@@ -21,7 +21,7 @@ fun Player.applyActions(trigger: String, e: Event, i: ItemStack,islot: Int? = nu
         devLog("Item: $i")
         val nbt = i.getItemTag()
         devLog("Nbt: $nbt")
-        val id = (nbt.get("SERTRALINE_ID") ?: return@submitAsync).asString()
+        val id = (nbt.get("sertraline_id") ?: return@submitAsync).asString()
         devLog("Id: $id (${deSerializeKey(id)})")
         val data = (nbt.get("SERTRALINE_DATA") ?: emptyMap<String, Any>()).asMap()
         devLog("Id: $id (${deSerializeKey(id)})")

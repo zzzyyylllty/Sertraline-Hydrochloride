@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
+import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.logger.*
 import io.github.zzzyyylllty.sertraline.reflect.*
 import org.bukkit.command.CommandSender
@@ -42,6 +43,7 @@ object Sertraline : Plugin() {
     var loreFormats = LinkedHashMap<String, LoreFormat>()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     val itemManager = ItemProcessorManager()
+    val tagManager = TagProcessorManager()
     var devMode = true
     val reflects = ReflectTargets()
     val configUtil = ConfigUtil()

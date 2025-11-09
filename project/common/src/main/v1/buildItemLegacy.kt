@@ -221,7 +221,7 @@ fun SertralineItem.initializeItem(player: Player?): ItemStack {
         tag.put(key, it.value)
         devLog("writing nbt ${it.key} = ${it.value}")
     }
-    tag.put("SERTRALINE_ID", sertralineMeta.key.serialize())
+    tag.put("sertraline_id", sertralineMeta.key.serialize())
     tag.put("SERTRALINE_DATA", sertralineMeta.data)
 
     tag.saveTo(material)

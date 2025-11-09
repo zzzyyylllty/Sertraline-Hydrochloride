@@ -38,7 +38,7 @@ val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.
  * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
  * */
 fun ItemStack.c2s(): ItemStack {
-    val deserialized = (this.getItemTag()["SERTRALINE_OITEM"]?.asCompound()?.get("ITEMSTACK")?.asByteArray())?.deserializeToItemStack() ?: return this
+    val deserialized = (this.getItemTag()["sertraline_oitem"]?.asCompound()?.get("itemstack")?.asByteArray())?.deserializeToItemStack() ?: return this
     return deserialized
 }
 /**
@@ -47,11 +47,21 @@ fun ItemStack.c2s(): ItemStack {
 fun ItemStack.s2c(player: Player?): ItemStack {
     val oItem = this.clone()
     if (type == Material.AIR) return oItem
-    val id = this.getItemTag()["SERTRALINE_ID"]?.asString() ?: return oItem
+    val tag = this.getItemTag()
+    val id = tag["sertraline_id"]?.asString() ?: return oItem
     val sItem = itemMap[id] ?: return oItem
-    if (packetLore) handleLoreFormat(sItem, player)?.let { this.lore(it) }
+    var loreModified = false
+    if (packetLore) handleLoreFormat(sItem, player)?.let {
+        this.lore(it)
+        loreModified = true
+    }
     val nmsItem = asNMSCopy(this)
     val modifiedItem = visualComponentSetterNMS(nmsItem, sItem, oItem.serializeToByteArray())
+    if (tag["sertraline_browse_item"] != null && loreModified) {
+        val lore = modifiedItem.lore()?.toMutableList() ?: mutableListOf()
+        lore.addAll(suffix)
+        modifiedItem.lore(lore)
+    }
     return modifiedItem
 }
 fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray): ItemStack {
@@ -75,14 +85,9 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
 
     var resultBItem = asBukkitCopy(resultItem)
     val tag = resultBItem.getItemTag()
-    tag["SERTRALINE_OITEM.ITEMSTACK"] = serialized
+    tag["sertraline_oitem.itemstack"] = serialized
     resultBItem = resultBItem.setItemTag(tag)
     visualMaterial?.let { resultBItem.type = it }
-    if (tag["SERTRALINE_BROWSE_ITEM"]?.asByte() == 1.toByte()) {
-        val lore = resultBItem.lore()?.toMutableList()
-        lore?.addAll(suffix)
-        resultBItem.lore(lore)
-    }
     return resultBItem
 }
 

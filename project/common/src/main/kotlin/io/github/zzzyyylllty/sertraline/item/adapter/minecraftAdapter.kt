@@ -17,7 +17,6 @@ fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemSt
     filtered.forEach {
         item = item.setComponent(it.key, it.value!!)
     }
-    devLog("Item: $item")
     return item
 }
 

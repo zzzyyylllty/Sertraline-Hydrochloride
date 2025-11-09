@@ -49,11 +49,12 @@ class ItemExplorer {
             // 生成每个元素对应的物品
             onGenerate(async = true) { player, element, index, slot ->
                 val item = sertralineItemBuilder(element, player)
-                val lore = item.lore()?.toMutableList()
-                lore?.addAll(suffix)
+                val meta = item.itemMeta
+                val lore = meta.lore()?.toMutableList() ?: mutableListOf()
+                lore.addAll(suffix)
                 item.lore(lore)
                 val tag = item.getItemTag(true)
-                tag["SERTRALINE_BROWSE_ITEM"] = true
+                tag["sertraline_browse_item"] = "yes"
                 item.setItemTag(tag)
             }
 
@@ -76,12 +77,12 @@ class ItemExplorer {
             }
 
             // 设置下一页按钮
-            setNextPage(49) { page, hasNextPage ->
+            setNextPage(50) { page, hasNextPage ->
                 GuiItem("nextpage", "ARROW").build()
             }
 
             // 设置上一页按钮
-            setPreviousPage(47) { page, hasPreviousPage ->
+            setPreviousPage(48) { page, hasPreviousPage ->
                 GuiItem("previouspage", "ARROW").build()
             }
         }

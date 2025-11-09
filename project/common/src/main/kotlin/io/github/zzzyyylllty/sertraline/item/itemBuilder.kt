@@ -61,7 +61,6 @@ fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStac
     item.amount = amount
 
     val tag = item.getItemTag()
-    tag.put("SERTRALINE_ID", template.key)
-    tag.saveTo(item)
-    return item
+    tag["sertraline_id"] = template.key
+    return item.setItemTag(tag)
 }

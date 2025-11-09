@@ -2,12 +2,9 @@ package io.github.zzzyyylllty.sertraline.config
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.event.FeatureLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyUtil
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.serialize.isListOfType
 import taboolib.module.lang.asLangText
 
@@ -48,25 +45,12 @@ public class ConfigUtil {
     }
 
     fun getFeature(input: Map<*, *>?, feature: String): Any? {
-        if (input == null) {
-            return null
-        }
-
-        val mapping = mappings[feature]
-        if (mapping == null) {
-            warningS(console.asLangText("Warning_No_Mapping", feature))
-            return null
-        }
-
-        for (entry in mapping) {
-            val (namespace, id) = entry.split(":", limit = 2).let { it[0] to it.getOrElse(1) { "" } }
-            val section = input[namespace] as? Map<*, *>
-            if (section?.contains(id) == true) {
-                return section[id]
-            }
-        }
-        return null
+        val geted = getFeatureDefault(input, feature)
+        val event = FeatureLoadEvent(geted, feature, null)
+        event.call()
+        return event.result ?: geted // 如果未触发特殊处理
     }
+
 
     fun getFeatures(
         input: Map<*, *>?,
@@ -88,4 +72,25 @@ public class ConfigUtil {
     }
 
 
+}
+fun getFeatureDefault(input: Map<*, *>?, feature: String): Any? {
+
+    if (input == null) {
+        return null
+    }
+
+    val mapping = mappings[feature]
+    if (mapping == null) {
+        warningS(console.asLangText("Warning_No_Mapping", feature))
+        return null
+    }
+
+    for (entry in mapping) {
+        val (namespace, id) = entry.split(":", limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+        val section = input[namespace] as? Map<*, *>
+        if (section?.contains(id) == true) { // 如果找到了对应的mapping
+            return section[id]
+        }
+    }
+    return null
 }

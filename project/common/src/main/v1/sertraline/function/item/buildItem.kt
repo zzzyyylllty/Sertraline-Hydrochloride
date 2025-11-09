@@ -53,7 +53,7 @@ fun DepazItemInst.buildItem() : ItemStack {
     val depaz = this
 //    Before1.1
 //    item.itemTagReader {
-//        set("SERTRALINE_ID", depaz.id)
+//        set("sertraline_id", depaz.id)
 //        set("SERTRALINE_ATTRIBUTE", depaz.attributes.toJSONString())
 //
 //        set("SERTRALINE_DATA", data.toJSONString())
@@ -71,7 +71,7 @@ fun DepazItemInst.buildItem() : ItemStack {
 
 
     val itemTag = item.getItemTag()
-    itemTag.putDeep("SERTRALINE_ID", depaz.id)
+    itemTag.putDeep("sertraline_id", depaz.id)
     itemTag.putDeep("SERTRALINE_ATTRIBUTE", parsedList)
     itemTag.putDeep("SERTRALINE_DATA", data)
 
