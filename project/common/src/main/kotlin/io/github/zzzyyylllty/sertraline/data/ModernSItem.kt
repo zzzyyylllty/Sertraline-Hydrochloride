@@ -10,8 +10,6 @@ import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Type
 
-val sItemType: Type? by lazy { object : TypeToken<ModernSItem?>() {}.type }
-
 data class ModernSItem(
     val key: String,
     val data: Map<String, Any?> = mapOf(),
@@ -23,7 +21,7 @@ data class ModernSItem(
 }
 
 fun deserializeSItem(string: String): ModernSItem? {
-    return jsonUtils.fromJson(string, sItemType)
+    return jsonUtils.fromJson(string, ModernSItem::class.java)
 }
 
 data class Action(

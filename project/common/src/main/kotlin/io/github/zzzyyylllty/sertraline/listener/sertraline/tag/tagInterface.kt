@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.listener.sertraline.tag
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import org.apache.commons.lang3.text.StrTokenizer
 import org.bukkit.entity.Player

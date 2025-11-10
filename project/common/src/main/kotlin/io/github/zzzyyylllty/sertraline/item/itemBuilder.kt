@@ -6,6 +6,7 @@ import io.github.projectunified.uniitem.api.ItemKey
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -59,7 +60,7 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
 
 
 fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1): ItemStack {
-    val template = itemMap[template]?.serialize()?.let { deserializeSItem(it) } ?: return ItemStack(Material.GRASS_BLOCK)
+    val template = itemSerializer(template, player) ?: return ItemStack(Material.GRASS_BLOCK)
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
@@ -72,7 +73,7 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 
 fun ItemStack.rebuild(player: Player) {
     val tag = this.getItemTag(true)
-    val regen = sertralineItemBuilder(tag["sertraline_id"].toString(), player)
+    val regen = sertralineItemBuilder(tag["sertraline_id"]?.asString() ?: return, player)
     this.type = regen.type
     this.itemMeta = regen.itemMeta
 }

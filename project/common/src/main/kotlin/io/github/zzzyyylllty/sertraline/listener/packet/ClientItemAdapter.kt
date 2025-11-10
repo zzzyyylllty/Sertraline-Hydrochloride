@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.warningS
@@ -38,7 +39,11 @@ val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.
  * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
  * */
 fun ItemStack.c2s(): ItemStack {
-    val deserialized = (this.getItemTag()["sertraline_oitem"]?.asCompound()?.get("itemstack")?.asByteArray())?.deserializeToItemStack() ?: return this
+    val deserialized = (this.getItemTag()["sertraline_oitem"]?.asCompound()?.get("itemstack")?.asByteArray())?.deserializeToItemStack()
+        ?: run {
+            devLog("OItem for ${this.displayName()} not found, skipping c2s.")
+            return this
+        }
     return deserialized
 }
 /**

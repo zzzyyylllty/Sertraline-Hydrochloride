@@ -68,7 +68,7 @@ object DebugCommand {
     val giveTestItem = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val p = sender as Player
-            p.giveItem(sertralineItemBuilder("depaz_pills"!!,p))
+            p.giveItem(sertralineItemBuilder("depaz_pills",p))
         }
     }
     @CommandBody
@@ -80,7 +80,7 @@ object DebugCommand {
     @CommandBody
     val rebuild = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            (sender as Player).inventory.itemInMainHand.rebuild(sender as Player)
+            (sender as Player).inventory.itemInMainHand.rebuild(sender)
         }
     }
 
