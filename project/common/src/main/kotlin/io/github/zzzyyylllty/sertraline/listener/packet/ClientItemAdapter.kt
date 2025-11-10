@@ -16,6 +16,7 @@ import io.github.zzzyyylllty.sertraline.reflect.setComponent
 import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -39,9 +40,11 @@ val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.
  * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
  * */
 fun ItemStack.c2s(): ItemStack {
-    val deserialized = (this.getItemTag()["sertraline_oitem"]?.asCompound()?.get("itemstack")?.asByteArray())?.deserializeToItemStack()
+    val tag = this.getItemTag()
+    devLog(tag.toJsonSimplified())
+    val deserialized = (tag["sertraline_oitem"]?.asByteArray())?.deserializeToItemStack()
         ?: run {
-            devLog("OItem for ${this.displayName()} not found, skipping c2s.")
+            devLog("OItem not found, skipping c2s.")
             return this
         }
     return deserialized
@@ -51,18 +54,25 @@ fun ItemStack.c2s(): ItemStack {
  * */
 fun ItemStack.s2c(player: Player?): ItemStack {
     val oItem = this.clone()
-    if (type == Material.AIR) return oItem
-    val tag = this.getItemTag()
-    val id = tag["sertraline_id"]?.asString() ?: return oItem
-    val sItem = itemMap[id] ?: return oItem
-    var loreModified = false
+    if (type.isAir)  {
+        devLog("type is air, skipping s2c.")
+        return oItem
+    }
+    val tag = this.getItemTag(true)
+    val id = tag["sertraline_id"]?.asString() ?: run {
+        devLog("ID is null, skipping s2c.")
+        return oItem
+    }
+    val sItem = itemMap[id] ?: run {
+        devLog("SItem is null, skipping s2c.")
+        return oItem
+    }
     if (packetLore) handleLoreFormat(sItem, player)?.let {
         this.lore(it)
-        loreModified = true
     }
     val nmsItem = asNMSCopy(this)
     val modifiedItem = visualComponentSetterNMS(nmsItem, sItem, oItem.serializeToByteArray())
-    if (tag["sertraline_browse_item"] != null && loreModified) {
+    if (tag["sertraline_browse_item"] != null && oItem.lore() != modifiedItem.lore()) { // 如果是展示物品且lore被修改过
         val lore = modifiedItem.lore()?.toMutableList() ?: mutableListOf()
         lore.addAll(suffix)
         modifiedItem.lore(lore)
@@ -90,9 +100,10 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
 
     var resultBItem = asBukkitCopy(resultItem)
     val tag = resultBItem.getItemTag()
-    tag["sertraline_oitem.itemstack"] = serialized
+    tag["sertraline_oitem"] = serialized
     resultBItem = resultBItem.setItemTag(tag)
     visualMaterial?.let { resultBItem.type = it }
+    devLog(resultBItem.getItemTag().toJsonSimplified())
     return resultBItem
 }
 

@@ -47,12 +47,12 @@ class TagProcessorManager {
         }
         var json = itemData.itemJson
         itemData.repl.forEach { (key, value) ->
-            json = json.replace(key, value.toString())
+            if (value != null) json = json.replace("\${$key}", value)
         }
         return json
     }
 
-    // 可以查看当前注册处理器
+    // 可以查看当前注册处理
     fun listProcessors(): List<String> = processors.keys.toList()
 }
 
