@@ -13,6 +13,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSe
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.packet.c2s
 import io.github.zzzyyylllty.sertraline.listener.packet.s2c
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
@@ -117,5 +118,6 @@ fun handleItemStack(
     itemStack: com.github.retrooper.packetevents.protocol.item.ItemStack
 ): com.github.retrooper.packetevents.protocol.item.ItemStack {
     if (itemStack.type == ItemTypes.AIR) return itemStack
+    devLog("Handling ITEMSTACK")
     return SpigotConversionUtil.fromBukkitItemStack(SpigotConversionUtil.toBukkitItemStack(itemStack).s2c(player))
 }

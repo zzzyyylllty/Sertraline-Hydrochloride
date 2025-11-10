@@ -41,7 +41,6 @@ val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.
  * */
 fun ItemStack.c2s(): ItemStack {
     val tag = this.getItemTag()
-    devLog(tag.toJsonSimplified())
     val deserialized = (tag["sertraline_oitem"]?.asByteArray())?.deserializeToItemStack()
         ?: run {
             devLog("OItem not found, skipping c2s.")
@@ -54,19 +53,10 @@ fun ItemStack.c2s(): ItemStack {
  * */
 fun ItemStack.s2c(player: Player?): ItemStack {
     val oItem = this.clone()
-    if (type.isAir)  {
-        devLog("type is air, skipping s2c.")
-        return oItem
-    }
+    if (type.isAir) return oItem
     val tag = this.getItemTag(true)
-    val id = tag["sertraline_id"]?.asString() ?: run {
-        devLog("ID is null, skipping s2c.")
-        return oItem
-    }
-    val sItem = itemMap[id] ?: run {
-        devLog("SItem is null, skipping s2c.")
-        return oItem
-    }
+    val id = tag["sertraline_id"]?.asString() ?: return oItem
+    val sItem = itemMap[id] ?: return oItem
     if (packetLore) handleLoreFormat(sItem, player)?.let {
         this.lore(it)
     }
@@ -86,15 +76,16 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
 
     if (packetComponent) {
         val filtered = sItem.data.filter { it.key.startsWith("visual:") && it.value != null }.toMutableMap()
-        if (filtered.isEmpty()) return asBukkitCopy(item)
+        if (!filtered.isEmpty()) {
 
-        filtered["visual:material"]?.let {
-            visualMaterial = XMaterial.valueOf(it.toString().toUpperCase()).get() ?: Material.STONE
-            filtered.remove("visual:material")
-        }
+            filtered["visual:material"]?.let {
+                visualMaterial = XMaterial.valueOf(it.toString().toUpperCase()).get() ?: Material.STONE
+                filtered.remove("visual:material")
+            }
 
-        filtered.forEach { (key, value) ->
-            resultItem = resultItem.setComponentNMS(key.replace("visual", "minecraft"), value!!)
+            filtered.forEach { (key, value) ->
+                resultItem = resultItem.setComponentNMS(key.replace("visual", "minecraft"), value!!)
+            }
         }
     }
 
@@ -103,7 +94,6 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
     tag["sertraline_oitem"] = serialized
     resultBItem = resultBItem.setItemTag(tag)
     visualMaterial?.let { resultBItem.type = it }
-    devLog(resultBItem.getItemTag().toJsonSimplified())
     return resultBItem
 }
 
