@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.Sertraline.reflects
+import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
@@ -67,7 +68,7 @@ object DebugCommand {
     val giveTestItem = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val p = sender as Player
-            p.giveItem(sertralineItemBuilder(itemMap["depaz_pills"]!!,p))
+            p.giveItem(sertralineItemBuilder("depaz_pills"!!,p))
         }
     }
     @CommandBody
@@ -76,13 +77,19 @@ object DebugCommand {
             sender.sendStringAsComponent(itemManager.listProcessors().toString())
         }
     }
+    @CommandBody
+    val rebuild = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            (sender as Player).inventory.itemInMainHand.rebuild(sender as Player)
+        }
+    }
 
     @CommandBody
     val buildDisplay = subCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                if (sender is Player) sender.sendMessage(sertralineItemBuilder(itemMap[id]!!,sender).displayName()) else sender.sendStringAsComponent("Must a player.")
+                if (sender is Player) sender.sendMessage(sertralineItemBuilder(id,sender).displayName()) else sender.sendStringAsComponent("Must a player.")
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
@@ -93,7 +100,7 @@ object DebugCommand {
                     val tabooPlayer = context.player("player")
                     // 转化为Bukkit的Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    sender.sendMessage(sertralineItemBuilder(itemMap[id]!!,bukkitPlayer).displayName())
+                    sender.sendMessage(sertralineItemBuilder(id,bukkitPlayer).displayName())
                 }
             }
         }

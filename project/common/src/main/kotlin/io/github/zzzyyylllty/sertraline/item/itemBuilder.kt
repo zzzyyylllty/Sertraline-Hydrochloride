@@ -1,10 +1,13 @@
 package io.github.zzzyyylllty.sertraline.item
 
+import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import io.github.projectunified.uniitem.all.AllItemProvider
 import io.github.projectunified.uniitem.api.ItemKey
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
+import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
@@ -55,7 +58,8 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
 
 
 
-fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStack? = null,amount: Int = 1): ItemStack {
+fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1): ItemStack {
+    val template = itemMap[template]?.serialize()?.let { deserializeSItem(it) } ?: return ItemStack(Material.GRASS_BLOCK)
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
@@ -63,4 +67,12 @@ fun sertralineItemBuilder(template: ModernSItem,player: Player?,source: ItemStac
     val tag = item.getItemTag()
     tag["sertraline_id"] = template.key
     return item.setItemTag(tag)
+}
+
+
+fun ItemStack.rebuild(player: Player) {
+    val tag = this.getItemTag(true)
+    val regen = sertralineItemBuilder(tag["sertraline_id"].toString(), player)
+    this.type = regen.type
+    this.itemMeta = regen.itemMeta
 }

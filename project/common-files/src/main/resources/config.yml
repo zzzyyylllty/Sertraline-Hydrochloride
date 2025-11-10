@@ -55,3 +55,9 @@ packet:
   # 是否启用发包组件
   # 修改后需要重启服务器
   packet-component: true
+
+# 标签解析
+tags:
+  val: true
+  var: true
+  dynamic: true

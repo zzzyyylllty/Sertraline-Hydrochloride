@@ -5,7 +5,7 @@ import com.google.gson.JsonElement
 
 val jsonUtils = GsonBuilder()
     .setVersion(1.0)
-    .disableJdkUnsafe()
+    // .disableJdkUnsafe()
     .disableHtmlEscaping()
     .disableInnerClassSerialization()
     .setPrettyPrinting()

@@ -8,14 +8,14 @@ depaz_pills:
     vars:
       pills: 6
     dynamics:
-      level: "{{ random 1 to 3 }}"
+      level: "random 1 to 3"
     actions:
       onConsume:
         - condition: not player dead
           kether: |
-            command papi "effect give %player_name% {val:effect} 10 {dynamic:level}"
+            command papi "effect give %player_name% ${val:effect} 10 ${dynamic:level}" as console
             set pills to math - [ pills 1 ]
-            minitell "<gray>{var:pills} pills left."
+            minitell "<gray>${var:pills} pills left."
   xbuilder:
     material: COOKED_BEEF
     name: "<blue>Depaz Pills"
@@ -25,7 +25,7 @@ depaz_pills:
       <gray>-Ame
       <gray>
       <gray>When Consume:
-      <yellow>Give Player {val:effect} for 10s, level is random in 1 to 3.
+      <yellow>Give Player ${val:effect} for 10s, level is random in 1 to 3.
   mmo:
     attack-damage: null
     attack-speed: null

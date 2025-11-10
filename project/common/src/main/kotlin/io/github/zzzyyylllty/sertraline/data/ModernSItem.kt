@@ -22,7 +22,7 @@ data class ModernSItem(
     }
 }
 
-fun deserializeSItem(string: String): String? {
+fun deserializeSItem(string: String): ModernSItem? {
     return jsonUtils.fromJson(string, sItemType)
 }
 

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.kether
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
+import io.github.zzzyyylllty.sertraline.Sertraline.scriptCache
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -22,7 +23,6 @@ import java.util.concurrent.CompletableFuture
  * From [TabooLib DOC](https://taboolib.feishu.cn/wiki/RYDWwwT4ZiOpsakCEyRcXWOjnu1)
  * */
 
-
 fun runKether(script: List<String>, sender: CommandSender): CompletableFuture<Any> {
     return KetherShell.eval(
         script, options = ScriptOptions(
@@ -38,10 +38,13 @@ fun ScriptFrame.getBukkitPlayer(name: ParsedAction<*>? = null): Player {
     return player
 }
 
+
+/** 内联脚本 */
 fun List<String>.parseKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
-    sets: List<Pair<String, Any?>> = emptyList()
+    sets: List<Pair<String, Any?>> = emptyList(),
+    cacheId: String? = null
 ): List<String> {
     if (this.isEmpty()) {
         return listOf("")
@@ -52,13 +55,16 @@ fun List<String>.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
+/** 内联脚本 */
 fun String?.parseKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
-    sets: List<Pair<String, Any?>> = emptyList()
+    sets: List<Pair<String, Any?>> = emptyList(),
+    cacheId: String? = null
 ): String {
     if (this.isNullOrBlank()) {
         return ""
@@ -69,6 +75,7 @@ fun String?.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 

@@ -10,6 +10,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
+import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.registerNativeTagAdapter
 import io.github.zzzyyylllty.sertraline.logger.*
 import io.github.zzzyyylllty.sertraline.reflect.*
 import org.bukkit.command.CommandSender
@@ -20,6 +21,7 @@ import taboolib.common.platform.function.submit
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
+import taboolib.module.kether.KetherShell
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
@@ -47,6 +49,7 @@ object Sertraline : Plugin() {
     var devMode = true
     val reflects = ReflectTargets()
     val configUtil = ConfigUtil()
+    val scriptCache = LinkedHashMap<String, KetherShell.Cache?>()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -117,7 +120,9 @@ object Sertraline : Plugin() {
             loadLoreFormatFiles()
             plugin.config.reload()
             itemManager.unregisterAllProcessor()
+            tagManager.unregisterAllProcessor()
             registerNativeAdapter()
+            registerNativeTagAdapter()
         // devMode = config.getBoolean("debug",false)
         }
     }

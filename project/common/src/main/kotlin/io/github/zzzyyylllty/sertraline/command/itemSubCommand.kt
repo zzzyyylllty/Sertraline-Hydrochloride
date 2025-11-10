@@ -48,7 +48,7 @@ object ItemCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                if (sender is Player) sender.giveItem(sertralineItemBuilder(itemMap[id]!!,sender))
+                if (sender is Player) sender.giveItem(sertralineItemBuilder(id,sender))
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
@@ -59,14 +59,14 @@ object ItemCommand {
                     val tabooPlayer = context.player("player")
                     // 转化为Bukkit的Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    bukkitPlayer?.giveItem(sertralineItemBuilder(itemMap[id]!!,bukkitPlayer))
+                    bukkitPlayer?.giveItem(sertralineItemBuilder(id,bukkitPlayer))
                 }
 
                 dynamic("amount") {
                     execute<CommandSender> { sender, context, argument ->
                         val id = context["id"]
                         val amount = context["amount"]
-                        if (sender is Player) sender.giveItem(sertralineItemBuilder(itemMap[id]!!,sender, amount = amount.toInt()))
+                        if (sender is Player) sender.giveItem(sertralineItemBuilder(id,sender, amount = amount.toInt()))
                     }
                     suggestion<CommandSender>(uncheck = true) { sender, context ->
                         listOf("1","64","16")
@@ -78,7 +78,7 @@ object ItemCommand {
                             // 转化为Bukkit的Player
                             val bukkitPlayer = tabooPlayer.castSafely<Player>()
                             val amount = context["amount"]
-                            bukkitPlayer?.giveItem(sertralineItemBuilder(itemMap[id]!!,bukkitPlayer, amount = amount.toInt()))
+                            bukkitPlayer?.giveItem(sertralineItemBuilder(id,bukkitPlayer, amount = amount.toInt()))
                         }
                     }
                 }
