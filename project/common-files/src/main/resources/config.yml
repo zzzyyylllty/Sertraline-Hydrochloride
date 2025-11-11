@@ -61,3 +61,7 @@ tags:
   val: true
   var: true
   dynamic: true
+
+action:
+  # 节流时间，防止过多执行动作，单位为ms
+  throttle-time: 500

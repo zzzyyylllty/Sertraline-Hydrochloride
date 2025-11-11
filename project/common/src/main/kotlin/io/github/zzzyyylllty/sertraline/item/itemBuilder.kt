@@ -71,9 +71,8 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 }
 
 
-fun ItemStack.rebuild(player: Player) {
+fun ItemStack.rebuild(player: Player): ItemStack {
     val tag = this.getItemTag(true)
-    val regen = sertralineItemBuilder(tag["sertraline_id"]?.asString() ?: return, player)
-    this.type = regen.type
-    this.itemMeta = regen.itemMeta
+    val regen = sertralineItemBuilder(tag["sertraline_id"]?.asString() ?: return this, player)
+    return regen
 }

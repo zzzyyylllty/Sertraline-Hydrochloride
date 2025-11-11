@@ -30,7 +30,7 @@ data class Action(
     var javaScript: List<String>? = null,
     var fluxon: List<String>? = null,
 ) {
-    fun runAction(player: Player, data: HashMap<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
+    fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
         val parsedData = data.toMutableMap()
         parsedData["@SertralineItem"] = sqlI
         parsedData["@SertralineItemStack"] = i
@@ -39,4 +39,21 @@ data class Action(
             kether?.evalKether(player, parsedData)
         }
     }
+}
+
+data class ItemData(
+    val itemVal: Map<String, Any>? = mapOf(),
+    val itemVar: Map<String, Any>? = mapOf(),
+    val itemDynamic: Map<String, Any>? = mapOf(),
+    val itemId: String? = null,
+) {
+    fun collect(): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        itemVal?.let { map.putAll(it) }
+        itemVar?.let { map.putAll(it) }
+        itemDynamic?.let { map.putAll(it) }
+        itemId?.let { map.put("_itemname", it) }
+        return map
+    }
+
 }

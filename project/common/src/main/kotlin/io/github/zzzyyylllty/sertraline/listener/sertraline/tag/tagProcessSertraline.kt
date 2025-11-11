@@ -11,13 +11,9 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 
 fun registerNativeTagAdapter() {
 
-    tagManager.registerProcessor("sertraline") { data ->
+    tagManager.registerProcessor("sertraline") { data, player ->
         devLog("Tag adapting")
-        sertralineTagProcessor(data)
+        sertralineTagProcessor(data, player)
     }
 
-}
-
-
-fun tagModuleSertraline() {
 }

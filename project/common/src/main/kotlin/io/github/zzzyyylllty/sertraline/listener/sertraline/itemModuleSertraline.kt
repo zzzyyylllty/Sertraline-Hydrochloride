@@ -20,6 +20,7 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
         "$prefix:vals",
         "$prefix:vars",
         "$prefix:dynamics",
+        "$prefix:actions"
     )
 
 

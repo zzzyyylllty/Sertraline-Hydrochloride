@@ -80,7 +80,9 @@ object DebugCommand {
     @CommandBody
     val rebuild = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            (sender as Player).inventory.itemInMainHand.rebuild(sender)
+            val inv = (sender as Player).inventory
+            val hand = inv.itemInMainHand.rebuild(sender)
+            inv.setItemInMainHand(hand)
         }
     }
 

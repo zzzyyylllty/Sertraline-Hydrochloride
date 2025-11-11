@@ -12,6 +12,7 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 ![](https://img.shields.io/badge/QQ_Group-858827523-blue?style=for-the-badge) ![Discord](https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc&link=https://discord.gg/VHs958jJXj)
 
+**SERTRALINE Supports 1.21.4-1.21.10!**
 
 </div>
 

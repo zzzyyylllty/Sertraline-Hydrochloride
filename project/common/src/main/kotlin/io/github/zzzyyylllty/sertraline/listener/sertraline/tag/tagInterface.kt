@@ -18,7 +18,7 @@ data class ProcessItemTagData(
 
 
 fun interface TagProcessor {
-    fun process(data: ProcessItemTagData): ProcessItemTagData
+    fun process(data: ProcessItemTagData, player: Player?): ProcessItemTagData
 }
 
 class TagProcessorManager {
@@ -43,7 +43,7 @@ class TagProcessorManager {
     fun processItem(itemJson: String, item: ModernSItem,itemStack: ItemStack?, player: Player?): String {
         var itemData = ProcessItemTagData(itemJson, item, itemStack, player, extractPlaceholders(itemJson))
         for (processor in processors) {
-            itemData = processor.value.process(itemData)
+            itemData = processor.value.process(itemData, player)
         }
         var json = itemData.itemJson
         itemData.repl.forEach { (key, value) ->
