@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.adapter.minecraftAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.xbuilderAdapter
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 
 fun registerNativeAdapter() {
 
@@ -11,7 +12,7 @@ fun registerNativeAdapter() {
         devLog("Adapting xbuilder")
         xbuilderAdapter(item, sItem, player)
     }
-    itemManager.registerProcessor("minecraft") { sItem, item, player ->
+    if (VersionHelper().isOrAbove12005()) itemManager.registerProcessor("minecraft") { sItem, item, player ->
         devLog("Adapting minecraft")
         minecraftAdapter(item, sItem, player)
     }

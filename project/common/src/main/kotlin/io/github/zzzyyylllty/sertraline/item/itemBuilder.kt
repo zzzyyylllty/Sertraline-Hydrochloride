@@ -11,10 +11,6 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.logger.warningS
-import net.momirealms.craftengine.bukkit.api.CraftEngineItems
-import net.momirealms.craftengine.bukkit.plugin.BukkitCraftEngine
-import net.momirealms.craftengine.core.util.Key
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -35,12 +31,6 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
         if (!str.contains(":") || str.startsWith("minecraft:")) {
             devLog("Using vanilla item")
             buildItem(XMaterial.valueOf((if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()))
-        } else if (str.startsWith("craftengine:")) {
-            if (player == null) CraftEngineItems.byId(Key.from(split.joinToString(":")))?.buildItemStack()
-            else {
-                val bukkitApi = BukkitCraftEngine.instance()
-                CraftEngineItems.byId(Key.from(split.joinToString(":")))?.buildItemStack(bukkitApi.adapt(player))
-            }
         } else {
             val provider = AllItemProvider()
             if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))

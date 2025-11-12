@@ -145,9 +145,9 @@ subprojects {
         implementation("net.kyori:adventure-api:4.19.0")
         implementation("net.kyori:adventure-text-minimessage:4.19.0")
         implementation("net.kyori:adventure-nbt:4.19.0")
-        compileOnly("net.momirealms:craft-engine-core:0.0.64")
-        compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
-        taboo("io.github.projectunified:uni-item-all:2.2.1")
+        // compileOnly("net.momirealms:craft-engine-core:0.0.64")
+        // compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
+        taboo("io.github.projectunified:uni-item-all:2.3.1")
         taboo("com.mojang:datafixerupper:8.0.16")
 
 
