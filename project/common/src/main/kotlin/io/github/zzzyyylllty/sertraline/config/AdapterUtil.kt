@@ -45,13 +45,12 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
 
 fun Any?.asListEnhanded() : List<String>? {
     if (this == null) return null
-    val list = mutableListOf<String>()
     val thisList = if (this is List<*>) this else listOf(this)
+    val list = mutableListOf<String>()
     for (string in thisList) {
         if (string == null) continue
-        list.addAll(string.toString().split("\n"))
+        list.addAll(string.toString().split("\n","<br>", ignoreCase = true))
     }
     if (list.last() == "") list.removeLast()
     return list
 }
-

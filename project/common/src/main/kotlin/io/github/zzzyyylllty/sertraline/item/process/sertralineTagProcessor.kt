@@ -23,7 +23,6 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?): ProcessIte
     var json = data.itemJson
     val name = data.item.key
     if (config.getBoolean("tags.kether",true)) {
-        if (json.contains("{{")) json = json.parseKether(player, collect, cacheId = "${name}_inlinekether")
         if (json.contains("kether:")) {
             val processlist = repl.filter { it.key.startsWith("kether:") }
             processlist.forEach {

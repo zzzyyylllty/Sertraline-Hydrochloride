@@ -16,12 +16,12 @@ import taboolib.module.lang.asLangText
 import taboolib.module.nms.getItemTag
 
 fun Player.applyActions(trigger: String, e: Event, i: ItemStack,islot: Int? = null) {
-    val player = this
     submitAsync {
+        val player = this@applyActions
         val inv = player.inventory
         val item = itemSerializer(i, player) ?: return@submitAsync
-        devLog("Sertraline: ${item.key}")
-        val actions = ComplexTypeHelper(item.data["sertraline:actions"]).getAsActions().get(trigger) ?: return@submitAsync
+        val allActions = ComplexTypeHelper(item.data["sertraline:actions"]).getAsActions()
+        val actions = allActions?.get(trigger) ?: return@submitAsync
         actions.forEach { it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, item) }
     }
 }

@@ -15,16 +15,16 @@ fun actionFeatures(e: FeatureLoadEvent) {
     val feature = e.feature
     val content = e.content as Map<*,*>
 
-    val actions = LinkedHashMap<String, List<Action>>()
+    val actions = LinkedHashMap<String, List<LinkedHashMap<*,*>>>()
     content.forEach {
         val rawList = it.value as List<LinkedHashMap<*,*>>
-        val list = mutableListOf<Action>()
+        val list = mutableListOf<LinkedHashMap<*,*>>()
         rawList.forEach { it ->
-            list.add(Action(
-                (it["condition"] ?: it["require"] ?: it["requirement"] ?: it["requirements"]).asListEnhanded(),
-                (it["kether"] ?: it["ke"]).asListEnhanded(),
-                (it["javascript"] ?: it["js"]).asListEnhanded(),
-                (it["fluxon"] ?: it["fl"]).asListEnhanded()
+            list.add(linkedMapOf(
+                "condition" to (it["condition"] ?: it["require"] ?: it["requirement"] ?: it["requirements"]).asListEnhanded(),
+                "kether" to (it["kether"] ?: it["ke"]).asListEnhanded(),
+                "javascript" to (it["javascript"] ?: it["js"]).asListEnhanded(),
+                "fluxon" to (it["fluxon"] ?: it["fl"]).asListEnhanded()
             ))
         }
         actions[it.key as String] = list
