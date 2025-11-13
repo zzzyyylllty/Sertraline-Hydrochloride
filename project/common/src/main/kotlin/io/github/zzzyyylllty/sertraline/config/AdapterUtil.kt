@@ -54,3 +54,7 @@ fun Any?.asListEnhanded() : List<String>? {
     if (list.last() == "") list.removeLast()
     return list
 }
+
+fun Any?.asListedStringEnhanded() : String? {
+    return this.asListEnhanded()?.joinToString("\n")
+}

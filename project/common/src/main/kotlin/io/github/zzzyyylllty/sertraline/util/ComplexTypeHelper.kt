@@ -15,9 +15,9 @@ class ComplexTypeHelper(val input: Any?) {
                 list.add(Action(
                     it["condition"] as? List<String>?,
                     it["kether"] as? List<String>?,
-                    it["javascript"] as? List<String>?,
-                    it["jexl"] as? List<String>?,
-                    it["fluxon"] as? List<String>?,
+                    it["javascript"] as? String?,
+                    it["jexl"] as? String?,
+                    it["fluxon"] as? String?,
                 ))
             }
             actions[it.key as String] = list

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline.featureloader
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListedStringEnhanded
 import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.event.FeatureLoadEvent
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
@@ -14,7 +15,7 @@ import kotlin.coroutines.Continuation
 fun actionFeatures(e: FeatureLoadEvent) {
     if (e.feature != "sertraline:actions") return
     val feature = e.feature
-    val content = e.content as Map<*,*>
+    val content = e.content as? Map<*,*> ?: return
 
     val actions = LinkedHashMap<String, List<LinkedHashMap<*,*>>>()
     val triggers = mutableListOf<String>()
@@ -26,9 +27,9 @@ fun actionFeatures(e: FeatureLoadEvent) {
             list.add(linkedMapOf(
                 "condition" to (it["condition"] ?: it["require"] ?: it["requirement"] ?: it["requirements"]).asListEnhanded(),
                 "kether" to (it["kether"] ?: it["ke"]).asListEnhanded(),
-                "javascript" to (it["javascript"] ?: it["js"]).asListEnhanded(),
-                "jexl" to (it["jexl"] ?: it["je"]).asListEnhanded(),
-                "fluxon" to (it["fluxon"] ?: it["fl"]).asListEnhanded()
+                "javascript" to (it["javascript"] ?: it["js"]).asListedStringEnhanded(),
+                "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanded(),
+                "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanded()
             ))
         }
         actions[it.key as String] = list

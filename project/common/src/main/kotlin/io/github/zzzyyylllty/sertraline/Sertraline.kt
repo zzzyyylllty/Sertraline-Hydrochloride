@@ -13,6 +13,7 @@ import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.registerNativeTa
 import io.github.zzzyyylllty.sertraline.logger.*
 import io.github.zzzyyylllty.sertraline.reflect.*
 import org.bukkit.command.CommandSender
+import org.tabooproject.fluxon.runtime.FluxonRuntime
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
@@ -41,6 +42,8 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
+    val fluxonInst by lazy { FluxonRuntime.getInstance() }
+
     var itemMap = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>()
     var loreFormats = LinkedHashMap<String, LoreFormat>()
