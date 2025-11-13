@@ -16,6 +16,7 @@ import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.ScriptOptions
 import taboolib.module.kether.script
 import java.util.concurrent.CompletableFuture
+import kotlin.String
 
 /**
  * Evaling script
@@ -82,7 +83,8 @@ fun String?.parseKether(
 fun List<String>.evalKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
-    sets: List<Pair<String, Any?>> = emptyList()
+    sets: List<Pair<String, Any?>> = emptyList(),
+    cacheId: String? = null
 ): CompletableFuture<Any?> {
     if (isEmpty()) {
         val future = CompletableFuture<Any?>()
@@ -98,13 +100,15 @@ fun List<String>.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
 fun String?.evalKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
-    sets: List<Pair<String, Any?>> = emptyList()
+    sets: List<Pair<String, Any?>> = emptyList(),
+    cacheId: String? = null
 ): CompletableFuture<Any?> {
     if (this.isNullOrBlank()) {
         val future = CompletableFuture<Any?>()
@@ -117,6 +121,7 @@ fun String?.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
@@ -124,7 +129,8 @@ fun String?.evalKetherValue(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
     sets: List<Pair<String, Any?>> = emptyList(),
-    def: Any = "null"
+    def: Any = "null",
+    cacheId: String? = null
 ): Any? {
     if (this.isNullOrBlank()) {
         val future = CompletableFuture<Any?>()
@@ -137,6 +143,7 @@ fun String?.evalKetherValue(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build()).getNow(def)
 }
 
@@ -144,7 +151,8 @@ fun String?.evalKetherString(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
     sets: List<Pair<String, Any?>> = emptyList(),
-    def: Any = "null"
+    def: Any = "null",
+    cacheId: String? = null
 ): String? {
     if (this.isNullOrBlank()) {
         val future = CompletableFuture<Any?>()
@@ -157,6 +165,7 @@ fun String?.evalKetherString(
         sets.forEach {
             set(it.first, it.second)
         }
+        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
     }.build()).getNow(def).toString()
 }
 
@@ -164,7 +173,8 @@ fun String?.evalKetherBoolean(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
     sets: List<Pair<String, Any?>> = emptyList(),
-    def: Boolean = true
+    def: Boolean = true,
+    cacheId: String? = null
 ): Boolean {
     if (this.isNullOrBlank()) {
         return def
@@ -184,6 +194,7 @@ fun String?.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
+            if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()
@@ -203,7 +214,8 @@ fun List<String>.evalKetherBoolean(
     /**
      * 列表是否所有条件通过
      */
-    all: Boolean = true
+    all: Boolean = true,
+    cacheId: String? = null
 ): Boolean {
     if (this.isEmpty()) {
         return def
@@ -229,6 +241,7 @@ fun List<String>.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
+            if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()

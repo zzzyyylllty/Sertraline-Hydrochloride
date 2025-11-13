@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XItemStack
@@ -13,7 +14,14 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
     val dataMap = (sItem.data["sertraline:vars"] as Map<String, Any?>?)?.toMutableMap()
     val tag = item.getItemTag(true)
     tag["sertraline_data"] = dataMap
-    return item.setItemTag(tag, true)
+    val item = item.setItemTag(tag, true)
+
+    // lore format
+    handleLoreFormat(sItem, player, item.lore(), false)?.let {
+        item.lore(it)
+    }
+
+    return item
 
 }
 

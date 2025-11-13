@@ -57,7 +57,7 @@ fun ItemStack.s2c(player: Player?): ItemStack {
     val tag = this.getItemTag(true)
     val id = tag["sertraline_id"]?.asString() ?: return oItem
     val sItem = itemMap[id] ?: return oItem
-    if (packetLore) handleLoreFormat(sItem, player)?.let {
+    if (packetLore) handleLoreFormat(sItem, player, this.lore(), true)?.let {
         this.lore(it)
     }
     val nmsItem = asNMSCopy(this)

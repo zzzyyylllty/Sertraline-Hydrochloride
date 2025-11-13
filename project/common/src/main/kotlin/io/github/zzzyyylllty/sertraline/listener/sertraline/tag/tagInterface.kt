@@ -43,22 +43,20 @@ class TagProcessorManager {
     // 按顺应用所有处理器
     fun processItem(itemJson: String, item: ModernSItem,itemStack: ItemStack?, player: Player?): String {
         var itemData = ProcessItemTagData(itemJson, item, itemStack, player, extractPlaceholders(itemJson))
-        devLog("<yellow>ITEMDATA: $itemData")
         for (processor in processors) {
             itemData = processor.value.process(itemData, player)
         }
         var json = itemData.itemJson
-        devLog("<yellow>PROCESSED ITEMDATA: $itemData")
         itemData.repl.forEach { (key, value) ->
             if (value != "null" && value != null) {
                 // 如果替换的值不是空的
-                json = json.replace("\${$key}", value)
+                json = json.replace("\${$key}$", value)
             } else if (!key.endsWith("!!")) {
                 // 如果key不被标记为非空，即可空，即数值为null时也会被替换成null。
-                json = json.replace("\${$key}", "null")
+                json = json.replace("\${$key}$", "null")
             } else {
                 // 如果key被标记为非空，即数值为null时也会被替换成空字符串。
-                json = json.replace("\${$key}", "")
+                json = json.replace("\${$key}$", "")
             }
         }
         return json
@@ -69,7 +67,7 @@ class TagProcessorManager {
 }
 
 fun extractPlaceholders(input: String): Map<String, String?> {
-    val regex = "\\$\\{(.*?)}".toRegex() // 匹配 ${xxx} 的正则表达式
+    val regex = "\\$\\{(.*?)}\\$".toRegex() // 匹配 ${xxx} 的正则表达式
     val result = mutableMapOf<String, String?>() // 创建一个Map来存储结果
 
     regex.findAll(input).forEach { matchResult ->

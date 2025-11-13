@@ -86,6 +86,9 @@ object SertralineMainCommand {
     val debug = DebugCommand
 
     @CommandBody
+    val api = ApiCommand
+
+    @CommandBody
     val item = ItemCommand
 
     @CommandBody

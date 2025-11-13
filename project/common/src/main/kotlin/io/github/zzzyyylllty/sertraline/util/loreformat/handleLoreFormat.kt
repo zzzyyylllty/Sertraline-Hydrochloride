@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.data.LineMode.*
 import io.github.zzzyyylllty.sertraline.data.LoreElement
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.function.kether.parseKether
 import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponentJson
@@ -18,10 +19,16 @@ import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
 
-fun handleLoreFormat(item: ModernSItem, player: Player?): List<Component>? {
+fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
+
+    // 获取loreformat
     val loreFormat = loreFormats[item.data["sertraline:lore-format"]] ?: return null
 
-    val map = mutableListOf<Component>()
+    // 如果模式不匹配
+    if (loreFormat.settings.visual != isVisual) return null
+
+    val map = if (!loreFormat.settings.overwrite) mutableListOf() else orgLore?.toMutableList() ?: mutableListOf()
+
     loreFormat.elements.forEach { element ->
         // 开始显示lore
         if (handleLoreExists(element, item)) {
@@ -50,12 +57,7 @@ fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
     player?.let { content = content.replacePlaceholder(it) }
 
     // inline kether
-    if (content.contains("{{")) content = KetherFunction.parse(
-        content,
-        ScriptOptions.new {
-            player?.let { sender(it) }
-        }
-    )
+    if (content.contains("{{")) content = content.parseKether(player, cacheId = "${sItem.key}_placeholder")
     return content
 }
 

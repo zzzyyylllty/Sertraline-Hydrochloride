@@ -28,9 +28,7 @@ fun papiTagProcessor(data: ProcessItemTagData,player: Player?): ProcessItemTagDa
             val replace = if (papi == "%$section%" || papi == "null") default else papi
             if (replace != null) repl[it.key] = replace
         }
-        devLog("Placeholder before: $json")
         json = json.replacePlaceholderSafety(player)
-        devLog("Placeholder after: $json")
     }
     return data.copy(repl = repl, itemJson = json)
 }
