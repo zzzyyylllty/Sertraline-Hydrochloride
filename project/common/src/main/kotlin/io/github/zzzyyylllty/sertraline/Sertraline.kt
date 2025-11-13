@@ -17,6 +17,7 @@ import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
+import taboolib.expansion.JexlCompiledScript
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
@@ -51,6 +52,7 @@ object Sertraline : Plugin() {
     val configUtil = ConfigUtil()
     val ketherScriptCache = LinkedHashMap<String, KetherShell.Cache?>()
     val jsScriptCache = LinkedHashMap<UUID, CompiledScript?>()
+    val jexlScriptCache = LinkedHashMap<UUID, JexlCompiledScript?>()
     val itemCache = LinkedHashMap<String, Map<String, Any?>>()
 
     // Arim Start

@@ -1,15 +1,19 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.reflect.TypeToken
+import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
+import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
+import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
+import org.tabooproject.fluxon.Fluxon
 import java.lang.reflect.Type
 import taboolib.common5.compileJS
 import javax.script.SimpleBindings
@@ -57,6 +61,24 @@ data class Action(
                     it.eval(SimpleBindings(parsedData))
                 }
             }
+        }
+
+        jexl?.let {
+            val uuid = it.generateUUID()
+            val cache = jexlScriptCache[uuid]
+            if (cache != null) {
+                cache.eval(parsedData)
+            } else {
+                val compiled = prodJexlCompiler.compileToScript(it.joinToString("\n"))
+                compiled.let { it ->
+                    jexlScriptCache[uuid] = it
+                    it.eval(parsedData)
+                }
+            }
+        }
+
+        fluxon?.let {
+            FluxonShell.invoke(it.joinToString("\n"))
         }
 
 

@@ -36,7 +36,7 @@ subprojects {
             fileAssets = "assets"
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
-            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil)
+            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl)
         }
         version {
             taboolib = "6.2.3-d4a5f0ea" // 6.2.3-20d868d
