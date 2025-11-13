@@ -44,22 +44,23 @@ public class ConfigUtil {
         return (current != null)
     }
 
-    fun getFeature(input: Map<*, *>?, feature: String): Any? {
+    fun getFeature(sItemId: String?, input: Map<*, *>?, feature: String): Any? {
         val geted = getFeatureDefault(input, feature)
-        val event = FeatureLoadEvent(geted, feature, null)
+        val event = FeatureLoadEvent(sItemId,geted, feature, null)
         event.call()
         return event.result ?: geted // 如果未触发特殊处理
     }
 
 
     fun getFeatures(
+        sItemId: String?,
         input: Map<*, *>?,
         features: List<String>,
         final: Map<String, Any?>? = null
     ): Map<String, Any?> {
         val baseMap = final?.toMutableMap() ?: linkedMapOf()
         features.forEach { feature ->
-            val unparsed = getFeature(input, feature)
+            val unparsed = getFeature(sItemId, input, feature)
             baseMap[feature] = unparsed?.let { transformValue(it) }
         }
         return baseMap

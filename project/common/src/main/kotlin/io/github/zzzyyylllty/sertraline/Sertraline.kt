@@ -6,7 +6,6 @@ import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
@@ -30,6 +29,7 @@ import top.maplex.arim.tools.fixedcalculator.FixedCalculator
 import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.script.CompiledScript
 
 
 object Sertraline : Plugin() {
@@ -49,7 +49,9 @@ object Sertraline : Plugin() {
     var devMode = true
     val reflects = ReflectTargets()
     val configUtil = ConfigUtil()
-    val scriptCache = LinkedHashMap<String, KetherShell.Cache?>()
+    val ketherScriptCache = LinkedHashMap<String, KetherShell.Cache?>()
+    val jsScriptCache = LinkedHashMap<UUID, CompiledScript?>()
+    val itemCache = LinkedHashMap<String, Map<String, Any?>>()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -83,6 +85,7 @@ object Sertraline : Plugin() {
             devMode = config.getBoolean("debug",false)
             itemMap.clear()
             mappings.clear()
+            itemCache.clear()
             loadMappingFiles()
             loadItemFiles()
             loadLoreFormatFiles()

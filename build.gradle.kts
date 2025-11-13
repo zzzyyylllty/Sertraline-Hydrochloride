@@ -151,8 +151,8 @@ subprojects {
         // compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
         taboo("io.github.projectunified:uni-item-all:2.3.1")
         taboo("com.mojang:datafixerupper:8.0.16")
-
-
+        implementation("org.tabooproject.fluxon:core:1.2.18")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
         taboo("com.google.code.gson:gson:2.10.1")
         taboo(kotlin("stdlib"))
     }

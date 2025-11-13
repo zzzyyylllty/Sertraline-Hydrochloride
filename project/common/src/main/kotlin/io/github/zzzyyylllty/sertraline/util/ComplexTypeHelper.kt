@@ -16,6 +16,7 @@ class ComplexTypeHelper(val input: Any?) {
                     it["condition"] as? List<String>?,
                     it["kether"] as? List<String>?,
                     it["javascript"] as? List<String>?,
+                    it["jexl"] as? List<String>?,
                     it["fluxon"] as? List<String>?,
                 ))
             }

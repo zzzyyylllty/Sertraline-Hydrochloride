@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.command
 
 import com.mojang.serialization.DynamicOps
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
@@ -22,6 +23,7 @@ import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.util.asList
+import taboolib.module.kether.KetherTransfer.cacheMap
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -57,6 +59,27 @@ object DebugCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = itemMap.toString()
             sender.infoS(message, false)
+        }
+    }
+    @CommandBody
+    val getItemCaches = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            var message = itemCache.toString()
+            sender.infoS(message, false)
+        }
+    }
+
+    @CommandBody
+    val getItem = subCommand {
+        dynamic("id") {
+            execute<CommandSender> { sender, context, argument ->
+                val id = context["id"]
+                val message = itemMap[id].toString()
+                sender.infoS(message, false)
+            }
+            suggestion<CommandSender>(uncheck = true) { sender, context ->
+                itemMap.keys.asList()
+            }
         }
     }
     @CommandBody

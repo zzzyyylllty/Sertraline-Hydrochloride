@@ -20,7 +20,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?): ProcessIte
     val itemVar = itemData.itemVar
     val itemDynamic = itemData.itemDynamic
     val collect = itemData.collect()
-    var json = data.itemJson
+    val json = data.itemJson
     val name = data.item.key
     if (config.getBoolean("tags.kether",true)) {
         if (json.contains("kether:")) {

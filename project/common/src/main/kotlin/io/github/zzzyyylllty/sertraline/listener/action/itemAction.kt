@@ -24,7 +24,11 @@ import taboolib.platform.util.attacker
 
 
 val throttleAction = throttle<ThrottleActionLink, ThrottleActionParam>(config.getLong("action.throttle-time", 500)){ link, data ->
-    if (data.i2 == null || data.i2.isEmpty) devLog("ItemStack is null or air or amount == 0,Skipping actions.") else data.p.applyActions(link.str, data.e, data.i2)
+    if (data.i2 == null || data.i2.isEmpty) {
+        devLog("ItemStack is null or air or amount == 0,Skipping actions.")
+    } else {
+        data.p.applyActions(link.str, data.e, data.i2)
+    }
 }
 
 
@@ -44,26 +48,14 @@ fun onInteract(e: PlayerInteractEvent) {
     submitAsync {
         throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onClick"), ThrottleActionParam(e.player, e, e.item, e.hand?.ordinal))
     }
-}
-@SubscribeEvent
-fun onLeftClick(e: PlayerInteractEvent) {
-    if (e.action.isLeftClick) submitAsync {
-        throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onLeftClick"), ThrottleActionParam(e.player, e, e.item, e.hand?.ordinal))
-    }
-}
-@SubscribeEvent
-fun onRightClick(e: PlayerInteractEvent) {
     if (e.action.isRightClick) submitAsync {
         throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onRightClick"), ThrottleActionParam(e.player, e, e.item, e.hand?.ordinal))
-    }
-}
-@SubscribeEvent
-fun onPhysicalInteract(e: PlayerInteractEvent) {
-    if (e.action == PHYSICAL) submitAsync {
+    } else if (e.action.isLeftClick) submitAsync {
+        throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onLeftClick"), ThrottleActionParam(e.player, e, e.item, e.hand?.ordinal))
+    } else if (e.action == PHYSICAL) submitAsync {
         throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPhysical"), ThrottleActionParam(e.player, e, e.item, e.hand?.ordinal))
     }
 }
-
 @SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {
     submitAsync {

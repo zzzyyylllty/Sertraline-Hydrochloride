@@ -1,14 +1,18 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.reflect.TypeToken
+import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
+import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Type
+import taboolib.common5.compileJS
+import javax.script.SimpleBindings
 
 data class ModernSItem(
     val key: String,
@@ -28,6 +32,7 @@ data class Action(
     var condition: List<String>? = null,
     var kether: List<String>? = null,
     var javaScript: List<String>? = null,
+    var jexl: List<String>? = null,
     var fluxon: List<String>? = null,
 ) {
     fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
@@ -35,9 +40,26 @@ data class Action(
         parsedData["@SertralineItem"] = sqlI
         parsedData["@SertralineItemStack"] = i
         parsedData["@SertralineEvent"] = e
+
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)
         }
+
+        javaScript?.let {
+            val uuid = it.generateUUID()
+            val cache = jsScriptCache[uuid]
+            if (cache != null) {
+                cache.eval(SimpleBindings(parsedData))
+            } else {
+                val compiled = it.joinToString("\n").compileJS()
+                compiled?.let { it ->
+                    jsScriptCache[uuid] = it
+                    it.eval(SimpleBindings(parsedData))
+                }
+            }
+        }
+
+
     }
 }
 

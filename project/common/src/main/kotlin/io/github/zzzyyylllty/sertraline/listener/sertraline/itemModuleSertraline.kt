@@ -24,5 +24,5 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
     )
 
 
-    e.itemData.putAll(c.getFeatures(e.arguments, features, e.itemData))
+    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, features, e.itemData))
 }

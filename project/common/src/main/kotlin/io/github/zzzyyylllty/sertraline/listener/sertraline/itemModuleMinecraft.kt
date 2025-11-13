@@ -96,7 +96,7 @@ fun itemModuleMinecraft(e: ItemLoadEvent) {
     val c = ConfigUtil()
 
 
-    e.itemData.putAll(c.getFeatures(e.arguments, mcFeatures(prefix), e.itemData))
+    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))
 }
 
 @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -106,5 +106,5 @@ fun itemModuleVisual(e: ItemLoadEvent) {
     val c = ConfigUtil()
 
 
-    e.itemData.putAll(c.getFeatures(e.arguments, mcFeatures(prefix), e.itemData))
+    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))
 }

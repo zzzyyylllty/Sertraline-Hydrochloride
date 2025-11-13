@@ -10,7 +10,7 @@ import taboolib.platform.BukkitListener.BukkitListener
 
 @SubscribeEvent(priority = EventPriority.LOW)
 fun itemModuleXBuilder(e: ItemLoadEvent) {
-
+    
     val prefix = "xbuilder"
     val c = ConfigUtil()
 
@@ -20,5 +20,5 @@ fun itemModuleXBuilder(e: ItemLoadEvent) {
         "$prefix:lore",
     )
 
-    e.itemData.putAll(c.getFeatures(e.arguments, features, e.itemData))
+    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, features, e.itemData))
 }

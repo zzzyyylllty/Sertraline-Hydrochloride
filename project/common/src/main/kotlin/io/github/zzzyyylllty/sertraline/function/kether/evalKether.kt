@@ -1,8 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.kether
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
-import io.github.zzzyyylllty.sertraline.Sertraline.scriptCache
+import io.github.zzzyyylllty.sertraline.Sertraline.ketherScriptCache
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -11,7 +10,6 @@ import taboolib.common5.Coerce
 import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.KetherShell
-import taboolib.module.kether.ParserHolder.type
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.ScriptOptions
 import taboolib.module.kether.script
@@ -56,7 +54,7 @@ fun List<String>.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
@@ -76,7 +74,7 @@ fun String?.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
@@ -100,7 +98,7 @@ fun List<String>.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
@@ -121,7 +119,7 @@ fun String?.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build())
 }
 
@@ -143,7 +141,7 @@ fun String?.evalKetherValue(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build()).getNow(def)
 }
 
@@ -165,7 +163,7 @@ fun String?.evalKetherString(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
     }.build()).getNow(def).toString()
 }
 
@@ -194,7 +192,7 @@ fun String?.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
-            if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+            if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()
@@ -241,7 +239,7 @@ fun List<String>.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
-            if (cacheId != null) scriptCache[cacheId]?.let { cache(it) }
+            if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()

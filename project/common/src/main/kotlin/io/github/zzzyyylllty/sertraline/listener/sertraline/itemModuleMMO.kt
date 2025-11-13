@@ -75,5 +75,5 @@ fun itemModuleMMO(e: ItemLoadEvent) {
         "$prefix:stamina-regeneration"
     )
 
-    e.itemData.putAll(c.getFeatures(e.arguments, features, e.itemData))
+    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, features, e.itemData))
 }
