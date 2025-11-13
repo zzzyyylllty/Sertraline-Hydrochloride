@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.data.Action
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.data.getSavedData
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
+import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
@@ -20,7 +21,7 @@ fun Player.applyActions(trigger: String, e: Event, i: ItemStack,islot: Int? = nu
         val inv = player.inventory
         val item = itemSerializer(i, player) ?: return@submitAsync
         devLog("Sertraline: ${item.key}")
-        val actions = (item.data["sertraline:actions"] as? Map<String, List<Action>>?)?.get(trigger) ?: return@submitAsync
+        val actions = ComplexTypeHelper(item.data["sertraline:actions"]).getAsActions().get(trigger) ?: return@submitAsync
         actions.forEach { it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, item) }
     }
 }

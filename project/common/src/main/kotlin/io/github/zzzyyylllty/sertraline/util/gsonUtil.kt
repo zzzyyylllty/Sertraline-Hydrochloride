@@ -2,10 +2,10 @@ package io.github.zzzyyylllty.sertraline.util
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import kotlin.jvm.java
 
 val jsonUtils = GsonBuilder()
     .setVersion(1.0)
-    // .disableJdkUnsafe()
     .disableHtmlEscaping()
     .disableInnerClassSerialization()
     .setPrettyPrinting()

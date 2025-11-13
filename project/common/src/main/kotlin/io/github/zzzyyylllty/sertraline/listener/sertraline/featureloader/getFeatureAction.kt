@@ -11,7 +11,7 @@ import kotlin.coroutines.Continuation
 @Suppress("UNCHECKED_CAST", "unused")
 @SubscribeEvent
 fun actionFeatures(e: FeatureLoadEvent) {
-    if (e.feature != "sertraline:action") return
+    if (e.feature != "sertraline:actions") return
     val feature = e.feature
     val content = e.content as Map<*,*>
 
