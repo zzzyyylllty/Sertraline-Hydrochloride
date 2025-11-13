@@ -110,6 +110,7 @@ subprojects {
         maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
 
         maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
+        maven("https://repo.extendedclip.com/releases/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     }
 
@@ -125,6 +126,7 @@ subprojects {
         compileOnly(kotlin("stdlib"))
         compileOnly(fileTree("libs"))
         compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
+        compileOnly("me.clip:placeholderapi:2.11.7")
         //implementation("org.yaml:snakeyaml:2.2")
         compileOnly("io.netty:netty-all:4.1.127.Final")
         compileOnly("com.github.retrooper:packetevents-spigot:2.10.1")

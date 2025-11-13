@@ -78,8 +78,9 @@ object Sertraline : Plugin() {
         }
     }*/
 
-    fun reloadCustomConfig(async: Boolean = false) {
+    fun reloadCustomConfig(async: Boolean = true) {
         submit(async) {
+            devMode = config.getBoolean("debug",false)
             itemMap.clear()
             mappings.clear()
             loadMappingFiles()
@@ -90,7 +91,6 @@ object Sertraline : Plugin() {
             tagManager.unregisterAllProcessor()
             registerNativeAdapter()
             registerNativeTagAdapter()
-        // devMode = config.getBoolean("debug",false)
         }
     }
 //

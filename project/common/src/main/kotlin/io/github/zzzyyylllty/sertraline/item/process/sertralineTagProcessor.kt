@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.function.data.getSavedData
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.ProcessItemTagData
+import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.processRawTagKey
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes.player
 import org.bukkit.entity.Player
 import taboolib.module.nms.getItemTag
@@ -18,34 +19,34 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?): ProcessIte
     if (config.getBoolean("tags.val",true) && itemVal?.isEmpty() == false) {
         val processlist = repl.filter { it.key.startsWith("val:") }
         processlist.forEach {
-            val orginial = it.key.removePrefix("val:")
+            val orginial = it.key.processRawTagKey("val:")
             val split = orginial.split("?:")
             val section = split.first()
             val default = if (split.size >= 2) split.last() else null
             val replace = itemVal[section] ?: default
-            if (replace != null) repl[orginial] = replace.toString()
+            if (replace != null) repl[it.key] = replace.toString()
         }
     }
     if (config.getBoolean("tags.var",true) && itemVar?.isEmpty() == false) {
         val processlist = repl.filter { it.key.startsWith("var:") }
         processlist.forEach {
-            val orginial = it.key.removePrefix("var:")
+            val orginial = it.key.processRawTagKey("var:")
             val split = orginial.split("?:")
             val section = split.first()
             val default = if (split.size >= 2) split.last() else null
             val replace = (itemVar)[section] ?: default
-            if (replace != null) repl[orginial] = replace.toString()
+            if (replace != null) repl[it.key] = replace.toString()
         }
     }
     if (config.getBoolean("tags.dynamic",true) && itemDynamic?.isEmpty() == false) {
         val processlist = repl.filter { it.key.startsWith("dynamic:") }
         processlist.forEach {
-            val orginial = it.key.removePrefix("dynamic:")
+            val orginial = it.key.processRawTagKey("dynamic:")
             val split = orginial.split("?:")
             val section = split.first()
             val default = if (split.size >= 2) split.last() else null
             val replace = itemDynamic[section].asListEnhanded()?.evalKether(data.player)?.get() ?: default
-            if (replace != null) repl[orginial] = replace.toString()
+            if (replace != null) repl[it.key] = replace.toString()
         }
     }
     return data.copy(repl = repl)

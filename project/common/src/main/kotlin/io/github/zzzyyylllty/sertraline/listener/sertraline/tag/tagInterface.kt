@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline.tag
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import org.apache.commons.lang3.text.StrTokenizer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -11,7 +12,7 @@ import kotlin.collections.contains
 data class ProcessItemTagData(
     var itemJson: String,
     var item: ModernSItem,
-    var itemStack: ItemStack?,
+    val itemStack: ItemStack?,
     val player: Player?,
     val repl: Map<String, String?>
 )
@@ -27,7 +28,7 @@ class TagProcessorManager {
 
     // 注册处理器，名称作为key，方便管理
     fun registerProcessor(name: String, processor: TagProcessor) {
-        if (config.getBoolean("modules.$name.feature", true)) processors[name] = processor
+        if (config.getBoolean("tags.$name", true)) processors[name] = processor
     }
 
     // 移除处理器
@@ -42,12 +43,23 @@ class TagProcessorManager {
     // 按顺应用所有处理器
     fun processItem(itemJson: String, item: ModernSItem,itemStack: ItemStack?, player: Player?): String {
         var itemData = ProcessItemTagData(itemJson, item, itemStack, player, extractPlaceholders(itemJson))
+        devLog("<yellow>ITEMDATA: $itemData")
         for (processor in processors) {
             itemData = processor.value.process(itemData, player)
         }
         var json = itemData.itemJson
+        devLog("<yellow>PROCESSED ITEMDATA: $itemData")
         itemData.repl.forEach { (key, value) ->
-            if (value != null) json = json.replace("\${$key}", value)
+            if (value != "null" && value != null) {
+                // 如果替换的值不是空的
+                json = json.replace("\${$key}", value)
+            } else if (!key.endsWith("!!")) {
+                // 如果key不被标记为非空，即可空，即数值为null时也会被替换成null。
+                json = json.replace("\${$key}", "null")
+            } else {
+                // 如果key被标记为非空，即数值为null时也会被替换成空字符串。
+                json = json.replace("\${$key}", "")
+            }
         }
         return json
     }
@@ -66,4 +78,8 @@ fun extractPlaceholders(input: String): Map<String, String?> {
     }
 
     return result
+}
+
+fun String.processRawTagKey(prefix: String): String {
+    return this.removePrefix(prefix).removeSuffix("!!")
 }

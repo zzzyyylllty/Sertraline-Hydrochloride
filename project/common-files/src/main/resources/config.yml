@@ -58,6 +58,8 @@ packet:
 
 # 标签解析
 tags:
+  sertraline: true
+  papi: true
   val: true
   var: true
   dynamic: true

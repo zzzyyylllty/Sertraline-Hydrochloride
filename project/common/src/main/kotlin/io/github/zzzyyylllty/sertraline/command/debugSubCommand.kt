@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.Sertraline.reflects
+import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
@@ -75,6 +76,12 @@ object DebugCommand {
     val processors = subCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.sendStringAsComponent(itemManager.listProcessors().toString())
+        }
+    }
+    @CommandBody
+    val tagProcessors = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            sender.sendStringAsComponent(tagManager.listProcessors().toString())
         }
     }
     @CommandBody

@@ -3,8 +3,11 @@ package io.github.zzzyyylllty.sertraline.item.adapter
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.reflect.setComponent
+import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
+import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.platform.util.giveItem
 import java.util.function.Consumer
 
@@ -14,10 +17,11 @@ fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemSt
         it.key.startsWith("minecraft:") && (it.value != null)
     }
     if (filtered.isEmpty()) return item
+    var nmsItem = asNMSCopy(item)
     filtered.forEach {
-        item = item.setComponent(it.key, it.value!!)
+        nmsItem = nmsItem.setComponentNMS(it.key, it.value!!)
     }
-    return item
+    return asBukkitCopy(nmsItem)
 }
 
 fun transferBooleanToByte(input: Any?): Any? {
