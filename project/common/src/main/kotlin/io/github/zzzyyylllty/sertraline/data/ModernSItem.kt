@@ -9,7 +9,6 @@ import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
@@ -17,6 +16,7 @@ import org.tabooproject.fluxon.Fluxon
 import java.lang.reflect.Type
 import taboolib.common5.compileJS
 import javax.script.SimpleBindings
+
 
 data class ModernSItem(
     val key: String,
@@ -44,6 +44,10 @@ data class Action(
         parsedData["@SertralineItem"] = sqlI
         parsedData["@SertralineItemStack"] = i
         parsedData["@SertralineEvent"] = e
+        parsedData["sItem"] = sqlI
+        parsedData["bItem"] = i
+        parsedData["event"] = e
+        parsedData["player"] = player
 
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)

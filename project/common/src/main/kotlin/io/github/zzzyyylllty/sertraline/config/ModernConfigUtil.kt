@@ -61,7 +61,7 @@ public class ConfigUtil {
         val baseMap = final?.toMutableMap() ?: linkedMapOf()
         features.forEach { feature ->
             val unparsed = getFeature(sItemId, input, feature)
-            baseMap[feature] = unparsed?.let { transformValue(it) }
+            unparsed?.let { baseMap[feature] = transformValue(it) }
         }
         return baseMap
     }

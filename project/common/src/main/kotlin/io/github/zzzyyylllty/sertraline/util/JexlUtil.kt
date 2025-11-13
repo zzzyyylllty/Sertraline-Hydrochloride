@@ -12,3 +12,7 @@ val prodJexlCompiler = JexlCompiler.new()
     .cacheThreshold(256) // 设置缓存阈值
     .collectMode(0)
     .antish(false)
+    .namespace(mapOf(
+        "Math" to java.lang.Math::class.java,
+        "System" to java.lang.System::class.java
+    ))
