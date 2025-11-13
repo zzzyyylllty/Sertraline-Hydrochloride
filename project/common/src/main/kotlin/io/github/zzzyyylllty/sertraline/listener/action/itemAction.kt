@@ -24,7 +24,6 @@ import taboolib.platform.util.attacker
 
 
 val throttleAction = throttle<ThrottleActionLink, ThrottleActionParam>(config.getLong("action.throttle-time", 500)){ link, data ->
-    devLog("Throttling action for Time ${config.getLong("action.throttle-time", 500)} | $link | $data")
     if (data.i2 == null || data.i2.isEmpty) devLog("ItemStack is null or air or amount == 0,Skipping actions.") else data.p.applyActions(link.str, data.e, data.i2)
 }
 

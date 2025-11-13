@@ -20,7 +20,7 @@ fun Player.applyActions(trigger: String, e: Event, i: ItemStack,islot: Int? = nu
         val inv = player.inventory
         val item = itemSerializer(i, player) ?: return@submitAsync
         devLog("Sertraline: ${item.key}")
-        val actions = (item.data["sertraline:action"] as? Map<String, List<Action>>?)?.get(trigger) ?: return@submitAsync
+        val actions = (item.data["sertraline:actions"] as? Map<String, List<Action>>?)?.get(trigger) ?: return@submitAsync
         actions.forEach { it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, item) }
     }
 }
