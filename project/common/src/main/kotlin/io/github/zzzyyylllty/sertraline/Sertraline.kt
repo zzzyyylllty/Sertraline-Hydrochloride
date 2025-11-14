@@ -14,6 +14,8 @@ import io.github.zzzyyylllty.sertraline.logger.*
 import io.github.zzzyyylllty.sertraline.reflect.*
 import org.bukkit.command.CommandSender
 import org.tabooproject.fluxon.runtime.FluxonRuntime
+import taboolib.common.env.RuntimeDependencies
+import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
@@ -33,6 +35,16 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.script.CompiledScript
 
+
+@RuntimeDependencies(
+    RuntimeDependency(
+        "!org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0",
+        test = "!kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory",
+        relocate = ["!kotlin.", "!kotlin200.", "!kotlin.script."],
+        transitive = false
+    )
+)
+class RuntimeEnv
 
 object Sertraline : Plugin() {
 

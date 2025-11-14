@@ -2,6 +2,8 @@ package io.github.zzzyyylllty.sertraline.function.fluxon.script
 
 import io.github.zzzyyylllty.sertraline.Sertraline.fluxonInst
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import org.tabooproject.fluxon.runtime.FunctionContext
@@ -21,8 +23,11 @@ object ExtensionPlayer {
         runtime.registerExtension(Player::class.java) // 获取指定索引的元素
             .function("sendMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val p: Player = Objects.requireNonNull<Player>(context!!.getTarget())
-                val message = context.getString(0).toString()
-                p.sendMessage(message)
+                when (val arg = context!!.getArgument(0)) {
+                    is String -> p.sendMessage(arg)
+                    is Component -> p.sendMessage(arg)
+                    else -> throw IllegalArgumentException("Argument for broadcast must be a String or Component.")
+                }
             })
             .function("sendComponentMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val p: Player = Objects.requireNonNull<Player>(context!!.getTarget())

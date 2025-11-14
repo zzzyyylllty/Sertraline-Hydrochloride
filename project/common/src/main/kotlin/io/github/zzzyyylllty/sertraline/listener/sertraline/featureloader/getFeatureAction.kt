@@ -29,7 +29,8 @@ fun actionFeatures(e: FeatureLoadEvent) {
                 "kether" to (it["kether"] ?: it["ke"]).asListEnhanded(),
                 "javascript" to (it["javascript"] ?: it["js"]).asListedStringEnhanded(),
                 "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanded(),
-                "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanded()
+                "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanded(),
+                "kotlinscript" to (it["kotlinscript"] ?: it["kts"] ?: it["kt"]).asListedStringEnhanded()
             ))
         }
         actions[it.key as String] = list

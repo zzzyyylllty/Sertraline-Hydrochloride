@@ -119,15 +119,14 @@ subprojects {
 //    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
         // compileOnly("ink.ptms.core:v12004:12004:mapped")
         // compileOnly("ink.ptms.core:v12004:12004:universal")
-        implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
         //compileOnly("ink.ptms.core:v12104:12104:mapped")
         //compileOnly("ink.ptms.core:v12104:12104:universal")
-        compileOnly(kotlin("stdlib"))
+        //compileOnly(kotlin("stdlib"))
+        implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
         compileOnly(fileTree("libs"))
         compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
         compileOnly("me.clip:placeholderapi:2.11.7")
-        //implementation("org.yaml:snakeyaml:2.2")
         compileOnly("io.netty:netty-all:4.1.127.Final")
         compileOnly("com.github.retrooper:packetevents-spigot:2.10.1")
         implementation("org.tabooproject.reflex:analyser:1.1.4")
@@ -137,7 +136,7 @@ subprojects {
         implementation("org.ow2.asm:asm:9.2")
         implementation("org.ow2.asm:asm-util:9.2")
         implementation("org.ow2.asm:asm-commons:9.2")
-        implementation(kotlin("stdlib"))
+        // implementation(kotlin("stdlib"))
         taboo("top.maplex.arim:Arim:1.3.2")
         taboo("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
         taboo("com.fasterxml.jackson.core:jackson-databind:2.16.1")
@@ -151,10 +150,15 @@ subprojects {
         // compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
         taboo("io.github.projectunified:uni-item-all:2.3.1")
         taboo("com.mojang:datafixerupper:8.0.16")
+        taboo(kotlin("stdlib")) // 使用 kotlin("stdlib") 更标准
+        compileOnly("org.jetbrains.kotlin:kotlin-scripting-common:2.0.0")
+        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jvm:2.0.0")
+        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jvm-host:2.0.0")
+        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0")
+        // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
         taboo("org.tabooproject.fluxon:core:1.2.18")
         taboo("com.github.ben-manes.caffeine:caffeine:3.2.3")
         taboo("com.google.code.gson:gson:2.10.1")
-        taboo(kotlin("stdlib"))
     }
 
     tasks.withType<KotlinCompile> {
@@ -208,3 +212,4 @@ subprojects {
         }
     }
 }
+

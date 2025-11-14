@@ -11,11 +11,11 @@ depaz_pills:
       level: "random 1 to 3"
     actions:
       onConsume:
-        - condition: not player dead
+        - condition: null
           kether: |
             command papi "effect give %player_name% ${val:effect} 10 ${dynamic:level}" as console
             set pills to math - [ pills 1 ]
-            minitell "<gray>${var:pills} pills left."
+            minitell inline "<gray>{{ &pills }} pills left."
   xbuilder:
     material: COOKED_BEEF
     name: "<blue>Depaz Pills"
@@ -150,6 +150,57 @@ test_model_item:
         - 51
         - 4
 
+test_pe_item:
+  xbuilder:
+    material: DIAMOND_SWORD
+    lore: |
+      Hello %player_name%
+  minecraft:
+    provides_trim_material:
+      asset_name: amethyst
+      description: 'hello ChoTen!'
+      override_armor_assets:
+        humanoid: "item/test"
+test_tag_item:
+  sertraline:
+    vals:
+      val: TEST
+    vars:
+      one: test
+    dynamics:
+      dyn: math + [ 1 2 ]
+      empty: null
+    actions:
+      onLeftClick:
+        - condition: check 1 == 1
+          kether: |
+            minitell inline "<gradient:white:gray>Hello, kether with val {{ &val }} !"
+          js: |
+            var days = 1;
+            var base = 100;
+            var daily = days * 10;
+            var weekBonus = (days / 7) * 100;
+            player.sendMessage(mmUtil.deserialize("<gradient:red:gold>Hello, JavaScript with math " + weekBonus.toString() + " !"))
+          jexl: |
+            player.sendMessage(mmUtil.deserialize("<gradient:dark_aqua:blue>Hello, Jexl with math " + Math:max(1, 2) + " !"))
+          fluxon: |
+            v = "Fluxon!";
+            &player::sendComponentMessage("<gradient:yellow:aqua>Hello, " + &v)
+        # 还不支持
+        # kts: |
+        #   player.sendMessage("test")
+  xbuilder:
+    material: DIAMOND_SWORD
+    lore: |
+      <!i><gray>直接解析PAPI: <yellow>Hello %player_name%
+      <!i><gray>解析PAPI: <yellow>${papi:player_name}$
+      <!i><gray>直接解析常量: <yellow>${val:test}$
+      <!i><gray>解析动态kether: <yellow>${dynamic:dyn}$
+      <!i><gray>空值自动改为默认: <yellow>${dynamic:empty?:默认数值}$
+      <!i><gray>可存储的数据: <yellow>${var:one}$
+      <!i><gray>普通的空值: <yellow>${val:none}$
+      <!i><gray>非空的空值: <yellow>${val:none!!}$
+      <!i><gray>Kether: <yellow>${kether:math + [ 114 514 ]}$
 test_component_item:
   xbuilder:
     material: DIAMOND_SWORD
@@ -417,8 +468,8 @@ test_component_item:
     provides_trim_material:
       asset_name: amethyst
       description: 'hello ChoTen!'
-      override_armor_assets:
-        humanoid: "item/test"
+    # override_armor_assets:
+    #   humanoid: "item/test"
     rarity: epic
     recipes:
       - iron_sword

@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
+import io.github.zzzyyylllty.sertraline.function.kts.runKotlinScriptJsr223
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
@@ -18,6 +19,7 @@ import org.bukkit.inventory.ItemStack
 import org.tabooproject.fluxon.Fluxon
 import java.lang.reflect.Type
 import taboolib.common5.compileJS
+import taboolib.platform.util.bukkitPlugin
 import javax.script.SimpleBindings
 
 val defaultData by lazy {
@@ -46,11 +48,12 @@ fun deserializeSItem(string: String): ModernSItem? {
 }
 
 data class Action(
-    var condition: List<String>? = null,
-    var kether: List<String>? = null,
-    var javaScript: String? = null,
-    var jexl: String? = null,
-    var fluxon: String? = null,
+    val condition: List<String>? = null,
+    val kether: List<String>? = null,
+    val javaScript: String? = null,
+    val jexl: String? = null,
+    val fluxon: String? = null,
+    val kotlinScript: String? = null,
 ) {
     fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
         val parsedData = data.toMutableMap()
@@ -82,7 +85,6 @@ data class Action(
         }
 
         jexl?.let {
-            devLog("Start evaling jexl script.")
             val uuid = it.generateUUID()
             val cache = jexlScriptCache[uuid]
             if (cache != null) {
@@ -100,6 +102,11 @@ data class Action(
             FluxonShell.invoke(it) {
                 root.rootVariables += parsedData
             }
+        }
+
+
+        kotlinScript?.let {
+            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)
         }
 
 

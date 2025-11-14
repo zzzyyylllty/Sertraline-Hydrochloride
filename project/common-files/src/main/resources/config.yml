@@ -2,9 +2,9 @@
 debug: true
 
 # 语言 language
-lang: en_US
+lang: zh_CN
 
-# 物品修订器 用于实现物品更新
+# 物品修订器 用于实现物品更新 尚未实现
 # Item Revision for Item updating
 itemRevision: {}
 

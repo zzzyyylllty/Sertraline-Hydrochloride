@@ -5,5 +5,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 val mmUtil = MiniMessage.miniMessage()
-val mmLegacyUtil = LegacyComponentSerializer.legacyAmpersand()
+val mmStrictUtil = MiniMessage.builder().strict(true).build()
+val mmLegacyAmpersandUtil = LegacyComponentSerializer.legacyAmpersand()
+val mmLegacySectionUtil = LegacyComponentSerializer.legacySection()
 val mmJsonUtil = GsonComponentSerializer.gson()

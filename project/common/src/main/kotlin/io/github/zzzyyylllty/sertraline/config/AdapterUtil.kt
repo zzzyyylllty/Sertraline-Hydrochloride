@@ -1,11 +1,7 @@
 package io.github.zzzyyylllty.sertraline.config
 
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.loreformat.performPlaceholders
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyUtil
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player

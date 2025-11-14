@@ -18,6 +18,7 @@ class ComplexTypeHelper(val input: Any?) {
                     it["javascript"] as? String?,
                     it["jexl"] as? String?,
                     it["fluxon"] as? String?,
+                    it["kotlinscript"] as? String?,
                 ))
             }
             actions[it.key as String] = list
