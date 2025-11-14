@@ -50,6 +50,7 @@ object FunctionBukkit {
         runtime.exportRegistry.registerClass(FluxonBukkitObject::class.java, "sertraline:bukkit")
     }
 
+    @Suppress("UNUSED")
     class FluxonBukkitObject {
 
         @Export
@@ -468,10 +469,10 @@ object FunctionBukkit {
         // --- MOTD and Server Icon ---
 
         @Export
-        fun getMotd(): String = Bukkit.getMotd()
+        fun getLegacyMotd(): String = Bukkit.getMotd()
 
         @Export
-        fun setMotd(motd: String) {
+        fun setLegacyMotd(motd: String) {
             Bukkit.setMotd(motd)
         }
 
