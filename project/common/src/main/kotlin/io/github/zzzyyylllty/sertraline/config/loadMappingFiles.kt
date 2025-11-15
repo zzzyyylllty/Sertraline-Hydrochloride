@@ -12,17 +12,13 @@ import java.io.File
 
 
 fun loadMappingFiles() {
-    infoL("MappingLoad")
-    if (!File(getDataFolder(), "internal/mapping").exists()) {
-        warningL("MappingLoadRegen")
-        releaseResourceFile("internal/mapping/mappings.yml")
-    }
+    infoL("Mapping_Load")
+    releaseResourceFile("internal/mapping/mappings.yml", true)
     val files = File(getDataFolder(), "internal/mapping").listFiles()
     if (files == null) {
-        warningL("MappingLoadNotFound")
+        warningL("Mapping_Load_Not_Found")
         return
     }
-    infoL("MappingLoad")
     for (file in files) {
         // If directory load file in it...
         if (file.isDirectory) file.listFiles()?.forEach {

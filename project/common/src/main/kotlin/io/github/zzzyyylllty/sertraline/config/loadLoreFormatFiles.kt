@@ -20,16 +20,12 @@ import java.io.File
 
 
 fun loadLoreFormatFiles() {
-    infoL("LoreFormatLoad")
+    infoL("LoreFormat_Load")
     if (!File(getDataFolder(), "lore-formats").exists()) {
-        warningL("LoreFormatLoadRegen")
+        warningL("LoreFormat_Load_Regen")
         releaseResourceFile("lore-formats/loreGenerator.yml")
     }
     val files = File(getDataFolder(), "lore-formats").listFiles()
-    if (files == null) {
-        warningL("LoreFormatLoadNotFound")
-        return
-    }
     for (file in files) {
         // If directory load file in it...
         if (file.isDirectory) file.listFiles()?.forEach {

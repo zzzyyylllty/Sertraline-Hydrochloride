@@ -61,8 +61,8 @@ object SertralineMainCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.infoS("<gradient:aqua:blue>Sertraline Hydrochloride</gradient> <#ccccff>$pluginVersion")
             sender.infoS("<gradient:#6600ff:#aa00aa>Running on:</gradient> <light_purple>${runningPlatform.name} - $versionId")
-            sender.infoS("<#660099>Plugin by AkaCandyKAngel.")
-            sender.infoS("<#660099>Use <blue>/sertraline help</blue> for help.")
+            sender.infoS("<#cc66ff>Plugin by AkaCandyKAngel.")
+            sender.infoS("<#cc66ff>Use <blue>/sertraline help</blue> for help.")
         }
     }
     @CommandBody

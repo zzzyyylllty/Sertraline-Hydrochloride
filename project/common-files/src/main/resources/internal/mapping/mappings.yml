@@ -1,6 +1,8 @@
 # 请勿直接修改这个文件
+# 因为每次重启都会覆盖该文件
 # 如想要添加映射请在此目录下建立更多文件添加
 # Please do not directly modify this file
+# If server reboot this file will regenerate.
 # If you want to add mappings, please create more files in this directory to add
 
 sertraline:tier:

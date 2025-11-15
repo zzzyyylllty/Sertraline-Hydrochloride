@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util
 
+import com.google.gson.Gson
+import org.bukkit.Bukkit
 import taboolib.expansion.JexlCompiler
 
 
@@ -14,5 +16,7 @@ val prodJexlCompiler = JexlCompiler.new()
     .antish(false)
     .namespace(mapOf(
         "Math" to java.lang.Math::class.java,
-        "System" to java.lang.System::class.java
+        "System" to java.lang.System::class.java,
+        "Bukkit" to Bukkit::class.java,
+        "Gson" to Gson::class.java
     ))

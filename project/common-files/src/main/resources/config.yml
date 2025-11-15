@@ -1,8 +1,8 @@
 # 调试模式 debug
-debug: true
+debug: false
 
 # 语言 language
-lang: zh_CN
+lang: en_US
 
 # 物品修订器 用于实现物品更新 尚未实现
 # Item Revision for Item updating

@@ -16,14 +16,14 @@ import java.io.File
 
 
 fun loadItemFiles() {
-    infoL("ItemLoad")
+    infoL("Item_Load")
     if (!File(getDataFolder(), "workspace").exists()) {
-        warningL("ItemLoadRegen")
+        warningL("ItemLoad_Regen")
         releaseResourceFile("workspace/item.yml")
     }
     val files = File(getDataFolder(), "workspace").listFiles()
     if (files == null) {
-        warningL("ItemLoadNotFound")
+        warningL("Item_Load_Not_Found")
         return
     }
     for (file in files) {
