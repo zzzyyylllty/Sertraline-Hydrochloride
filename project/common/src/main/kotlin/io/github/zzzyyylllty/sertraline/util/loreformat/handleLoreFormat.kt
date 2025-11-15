@@ -27,7 +27,7 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
     // 如果模式不匹配
     if (loreFormat.settings.visual != isVisual) return null
 
-    val map = if (!loreFormat.settings.overwrite) mutableListOf() else orgLore?.toMutableList() ?: mutableListOf()
+    val map = if (loreFormat.settings.overwrite) mutableListOf() else orgLore?.toMutableList() ?: mutableListOf()
 
     loreFormat.elements.forEach { element ->
         // 开始显示lore
