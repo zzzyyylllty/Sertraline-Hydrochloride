@@ -18,7 +18,7 @@ fun registerNativeAdapter() {
         devLog("Adapting sertraline")
         sertralineAdapter(item, sItem, player)
     }
-    itemManager.registerProcessor("customdata") { sItem, item, player ->
+    itemManager.registerProcessor("custom_data") { sItem, item, player ->
         devLog("Adapting CUSTOMDATA")
         customDataAdapter(item, sItem, player)
     }

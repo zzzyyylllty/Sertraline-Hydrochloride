@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -14,7 +15,10 @@ fun customDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     val tag = item.getItemTag(true)
     val map = (sItem.data["custom_data:custom_data"] as Map<String, Any>?)
-    if (map == null || map.isEmpty()) return item
+    if (map == null || map.isEmpty()) {
+        devLog("custom_data is null or empty, skipping adapting.")
+        return item
+    }
     map.forEach {
         tag.put(it.key, it.value)
     }
