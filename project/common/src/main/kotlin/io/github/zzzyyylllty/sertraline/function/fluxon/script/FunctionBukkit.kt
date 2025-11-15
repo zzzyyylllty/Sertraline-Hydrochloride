@@ -400,7 +400,7 @@ object FunctionBukkit {
         // --- Inventory and Items ---
 
         @Export
-        fun createInventory(owner: InventoryHolder?, typeOrSize: Any, title: Any? = null): Inventory {
+        fun createInventory(owner: InventoryHolder?, typeOrSize: Any, @Optional title: Any? = null): Inventory {
             return when {
                 title != null -> {
                     val componentTitle = when (title) {
@@ -477,7 +477,7 @@ object FunctionBukkit {
         }
 
         @Export
-        fun motd(motd: Any? = null): net.kyori.adventure.text.Component? {
+        fun motd(@Optional motd: Any? = null): net.kyori.adventure.text.Component? {
             return if (motd == null) {
                 Bukkit.motd()
             } else {
@@ -540,7 +540,7 @@ object FunctionBukkit {
         // --- BlockData ---
 
         @Export
-        fun createBlockData(materialOrData: Any, consumerOrData: Any? = null): BlockData {
+        fun createBlockData(materialOrData: Any,@Optional  consumerOrData: Any? = null): BlockData {
             return when(materialOrData) {
                 is Material -> {
                     when(consumerOrData) {
@@ -633,7 +633,7 @@ object FunctionBukkit {
         fun getAmbientSpawnLimit(): Int = Bukkit.getAmbientSpawnLimit()
 
         @Export
-        fun createPlayerProfile(uuid: UUID, name: String? = null): org.bukkit.profile.PlayerProfile {
+        fun createPlayerProfile(uuid: UUID,@Optional name: String? = null): org.bukkit.profile.PlayerProfile {
             return if (name == null) Bukkit.createPlayerProfile(uuid) else Bukkit.createPlayerProfile(uuid, name)
         }
 
@@ -658,7 +658,7 @@ object FunctionBukkit {
         // --- Paper-specific Profile Creation ---
 
         @Export
-        fun createProfile(uuid: UUID, name: String? = null): com.destroystokyo.paper.profile.PlayerProfile {
+        fun createProfile(uuid: UUID, @Optional name: String? = null): com.destroystokyo.paper.profile.PlayerProfile {
             return if (name == null) Bukkit.createProfile(uuid) else Bukkit.createProfile(uuid, name)
         }
 
