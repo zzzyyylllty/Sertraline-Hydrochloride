@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.data
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
+import io.github.zzzyyylllty.sertraline.function.javascript.ItemStackUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
@@ -14,13 +15,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.compileJS
+import taboolib.module.nms.getItemTag
 import javax.script.SimpleBindings
 
 val defaultData by lazy {
     linkedMapOf(
         "mmUtil" to mmUtil,
         "mmJsonUtil" to mmJsonUtil,
-        "jsonUtils" to jsonUtils
+        "jsonUtils" to jsonUtils,
+        "ItemStackUtil" to ItemStackUtil
     )
 }
 
@@ -56,6 +59,7 @@ data class Action(
         parsedData["event"] = e
         parsedData["player"] = player
         parsedData.putAll(defaultData)
+
 
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)

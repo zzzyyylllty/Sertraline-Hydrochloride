@@ -6,7 +6,6 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.library.xseries.XItemStack
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
 import java.util.LinkedHashMap
