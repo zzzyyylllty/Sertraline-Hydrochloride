@@ -317,7 +317,7 @@ test_component_item:
         - 114
         - 51
         - 4
-    custom_name: "<rainbow>test"
+    custom_name: "test"
     damage: 1
     damage_resistant:
       types: "#always_hurts_ender_dragons"

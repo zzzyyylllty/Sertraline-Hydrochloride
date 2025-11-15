@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.warningS
@@ -56,7 +57,7 @@ fun ItemStack.s2c(player: Player?): ItemStack {
     if (type.isAir) return oItem
     val tag = this.getItemTag(true)
     val id = tag["sertraline_id"]?.asString() ?: return oItem
-    val sItem = itemMap[id] ?: return oItem
+    val sItem = itemSerializer(id, player) ?: return oItem
     if (packetLore) handleLoreFormat(sItem, player, this.lore(), true)?.let {
         this.lore(it)
     }

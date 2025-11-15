@@ -24,9 +24,6 @@ val defaultData by lazy {
     )
 }
 
-
-
-
 data class ModernSItem(
     val key: String,
     val data: Map<String, Any?> = mapOf(),
