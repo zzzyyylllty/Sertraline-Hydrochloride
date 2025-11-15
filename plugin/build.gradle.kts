@@ -43,9 +43,6 @@ taboolib {
     relocate("io.netty.handler.codec.http2", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.http2")
     relocate("org.tabooproject.fluxon","io.github.zzzyyylllty.sertraline.library.org.tabooproject.fluxon")
     relocate("com.github.ben-manes.caffeine","io.github.zzzyyylllty.sertraline.library.com.github.ben-manes.caffeine")
-
-    relocate("org.jetbrains.kotlin.script","kotlin200.script")
-    relocate("kotlin.script","kotlin200.script")
 }
 
 tasks {

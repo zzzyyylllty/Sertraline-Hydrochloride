@@ -39,7 +39,7 @@ subprojects {
             install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl)
         }
         version {
-            taboolib = "6.2.3-d4a5f0ea" // 6.2.3-20d868d
+            taboolib = "6.2.4-3b3cd67" // 6.2.3-20d868d
             coroutines = "1.7.3"
             // 跳过 Kotlin 加载
             skipKotlin = false
@@ -151,10 +151,10 @@ subprojects {
         taboo("io.github.projectunified:uni-item-all:2.3.1")
         taboo("com.mojang:datafixerupper:8.0.16")
         taboo(kotlin("stdlib")) // 使用 kotlin("stdlib") 更标准
-        compileOnly("org.jetbrains.kotlin:kotlin-scripting-common:2.0.0")
-        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jvm:2.0.0")
-        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jvm-host:2.0.0")
-        compileOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0")
+//        taboo("org.jetbrains.kotlin:kotlin-scripting-common:2.0.0")
+//        taboo("org.jetbrains.kotlin:kotlin-scripting-jvm:2.0.0")
+//        taboo("org.jetbrains.kotlin:kotlin-scripting-jvm-host:2.0.0")
+//        taboo("org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0")
         // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
         taboo("org.tabooproject.fluxon:core:1.2.18")
         taboo("com.github.ben-manes.caffeine:caffeine:3.2.3")

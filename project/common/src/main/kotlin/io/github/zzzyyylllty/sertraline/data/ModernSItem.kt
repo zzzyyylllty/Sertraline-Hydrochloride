@@ -7,7 +7,6 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
-import io.github.zzzyyylllty.sertraline.function.kts.runKotlinScriptJsr223
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
@@ -53,7 +52,7 @@ data class Action(
     val javaScript: String? = null,
     val jexl: String? = null,
     val fluxon: String? = null,
-    val kotlinScript: String? = null,
+//    val kotlinScript: String? = null,
 ) {
     fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
         val parsedData = data.toMutableMap()
@@ -105,9 +104,9 @@ data class Action(
         }
 
 
-        kotlinScript?.let {
-            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)
-        }
+//        kotlinScript?.let {
+//            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)
+//        }
 
 
     }
