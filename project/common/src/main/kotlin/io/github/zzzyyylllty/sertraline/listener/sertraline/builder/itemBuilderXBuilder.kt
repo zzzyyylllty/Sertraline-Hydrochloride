@@ -25,6 +25,8 @@ fun registerNativeAdapter() {
     if (VersionHelper().isOrAbove12005()) itemManager.registerProcessor("minecraft") { sItem, item, player ->
         devLog("Adapting minecraft")
         minecraftAdapter(item, sItem, player)
+    } else {
+        devLog("Version < 12005, skipping minecraft registering")
     }
 
 }

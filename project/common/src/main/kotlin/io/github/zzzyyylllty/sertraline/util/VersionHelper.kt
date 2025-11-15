@@ -11,27 +11,27 @@ class VersionHelper {
         MinecraftVersion.isUniversal
     }
     fun isOrAbove12005(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12005)
+        return versionId >= 12005
     }
     fun isLegacy(): Boolean{
-        return MinecraftVersion.isLowerOrEqual(12004)
+        return versionId < 12005
     }
     fun isOrAbove12100(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12100)
+        return versionId >= 12100
     }
     fun isOrAbove12101(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12101)
+        return versionId >= 12101
     }
     fun isOrAbove12102(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12102)
+        return versionId >= 12102
     }
     fun isOrAbove12103(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12103)
+        return versionId >= 12103
     }
     fun isOrAbove12104(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12104)
+        return versionId >= 12104
     }
     fun isOrAbove12105(): Boolean{
-        return MinecraftVersion.isHigherOrEqual(12105)
+        return versionId >= 12105
     }
 }

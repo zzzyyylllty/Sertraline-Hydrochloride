@@ -11,5 +11,5 @@ import java.util.LinkedHashMap
 
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleCustomData(e: ItemLoadEvent) {
-    e.itemData["custom_data:custom_data"] = e.arguments["custom_data"] as Map<String, Any>
+    (e.arguments["custom_data"] as Map<String, Any>?)?.let { e.itemData["custom_data:custom_data"] = it }
 }
