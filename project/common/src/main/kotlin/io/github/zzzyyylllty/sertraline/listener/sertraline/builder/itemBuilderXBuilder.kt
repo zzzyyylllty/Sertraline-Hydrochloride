@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline.builder
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.item.adapter.customDataAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.minecraftAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.sertralineAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.xbuilderAdapter
@@ -16,6 +17,10 @@ fun registerNativeAdapter() {
     itemManager.registerProcessor("sertraline") { sItem, item, player ->
         devLog("Adapting sertraline")
         sertralineAdapter(item, sItem, player)
+    }
+    itemManager.registerProcessor("customdata") { sItem, item, player ->
+        devLog("Adapting CUSTOMDATA")
+        customDataAdapter(item, sItem, player)
     }
     if (VersionHelper().isOrAbove12005()) itemManager.registerProcessor("minecraft") { sItem, item, player ->
         devLog("Adapting minecraft")

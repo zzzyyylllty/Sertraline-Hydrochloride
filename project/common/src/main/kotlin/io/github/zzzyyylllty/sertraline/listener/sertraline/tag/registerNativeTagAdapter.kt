@@ -13,10 +13,6 @@ fun registerNativeTagAdapter() {
         devLog("Tag adapting sertraline")
         sertralineTagProcessor(data, player)
     }
-    tagManager.registerProcessor("kether") { data, player ->
-        devLog("Tag adapting kether")
-        sertralineTagProcessor(data, player)
-    }
     if (DependencyHelper().isPluginInstalled("PlaceholderAPI")) tagManager.registerProcessor("papi") { data, player ->
         devLog("Tag adapting papi")
         papiTagProcessor(data, player)

@@ -1,46 +1,18 @@
 package io.github.zzzyyylllty.sertraline.function.fluxon.script
 
 import io.github.zzzyyylllty.sertraline.Sertraline.fluxonInst
-import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionBukkit.FluxonBukkitObject
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmStrictUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
-import org.bukkit.GameMode
-import org.bukkit.NamespacedKey
-import org.bukkit.World
-import org.bukkit.command.CommandSender
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.Recipe
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import org.tabooproject.fluxon.runtime.FunctionContext
 import org.tabooproject.fluxon.runtime.NativeFunction.NativeCallable
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
-import java.util.*
-import net.kyori.adventure.text.minimessage.MiniMessage
-import org.bukkit.*
-import org.bukkit.advancement.Advancement
-import org.bukkit.block.data.BlockData
-import org.bukkit.boss.BarColor
-import org.bukkit.boss.BarFlag
-import org.bukkit.boss.BarStyle
-import org.bukkit.boss.KeyedBossBar
-import org.bukkit.entity.Entity
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.*
-import org.bukkit.loot.LootTable
-import org.bukkit.permissions.Permissible
-import org.bukkit.plugin.Plugin
 import org.tabooproject.fluxon.runtime.java.Export
-import java.io.File
-import java.net.InetAddress
-import java.util.*
-import java.util.function.Consumer
 @Awake(LifeCycle.ENABLE)
 fun registerFunctionComponent() {
     FunctionComponent.init(fluxonInst)
