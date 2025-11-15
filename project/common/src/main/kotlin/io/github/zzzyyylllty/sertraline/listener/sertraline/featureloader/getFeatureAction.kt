@@ -47,12 +47,20 @@ fun actionFeatures(e: FeatureLoadEvent) {
 
             // 预编译脚本
             if (config.getBoolean("preload.script.jexl",true)) (map["jexl"] as? String)?.let { script ->
-                val compiled = prodJexlCompiler.compileToScript(script)
-                jexlScriptCache[script.generateHash()] = compiled
+                try {
+                    val compiled = prodJexlCompiler.compileToScript(script)
+                    jexlScriptCache[script.generateHash()] = compiled
+                } catch (ignored: Exception) {
+
+                }
             }
             if (config.getBoolean("preload.script.javascript",true)) (map["javascript"] as? String)?.let { script ->
-                val compiled = script.compileJS()
-                jsScriptCache[script.generateHash()] = compiled
+                try {
+                    val compiled = script.compileJS()
+                    jsScriptCache[script.generateHash()] = compiled
+                } catch (ignored: Exception) {
+
+                }
             }
             // Fluxon预编译不会传入对应变量，有可能导致编译不通过，因此取消预编译功能。
             // if (config.getBoolean("preload.script.fluxon",true)) (map["fluxon"] as? String)?.let { script ->
