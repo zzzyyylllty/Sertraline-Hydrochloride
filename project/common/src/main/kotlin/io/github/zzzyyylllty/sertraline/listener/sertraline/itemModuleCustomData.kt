@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
+import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.platform.BukkitListener.BukkitListener

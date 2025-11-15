@@ -19,7 +19,7 @@ fun customDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
         devLog("custom_data is null or empty, skipping adapting.")
         return item
     }
-    map.forEach {
+    (transferBooleanToByte(map) as Map<String, Any>).forEach {
         tag.put(it.key, it.value)
     }
     val item = item.setItemTag(tag, true)
