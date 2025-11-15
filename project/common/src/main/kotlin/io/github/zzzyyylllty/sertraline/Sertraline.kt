@@ -84,8 +84,8 @@ object Sertraline : Plugin() {
     val reflects = ReflectTargets()
     val configUtil = ConfigUtil()
     val ketherScriptCache = LinkedHashMap<String, KetherShell.Cache?>()
-    val jsScriptCache = LinkedHashMap<UUID, CompiledScript?>()
-    val jexlScriptCache = LinkedHashMap<UUID, JexlCompiledScript?>()
+    val jsScriptCache = LinkedHashMap<String, CompiledScript?>()
+    val jexlScriptCache = LinkedHashMap<String, JexlCompiledScript?>()
     val itemCache = LinkedHashMap<String, Map<String, Any?>>()
 
     // Arim Start

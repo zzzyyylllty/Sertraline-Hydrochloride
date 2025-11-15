@@ -24,6 +24,14 @@ object FluxonShell {
     fun parse(script: String, env: Environment.() -> Unit = {}): ParseScript {
         return ParseScript(parse(script, FluxonRuntime.getInstance().newEnvironment().also(env)))
     }
+    /**
+     * 解释脚本但不执行
+     */
+    fun preload(script: String, env: Environment.() -> Unit = {}) {
+        // 构建脚本环境
+        val environment = FluxonRuntime.getInstance().newEnvironment().also(env)
+        scriptCache.get(script) { parse(script, environment) }!!
+    }
 
     /**
      * 执行脚本

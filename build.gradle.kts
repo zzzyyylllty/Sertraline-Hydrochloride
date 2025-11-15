@@ -159,6 +159,7 @@ subprojects {
         taboo("org.tabooproject.fluxon:core:1.2.18")
         taboo("com.github.ben-manes.caffeine:caffeine:3.2.3")
         taboo("com.google.code.gson:gson:2.10.1")
+        taboo("org.kotlincrypto.hash:sha2:0.7.0")
     }
 
     tasks.withType<KotlinCompile> {

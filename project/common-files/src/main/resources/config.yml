@@ -8,6 +8,13 @@ lang: zh_CN
 # Item Revision for Item updating
 itemRevision: {}
 
+preload:
+
+  # 预编译脚本
+  # Pre-compile scripts
+  script:
+    javascript: true
+    jexl: true
 
 # 模块
 # 修改之后需要重启服务器应用更改

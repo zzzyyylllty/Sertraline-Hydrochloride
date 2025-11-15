@@ -1,9 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
-import com.google.gson.reflect.TypeToken
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
@@ -11,14 +9,11 @@ import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
-import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
+import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
-import org.tabooproject.fluxon.Fluxon
-import java.lang.reflect.Type
 import taboolib.common5.compileJS
-import taboolib.platform.util.bukkitPlugin
 import javax.script.SimpleBindings
 
 val defaultData by lazy {
@@ -70,28 +65,28 @@ data class Action(
         }
 
         javaScript?.let {
-            val uuid = it.generateUUID()
-            val cache = jsScriptCache[uuid]
+            val hash = it.generateHash()
+            val cache = jsScriptCache[hash]
             if (cache != null) {
                 cache.eval(SimpleBindings(parsedData))
             } else {
                 val compiled = it.compileJS()
                 compiled?.let { it ->
-                    jsScriptCache[uuid] = it
+                    jsScriptCache[hash] = it
                     it.eval(SimpleBindings(parsedData))
                 }
             }
         }
 
         jexl?.let {
-            val uuid = it.generateUUID()
-            val cache = jexlScriptCache[uuid]
+            val hash = it.generateHash()
+            val cache = jexlScriptCache[hash]
             if (cache != null) {
                 cache.eval(parsedData)
             } else {
                 val compiled = prodJexlCompiler.compileToScript(it)
                 compiled.let { it ->
-                    jexlScriptCache[uuid] = it
+                    jexlScriptCache[hash] = it
                     it.eval(parsedData)
                 }
             }
