@@ -2,6 +2,8 @@ package io.github.zzzyyylllty.sertraline.function.javascript
 
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
+import io.github.zzzyyylllty.sertraline.item.rebuildLore
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.ItemTag
 import taboolib.module.nms.getItemTag
@@ -25,5 +27,9 @@ object ItemStackUtil {
     // tb不支持 boolean NBT，需要包裹一层这个函数
     fun transferToByte(input: Any?): Any? {
         return transferBooleanToByte(input)
+    }
+
+    fun rebuildLore(itemStack: ItemStack,player: Player?) {
+        itemStack.rebuildLore(player)
     }
 }

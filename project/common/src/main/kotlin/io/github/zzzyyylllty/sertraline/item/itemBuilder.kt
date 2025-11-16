@@ -78,7 +78,7 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 }
 
 
-fun ItemStack.rebuild(player: Player): ItemStack {
+fun ItemStack.rebuild(player: Player?): ItemStack {
 
     val tag = this.getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return this
@@ -102,4 +102,14 @@ fun ItemStack.rebuild(player: Player): ItemStack {
         rewrited = asBukkitCopy(rewrited)
     }
     return rewrited
+}
+
+fun ItemStack.rebuildLore(player: Player?) {
+
+    val tag = this.getItemTag(true)
+    val sID = tag["sertraline_id"]?.asString() ?: return
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    this.lore(regen.lore())
 }

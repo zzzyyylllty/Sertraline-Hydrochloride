@@ -58,7 +58,7 @@ object Sertraline : Plugin() {
     val ketherScriptCache = LinkedHashMap<String, KetherShell.Cache?>()
     val jsScriptCache = LinkedHashMap<String, CompiledScript?>()
     val jexlScriptCache = LinkedHashMap<String, JexlCompiledScript?>()
-    val itemCache = LinkedHashMap<String, Map<String, Any?>>()
+    val itemCache = LinkedHashMap<String, Map<String, Any?>?>()
 
     // Arim Start
     val evaluator by lazy { ConditionEvaluator() }
@@ -89,18 +89,27 @@ object Sertraline : Plugin() {
 
     fun reloadCustomConfig(async: Boolean = true) {
         submit(async) {
+
+            config.reload()
             devMode = config.getBoolean("debug",false)
+
             itemMap.clear()
             mappings.clear()
+            loreFormats.clear()
+
+            ketherScriptCache.clear()
+            jsScriptCache.clear()
+            jexlScriptCache.clear()
             itemCache.clear()
-            loadMappingFiles()
-            loadItemFiles()
-            loadLoreFormatFiles()
-            plugin.config.reload()
+
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()
             registerNativeAdapter()
             registerNativeTagAdapter()
+
+            loadMappingFiles()
+            loadItemFiles()
+            loadLoreFormatFiles()
         }
     }
 //

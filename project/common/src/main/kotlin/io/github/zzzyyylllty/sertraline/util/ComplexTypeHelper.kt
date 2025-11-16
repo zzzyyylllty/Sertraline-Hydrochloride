@@ -17,10 +17,11 @@ class ComplexTypeHelper(val input: Any?) {
             rawList?.forEach { it ->
                 list.add(Action(
                     it["condition"] as? List<String>?,
+                    it["async"] as? Boolean?,
                     it["kether"] as? List<String>?,
                     it["javascript"] as? String?,
                     it["jexl"] as? String?,
-                    it["fluxon"] as? String?,
+                    it["fluxon"] as? String?
                     // it["kotlinscript"] as? String?,
                 ))
             }

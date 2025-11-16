@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.Sertraline.reflects
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.item.rebuild
+import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
@@ -119,6 +120,16 @@ object DebugCommand {
                 val inv = (sender as Player).inventory
                 val hand = inv.itemInMainHand.rebuild(sender)
                 inv.setItemInMainHand(hand)
+            }
+        }
+    }
+
+    @CommandBody
+    val rebuildLore = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            submitAsync {
+                val inv = (sender as Player).inventory
+                inv.itemInMainHand.rebuildLore(sender)
             }
         }
     }

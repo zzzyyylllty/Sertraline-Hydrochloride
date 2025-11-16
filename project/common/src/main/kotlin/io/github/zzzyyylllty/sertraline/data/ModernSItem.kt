@@ -3,6 +3,8 @@ package io.github.zzzyyylllty.sertraline.data
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
+import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionComponent.FluxonComponentObject
+import io.github.zzzyyylllty.sertraline.function.javascript.EventUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.ItemStackUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
@@ -12,6 +14,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.compileJS
@@ -23,7 +26,8 @@ val defaultData by lazy {
         "mmUtil" to mmUtil,
         "mmJsonUtil" to mmJsonUtil,
         "jsonUtils" to jsonUtils,
-        "ItemStackUtil" to ItemStackUtil
+        "ItemStackUtil" to ItemStackUtil,
+        "EventUtil" to EventUtil
     )
 }
 
@@ -43,20 +47,23 @@ fun deserializeSItem(string: String): ModernSItem? {
 
 data class Action(
     val condition: List<String>? = null,
+    val async: Boolean? = null,
     val kether: List<String>? = null,
     val javaScript: String? = null,
     val jexl: String? = null,
     val fluxon: String? = null,
 //    val kotlinScript: String? = null,
 ) {
-    fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, sqlI: ModernSItem) {
-        val parsedData = data.toMutableMap()
-        parsedData["@SertralineItem"] = sqlI
-        parsedData["@SertralineItemStack"] = i
-        parsedData["@SertralineEvent"] = e
+
+
+
+    fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, cancellableEvent: Cancellable?, sqlI: ModernSItem) {
+
+        var parsedData = data.toMutableMap()
         parsedData["sItem"] = sqlI
         parsedData["bItem"] = i
         parsedData["event"] = e
+        parsedData["cancellableEvent"] = cancellableEvent
         parsedData["player"] = player
         parsedData.putAll(defaultData)
 
@@ -103,7 +110,6 @@ data class Action(
 //        kotlinScript?.let {
 //            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)
 //        }
-
 
     }
 }
