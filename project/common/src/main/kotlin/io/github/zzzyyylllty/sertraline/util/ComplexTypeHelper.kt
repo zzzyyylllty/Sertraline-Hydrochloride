@@ -2,6 +2,9 @@ package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.Action
+import java.math.BigDecimal
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 class ComplexTypeHelper(val input: Any?) {
     fun getAsActions(): Map<String, List<Action>>? {
@@ -24,5 +27,20 @@ class ComplexTypeHelper(val input: Any?) {
             actions[it.key as String] = list
         }
         return actions
+    }
+
+}
+
+fun Any.toBooleanTolerance(): Boolean {
+    return when (this) {
+        is Boolean -> this
+        is Int -> this > 0
+        is String -> this == "true" || this == "1"
+        is Double -> this > 0.0
+        is Float -> this > 0.0
+        is Byte -> (this == 1.toByte())
+        is Short -> this > 0
+        is Long -> this > 0
+        else -> this.toString().toBooleanStrictOrNull() ?: false
     }
 }
