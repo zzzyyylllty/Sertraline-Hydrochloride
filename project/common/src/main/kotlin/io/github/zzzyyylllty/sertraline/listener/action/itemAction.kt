@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.action.applyActions
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
+import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -70,17 +71,20 @@ fun onPreAttack(e: PrePlayerAttackEntityEvent) {
 
 @SubscribeEvent
 fun onAttack(e: EntityDamageByEntityEvent) {
-    if (e.damager is Player) {
-        val player = e.damager as Player
-        throttleAction(
-            ThrottleActionLink(player.uniqueId.toString(), "onAttack"),
-            ThrottleActionParam(player, e, e, player.activeItem, player.activeItemHand.ordinal)
-        )
+    val player = e.damageSource.causingEntity as? Player ?: return
+    var item: ItemStack? = null
+    val dEntity = e.damageSource.directEntity
+    if (dEntity is AbstractArrow) {
+        item = dEntity.weapon
+    } else if (dEntity is Player) {
+        item = dEntity.inventory.itemInMainHand
     }
+    throttleAction(ThrottleActionLink(player.uniqueId.toString(), "onAttack"), ThrottleActionParam(player, e, e, item))
 }
 
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
+
     throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.hand.ordinal))
 }
 
