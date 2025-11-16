@@ -48,6 +48,15 @@ placeholders:
   plus: "+"
   minus: "-"
 
+rebuild:
+  keep-data:
+    - sertraline_data
+    - sertraline_revision
+# keep-component:
+#   - minecraft:custom_name
+
+
+
 # 发包相关功能
 packet:
   # 是否注册包处理器

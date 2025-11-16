@@ -109,13 +109,13 @@ data class Action(
 }
 
 data class ItemData(
-    val itemVal: Map<String, Any>? = mapOf(),
-    val itemVar: Map<String, Any>? = mapOf(),
-    val itemDynamic: Map<String, Any>? = mapOf(),
+    val itemVal: Map<String, Any?>? = mapOf(),
+    val itemVar: Map<String, Any?>? = mapOf(),
+    val itemDynamic: Map<String, Any?>? = mapOf(),
     val itemId: String? = null,
 ) {
-    fun collect(): Map<String, Any> {
-        val map = mutableMapOf<String, Any>()
+    fun collect(): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>()
         itemVal?.let { map.putAll(it) }
         itemVar?.let { map.putAll(it) }
         itemDynamic?.let { map.putAll(it) }

@@ -12,6 +12,9 @@ import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
+import io.github.zzzyyylllty.sertraline.reflect.asNMSCopyMethod
+import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMS
+import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMSFiltered
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -22,8 +25,10 @@ import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
 import taboolib.module.kether.KetherTransfer.cacheMap
+import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -110,9 +115,27 @@ object DebugCommand {
     @CommandBody
     val rebuild = subCommand {
         execute<CommandSender> { sender, context, argument ->
+            submitAsync {
+                val inv = (sender as Player).inventory
+                val hand = inv.itemInMainHand.rebuild(sender)
+                inv.setItemInMainHand(hand)
+            }
+        }
+    }
+    @CommandBody
+    val testComponents = subCommand {
+        execute<CommandSender> { sender, context, argument ->
             val inv = (sender as Player).inventory
-            val hand = inv.itemInMainHand.rebuild(sender)
-            inv.setItemInMainHand(hand)
+            val components = asNMSCopy(inv.itemInMainHand).getComponentsNMS()
+            sender.sendStringAsComponent(components.toString())
+        }
+    }
+    @CommandBody
+    val testComponentsFiltered = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val inv = (sender as Player).inventory
+            val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
+            sender.sendStringAsComponent(components.toString())
         }
     }
 

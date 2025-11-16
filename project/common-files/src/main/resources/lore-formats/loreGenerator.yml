@@ -1,27 +1,47 @@
-zhcnloreformat:
+loreformat:
   settings:
     # 覆盖原版lore
+    # Overwrite the original lore
     overwrite: true
+    # 发包模式
+    # Visual mode (packet-based)
+    visual: true
   elements:
     # 不填写key则该行总是出现
+    # If a key is not specified, this line will always appear
     - content: "<#aabbcc>--------------------"
     # 如果是列表 则是列表中的每一行
+    # If the key points to a list, this format will be applied to each item in the list
     - key: "xbuilder:lore"
       content: "<!i><#999999>| {value}"
     - key: "sertraline:tier"
       content: "<!i><white>品质: <blue>{value}"
     # 如果是单项 则是该内容toString之后的内容
+    # If the key points to a single value, it will be converted to a string.
     # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
+    # If the number is positive, {plus} will be replaced with "+" (configurable).
     # 如果是负数 minus会被替换为-（其他内容可在config内决定）
+    # If the number is negative, {minus} will be replaced with "-" (configurable).
     - key: "mmo:attack-damage" # [config]sertraline.lore-format # zhcnloreformat
       content: "<aqua>攻击伤害 {plus}{minus}{value}"
-    - key: "*sertraline.vals.custom" # 从配置文件直接读取
+    # *sertraline.vals.custom 从配置文件直接读取
+    # *sertraline.vals.custom reads the value directly from the configuration file
+    - key: "*sertraline.vals.custom"
       content: "<aqua>自定义内容:从配置文件读取 <gray>{plus}{value}"
-      # - content: "效果列表:"
-      # any包含一条即显示, all全部包含, not不包含任何一条才会显示,not_all不包含全部
-      #   lineMode: ANY
-      #   lineRequire:
-      #     - "*sertraline.vals.effect"
+    - content: "效果列表:"
+      # ANY: 只要有一个条件满足就显示
+      # ALL: 必须所有条件都满足才显示
+      # NOT: 只要有一个条件不满足就显示 (或者说，所有条件都不存在)
+      # NOT_ALL: 不需要所有条件都满足 (只要有一个条件不存在即可)
+      # ---
+      # ANY: Displays if at least one of the required keys exists.
+      # ALL: Displays only if all of the required keys exist.
+      # NOT: Displays only if none of the required keys exist.
+      # NOT_ALL: Displays if at least one of the required keys does not exist.
+      lineMode: ANY
+      lineRequire:
+        - "*sertraline.vals.effect"
     - key: "*sertraline.vals.effect"
       content: "<blue>效果: {value}"
     - content: "<#aabbcc>--------------------"
+

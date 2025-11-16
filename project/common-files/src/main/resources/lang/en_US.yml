@@ -1,3 +1,5 @@
+Enable: "Enabling Sertraline..."
+Disable: "Shutting down Sertraline..."
 Error_Component_Provider_Not_Found: "An error occurred: Component Provider {0} not found."
 Error_Invalid_Priority: "An error occurred: Invalid event listener type {0}."
 Error_External_ItemStack_Generation_Failed: "An error occurred: Failed to generate external item {0}. Exception: {1}"

@@ -36,34 +36,6 @@ import java.util.*
 import javax.script.CompiledScript
 
 
-@RuntimeDependencies(
-    RuntimeDependency(
-        "!org.jetbrains.kotlin:kotlin-scripting-common:2.0.0",
-        test = "!kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory",
-        relocate = ["!kotlin.", "!kotlin200.", "!kotlin.script.", "!kotlin200.script."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        "!org.jetbrains.kotlin:kotlin-scripting-jvm:2.0.0",
-        test = "!kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory",
-        relocate = ["!kotlin.", "!kotlin200.", "!kotlin.script.", "!kotlin200.script."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        "!org.jetbrains.kotlin:kotlin-scripting-jvm-host:2.0.0",
-        test = "!kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory",
-        relocate = ["!kotlin.", "!kotlin200.", "!kotlin.script.", "!kotlin200.script."],
-        transitive = false
-    ),
-    RuntimeDependency(
-        "!org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0",
-        test = "!kotlin.script.experimental.jsr223.KotlinJsr223DefaultScriptEngineFactory",
-        relocate = ["!kotlin.", "!kotlin200.", "!kotlin.script.", "!kotlin200.script."],
-        transitive = false
-    )
-)
-class RuntimeEnv
-
 object Sertraline : Plugin() {
 
     val plugin by lazy { this }

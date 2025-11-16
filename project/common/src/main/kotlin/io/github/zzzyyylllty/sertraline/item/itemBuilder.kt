@@ -3,19 +3,31 @@ package io.github.zzzyyylllty.sertraline.item
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import io.github.projectunified.uniitem.all.AllItemProvider
 import io.github.projectunified.uniitem.api.ItemKey
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
+import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMSFiltered
+import io.github.zzzyyylllty.sertraline.reflect.setComponent
+import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
+import io.github.zzzyyylllty.sertraline.util.parseMapNBT
+import io.github.zzzyyylllty.sertraline.util.parseNBT
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.util.asList
 import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
+import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
@@ -49,8 +61,13 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
 
 
 
-fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1): ItemStack {
-    val template = itemSerializer(template, player) ?: return ItemStack(Material.GRASS_BLOCK)
+fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack {
+    val pTemplate = itemMap[template] ?: return ItemStack(Material.GRASS_BLOCK)
+    val data = pTemplate.data.toMutableMap()
+    overrideData?.let {
+        it.forEach { it -> data[it.key] = it.value }
+    }
+    val template = itemSerializer(pTemplate.copy(data = data), player) ?: return ItemStack(Material.GRASS_BLOCK)
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
@@ -62,7 +79,27 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 
 
 fun ItemStack.rebuild(player: Player): ItemStack {
+
     val tag = this.getItemTag(true)
-    val regen = sertralineItemBuilder(tag["sertraline_id"]?.asString() ?: return this, player)
-    return regen
+    val sID = tag["sertraline_id"]?.asString() ?: return this
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
+    val newTag = regen.getItemTag()
+    keep.forEach {
+        newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())
+    }
+    var rewrited = regen.setItemTag(newTag)
+    var rewritedNMS = asNMSCopy(rewrited)
+
+    val keepComp = config["rebuild.keep-component"].asListEnhanded() ?: listOf()
+    if (!keepComp.isEmpty()) {
+        val orgComponent = asNMSCopy(this).getComponentsNMSFiltered()
+        keepComp.forEach {
+            orgComponent[it]?.let { value -> rewritedNMS = rewritedNMS.setComponentNMS(it, value) }
+        }
+        rewrited = asBukkitCopy(rewrited)
+    }
+    return rewrited
 }
