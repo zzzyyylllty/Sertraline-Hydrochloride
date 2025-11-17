@@ -5,9 +5,9 @@ import java.io.File
 
 fun multiExtensionLoader(file: File): Map<String, Any?>? {
 
-    val extension = file.extension.toLowerCase()
-    val format = when (extension) {
+    val format = when (val extension = file.extension.toLowerCase()) {
         "yml" -> "yaml"
+        "tml" -> "toml"
         else -> extension
     }
     return parseToMap(file.readText(), format)

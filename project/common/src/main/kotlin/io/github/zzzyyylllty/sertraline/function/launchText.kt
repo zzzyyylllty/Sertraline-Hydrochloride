@@ -11,6 +11,7 @@ import taboolib.common.platform.function.pluginVersion
 import taboolib.common.platform.function.runningPlatform
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.MinecraftVersion.versionId
+import taboolib.platform.util.asLangText
 
 @Awake(LifeCycle.ENABLE)
 fun launchText() {
@@ -33,17 +34,17 @@ fun launchText() {
     consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| \\$$$$$$  |\\$$$$$$$\\ $$ |        \\$$$$  |$$ |      \\$$$$$$$ |$$ |$$ |$$ |  $$ |\\$$$$$$$\\  |")
     consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>|  \\______/  \\_______|\\__|         \\____/ \\__|       \\_______|\\__|\\__|\\__|  \\__| \\_______| |")
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringAsComponent("<dark_aqua>Liminal Skyline Series Plugin")
-    consoleSender.sendStringAsComponent("<gray>Designed by <#ff66cc>AkaCandyKAngel")
-    consoleSender.sendStringAsComponent("<gray>Special Thanks: <blue>[<gradient:dark_aqua:aqua:dark_aqua>${specialThanks.joinToString("<dark_gray>, </dark_gray>")}<blue>]")
-    consoleSender.sendStringAsComponent("<gray>Powered by <#66ccff>TabooLib <gold>6.2")
+    consoleSender.sendStringWithPrefix("<dark_aqua>",consoleSender.asLangText("WelcomeSeries"))
+    consoleSender.sendStringWithPrefix("<dark_aqua>",consoleSender.asLangText("DesignBy", "<#ff66cc>AkaCandyKAngel</#ff66cc>"))
+    consoleSender.sendStringWithPrefix("<dark_aqua>",consoleSender.asLangText("SpecialThanks","<aqua>[<dark_aqua>${specialThanks.joinToString("<dark_gray>, </dark_gray>")}<aqua>]"))
+    consoleSender.sendStringWithPrefix("<dark_aqua>",consoleSender.asLangText("PoweredBy", "<#66ccff>TabooLib <gold>6.2"))
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome1"))
-    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome2", premiumDisplayName, "<reset>$pluginVersion", "${runningPlatform.name} - $versionId"))
+    consoleSender.sendStringWithPrefix("<#88ccff>", console.asLangText("Welcome1"))
+    consoleSender.sendStringWithPrefix("<#88ccff>", console.asLangText("Welcome2", premiumDisplayName, "$pluginVersion<reset>", "${runningPlatform.name} - $versionId"))
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome3", "https://github.com/zzzyyylllty"))
-    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome4", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride"))
-    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome5", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride/wiki"))
+    consoleSender.sendStringWithPrefix("<#66bbff>", console.asLangText("Welcome3", "https://github.com/zzzyyylllty"))
+    consoleSender.sendStringWithPrefix("<#66bbff>", console.asLangText("Welcome4", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride"))
+    consoleSender.sendStringWithPrefix("<#66bbff>", console.asLangText("Welcome5", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride/wiki"))
     consoleSender.sendStringAsComponent(" ")
     if (VersionHelper().isSertralinePremium) consoleSender.sendStringWithPrefix("<gradient:red:yellow:green:aqua:light_purple>", console.asLangText("PremiumVersionWelcome", premiumDisplayName))
     consoleSender.sendStringAsComponent(" ")

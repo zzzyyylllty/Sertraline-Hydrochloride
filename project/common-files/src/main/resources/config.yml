@@ -6,7 +6,16 @@ lang: en_US
 
 # 物品修订器 用于实现物品更新 尚未实现
 # Item Revision for Item updating
-itemRevision: {}
+item-revision: {}
+
+file-load:
+
+  # If you want to use \ like \. , You must use \\. instead.
+  item: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
+  lore-format: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
+  mapping: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
+
+
 
 preload:
 

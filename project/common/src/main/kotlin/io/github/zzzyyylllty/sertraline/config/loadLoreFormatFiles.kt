@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.config
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
 import io.github.zzzyyylllty.sertraline.data.LineMode
 import io.github.zzzyyylllty.sertraline.data.LoreElement
@@ -36,6 +37,10 @@ fun loadLoreFormatFiles() {
 }
 fun loadLoreFormatFile(file: File) {
     devLog("Loading file ${file.name}")
+    if (!checkRegexMatch(file.name, (config["file-load.lore-format"] ?:".*").toString())) {
+        devLog("${file.name} not match regex, skipping...")
+        return
+    }
     val map = multiExtensionLoader(file)
     if (map != null) for (it in map.entries) {
         val key = it.key

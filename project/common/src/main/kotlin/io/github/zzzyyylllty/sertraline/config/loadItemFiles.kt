@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.config
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.infoL
@@ -36,6 +37,10 @@ fun loadItemFiles() {
 }
 fun loadItemFile(file: File) {
     devLog("Loading file ${file.name}")
+    if (!checkRegexMatch(file.name, (config["file-load.item"] ?:".*").toString())) {
+        devLog("${file.name} not match regex, skipping...")
+        return
+    }
     /*
     val yaml = Yaml()
     val obj = yaml.load<Map<String?, Any?>?>(file.inputStream())

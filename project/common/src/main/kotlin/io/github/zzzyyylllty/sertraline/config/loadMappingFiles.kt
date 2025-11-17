@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.config
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
@@ -31,6 +32,10 @@ fun loadMappingFile(file: File) {
     devLog("Loading file ${file.name}")
 
     val map = multiExtensionLoader(file)
+    if (!checkRegexMatch(file.name, (config["file-load.mapping"] ?:".*").toString())) {
+        devLog("${file.name} not match regex, skipping...")
+        return
+    }
     val entries = map?.entries ?: emptyList()
     for (it in entries) {
         val key = it.key

@@ -95,3 +95,7 @@ fun getFeatureDefault(input: Map<*, *>?, feature: String): Any? {
     }
     return null
 }
+
+fun checkRegexMatch(input: String, regex: String): Boolean {
+    return input.matches(regex.toRegex())
+}
