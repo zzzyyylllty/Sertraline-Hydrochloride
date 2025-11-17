@@ -46,9 +46,41 @@ taboolib {
     relocate("org.kotlincrypto.hash","io.github.zzzyyylllty.sertraline.library.org.kotlincrypto.hash")
 }
 
+//tasks {
+//    jar {
+//        archiveFileName.set("${rootProject.name}-${archiveFileName.get().substringAfter('-')}")
+//        rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
+//    }
+//}
+
 tasks {
+
+    val taboolibMainTask = named("taboolibMainTask")
+
+    val baseJarFile = layout.buildDirectory.file("libs/${rootProject.name}-${rootProject.version}-Premium.jar")
+
+    val freeJar by registering(Jar::class) {
+        group = "build"
+        description = "Generate FREE version jar by filtering premium classes"
+
+        dependsOn(taboolibMainTask)
+
+        archiveFileName.set("${rootProject.name}-${version}-Free.jar")
+
+        // 从taboolibMainTask产物复制并过滤premium包
+        from(zipTree(baseJarFile)) {
+            // 过滤掉所有premium包相关路径，示例路径需根据实际项目修改
+            exclude("io/github/zzzyyylllty/sertraline/premium/*")
+        }
+    }
+
+    named("build") {
+        dependsOn(freeJar)
+    }
+
+
     jar {
-        archiveFileName.set("${rootProject.name}-${archiveFileName.get().substringAfter('-')}")
+        archiveFileName.set("${rootProject.name}-${rootProject.version}-Premium.jar")
         rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
     }
 }

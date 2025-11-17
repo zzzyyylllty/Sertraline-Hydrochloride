@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.util
 
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.MinecraftVersion.versionId
 
@@ -12,7 +13,7 @@ class VersionHelper {
     }
     val isSertralinePremium by lazy {
         try {
-            val classInstance = Class.forName("io.github.zzzyyylllty.sertraline.PremiumHelper")
+            val classInstance = Class.forName("io.github.zzzyyylllty.sertraline.premium.PremiumHelper")
             return@lazy (classInstance != null)
         } catch (e: ClassNotFoundException) {
             return@lazy false

@@ -8,31 +8,44 @@ import org.bukkit.command.CommandSender
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.function.pluginVersion
+import taboolib.common.platform.function.runningPlatform
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.MinecraftVersion.versionId
 
 @Awake(LifeCycle.ENABLE)
 fun launchText() {
 
-    val premiumDisplayName = console.asLangText(if (VersionHelper().isSertralinePremium) "PremiumVersion" else "FreeVersion")
+    val premiumDisplayName = if (VersionHelper().isSertralinePremium) {
+        "<gradient:yellow:gold>" + console.asLangText("PremiumVersion")
+    } else {
+        "<gradient:green:aqua>" + console.asLangText("FreeVersion")
+    }
+
+    val specialThanks = listOf("MAORI","NK_XingChen","Jesuzi","Blue_ruins(BlueIce)","Zero","TheAchu","CedricHunsen")
 
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc> $$$$$$\\                        $$\\                         $$\\ $$\\                      |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc>$$  __$$\\                       $$ |                        $$ |\\__|                     |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc>$$ /  \\__| $$$$$$\\   $$$$$$\\  $$$$$$\\    $$$$$$\\   $$$$$$\\  $$ |$$\\ $$$$$$$\\   $$$$$$\\   |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc>\\$$$$$$\\  $$  __$$\\ $$  __$$\\ \\_$$  _|  $$  __$$\\  \\____$$\\ $$ |$$ |$$  __$$\\ $$  __$$\\  |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc> \\____$$\\ $$$$$$$$ |$$ |  \\__|  $$ |    $$ |  \\__| $$$$$$$ |$$ |$$ |$$ |  $$ |$$$$$$$$ | |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc>$$\\   $$ |$$   ____|$$ |        $$ |$$\\ $$ |      $$  __$$ |$$ |$$ |$$ |  $$ |$$   ____| |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc>\\$$$$$$  |\\$$$$$$$\\ $$ |        \\$$$$  |$$ |      \\$$$$$$$ |$$ |$$ |$$ |  $$ |\\$$$$$$$\\  |")
-    consoleSender.sendStringAsComponent("<gradient:#66ffff:#99ccff:#aa99cc> \\______/  \\_______|\\__|         \\____/ \\__|       \\_______|\\__|\\__|\\__|  \\__| \\_______| |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>|  $$$$$$\\                        $$\\                         $$\\ $$\\                      |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| $$  __$$\\                       $$ |                        $$ |\\__|                     |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| $$ /  \\__| $$$$$$\\   $$$$$$\\  $$$$$$\\    $$$$$$\\   $$$$$$\\  $$ |$$\\ $$$$$$$\\   $$$$$$\\   |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| \\$$$$$$\\  $$  __$$\\ $$  __$$\\ \\_$$  _|  $$  __$$\\  \\____$$\\ $$ |$$ |$$  __$$\\ $$  __$$\\  |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>|  \\____$$\\ $$$$$$$$ |$$ |  \\__|  $$ |    $$ |  \\__| $$$$$$$ |$$ |$$ |$$ |  $$ |$$$$$$$$ | |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| $$\\   $$ |$$   ____|$$ |        $$ |$$\\ $$ |      $$  __$$ |$$ |$$ |$$ |  $$ |$$   ____| |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>| \\$$$$$$  |\\$$$$$$$\\ $$ |        \\$$$$  |$$ |      \\$$$$$$$ |$$ |$$ |$$ |  $$ |\\$$$$$$$\\  |")
+    consoleSender.sendStringAsComponent("<gradient:#bbeeff:#99ccff:#aa99cc:#9966aa>|  \\______/  \\_______|\\__|         \\____/ \\__|       \\_______|\\__|\\__|\\__|  \\__| \\_______| |")
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringWithPrefix("<#66ffff>", console.asLangText("Welcome1", pluginVersion))
-    consoleSender.sendStringWithPrefix("<#66ffff>", console.asLangText("Welcome2", premiumDisplayName))
+    consoleSender.sendStringAsComponent("<dark_aqua>Liminal Skyline Series Plugin")
+    consoleSender.sendStringAsComponent("<gray>Designed by <#ff66cc>AkaCandyKAngel")
+    consoleSender.sendStringAsComponent("<gray>Special Thanks: <blue>[<gradient:dark_aqua:aqua:dark_aqua>${specialThanks.joinToString("<dark_gray>, </dark_gray>")}<blue>]")
+    consoleSender.sendStringAsComponent("<gray>Powered by <#66ccff>TabooLib <gold>6.2")
     consoleSender.sendStringAsComponent(" ")
-    consoleSender.sendStringWithPrefix("<#66ffff>", console.asLangText("Welcome3", "https://github.com/zzzyyylllty"))
-    consoleSender.sendStringWithPrefix("<#66ffff>", console.asLangText("Welcome4", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride"))
-    consoleSender.sendStringWithPrefix("<#66ffff>", console.asLangText("Welcome5", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride/wiki"))
+    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome1"))
+    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome2", premiumDisplayName, "<reset>$pluginVersion", "${runningPlatform.name} - $versionId"))
     consoleSender.sendStringAsComponent(" ")
-    if (VersionHelper().isSertralinePremium) consoleSender.sendStringWithPrefix("<gradient:red:yellow:green:aqua:light_purple>", console.asLangText("Welcome2", premiumDisplayName))
+    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome3", "https://github.com/zzzyyylllty"))
+    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome4", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride"))
+    consoleSender.sendStringWithPrefix("<#cc88ff>", console.asLangText("Welcome5", "https://github.com/zzzyyylllty/Sertraline-Hydrochloride/wiki"))
+    consoleSender.sendStringAsComponent(" ")
+    if (VersionHelper().isSertralinePremium) consoleSender.sendStringWithPrefix("<gradient:red:yellow:green:aqua:light_purple>", console.asLangText("PremiumVersionWelcome", premiumDisplayName))
     consoleSender.sendStringAsComponent(" ")
 
 }

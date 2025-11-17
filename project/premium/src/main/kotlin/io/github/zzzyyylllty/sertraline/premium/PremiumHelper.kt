@@ -1,4 +1,4 @@
-package io.github.zzzyyylllty.sertraline
+package io.github.zzzyyylllty.sertraline.premium
 
 /**
  * It seems you found this.

@@ -1,6 +1,6 @@
 Enable: "Enabling Sertraline..."
 Welcome1: "> Thank you for choosing Sertraline."
-Welcome2: "> Current version is {0}"
+Welcome2: "> Current version is {0} - {1}, Running on {2}"
 Welcome3: "> Author Github Main Page: {0}"
 Welcome4: "> Project Github Page: {0}"
 Welcome5: "> User Manual: {0}"
