@@ -28,8 +28,8 @@ taboolib {
             // name("XXX").optional(true)
         }
     }
-    relocate("top.maplex.arim","xxx.xxx.arim")
-    relocate("ink.ptms.um","xx.um")
+    relocate("top.maplex.arim","io.github.zzzyyylllty.sertraline.library.arim")
+    relocate("ink.ptms.um","io.github.zzzyyylllty.sertraline.library.um")
     // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.com.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
     relocate("kotlinx.serialization", "kotlinx.serialization170")
@@ -49,7 +49,6 @@ taboolib {
 tasks {
     jar {
         archiveFileName.set("${rootProject.name}-${archiveFileName.get().substringAfter('-')}")
-//        destinationDirectory.set(file("F:\\20250207\\Ets\\plugins"))
         rootProject.subprojects.forEach { from(it.sourceSets["main"].output) }
     }
 }

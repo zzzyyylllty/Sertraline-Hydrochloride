@@ -160,6 +160,8 @@ subprojects {
         taboo("com.github.ben-manes.caffeine:caffeine:3.2.3")
         taboo("com.google.code.gson:gson:2.10.1")
         taboo("org.kotlincrypto.hash:sha2:0.7.0")
+        taboo("org.graalvm.polyglot:polyglot:25.0.1")
+        taboo("org.graalvm.polyglot:js:25.0.1")
     }
 
     tasks.withType<KotlinCompile> {

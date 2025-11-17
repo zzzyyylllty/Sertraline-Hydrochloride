@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.item.adapter
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XItemStack

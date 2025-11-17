@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionComponent.FluxonComponentObject
 import io.github.zzzyyylllty.sertraline.function.javascript.EventUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.ItemStackUtil
+import io.github.zzzyyylllty.sertraline.function.javascript.ThreadUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
@@ -27,7 +28,8 @@ val defaultData by lazy {
         "mmJsonUtil" to mmJsonUtil,
         "jsonUtils" to jsonUtils,
         "ItemStackUtil" to ItemStackUtil,
-        "EventUtil" to EventUtil
+        "EventUtil" to EventUtil,
+        "ThreadUtil" to ThreadUtil
     )
 }
 
