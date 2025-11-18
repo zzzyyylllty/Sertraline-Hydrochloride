@@ -39,80 +39,102 @@ import javax.script.CompiledScript
 //@RuntimeDependencies(
 //    RuntimeDependency(
 //        value = "!com.google.code.gson:gson:2.10.1",
-//        relocate = ["!com.google.gson", "!io.github.zzzyyylllty.sertraline.library.com.google.gson"]
+//        relocate = ["!com.google.gson", "!io.github.zzzyyylllty.sertraline.library.gson"]
 //    ),
-////    RuntimeDependency(
-////        value = "!org.graalvm.polyglot:js:25.0.1",
-////        repository = "https://repo1.maven.org/maven2/",
-////        relocate = ["!com.google.gson", "!io.github.zzzyyylllty.sertraline.library.org.graalvm.polyglot.js"]
-////    ),
-////    RuntimeDependency(
-////        value = "!org.graalvm.polyglot:polyglot:25.0.1",
-////        repository = "https://repo1.maven.org/maven2/",
-////        relocate = ["!org.graalvm.polyglot", "!io.github.zzzyyylllty.sertraline.library.org.graalvm.polyglot.polyglot"]
-////    ),
-////    RuntimeDependency(
-////        value = "!org.kotlincrypto.hash:sha2:0.7.0",
-////        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.library.org.kotlincrypto.hash"]
-////    ),
+//    RuntimeDependency(
+//        value = "!org.graalvm.polyglot:js:25.0.1",
+//        // repository = "https://repo1.maven.org/maven2",
+//        relocate = ["!graalvm.polyglot.js", "!io.github.zzzyyylllty.sertraline.library.js"]
+//    ),
+//    RuntimeDependency(
+//        value = "!org.graalvm.polyglot:polyglot:25.0.1",
+//        // repository = "https://repo1.maven.org/maven2",
+//        relocate = ["!org.graalvm.polyglot", "!io.github.zzzyyylllty.sertraline.library.polyglot"]
+//    ),
+//    RuntimeDependency(
+//        value = "!org.kotlincrypto.hash:sha2:0.7.0",
+//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.library.hash"]
+//    ),
 //    RuntimeDependency(
 //        value = "!com.github.ben-manes.caffeine:caffeine:3.2.3",
-//        relocate = ["!com.github.ben-manes.caffeine", "!io.github.zzzyyylllty.sertraline.library.com.github.ben-manes.caffeine"]
+//        relocate = ["!com.github.benmanes.caffeine", "!io.github.zzzyyylllty.sertraline.library.caffeine"]
 //    ),
-////    RuntimeDependency(
-////        value = "!org.tabooproject.fluxon:core:1.2.18",
-////        repository = "https://repo.tabooproject.org/repository/releases/",
-////        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.org.tabooproject.fluxon"]
-////    ),
+//    RuntimeDependency(
+//        value = "!org.tabooproject.fluxon:core:1.2.18",
+//        repository = "https://repo.tabooproject.org/repository/releases",
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        transitive = false  // 不下载传递依赖
+//    ),
+//    RuntimeDependency(
+//        value = "!org.tabooproject.fluxon:core-console:1.2.18",
+//        repository = "https://repo.tabooproject.org/repository/releases",
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        transitive = false  // 不下载传递依赖
+//    ),
+//    RuntimeDependency(
+//        value = "!org.tabooproject.fluxon:core-jsr223:1.2.18",
+//        repository = "https://repo.tabooproject.org/repository/releases",
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        transitive = false  // 不下载传递依赖
+//    ),
 //    RuntimeDependency(
 //        value = "!com.mojang:datafixerupper:8.0.16",
-//        repository = "https://libraries.minecraft.net",
-//        relocate = ["!com.mojang.datafixerupper", "!io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper"]
+//        // repository = "https://libraries.minecraft.net",
+//        relocate = ["!com.mojang.datafixerupper", "!io.github.zzzyyylllty.sertraline.library.datafixerupper"]
 //    ),
 //    RuntimeDependency(
 //        value = "!io.github.projectunified:uni-item-all:2.3.1",
-//        relocate = ["!io.github.projectunified.uniitem", "!io.github.zzzyyylllty.sertraline.library.io.github.projectunified.uniitem"]
+//        relocate = ["!io.github.projectunified.uniitem", "!io.github.zzzyyylllty.sertraline.library.uniitem"],
+//        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-serializer-legacy:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.net.kyori"]
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-api:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.net.kyori"]
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-minimessage:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.net.kyori"]
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-nbt:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.net.kyori"]
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1",
-//        repository = "http://mvnrepository.com/artifact",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.core:jackson-databind:2.16.1",
-//        repository = "http://mvnrepository.com/artifact",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//    ),
+//    RuntimeDependency(
+//        value = "!com.fasterxml.jackson.core:jackson-annotations:2.16.1",
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1",
-//        repository = "http://mvnrepository.com/artifact",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.16.1",
-//        repository = "http://mvnrepository.com/artifact",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!top.maplex.arim:Arim:1.3.2",
-//        repository = "https://repo.tabooproject.org/repository/releases/",
-//        relocate = ["!top.maplex.arim", "!io.github.zzzyyylllty.sertraline.library.top.maplex.arim"]
+//        repository = "https://repo.tabooproject.org/repository/releases",
+//        relocate = ["!top.maplex.arim", "!io.github.zzzyyylllty.sertraline.library.arim"]
+//    ),
+//    RuntimeDependency(
+//        value = "!org.kotlincrypto.hash:sha2:0.7.0",
+//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.library.hash"]
 //    ),
 //)
 class RuntimeEnv
@@ -130,36 +152,35 @@ class RuntimeEnv
  */
 object Sertraline : Plugin() {
 
+
+    @Config("config.yml")
+    lateinit var config: Configuration
+    
     val plugin by lazy { this }
-    var dataFolder = nativeDataFolder()
+    val dataFolder by lazy { nativeDataFolder() }
     val console by lazy { console() }
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     val host by lazy { config.getHost("database") }
     val dataSource by lazy { host.createDataSource() }
-    val fluxonInst by lazy { FluxonRuntime.getInstance() }
+    var fluxonInst: FluxonRuntime? = null
 
     var itemMap = LinkedHashMap<String, ModernSItem>()
-    var mappings = LinkedHashMap<String, List<String>?>()
-    var loreFormats = LinkedHashMap<String, LoreFormat>()
-    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val itemManager = ItemProcessorManager()
-    val tagManager = TagProcessorManager()
+    var mappings = LinkedHashMap<String, List<String>?>() 
+    var loreFormats = LinkedHashMap<String, LoreFormat>() 
+    val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
+    val itemManager by lazy { ItemProcessorManager() }
+    val tagManager by lazy { TagProcessorManager() }
     var devMode = true
-    val reflects = ReflectTargets()
-    val configUtil = ConfigUtil()
-    val ketherScriptCache = LinkedHashMap<String, KetherShell.Cache?>()
-    val jsScriptCache = LinkedHashMap<String, CompiledScript?>()
-    val jexlScriptCache = LinkedHashMap<String, JexlCompiledScript?>()
-    val itemCache = LinkedHashMap<String, Map<String, Any?>?>()
+    val reflects by lazy { ReflectTargets() }
+    val configUtil by lazy { ConfigUtil() }
+    val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
+    val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
+    val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
+    val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
 
-    // Arim Start
-    val evaluator by lazy { ConditionEvaluator() }
-    val fixedCalculator by lazy { FixedCalculator() }
-    val variableCalculator by lazy { VariableCalculator() }
-
-    @Config("config.yml")
-    lateinit var config: Configuration
-
+    override fun onLoad() {
+        fluxonInst = FluxonRuntime.getInstance()
+    }
 
     override fun onEnable() {
 

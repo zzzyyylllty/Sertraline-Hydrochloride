@@ -31,6 +31,7 @@ import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
 import taboolib.platform.util.deserializeToItemStack
 import taboolib.platform.util.serializeToByteArray
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 
 private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 private val packetLore by lazy { config.getBoolean("packet.packet-lore", true) }

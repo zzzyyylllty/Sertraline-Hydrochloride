@@ -1,0 +1,20 @@
+[
+  {
+    "value": "com.github.ben-manes.caffeine:caffeine:$caffeineVersion",
+    "relocate": [
+      "com.github.benmanes.caffeine",
+      "io.github.zzzyyylllty.sertraline.library.caffeine"
+    ],
+    "test": [
+      "com.github.benmanes.caffeine.cache.Caffeine"
+    ],
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  }
+]

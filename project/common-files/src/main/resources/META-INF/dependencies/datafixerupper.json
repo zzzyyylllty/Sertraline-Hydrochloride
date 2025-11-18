@@ -1,0 +1,20 @@
+[
+  {
+    "value": "com.mojang:datafixerupper:$datafixerupperVersion",
+    "relocate": [
+      "com.mojang.datafixers",
+      "io.github.zzzyyylllty.sertraline.library.datafixers"
+    ],
+    "test": [
+      "com.mojang.datafixers.DataFixerUpper"
+    ],
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  }
+]

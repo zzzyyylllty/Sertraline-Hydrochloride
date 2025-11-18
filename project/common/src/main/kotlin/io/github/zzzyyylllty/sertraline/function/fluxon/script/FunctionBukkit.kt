@@ -37,7 +37,7 @@ import java.util.logging.Logger
 
 @Awake(LifeCycle.ENABLE)
 fun registerFunctionBukkit() {
-    FunctionBukkit.init(fluxonInst)
+    FunctionBukkit.init(fluxonInst!!)
 }
 
 

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import kotlin.collections.Map.Entry
 
 data class ConfigNode(
@@ -58,7 +59,7 @@ fun flagHelper(arg: String): LinkedHashMap<NodeTag, String?> {
 fun nodeTagHelper(arg: String) : NodeTag{
     return when (arg.toUpperCase()) {
         "POSITIVE" -> NodeTag.POSITIVE
-        "VERSION","VER" -> NodeTag.VERSION
+        "VERSION", "VER" -> NodeTag.VERSION
         "PERCENTAGE" -> NodeTag.PERCENTAGE
         "OPTIONAL" -> NodeTag.OPTIONAL
         else -> throw IllegalArgumentException("node $arg not found.")

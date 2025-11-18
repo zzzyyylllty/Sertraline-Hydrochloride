@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 
 data class GuiItem(
     val nodeName: String,

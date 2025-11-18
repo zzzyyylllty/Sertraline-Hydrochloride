@@ -1,0 +1,20 @@
+[
+  {
+    "value": "com.google.code.gson:gson:$gsonVersion",
+    "test": [
+      "com.google.gson.Gson"
+    ],
+    "relocate": [
+      "com.google.gson",
+      "io.github.zzzyyylllty.sertraline.library.gson"
+    ],
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  }
+]

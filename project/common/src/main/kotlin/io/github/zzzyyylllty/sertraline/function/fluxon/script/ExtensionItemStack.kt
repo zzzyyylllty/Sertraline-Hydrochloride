@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmStrictUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import io.papermc.paper.registry.RegistryKey
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -32,7 +33,7 @@ import taboolib.library.xseries.XMaterial
 
 @Awake(LifeCycle.ENABLE)
 fun registerExtensionItemStack() {
-    ExtensionItemStack.init(fluxonInst)
+    ExtensionItemStack.init(fluxonInst!!)
 }
 
 object ExtensionItemStack {
@@ -325,7 +326,7 @@ object ExtensionItemStack {
                     val value = it.value
                     val ench = if (key is Enchantment) key
                     else if (key is String) {
-                        Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.uppercase())
+                        Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.toUpperCase())
                         ?: throw IllegalArgumentException("addEnchantments: Key $key is not a valid Enchantment")
                     } else throw IllegalArgumentException("addEnchantments: Map key must be Enchantment or String")
 
@@ -346,7 +347,7 @@ object ExtensionItemStack {
                     val value = it.value
                     val ench = key as? Enchantment
                         ?: if (key is String) {
-                            Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.uppercase())
+                            Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.toUpperCase())
                             ?: throw IllegalArgumentException("addUnsafeEnchantments: Key $key is not a valid Enchantment")
                         } else throw IllegalArgumentException("addUnsafeEnchantments: Map key must be Enchantment or String")
 
@@ -416,7 +417,7 @@ fun asEnchantment(ctx: FunctionContext<*>, index: Int): Enchantment {
             var ench = Enchantment.getByKey(NamespacedKey.minecraft(arg))
             if (ench == null) {
                 // 再尝试根据名字获取（大写）
-                ench = Enchantment.getByName(arg.uppercase())
+                ench = Enchantment.getByName(arg.toUpperCase())
             }
             ench ?: throw IllegalArgumentException("Cannot convert argument $index to Enchantment: $arg")
         }

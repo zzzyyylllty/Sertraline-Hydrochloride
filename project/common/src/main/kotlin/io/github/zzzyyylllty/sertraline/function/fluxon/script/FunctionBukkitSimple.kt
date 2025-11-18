@@ -30,7 +30,7 @@ import java.util.function.Consumer
 
 @Awake(LifeCycle.ENABLE)
 fun registerFunctionBukkitSimple() {
-    FunctionBukkitSimple.init(fluxonInst)
+    FunctionBukkitSimple.init(fluxonInst!!)
 }
 
 @Suppress("UNUSED")

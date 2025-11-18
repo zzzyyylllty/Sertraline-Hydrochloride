@@ -1,0 +1,107 @@
+
+[versions]
+taboolib = "6.2.4-3b3cd67"
+taboolibPlugin = "2.0.27"
+kotlin = "2.2.0"
+nashorn = "15.4"
+jexl = "3.4.0"
+
+# Minecraft & Server APIs
+paperApi = "1.21.4-R0.1-SNAPSHOT"
+
+# Minecraft-related Libraries
+mythicLib = "1.7.1-SNAPSHOT"
+placeholderApi = "2.11.7"
+packetEvents = "2.10.1"
+adventure = "4.19.0"
+uniItem = "2.3.1"
+datafixerupper = "8.0.16"
+fluxon = "1.2.18"
+
+# General Purpose Libraries
+netty = "4.1.127.Final"
+reflex = "1.1.4"
+asm = "9.2"
+jackson = "2.16.1"
+arim = "1.2.14"
+caffeine = "3.2.3"
+gson = "2.10.1"
+kotlinCrypto = "0.7.0"
+graalvm = "25.0.1"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+# Minecraft & Server APIs
+paperapi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paperApi" }
+
+# Minecraft-related Libraries
+mythiclibdist = { group = "io.lumine", name = "MythicLib-dist", version.ref = "mythicLib" }
+placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderApi" }
+packeteventsspigot = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetEvents" }
+datafixerupper = { group = "com.mojang", name = "datafixerupper", version.ref = "datafixerupper" }
+fluxoncore = { group = "org.tabooproject.fluxon", name = "core", version.ref = "fluxon" }
+uniitemall = { group = "io.github.projectunified", name = "uni-item-all", version.ref = "uniItem" }
+
+# TabooProject Reflex
+reflex-analyser = { group = "org.tabooproject.reflex", name = "analyser", version.ref = "reflex" }
+reflex-fastInstanceGetter = { group = "org.tabooproject.reflex", name = "fast-instance-getter", version.ref = "reflex" }
+reflex-core = { group = "org.tabooproject.reflex", name = "reflex", version.ref = "reflex" }
+
+# ASM
+asm-core = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
+asm-utils = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
+asm-commons = { group = "org.ow2.asm", name = "asm-commons", version.ref = "asm" }
+
+# Jackson
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+jackson-annotations = { group = "com.fasterxml.jackson.core", name = "jackson-annotations", version.ref = "jackson" }
+jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-dataformat-toml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-toml", version.ref = "jackson" }
+
+# Adventure (Kyori)
+adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventure-text-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
+adventure-text-serializer-legacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
+adventure-text-serializer-gson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure" }
+
+# GraalVM
+graalvm-polyglot = { group = "org.graalvm.polyglot", name = "polyglot", version.ref = "graalvm" }
+graalvm-js = { group = "org.graalvm.polyglot", name = "js", version.ref = "graalvm" }
+
+# Other Libraries
+netty-all = { group = "io.netty", name = "netty-all", version.ref = "netty" }
+arim = { group = "top.maplex.arim", name = "Arim", version.ref = "arim" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+kotlincrypto-bom = { group = "org.kotlincrypto.hash", name = "bom", version.ref = "kotlinCrypto" }
+kotlincrypto-sha2 = { group = "org.kotlincrypto.hash", name = "sha2", version.ref = "kotlinCrypto" }
+
+
+[bundles]
+adventure = [
+    "adventure-api",
+    "adventure-text-minimessage",
+    "adventure-text-serializer-legacy",
+    "adventure-text-serializer-gson"
+]
+# ASM 捆绑包
+asm = ["asm-core", "asm-utils", "asm-commons"]
+# Reflex 捆绑包
+reflex = ["reflex-analyser", "reflex-fastInstanceGetter", "reflex-core"]
+# Jackson 捆绑包
+jackson = [
+    "jackson-module-kotlin",
+    "jackson-databind",
+    "jackson-annotations",
+    "jackson-dataformat-yaml",
+    "jackson-dataformat-toml"
+]
+# GraalVM 捆绑包
+graalvm = ["graalvm-polyglot", "graalvm-js"]
+kotlincrypto = ["kotlincrypto-bom", "kotlincrypto-sha2"]
+
+
+[plugins]
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+taboolib = { id = "io.izzel.taboolib", version.ref = "taboolibPlugin" }

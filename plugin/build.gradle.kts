@@ -28,22 +28,26 @@ taboolib {
             // name("XXX").optional(true)
         }
     }
+
+
+    // Relocate 必须与META-INF/dependencies里面的relocate一致。
+    // 同时，还需要修改io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper.replaceTestTexts
     relocate("top.maplex.arim","io.github.zzzyyylllty.sertraline.library.arim")
     relocate("ink.ptms.um","io.github.zzzyyylllty.sertraline.library.um")
-    // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.com.google")
-    relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.com.alibaba")
+    // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
+    relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.alibaba")
     relocate("kotlinx.serialization", "kotlinx.serialization170")
-    // relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.de.tr7zw.changeme.nbtapi")
-    relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.com.uniitem")
-    relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.com.fasterxml.jackson")
-    relocate("com.mojang.datafixerupper","io.github.zzzyyylllty.sertraline.library.com.mojang.datafixerupper")
-    relocate("io.netty.handler.codec.http", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.http")
-    relocate("io.netty.handler.codec.rtsp", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.rtsp")
-    relocate("io.netty.handler.codec.spdy", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.spdy")
-    relocate("io.netty.handler.codec.http2", "io.github.zzzyyylllty.sertraline.library.netty.handler.codec.http2")
-    relocate("org.tabooproject.fluxon","io.github.zzzyyylllty.sertraline.library.org.tabooproject.fluxon")
-    relocate("com.github.ben-manes.caffeine","io.github.zzzyyylllty.sertraline.library.com.github.ben-manes.caffeine")
-    relocate("org.kotlincrypto.hash","io.github.zzzyyylllty.sertraline.library.org.kotlincrypto.hash")
+    // relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.nbtapi")
+    relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.uniitem")
+    relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.jackson")
+    relocate("com.mojang.datafixers","io.github.zzzyyylllty.sertraline.library.datafixers")
+    relocate("io.netty.handler.codec.http", "io.github.zzzyyylllty.sertraline.library.http")
+    relocate("io.netty.handler.codec.rtsp", "io.github.zzzyyylllty.sertraline.library.rtsp")
+    relocate("io.netty.handler.codec.spdy", "io.github.zzzyyylllty.sertraline.library.spdy")
+    relocate("io.netty.handler.codec.http2", "io.github.zzzyyylllty.sertraline.library.http2")
+    relocate("org.tabooproject.fluxon","io.github.zzzyyylllty.sertraline.library.fluxon")
+    relocate("com.github.benmanes.caffeine","io.github.zzzyyylllty.sertraline.library.caffeine")
+    relocate("org.kotlincrypto","io.github.zzzyyylllty.sertraline.library.kotlincrypto")
 }
 
 //tasks {

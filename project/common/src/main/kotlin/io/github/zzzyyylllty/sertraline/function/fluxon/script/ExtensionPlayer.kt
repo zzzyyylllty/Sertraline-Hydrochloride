@@ -26,7 +26,7 @@ import taboolib.common.platform.Awake
 
 @Awake(LifeCycle.ENABLE)
 fun registerExtensionPlayer() {
-    ExtensionPlayer.init(fluxonInst)
+    ExtensionPlayer.init(fluxonInst!!)
 }
 
 object ExtensionPlayer {
@@ -128,14 +128,14 @@ object ExtensionPlayer {
             .function("sendChatMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
                 val message = context.getString(0)
-                player.chat(message)
+                message?.let { player.chat(it) }
             })
 
             // performCommand(String) -> boolean
             .function("performCommand", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
                 val command = context.getString(0)
-                player.performCommand(command)
+                command?.let { player.performCommand(it) }
             })
 
             // isSneaking() -> boolean

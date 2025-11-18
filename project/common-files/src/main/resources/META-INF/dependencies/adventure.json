@@ -1,0 +1,72 @@
+[
+  {
+    "value": "net.kyori:adventure-text-serializer-legacy:$adventureVersion",
+    "relocate": [
+      "net.kyori",
+      "io.github.zzzyyylllty.sertraline.library.kyori"
+    ],
+    "test": [
+      "net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer"
+    ],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "net.kyori:adventure-text-serializer-gson:$adventureVersion",
+    "relocate": [
+      "net.kyori",
+      "io.github.zzzyyylllty.sertraline.library.kyori"
+    ],
+    "test": [
+      "net.kyori.adventure.text.serializer.gson.GsonComponentSerializer"
+    ],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "net.kyori:adventure-api:$adventureVersion",
+    "relocate": [
+      "net.kyori",
+      "io.github.zzzyyylllty.sertraline.library.kyori"
+    ],
+    "test": [],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "net.kyori:adventure-text-minimessage:$adventureVersion",
+    "relocate": [
+      "net.kyori",
+      "io.github.zzzyyylllty.sertraline.library.kyori"
+    ],
+    "test": [
+      "net.kyori.adventure.text.minimessage.MiniMessage"
+    ],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  }
+]

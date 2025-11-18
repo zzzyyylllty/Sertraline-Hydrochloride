@@ -7,13 +7,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    id("io.izzel.taboolib") version "2.0.27"
-    kotlin("jvm") version "2.0.0"
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.taboolib)
     kotlin("plugin.serialization") version "2.0.0"
     id("maven-publish")
 }
 
-subprojects {
+allprojects {
 
     apply(plugin = "java")
     apply(plugin = "java-library")
@@ -25,7 +25,7 @@ subprojects {
             // 调试模式
             debug = true
             // 是否在开发模式下强制下载依赖
-            forceDownloadInDev = false
+            forceDownloadInDev = true
             // 中央仓库地址
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
@@ -39,7 +39,7 @@ subprojects {
             install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl)
         }
         version {
-            taboolib = "6.2.4-3b3cd67" // 6.2.3-20d868d
+            taboolib = rootProject.libs.versions.taboolib.get()
             coroutines = "1.7.3"
             // 跳过 Kotlin 加载
             skipKotlin = false
@@ -115,60 +115,49 @@ subprojects {
     }
 
     dependencies {
-        // taboo("de.tr7zw:item-nbt-api:2.15.3")
-//    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
-        // compileOnly("ink.ptms.core:v12004:12004:mapped")
-        // compileOnly("ink.ptms.core:v12004:12004:universal")
+        // 服务器 API
+        implementation(rootProject.libs.paperapi)
 
-        //compileOnly("ink.ptms.core:v12104:12104:mapped")
-        //compileOnly("ink.ptms.core:v12104:12104:universal")
-        //compileOnly(kotlin("stdlib"))
-        implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-        compileOnly(fileTree("libs"))
-        compileOnly("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
-        compileOnly("me.clip:placeholderapi:2.11.7")
-        compileOnly("io.netty:netty-all:4.1.127.Final")
-        compileOnly("com.github.retrooper:packetevents-spigot:2.10.1")
-        implementation("org.tabooproject.reflex:analyser:1.1.4")
-        implementation("org.tabooproject.reflex:fast-instance-getter:1.1.4")
-        implementation("org.tabooproject.reflex:reflex:1.1.4") // 需要 analyser 模块
-        // 本体依赖
-        implementation("org.ow2.asm:asm:9.2")
-        implementation("org.ow2.asm:asm-util:9.2")
-        implementation("org.ow2.asm:asm-commons:9.2")
-        // implementation(kotlin("stdlib"))
-        taboo("top.maplex.arim:Arim:1.3.2")
-        taboo("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
-        taboo("com.fasterxml.jackson.core:jackson-databind:2.16.1")
-        taboo("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1")
-        taboo("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.16.1")
-        implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
-        implementation("net.kyori:adventure-api:4.19.0")
-        implementation("net.kyori:adventure-text-minimessage:4.19.0")
-        implementation("net.kyori:adventure-nbt:4.19.0")
-        // compileOnly("net.momirealms:craft-engine-core:0.0.64")
-        // compileOnly("net.momirealms:craft-engine-bukkit:0.0.64")
-        taboo("io.github.projectunified:uni-item-all:2.3.1")
-        taboo("com.mojang:datafixerupper:8.0.16")
-        taboo(kotlin("stdlib")) // 使用 kotlin("stdlib") 更标准
-//        taboo("org.jetbrains.kotlin:kotlin-scripting-common:2.0.0")
-//        taboo("org.jetbrains.kotlin:kotlin-scripting-jvm:2.0.0")
-//        taboo("org.jetbrains.kotlin:kotlin-scripting-jvm-host:2.0.0")
-//        taboo("org.jetbrains.kotlin:kotlin-scripting-jsr223:2.0.0")
-        // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
-        taboo("org.tabooproject.fluxon:core:1.2.18")
-        taboo("com.github.ben-manes.caffeine:caffeine:3.2.3")
-        taboo("com.google.code.gson:gson:2.10.1")
-        taboo("org.kotlincrypto.hash:sha2:0.7.0")
-        taboo("org.graalvm.polyglot:polyglot:25.0.1")
-        taboo("org.graalvm.polyglot:js:25.0.1")
+        // Minecraft 相关库 (仅编译时需要)
+        compileOnly(rootProject.libs.mythiclibdist)
+        compileOnly(rootProject.libs.placeholderapi)
+        compileOnly(rootProject.libs.packeteventsspigot)
+        compileOnly(rootProject.libs.datafixerupper)
+        compileOnly(rootProject.libs.fluxoncore)
+
+        // 本地依赖 (这行需要保留)
+        compileOnly(fileTree("rootProject.libs"))
+
+        // 工具库
+        compileOnly(rootProject.libs.netty.all)
+        compileOnly(rootProject.libs.caffeine)
+        compileOnly(rootProject.libs.gson)
+
+        // 脚本引擎 (GraalVM)
+        compileOnly(rootProject.libs.bundles.graalvm)
+
+        // 核心功能库 (运行时需要)
+        implementation(rootProject.libs.bundles.reflex)
+        implementation(rootProject.libs.bundles.asm)
+        implementation(rootProject.libs.bundles.adventure)
+
+        compileOnly(rootProject.libs.arim)
+        taboo(platform(rootProject.libs.kotlincrypto.bom))
+        taboo(rootProject.libs.kotlincrypto.sha2)
+        compileOnly(rootProject.libs.bundles.jackson)
+        compileOnly(rootProject.libs.uniitemall)
+        taboo(rootProject.libs.kotlin.stdlib) // 将 kotlin("stdlib") 替换为此格式
     }
 
+
     tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "21"
-            freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
-        }
+//        compilerOptions {
+//            optIn.add("kotlin.RequiresOptIn")
+//        }
+//        kotlinOptions {
+//            jvmTarget = "21"
+//            freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
+//        }
     }
 
     configure<JavaPluginConvention> {
@@ -198,7 +187,7 @@ subprojects {
                 // 主构件（自动从 java 组件生成）
                 from(components["java"])
 
-                val rootVersion = "1.1.2"
+                val rootVersion = rootProject.version
                 val rootGroup = "io.github.zzzyyylllty.sertraline"
                 // 添加源码包（必须指定分类器）
                 artifact(sourcesJar.get()) {
@@ -216,3 +205,24 @@ subprojects {
     }
 }
 
+
+project(":project:common-files") {
+    tasks.withType<ProcessResources>().configureEach {
+        filesMatching("**/*.json") {
+            expand(
+                "nashornVersion" to rootProject.libs.versions.nashorn.get(),
+                "graaljsVersion" to rootProject.libs.versions.graalvm.get(),
+                "jexlVersion" to rootProject.libs.versions.jexl.get(),
+                "gsonVersion" to rootProject.libs.versions.gson.get(),
+                "kotlincryptoVersion" to rootProject.libs.versions.kotlinCrypto.get(),
+                "caffeineVersion" to rootProject.libs.versions.caffeine.get(),
+                "fluxonVersion" to rootProject.libs.versions.fluxon.get(),
+                "datafixerupperVersion" to rootProject.libs.versions.datafixerupper.get(),
+                "uniItemVersion" to rootProject.libs.versions.uniItem.get(),
+                "adventureVersion" to rootProject.libs.versions.adventure.get(),
+                "jacksonVersion" to rootProject.libs.versions.jackson.get(),
+                "arimVersion" to rootProject.libs.versions.arim.get(),
+            )
+        }
+    }
+}

@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.item
 
-import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import io.github.projectunified.uniitem.all.AllItemProvider
 import io.github.projectunified.uniitem.api.ItemKey
 import io.github.zzzyyylllty.sertraline.Sertraline.config
@@ -20,6 +19,7 @@ import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.parseNBT
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -31,6 +31,7 @@ import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 
 
 fun itemSource(input: Any?,player: Player?): ItemStack {
@@ -42,7 +43,9 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
     val item = try {
         if (!str.contains(":") || str.startsWith("minecraft:")) {
             devLog("Using vanilla item")
-            buildItem(XMaterial.valueOf((if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()))
+            buildItem(XMaterial.valueOf(
+                (if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()
+            ))
         } else {
             val provider = AllItemProvider()
             if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))

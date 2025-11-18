@@ -5,7 +5,7 @@ import taboolib.module.nms.MinecraftVersion
 import taboolib.module.nms.MinecraftVersion.versionId
 
 class VersionHelper {
-    fun getVer(): Int{
+    fun getVer(): Int {
         return versionId
     }
     val isUniversal: Boolean by lazy {

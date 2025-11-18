@@ -1,0 +1,56 @@
+[
+  {
+    "value": "org.tabooproject.fluxon:core:$fluxonVersion",
+    "repository": "https://repo.tabooproject.org/repository/releases",
+    "relocate": [
+      "org.tabooproject.fluxon",
+      "io.github.zzzyyylllty.sertraline.library.fluxon"
+    ],
+    "test": [
+      "org.tabooproject.fluxon.runtime.FluxonRuntime"
+    ],
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "org.tabooproject.fluxon:core-console:$fluxonVersion",
+    "repository": "https://repo.tabooproject.org/repository/releases",
+    "relocate": [
+      "org.tabooproject.fluxon",
+      "io.github.zzzyyylllty.sertraline.library.fluxon"
+    ],
+    "test": [
+      "org.tabooproject.fluxon.runtime.FluxonRuntime"
+    ],
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "org.tabooproject.fluxon:core-jsr223:$fluxonVersion",
+    "repository": "https://repo.tabooproject.org/repository/releases",
+    "relocate": [
+      "org.tabooproject.fluxon",
+      "io.github.zzzyyylllty.sertraline.library.fluxon"
+    ],
+    "test": [
+      "org.tabooproject.fluxon.runtime.FluxonRuntime"
+    ],
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  }
+]

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import taboolib.common.ClassAppender
 import taboolib.library.reflex.Reflex
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -73,7 +74,7 @@ fun getDeclaredField(clazz: Class<*>, name: String): Field? =
 fun getStaticMethod(
     clazz: Class<*>,
     returnType: Class<*>,
-    vararg parameterTypes: Class<*>
+    vararg parameterTypes: Class<*>,
 ): Method? {
     outer@ for (method in clazz.methods) {
         if (method.parameterCount != parameterTypes.size) continue
@@ -96,7 +97,7 @@ fun getMethod(
     clazz: Class<*>,
     returnType: Class<*>,
     index: Int,
-    vararg parameterTypes: Class<*>
+    vararg parameterTypes: Class<*>,
 ): Method? =
     clazz.methods
         .filter { method ->
@@ -105,3 +106,13 @@ fun getMethod(
                     returnType.isAssignableFrom(method.returnType)
         }
         .getOrNull(index)
+
+fun isClassExistsSafety(path: String?): Boolean {
+    return try {
+        ClassAppender.isExists(path)
+    } catch (ignored: ClassNotFoundException) {
+        false
+    } catch (ignored: NoClassDefFoundError) {
+        false
+    }
+}
