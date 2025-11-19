@@ -6,24 +6,19 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
-import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMSFiltered
-import io.github.zzzyyylllty.sertraline.reflect.setComponent
-import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
-import io.github.zzzyyylllty.sertraline.util.VersionHelper
+import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
+import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.parseNBT
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.common.util.asList
 import taboolib.library.xseries.XMaterial
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
@@ -31,7 +26,6 @@ import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
-import io.github.zzzyyylllty.sertraline.util.toUpperCase
 
 
 fun itemSource(input: Any?,player: Player?): ItemStack {
@@ -98,9 +92,9 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
 
     val keepComp = config["rebuild.keep-component"].asListEnhanded() ?: listOf()
     if (!keepComp.isEmpty()) {
-        val orgComponent = asNMSCopy(this).getComponentsNMSFiltered()
+        val orgComponent = asNMSCopy(this).getComponentsFilteredNMS()
         keepComp.forEach {
-            orgComponent[it]?.let { value -> rewritedNMS = rewritedNMS.setComponentNMS(it, value) }
+            orgComponent[it]?.let { value -> rewritedNMS.setComponentNMS(it, value)?.let { rewritedNMS = it } }
         }
         rewrited = asBukkitCopy(rewrited)
     }

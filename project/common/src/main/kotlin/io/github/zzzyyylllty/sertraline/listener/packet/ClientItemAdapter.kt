@@ -2,28 +2,19 @@ package io.github.zzzyyylllty.sertraline.listener.packet
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
-import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
-import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
-import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
-import io.github.zzzyyylllty.sertraline.logger.warningS
-import io.github.zzzyyylllty.sertraline.reflect.getComponent
-import io.github.zzzyyylllty.sertraline.reflect.getComponentNMS
-import io.github.zzzyyylllty.sertraline.reflect.setComponent
-import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
+import io.github.zzzyyylllty.sertraline.impl.setComponent
+import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.library.xseries.XMaterial
-import taboolib.module.configuration.util.asMap
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
@@ -86,7 +77,7 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
             }
 
             filtered.forEach { (key, value) ->
-                resultItem = resultItem.setComponentNMS(key.replace("visual", "minecraft"), value!!)
+                resultItem.setComponentNMS(key.replace("visual", "minecraft"), value!!)?.let { resultItem = it }
             }
         }
     }
@@ -110,8 +101,12 @@ fun visualComponentSetter(item: ItemStack, sItem: ModernSItem): ItemStack {
         filtered.remove("visual:material")
     }
 
-    filtered.forEach { (key, value) ->
-        resultItem = resultItem.setComponent(key.replace("visual", "minecraft"), value!!)
+    if (!filtered.isEmpty()) {
+        var nmsItem = asNMSCopy(resultItem)
+        filtered.forEach { (key, value) ->
+            nmsItem.setComponentNMS(key.replace("visual", "minecraft"), value!!)?.let { nmsItem = it }
+        }
+        resultItem = asBukkitCopy(nmsItem)
     }
 
     return resultItem

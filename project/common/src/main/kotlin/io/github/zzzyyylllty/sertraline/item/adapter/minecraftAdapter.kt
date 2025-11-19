@@ -1,15 +1,11 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.reflect.setComponent
-import io.github.zzzyyylllty.sertraline.reflect.setComponentNMS
+import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
-import taboolib.platform.util.giveItem
-import java.util.function.Consumer
 
 fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemStack {
     var item = item
@@ -19,7 +15,7 @@ fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemSt
     if (filtered.isEmpty()) return item
     var nmsItem = asNMSCopy(item)
     filtered.forEach {
-        nmsItem = nmsItem.setComponentNMS(it.key, it.value!!)
+        nmsItem.setComponentNMS(it.key, it.value!!)?.let { nmsItem = it }
     }
     return asBukkitCopy(nmsItem)
 }

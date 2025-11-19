@@ -38,6 +38,7 @@ fun actionFeatures(e: FeatureLoadEvent) {
                 "javascript" to (it["javascript"] ?: it["js"]).asListedStringEnhanded(),
                 "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanded(),
                 "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanded(),
+                "gjs" to (it["graaljs"] ?: it["gjs"]).asListedStringEnhanded(),
                 // "kotlinscript" to (it["kotlinscript"] ?: it["kts"] ?: it["kt"]).asListedStringEnhanded()
             ))
         }

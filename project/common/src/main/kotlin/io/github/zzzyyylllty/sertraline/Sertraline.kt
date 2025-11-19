@@ -11,11 +11,10 @@ import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNati
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.registerNativeTagAdapter
 import io.github.zzzyyylllty.sertraline.logger.*
-import io.github.zzzyyylllty.sertraline.reflect.*
+import io.github.zzzyyylllty.sertraline.impl.*
 import org.bukkit.command.CommandSender
+import org.graalvm.polyglot.Source
 import org.tabooproject.fluxon.runtime.FluxonRuntime
-import taboolib.common.env.RuntimeDependencies
-import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
@@ -28,9 +27,6 @@ import taboolib.module.kether.KetherShell
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
-import top.maplex.arim.tools.conditionevaluator.ConditionEvaluator
-import top.maplex.arim.tools.fixedcalculator.FixedCalculator
-import top.maplex.arim.tools.variablecalculator.VariableCalculator
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.script.CompiledScript
@@ -171,10 +167,10 @@ object Sertraline : Plugin() {
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
     var devMode = true
-    val reflects by lazy { ReflectTargets() }
     val configUtil by lazy { ConfigUtil() }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
+    val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }
     val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
     val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
 
@@ -213,6 +209,7 @@ object Sertraline : Plugin() {
             ketherScriptCache.clear()
             jsScriptCache.clear()
             jexlScriptCache.clear()
+            gjsScriptCache.clear()
             itemCache.clear()
 
             itemManager.unregisterAllProcessor()

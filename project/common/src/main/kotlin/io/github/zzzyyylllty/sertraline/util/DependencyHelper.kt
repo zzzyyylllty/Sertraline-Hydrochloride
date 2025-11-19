@@ -27,7 +27,7 @@ import java.util.*
 
 val dependencies = listOf(
     "adventure",
-    "arim",
+    // "arim",
     "caffeine",
     "datafixerupper",
     "fluxon",
@@ -45,22 +45,26 @@ class DependencyHelper {
 
 }
 
-
-@Awake(LifeCycle.CONST)
+@Awake(LifeCycle.INIT)
 fun initDependencies() {
     devLog("Starting loading dependencies...")
     for (name in dependencies) {
         try {
-            devLog("Trying load dependencies from file $name")
-            SertralineLocalDependencyHelper().loadFromLocalFile(
-                Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
-            )
-//            RuntimeEnv.ENV_DEPENDENCY.loadFromLocalFile(
-//                Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
-//            )
-            devLog("Trying load dependencies from file $name ... DONE.")
+            devLog("Trying to load dependencies from file $name")
+            val resource = Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
+            if (resource == null) {
+                severeS("Resource META-INF/dependencies/$name.json not found!")
+                continue // 跳过这个依赖文件
+            }
+
+            devLog("Resource URL: $resource")
+            devLog("Using classloader: ${Sertraline::class.java.classLoader}")
+
+            SertralineLocalDependencyHelper().loadFromLocalFile(resource)
+
+            devLog("Trying to load dependencies from file $name ... DONE.")
         } catch (e: Exception) {
-            severeS("Trying load dependencies from file $name FAILED.")
+            severeS("Trying to load dependencies from file $name FAILED.")
             severeS("Exception: $e")
             e.printStackTrace()
         }

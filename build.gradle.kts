@@ -52,6 +52,8 @@ allprojects {
     }
 
     repositories {
+        mavenLocal()
+        maven("https://jitpack.io")
         maven {
             name = "CodeMC"
             url = uri("https://repo.codemc.io/repository/maven-public/")
@@ -87,7 +89,6 @@ allprojects {
         maven("https://repo.rosewooddev.io/repository/public/")
         maven("https://repo.opencollab.dev/main/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
-        maven("https://jitpack.io")
         maven("https://r.irepo.space/maven/")
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://repo.hibiscusmc.com/releases/")
@@ -115,6 +116,8 @@ allprojects {
     }
 
     dependencies {
+        taboo("io.github.zzzyyylllty:EmbianComponent:1.0.1")
+
         // 服务器 API
         implementation(rootProject.libs.paperapi)
 
@@ -141,7 +144,7 @@ allprojects {
         implementation(rootProject.libs.bundles.asm)
         implementation(rootProject.libs.bundles.adventure)
 
-        compileOnly(rootProject.libs.arim)
+        taboo(rootProject.libs.arim)
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         compileOnly(rootProject.libs.bundles.jackson)

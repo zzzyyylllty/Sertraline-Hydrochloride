@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.function.javascript.ItemStackUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.ThreadUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
+import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
@@ -54,6 +55,7 @@ data class Action(
     val javaScript: String? = null,
     val jexl: String? = null,
     val fluxon: String? = null,
+    val gjs: String? = null,
 //    val kotlinScript: String? = null,
 ) {
 
@@ -106,6 +108,10 @@ data class Action(
             FluxonShell.invoke(it) {
                 root.rootVariables += parsedData
             }
+        }
+
+        gjs?.let {
+            GraalJsUtil().cachedEval(it, parsedData)
         }
 
 

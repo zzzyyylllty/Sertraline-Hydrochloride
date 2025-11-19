@@ -111,18 +111,39 @@ class SertralineLocalDependencyHelper {
                 ex.printStackTrace()
 
                 method.isAccessible = true
-                method.invoke(
-                    runtimeEnvDependency,
-                    url,
-                    baseDir,
-                    relocation,
-                    repository,
-                    ignoreOptional,
-                    ignoreException,
-                    transitive,
-                    scope,
-                    external
-                )
+                try {
+                    method.invoke(
+                        runtimeEnvDependency,
+                        url,
+                        baseDir,
+                        relocation,
+                        repository,
+                        ignoreOptional,
+                        ignoreException,
+                        transitive,
+                        scope,
+                        external
+                    )
+                } catch (e: Exception) {
+                    warningS("Legacy dependency parsing failed. Fallback to Default Repo Loader.")
+
+                    try {
+                    method.invoke(
+                        runtimeEnvDependency,
+                        url,
+                        baseDir,
+                        relocation,
+                        "https://repo1.maven.org/maven2",
+                        ignoreOptional,
+                        ignoreException,
+                        transitive,
+                        scope,
+                        external
+                    )
+                    } catch (e: Exception) {
+                        severeS("Dependency loading failed for $url.")
+                    }
+                }
             }
         } else {
             devLog("Aether not found. directly use legacy solver.")
@@ -261,6 +282,8 @@ fun replaceTestTexts(str: String): String {
         .replaceUnrelocated("!org.tabooproject.fluxon","!io.github.zzzyyylllty.sertraline.library.fluxon")
         .replaceUnrelocated("!com.github.benmanes.caffeine","!io.github.zzzyyylllty.sertraline.library.caffeine")
         .replaceUnrelocated("!org.kotlincrypto","!io.github.zzzyyylllty.sertraline.library.kotlincrypto")
+        .replaceUnrelocated("!com.oracle.truffle","!io.github.zzzyyylllty.sertraline.library.truffle")
+        .replaceUnrelocated("!org.graalvm.polyglot","!io.github.zzzyyylllty.sertraline.library.polyglot")
     return replaced
 }
 

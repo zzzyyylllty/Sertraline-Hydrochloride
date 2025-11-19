@@ -1,34 +1,32 @@
 package io.github.zzzyyylllty.sertraline.command
 
-import com.mojang.serialization.DynamicOps
+import io.github.zzzyyylllty.embiancomponent.EmbianComponent.SafetyComponentSetter
+import io.github.zzzyyylllty.embiancomponent.tools.getComponentsNMSFiltered
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
-import io.github.zzzyyylllty.sertraline.Sertraline.reflects
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
-import io.github.zzzyyylllty.sertraline.reflect.asNMSCopyMethod
-import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMS
-import io.github.zzzyyylllty.sertraline.reflect.getComponentsNMSFiltered
+import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
+import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
+import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
-import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
-import taboolib.module.kether.KetherTransfer.cacheMap
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.platform.util.giveItem
 
@@ -147,6 +145,20 @@ object DebugCommand {
             val inv = (sender as Player).inventory
             val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
             sender.sendStringAsComponent(components.toString())
+        }
+    }
+
+    @CommandBody
+    val testNewComponent = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            var item = ItemStack(Material.DIAMOND_CHESTPLATE)
+            item = SafetyComponentSetter.setComponent(item,"minecraft:custom_data", mapOf<String, Any>("test" to "abc"))!!
+            item = SafetyComponentSetter.removeComponent(item,"minecraft:attribute_modifiers")!! // 163
+            sender.sendStringAsComponent("<yellow>Filtered: <gray>${SafetyComponentSetter.getAllComponentsFiltered(item)}")
+            sender.sendStringAsComponent("<yellow>Original: <gray>${SafetyComponentSetter.getAllComponents(item)}")
+            sender.sendStringAsComponent("<yellow>GetJava: <gray>${SafetyComponentSetter.getComponentJava<Map<*,*>>(item, "minecraft:custom_data")}")
+            sender.sendStringAsComponent("<yellow>GetJson: <gray>${SafetyComponentSetter.getComponent(item, "minecraft:custom_data")}")
+            (sender as Player).giveItem(item)
         }
     }
 

@@ -4,7 +4,7 @@
     "test": [
       "org.graalvm.polyglot.Context"
     ],
-    "transitive": false,
+    "transitive": true,
     "ignoreOptional": false,
     "ignoreException": false,
     "scopes": [
@@ -22,7 +22,7 @@
     "test": [
       "com.oracle.truffle.polyglot.enterprise.EnterprisePolyglotImpl"
     ],
-    "transitive": false,
+    "transitive": true,
     "ignoreOptional": false,
     "ignoreException": false,
     "scopes": [
@@ -37,10 +37,8 @@
   },
   {
     "value": "org.graalvm.truffle:truffle-runtime:$graaljsVersion",
-    "test": [
-      "com.oracle.truffle.runtime.hotspot.HotSpotTruffleRuntimeAccess"
-    ],
-    "transitive": false,
+    "test": [],
+    "transitive": true,
     "ignoreOptional": false,
     "ignoreException": false,
     "scopes": [
@@ -55,7 +53,7 @@
   },
   {
     "value": "org.graalvm.js:js-language:$graaljsVersion",
-    "transitive": false,
+    "transitive": true,
     "test": [
       "com.oracle.truffle.js.lang.JavaScriptLanguageProvider"
     ],
