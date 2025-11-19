@@ -154,12 +154,12 @@ allprojects {
 
 
     tasks.withType<KotlinCompile> {
-//        compilerOptions {
-//            optIn.add("kotlin.RequiresOptIn")
-//        }
+        compilerOptions {
+            freeCompilerArgs.addAll(listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies"))
+        }
 //        kotlinOptions {
 //            jvmTarget = "21"
-//            freeCompilerArgs = listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
+//            freeCompilerArgs = listOf("--add-modules org.graalvm.js.scriptengine",-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies")
 //        }
     }
 

@@ -6,15 +6,21 @@ import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.registerNativeTagAdapter
-import io.github.zzzyyylllty.sertraline.logger.*
-import io.github.zzzyyylllty.sertraline.impl.*
+import io.github.zzzyyylllty.sertraline.logger.infoL
+import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.util.DependencyHelper
+import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
+import io.github.zzzyyylllty.sertraline.util.dependencies
 import org.bukkit.command.CommandSender
-import org.graalvm.polyglot.Source
 import org.tabooproject.fluxon.runtime.FluxonRuntime
+import taboolib.common.LifeCycle
+import taboolib.common.env.RuntimeEnv
+import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
@@ -28,8 +34,8 @@ import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
 import java.time.format.DateTimeFormatter
-import java.util.*
 import javax.script.CompiledScript
+import javax.script.ScriptEngineManager
 
 
 //@RuntimeDependencies(
@@ -170,7 +176,7 @@ object Sertraline : Plugin() {
     val configUtil by lazy { ConfigUtil() }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
-    val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }
+    val gjsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
     val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
     val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
 
@@ -246,4 +252,35 @@ object Sertraline : Plugin() {
     fun lang(event: SystemSelectLocaleEvent) {
         event.locale = config.getString("lang", "zh_CN")!!
     }
+
+
+    @Awake(LifeCycle.INIT)
+    fun initDependenciesInit() {
+        solveDependencies(dependencies)
+    }
+
+
+    fun solveDependencies(dependencies: List<String>,useTaboo: Boolean = false) {
+        devLog("Starting loading dependencies...")
+        for (name in dependencies) {
+            try {
+                devLog("Trying to load dependencies from file $name")
+                val resource = Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
+                if (resource == null) {
+                    severeS("Resource META-INF/dependencies/$name.json not found!")
+                    continue // 跳过这个依赖文件
+                }
+
+                if (useTaboo) RuntimeEnv.ENV_DEPENDENCY.loadFromLocalFile(resource) else SertralineLocalDependencyHelper().loadFromLocalFile(resource)
+
+                devLog("Trying to load dependencies from file $name ... DONE.")
+            } catch (e: Exception) {
+                severeS("Trying to load dependencies from file $name FAILED.")
+                severeS("Exception: $e")
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 }
