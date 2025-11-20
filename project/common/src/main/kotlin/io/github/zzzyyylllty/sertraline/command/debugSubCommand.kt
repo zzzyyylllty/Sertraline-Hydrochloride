@@ -28,6 +28,7 @@ import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
+import taboolib.module.nms.getItemTag
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -159,6 +160,14 @@ object DebugCommand {
             sender.sendStringAsComponent("<yellow>GetJava: <gray>${SafetyComponentSetter.getComponentJava<Map<*,*>>(item, "minecraft:custom_data")}")
             sender.sendStringAsComponent("<yellow>GetJson: <gray>${SafetyComponentSetter.getComponent(item, "minecraft:custom_data")}")
             (sender as Player).giveItem(item)
+        }
+    }
+    @CommandBody
+    val testTabooComponent = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val inv = (sender as Player).inventory
+            val item = inv.itemInMainHand
+            sender.sendMessage("GetTag: ${item.getItemTag(true)}")
         }
     }
 

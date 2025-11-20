@@ -111,7 +111,7 @@ data class Action(
         }
 
         gjs?.let {
-            GraalJsUtil().cachedEval(it, parsedData)
+            GraalJsUtil.cachedEval(it, parsedData)
         }
 
 

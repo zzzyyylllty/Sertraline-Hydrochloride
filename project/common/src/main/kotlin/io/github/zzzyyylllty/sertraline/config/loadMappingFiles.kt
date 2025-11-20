@@ -40,7 +40,21 @@ fun loadMappingFile(file: File) {
     for (it in entries) {
         val key = it.key
         val value = map?.get(key) as List<String>
-        devLog("Mapping Loaded: $key - $value")
-        mappings[key] = value
+
+        // 判断是否mappings里面已经包含对应的键。
+        if (mappings.containsKey(key)) {
+
+            val merged = mappings[key]?.toMutableList()
+            merged?.addAll(value)
+
+            // 合并重复的键
+            merged?.let { mappings[key] = it }
+
+            devLog("Mapping Merged: $key - $merged")
+
+        } else {
+            mappings[key] = value
+            devLog("Mapping Loaded: $key - $value")
+        }
     }
 }

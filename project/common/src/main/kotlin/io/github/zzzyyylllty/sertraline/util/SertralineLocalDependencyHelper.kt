@@ -282,8 +282,8 @@ fun replaceTestTexts(str: String): String {
         .replaceUnrelocated("!org.tabooproject.fluxon","!io.github.zzzyyylllty.sertraline.library.fluxon")
         .replaceUnrelocated("!com.github.benmanes.caffeine","!io.github.zzzyyylllty.sertraline.library.caffeine")
         .replaceUnrelocated("!org.kotlincrypto","!io.github.zzzyyylllty.sertraline.library.kotlincrypto")
-        .replaceUnrelocated("!com.oracle.truffle","!io.github.zzzyyylllty.sertraline.library.truffle")
-        .replaceUnrelocated("!org.graalvm.polyglot","!io.github.zzzyyylllty.sertraline.library.polyglot")
+//        .replaceUnrelocated("!com.oracle.truffle","!io.github.zzzyyylllty.sertraline.library.truffle")
+//        .replaceUnrelocated("!org.graalvm.polyglot","!io.github.zzzyyylllty.sertraline.library.polyglot")
     return replaced
 }
 

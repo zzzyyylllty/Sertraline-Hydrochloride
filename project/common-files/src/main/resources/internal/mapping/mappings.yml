@@ -1,9 +1,11 @@
 # 请勿直接修改这个文件
 # 因为每次重启都会覆盖该文件
 # 如想要添加映射请在此目录下建立更多文件添加
+# 相同的键名若存在多项，则会自动合并
 # Please do not directly modify this file
-# If server reboot this file will regenerate.
+# If server reboot this file will regenerate
 # If you want to add mappings, please create more files in this directory to add
+# If there are multiple identical key names, they will be automatically merged
 
 sertraline:tier:
   - sertraline:tier

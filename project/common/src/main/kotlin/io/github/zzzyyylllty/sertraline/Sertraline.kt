@@ -17,6 +17,7 @@ import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import org.bukkit.command.CommandSender
+import org.graalvm.polyglot.Source
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import taboolib.common.LifeCycle
 import taboolib.common.env.RuntimeEnv
@@ -176,7 +177,7 @@ object Sertraline : Plugin() {
     val configUtil by lazy { ConfigUtil() }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
-    val gjsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
+    val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }
     val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
     val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
 

@@ -29,7 +29,7 @@ allprojects {
             // 中央仓库地址
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
-            repoTabooLib = "https://repo.tabooproject.org/repository/releases"
+            repoTabooLib = "https://repo.aeoliancloud.com/release"
             // 依赖下载目录
             fileLibs = "libraries"
             // 资源下载目录
@@ -53,6 +53,8 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven("https://repo.aeoliancloud.com/release")
+        maven("https://repo.aeoliancloud.com/releases")
         maven("https://jitpack.io")
         maven {
             name = "CodeMC"
@@ -143,6 +145,8 @@ allprojects {
         implementation(rootProject.libs.bundles.reflex)
         implementation(rootProject.libs.bundles.asm)
         implementation(rootProject.libs.bundles.adventure)
+
+
 
         taboo(rootProject.libs.arim)
         taboo(platform(rootProject.libs.kotlincrypto.bom))

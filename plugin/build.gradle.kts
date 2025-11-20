@@ -48,8 +48,8 @@ taboolib {
     relocate("org.tabooproject.fluxon","io.github.zzzyyylllty.sertraline.library.fluxon")
     relocate("com.github.benmanes.caffeine","io.github.zzzyyylllty.sertraline.library.caffeine")
     relocate("org.kotlincrypto","io.github.zzzyyylllty.sertraline.library.kotlincrypto")
-    relocate("com.oracle.truffle","io.github.zzzyyylllty.sertraline.library.truffle")
-    relocate("org.graalvm.polyglot","io.github.zzzyyylllty.sertraline.library.polyglot")
+//    relocate("com.oracle.truffle","io.github.zzzyyylllty.sertraline.library.truffle")
+//    relocate("org.graalvm.polyglot","io.github.zzzyyylllty.sertraline.library.polyglot")
 }
 
 //tasks {

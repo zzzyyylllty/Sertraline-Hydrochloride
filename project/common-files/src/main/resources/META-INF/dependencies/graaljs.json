@@ -11,10 +11,7 @@
       "compile",
       "runtime"
     ],
-    "relocate": [
-      "org.graalvm.polyglot",
-      "io.github.zzzyyylllty.sertraline.library.polyglot"
-    ],
+    "relocate": [],
     "external": true
   },
   {
@@ -29,10 +26,21 @@
       "compile",
       "runtime"
     ],
-    "relocate": [
-      "com.oracle.truffle",
-      "io.github.zzzyyylllty.sertraline.library.truffle"
+    "external": true
+  },
+  {
+    "value": "org.graalvm.truffle:truffle-api:$graaljsVersion",
+    "test": [
+      "org.graalvm.truffle.api.TruffleLanguage"
     ],
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "relocate": [],
     "external": true
   },
   {
@@ -45,10 +53,7 @@
       "compile",
       "runtime"
     ],
-    "relocate": [
-      "com.oracle.truffle",
-      "io.github.zzzyyylllty.sertraline.library.truffle"
-    ],
+    "relocate": [],
     "external": true
   },
   {
@@ -63,10 +68,22 @@
       "compile",
       "runtime"
     ],
-    "relocate": [
-      "com.oracle.truffle",
-      "io.github.zzzyyylllty.sertraline.library.truffle"
+    "relocate": [],
+    "external": true
+  },
+  {
+    "value": "org.graalvm.sdk:graal-sdk:$graaljsVersion",
+    "test": [
+      "org.graalvm.polyglot.Engine"
     ],
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "relocate": [],
     "external": true
   }
 ]
