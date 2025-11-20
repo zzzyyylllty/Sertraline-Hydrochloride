@@ -10,7 +10,7 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 ![](https://img.shields.io/github/last-commit/zzzyyylllty/Sertraline-Hydrochloride?logo=artstation&style=for-the-badge)  ![](https://img.shields.io/github/issues/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&logo=slashdot)  ![](https://img.shields.io/github/release/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&color=CC66FF&logo=ionic)
 
-![](https://img.shields.io/badge/QQ_Group-858827523-blue?style=for-the-badge) ![Discord](https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc&link=https://discord.com/invite/VHs958jJXj)
+![](https://img.shields.io/badge/QQ_Group-858827523-blue?style=for-the-badge) ![Discord](https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc&link=https%3A%2F%2Fdiscord.com%2Finvite%2FVHs958jJXj)
 
 **SERTRALINE Supports 1.21.4-1.21.10!**
 
