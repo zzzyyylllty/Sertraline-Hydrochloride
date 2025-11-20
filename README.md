@@ -28,8 +28,6 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
   </a>
 </p>
 
-![]() ![Discord](&link=https%3A%2F%2Fdiscord.com%2Finvite%2FVHs958jJXj)
-
 **SERTRALINE Supports 1.21.4-1.21.10!**
 
 </div>
