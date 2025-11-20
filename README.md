@@ -16,16 +16,6 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 </div>
 
-> [!IMPORTANT]
-> Siece 3.2.2 Sertraline use dynamic dependencies loading to reduce jar size.
-> 
-> But This have a problem, This feature may fail to function properly when adding dependencies later due to the caching mechanism.
-> 
-> To resolve this, you need to delete the cache and reload it for the changes to take effect.
-> 
-> **To clear the cache**: Delete all JAR files corresponding in `cache/taboolib/io.github.zzzyyylllty.sertraline` folder in the server's root directory.
-
-
 ## Special Thanks
 
 ### Thanks for other Projects
