@@ -8,9 +8,27 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 <img alt="AVATAR" src="https://github.com/user-attachments/assets/4e876740-8759-4b0d-a42c-7a8cf9692f9d" />
 
-![](https://img.shields.io/github/last-commit/zzzyyylllty/Sertraline-Hydrochloride?logo=artstation&style=for-the-badge)  ![](https://img.shields.io/github/issues/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&logo=slashdot)  ![](https://img.shields.io/github/release/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&color=CC66FF&logo=ionic)
+<p align="center">
+  <a href="https://github.com/zzzyyylllty/Sertraline-Hydrochloride/commits/main/">
+    <img src="https://img.shields.io/github/last-commit/zzzyyylllty/Sertraline-Hydrochloride?logo=artstation&style=for-the-badge"/>
+  </a>
+  <a href="https://github.com/zzzyyylllty/Sertraline-Hydrochloride/issues">
+    <img src="https://img.shields.io/github/issues/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&logo=slashdot"/>
+  </a>
+  <a href="https://github.com/zzzyyylllty/Sertraline-Hydrochloride/releases">
+    <img src="https://img.shields.io/github/release/zzzyyylllty/Sertraline-Hydrochloride?style=for-the-badge&color=CC66FF&logo=ionic"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=EJ%2FBIgYus1kDxqSE5WHvAMyC7EaBqcpEFN7fBGtNFRGe6ZzjX9uECORltHB1q6Um&busi_data=eyJncm91cENvZGUiOiI4NTg4Mjc1MjMiLCJ0b2tlbiI6ImpYYlV6WEJnYXJadTNUd3pnOWU1c3ZsSFh1Z3h2UjFuc3JOb3d5VVhtRWs5bm9BKzZoZzhxckNsenhydmQyQ2oiLCJ1aW4iOiIzODI0NjM2MTk0In0%3D&data=PCCbZvFVCR3De_3tA0iMGgfjVc1xN4-yJslk2O-X4rYSvNkYvAFJymCjz9Sq6cNA1PLe_zJYmCHRRRK0FwNuHw&svctype=4&tempid=h5_group_info">
+    <img src="https://img.shields.io/badge/QQ_Group-858827523-blue?style=for-the-badge"/>
+  </a>
+  <a href="https://discord.com/invite/VHs958jJXj">
+    <img src="https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc"/>
+  </a>
+</p>
 
-![](https://img.shields.io/badge/QQ_Group-858827523-blue?style=for-the-badge) ![Discord](https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc&link=https%3A%2F%2Fdiscord.com%2Finvite%2FVHs958jJXj)
+![]() ![Discord](&link=https%3A%2F%2Fdiscord.com%2Finvite%2FVHs958jJXj)
 
 **SERTRALINE Supports 1.21.4-1.21.10!**
 
