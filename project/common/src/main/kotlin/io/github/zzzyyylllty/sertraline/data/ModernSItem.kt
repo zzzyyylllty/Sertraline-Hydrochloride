@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.data
 
+import com.google.gson.Gson
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
@@ -15,6 +16,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -30,7 +32,11 @@ val defaultData by lazy {
         "jsonUtils" to jsonUtils,
         "ItemStackUtil" to ItemStackUtil,
         "EventUtil" to EventUtil,
-        "ThreadUtil" to ThreadUtil
+        "ThreadUtil" to ThreadUtil,
+        "Math" to Math::class.java,
+        "System" to System::class.java,
+        "Bukkit" to Bukkit::class.java,
+        "Gson" to Gson::class.java
     )
 }
 
@@ -63,14 +69,13 @@ data class Action(
 
     fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, cancellableEvent: Cancellable?, sqlI: ModernSItem) {
 
-        var parsedData = data.toMutableMap()
+        val parsedData = data.toMutableMap()
         parsedData["sItem"] = sqlI
         parsedData["bItem"] = i
         parsedData["event"] = e
         parsedData["cancellableEvent"] = cancellableEvent
         parsedData["player"] = player
         parsedData.putAll(defaultData)
-
 
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)
