@@ -10,6 +10,8 @@ fun ItemTagData.parseNBT(): Any {
         ItemTagType.COMPOUND -> (tagData).parseMapNBT()
         ItemTagType.LIST -> serializeList(tagData.asList())
         ItemTagType.BYTE -> tagData.asByte()
+        // ItemTagType.BOOLEAN -> tagData.asBoolean()
+//        ItemTagType.BOOLEAN -> tagData.asByte()
         ItemTagType.SHORT -> tagData.asShort()
         ItemTagType.INT -> tagData.asInt()
         ItemTagType.LONG -> tagData.asLong()

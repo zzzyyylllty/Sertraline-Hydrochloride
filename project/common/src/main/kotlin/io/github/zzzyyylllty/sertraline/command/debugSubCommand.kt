@@ -14,7 +14,11 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
-import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
+import io.github.zzzyyylllty.sertraline.item.itemSerializer
+import io.github.zzzyyylllty.sertraline.util.dependencies.mmoAttributeCalcuate
+import io.github.zzzyyylllty.sertraline.util.dependencies.refreshMMOAttribute
+import io.lumine.mythic.lib.api.player.EquipmentSlot
+import io.lumine.mythic.lib.player.modifier.ModifierSource
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -140,6 +144,15 @@ object DebugCommand {
             sender.sendStringAsComponent(components.toString())
         }
     }
+
+
+    @CommandBody
+    val calcuateMythicLibAttribute = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            refreshMMOAttribute(sender as Player)
+        }
+    }
+
     @CommandBody
     val testComponentsFiltered = subCommand {
         execute<CommandSender> { sender, context, argument ->
@@ -168,6 +181,14 @@ object DebugCommand {
             val inv = (sender as Player).inventory
             val item = inv.itemInMainHand
             sender.sendMessage("GetTag: ${item.getItemTag(true)}")
+        }
+    }
+    @CommandBody
+    val testTabooComponentAll = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val inv = (sender as Player).inventory
+            val item = inv.itemInMainHand
+            sender.sendMessage("GetTag - NOT OnlyCustom: ${item.getItemTag(false)}")
         }
     }
 

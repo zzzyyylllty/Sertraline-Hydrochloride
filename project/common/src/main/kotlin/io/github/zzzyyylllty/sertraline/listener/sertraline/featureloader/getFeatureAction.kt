@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.listener.sertraline.featureloader
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.gjsScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
@@ -9,6 +10,7 @@ import io.github.zzzyyylllty.sertraline.config.asListedStringEnhanded
 import io.github.zzzyyylllty.sertraline.event.FeatureLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
+import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
@@ -18,7 +20,7 @@ import taboolib.common5.compileJS
 
 @Suppress("UNCHECKED_CAST", "unused")
 @SubscribeEvent
-fun actionFeatures(e: FeatureLoadEvent) {
+fun getFeatureAction(e: FeatureLoadEvent) {
     if (e.feature != "sertraline:actions") return
     val feature = e.feature
     val content = e.content as? Map<*,*> ?: return
@@ -70,10 +72,10 @@ fun actionFeatures(e: FeatureLoadEvent) {
             }
             if (config.getBoolean("preload.script.graaljs",true)) (map["graaljs"] as? String)?.let { script ->
                 try {
-                    val compiled = script.compileJS()
-                    jsScriptCache[script.generateHash()] = compiled
+                    val compiled = GraalJsUtil.compile(script)
+                    gjsScriptCache[script.generateHash()] = compiled
                 } catch (ex: Exception) {
-                    severeS("An error was occurred in trying to pre-compile js script.")
+                    severeS("An error was occurred in trying to pre-compile Graal-js script.")
                     severeS("Item: ${e.sItemKey}")
                     severeS("script: $script")
                     severeS("exception: $ex")

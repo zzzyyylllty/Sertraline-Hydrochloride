@@ -47,7 +47,7 @@ fun Any?.asListEnhanded() : List<String>? {
         if (string == null) continue
         list.addAll(string.toString().split("\n","<br>", ignoreCase = true))
     }
-    if (list.last() == "") list.removeLast()
+    if (!list.isEmpty() && list.last() == "") list.removeLast()
     return list
 }
 

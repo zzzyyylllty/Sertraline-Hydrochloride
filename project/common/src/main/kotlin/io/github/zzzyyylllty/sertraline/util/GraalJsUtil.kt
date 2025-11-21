@@ -52,7 +52,7 @@ val hostAccess: HostAccess? by lazy {
 }
 object GraalJsUtil {
 
-    fun compile(script: String, vars: Map<String, Any?>): Source? {
+    fun compile(script: String): Source? {
         return try {
             Source.newBuilder(GJS_LANG_ID, script, "script.js").build()
         } catch (e: Exception) {
@@ -61,7 +61,7 @@ object GraalJsUtil {
         }
     }
 
-    fun newGraalContext(vars: Map<String, Any?>): Context {
+    fun newGraalContext(): Context {
 
         return Context.newBuilder(GJS_LANG_ID)
             .allowAllAccess(true)
@@ -80,7 +80,7 @@ object GraalJsUtil {
 
         val hash = script.generateHash()
         val source = gjsScriptCache.getOrPut(hash) {
-            compile(script, vars)
+            compile(script)
         }
 
         if (source == null) {
@@ -112,7 +112,7 @@ object GraalJsUtil {
 
     fun createContext(vars: Map<String, Any?>): Context {
         // 初始化预热上下文
-        val context = newGraalContext(vars)
+        val context = newGraalContext()
         return context
     }
 

@@ -3,6 +3,7 @@ import io.izzel.taboolib.gradle.*
 import io.izzel.taboolib.gradle.BukkitNMSUtil
 import org.gradle.internal.impldep.org.apache.http.client.methods.RequestBuilder.options
 import org.gradle.kotlin.dsl.implementation
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -29,7 +30,8 @@ allprojects {
             // 中央仓库地址
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
-            repoTabooLib = "https://repo.aeoliancloud.com/release"
+//            repoTabooLib = "https://repo.xiao-jie.top/repository/maven-releases"
+             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
             // 依赖下载目录
             fileLibs = "libraries"
             // 资源下载目录
@@ -37,6 +39,7 @@ allprojects {
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
             install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl)
+            // install("bukkit-nms-tag-component")
         }
         version {
             taboolib = rootProject.libs.versions.taboolib.get()
@@ -55,6 +58,7 @@ allprojects {
         mavenLocal()
         maven("https://repo.aeoliancloud.com/release")
         maven("https://repo.aeoliancloud.com/releases")
+        maven("https://repo.xiao-jie.top/repository/maven-releases")
         maven("https://jitpack.io")
         maven {
             name = "CodeMC"
@@ -160,6 +164,7 @@ allprojects {
     tasks.withType<KotlinCompile> {
         compilerOptions {
             freeCompilerArgs.addAll(listOf("-Xjvm-default=all","-Xskip-prerelease-check","-Xallow-unstable-dependencies"))
+            jvmTarget.set(JvmTarget.JVM_21)
         }
 //        kotlinOptions {
 //            jvmTarget = "21"
