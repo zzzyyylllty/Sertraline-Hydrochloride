@@ -14,11 +14,7 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
-import io.github.zzzyyylllty.sertraline.item.itemSerializer
-import io.github.zzzyyylllty.sertraline.util.dependencies.mmoAttributeCalcuate
 import io.github.zzzyyylllty.sertraline.util.dependencies.refreshMMOAttribute
-import io.lumine.mythic.lib.api.player.EquipmentSlot
-import io.lumine.mythic.lib.player.modifier.ModifierSource
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

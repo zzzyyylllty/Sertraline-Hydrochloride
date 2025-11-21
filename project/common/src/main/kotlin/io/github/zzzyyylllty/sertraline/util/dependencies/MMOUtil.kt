@@ -21,60 +21,69 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 
-val mmoDataCacheMap = LinkedHashMap<String, MMOPlayerData>() // UUID, MMOPlayerData
-val mmoStatCacheMap = LinkedHashMap<String, StatMap>() // UUID, StatMap
-
-@SubscribeEvent
-fun mmoAttributeInit(e: PlayerJoinEvent) {
-    submitAsync {
-        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
-        val playerData = MMOPlayerData(e.player.uniqueId)
-        mmoDataCacheMap[e.player.uniqueId.toString()] = playerData
-        mmoStatCacheMap[e.player.uniqueId.toString()] = playerData.statMap
-    }
-}
-
-@SubscribeEvent
-fun mmoAttributeRelease(e: PlayerQuitEvent) {
-    submitAsync {
-        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
-        mmoDataCacheMap.remove(e.player.uniqueId.toString())
-        mmoStatCacheMap.remove(e.player.uniqueId.toString())
-    }
-}
-@SubscribeEvent
-fun mmoAttributeReleaseKick(e: PlayerKickEvent) {
-    submitAsync {
-        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
-        mmoDataCacheMap.remove(e.player.uniqueId.toString())
-        mmoStatCacheMap.remove(e.player.uniqueId.toString())
-    }
-}
+//val mmoDataCacheMap = LinkedHashMap<String, MMOPlayerData>() // UUID, MMOPlayerData
+//val mmoStatCacheMap = LinkedHashMap<String, StatMap>() // UUID, StatMap
+//
+//@SubscribeEvent
+//fun mmoAttributeInit(e: PlayerJoinEvent) {
+//    submitAsync {
+//        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
+//        val playerData = MMOPlayerData(e.player.uniqueId)
+//        mmoDataCacheMap[e.player.uniqueId.toString()] = playerData
+//        mmoStatCacheMap[e.player.uniqueId.toString()] = playerData.statMap
+//    }
+//}
+//
+//@SubscribeEvent
+//fun mmoAttributeRelease(e: PlayerQuitEvent) {
+//    submitAsync {
+//        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
+//        mmoDataCacheMap.remove(e.player.uniqueId.toString())
+//        mmoStatCacheMap.remove(e.player.uniqueId.toString())
+//    }
+//}
+//@SubscribeEvent
+//fun mmoAttributeReleaseKick(e: PlayerKickEvent) {
+//    submitAsync {
+//        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
+//        mmoDataCacheMap.remove(e.player.uniqueId.toString())
+//        mmoStatCacheMap.remove(e.player.uniqueId.toString())
+//    }
+//}
 
 fun refreshMMOAttribute(player: Player) {
     submitAsync {
+
+        val playerData = MMOPlayerData(player.uniqueId)
+        playerData.statMap.instances.forEach {
+            it.removeIf("SertralineItem"::equals)
+        }
+
         if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
         val inv = player.inventory
 
         // 主手和副手
-        inv.itemInMainHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.MAINHAND_ITEM, EquipmentSlot.MAIN_HAND, "mainhand", bItem.type.name) } }
-        inv.itemInOffHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.OFFHAND_ITEM, EquipmentSlot.OFF_HAND, "offhand", bItem.type.name) } }
+        inv.itemInMainHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.MAINHAND_ITEM, EquipmentSlot.MAIN_HAND, "mainhand", bItem.type.name) } }
+        inv.itemInOffHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.OFFHAND_ITEM, EquipmentSlot.OFF_HAND, "offhand", bItem.type.name) } }
 
         // 护甲
-        inv.helmet?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.ARMOR, EquipmentSlot.HEAD, "helmet", bItem.type.name) } }
-        inv.chestplate?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.ARMOR, EquipmentSlot.CHEST, "chestplate", bItem.type.name) } }
-        inv.leggings?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.ARMOR, EquipmentSlot.LEGS, "leggings", bItem.type.name) } }
-        inv.boots?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalcuate(it, player, ModifierSource.ARMOR, EquipmentSlot.FEET, "boots", bItem.type.name) } }
+        inv.helmet?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.HEAD, "helmet", bItem.type.name) } }
+        inv.chestplate?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.CHEST, "chestplate", bItem.type.name) } }
+        inv.leggings?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.LEGS, "leggings", bItem.type.name) } }
+        inv.boots?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.FEET, "boots", bItem.type.name) } }
     }
 }
 
 
 
-fun mmoAttributeCalcuate(item: ModernSItem, player: Player, defSource: ModifierSource, defslot: EquipmentSlot, actSource: String, bItemMat: String, async: Boolean = true) {
+fun mmoAttributeCalculate(item: ModernSItem, player: Player, defSource: ModifierSource, defslot: EquipmentSlot, actSource: String, bItemMat: String, async: Boolean = true) {
     submit(async = async) {
         if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submit
 
-        mmoDataCacheMap[player.uniqueId.toString()]?.let { cache ->
+
+        val playerData = MMOPlayerData(player.uniqueId)
+
+        playerData.let { cache ->
             // val mmoData = itemCache[item.key]?.get("mmo") as Map<String, Any?>? ?: item.data.filter { (key, value) -> key.startsWith("mmo:") }
             val mmoData = item.data.filter { (key, value) -> key.startsWith("mmo:") }.toMutableMap()
 
@@ -118,7 +127,7 @@ fun mmoAttributeCalcuate(item: ModernSItem, player: Player, defSource: ModifierS
                 devLog("atb modifier: $atb")
                 val modifier = StatModifier(
                     uuid,
-                    "Sertraline",
+                    "SertralineItem",
                     atb.atbID,
                     atb.atbValue,
                     atb.atbType,
