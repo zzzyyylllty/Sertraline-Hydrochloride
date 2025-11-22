@@ -9,7 +9,7 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 
 
-val mmoFilter = listOf("uuid", "source", "slot", "allowed")
+val mmoFilter = listOf("id", "source", "slot", "allowed")
 
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleMMO(e: ItemLoadEvent) {
@@ -20,10 +20,9 @@ fun itemModuleMMO(e: ItemLoadEvent) {
 
     ((e.arguments["mmo"]) as Map<String, Any>?)?.let {
 
-        // 默认生成一个UUID
-        e.itemData["mmo:uuid"] = e.itemKey.generateUUID().toString()
+        // 默认生成一个ID
+        e.itemData["mmo:id"] = e.itemKey
 
-        // 默认生成一个UUID
         e.itemData["mmo:allowed"] = listOf<String>()
 
         for (attribute in it) {
@@ -31,7 +30,7 @@ fun itemModuleMMO(e: ItemLoadEvent) {
             if (mmoFilter.contains(key)) {
                 when (key) {
                     // 特殊处理
-                    "uuid" -> e.itemData["mmo:${key}"] = attribute.value.toString()
+                    "id" -> e.itemData["mmo:${key}"] = attribute.value.toString()
                     "source" -> e.itemData["mmo:${key}"] = attribute.value.toString()
                     "slot" -> e.itemData["mmo:${key}"] = attribute.value.toString()
                     "allowed" -> e.itemData["mmo:${key}"] = attribute.value.asListEnhanded() ?: listOf<String>()

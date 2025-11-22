@@ -1,22 +1,13 @@
 package io.github.zzzyyylllty.sertraline.function.data
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
 import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ItemData
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
-import io.github.zzzyyylllty.sertraline.util.jsonUtils
-import io.github.zzzyyylllty.sertraline.util.parseMapNBT
+import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.module.nms.ItemTag
-import taboolib.module.nms.ItemTagData
-import taboolib.module.nms.ItemTagSerializer
-import taboolib.module.nms.ItemTagSerializer.serializeList
-import taboolib.module.nms.ItemTagSerializer.serializeTag
-import taboolib.module.nms.ItemTagType
 import taboolib.module.nms.getItemTag
 
 

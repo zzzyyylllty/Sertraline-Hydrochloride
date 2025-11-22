@@ -50,6 +50,7 @@ val hostAccess: HostAccess? by lazy {
         .allowAccessInheritance(false)
         .build()
 }
+
 object GraalJsUtil {
 
     fun compile(script: String): Source? {

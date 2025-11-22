@@ -11,10 +11,10 @@ import io.github.zzzyyylllty.sertraline.function.javascript.ThreadUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
+import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
-import io.github.zzzyyylllty.sertraline.util.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

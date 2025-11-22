@@ -13,8 +13,8 @@ import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
-import io.github.zzzyyylllty.sertraline.util.parseMapNBT
-import io.github.zzzyyylllty.sertraline.util.parseNBT
+import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
+import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import org.bukkit.Material
 import org.bukkit.entity.Player

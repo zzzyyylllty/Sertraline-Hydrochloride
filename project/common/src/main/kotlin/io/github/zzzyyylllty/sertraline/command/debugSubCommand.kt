@@ -14,7 +14,7 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
-import io.github.zzzyyylllty.sertraline.util.dependencies.refreshMMOAttribute
+import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil.refreshAttributes
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -143,9 +143,9 @@ object DebugCommand {
 
 
     @CommandBody
-    val calcuateMythicLibAttribute = subCommand {
+    val refreshAttributes = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            refreshMMOAttribute(sender as Player)
+            refreshAttributes(sender as Player)
         }
     }
 

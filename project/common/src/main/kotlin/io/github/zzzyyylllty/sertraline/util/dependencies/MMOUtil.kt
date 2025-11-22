@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import io.github.zzzyyylllty.sertraline.listener.sertraline.mmoFilter
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
+import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
 import io.github.zzzyyylllty.sertraline.util.serialize.toUUID
 import io.github.zzzyyylllty.sertraline.util.toLowerCase
 import io.lumine.mythic.lib.api.player.EquipmentSlot
@@ -20,7 +21,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
-
+//
 //val mmoDataCacheMap = LinkedHashMap<String, MMOPlayerData>() // UUID, MMOPlayerData
 //val mmoStatCacheMap = LinkedHashMap<String, StatMap>() // UUID, StatMap
 //
@@ -50,121 +51,109 @@ import taboolib.common.platform.function.submitAsync
 //        mmoStatCacheMap.remove(e.player.uniqueId.toString())
 //    }
 //}
+object MMOUtil {
 
-fun refreshMMOAttribute(player: Player) {
-    submitAsync {
+    fun mmoAttributeCalculate(
+        item: ModernSItem,
+        playerData: MMOPlayerData,
+        defSource: ModifierSource,
+        defslot: EquipmentSlot,
+        actSource: String,
+        bItemMat: String,
+        async: Boolean = true
+    ) {
+        submit(async = async) {
 
-        val playerData = MMOPlayerData(player.uniqueId)
-        playerData.statMap.instances.forEach {
-            it.removeIf("SertralineItem"::equals)
-        }
+            playerData.let { cache ->
+                val mmoData = item.data.filter { (key, value) -> key.startsWith("mmo:") }.toMutableMap()
 
-        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submitAsync
-        val inv = player.inventory
+                devLog("mmoData: $mmoData") // 添加日志
 
-        // 主手和副手
-        inv.itemInMainHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.MAINHAND_ITEM, EquipmentSlot.MAIN_HAND, "mainhand", bItem.type.name) } }
-        inv.itemInOffHand.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.OFFHAND_ITEM, EquipmentSlot.OFF_HAND, "offhand", bItem.type.name) } }
+                val allowed = (mmoData["mmo:allowed"] as? List<String>? ?: return@submit).toMutableList()
 
-        // 护甲
-        inv.helmet?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.HEAD, "helmet", bItem.type.name) } }
-        inv.chestplate?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.CHEST, "chestplate", bItem.type.name) } }
-        inv.leggings?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.LEGS, "leggings", bItem.type.name) } }
-        inv.boots?.let { bItem -> itemSerializer(bItem, player)?.let { mmoAttributeCalculate(it, player, ModifierSource.ARMOR, EquipmentSlot.FEET, "boots", bItem.type.name) } }
-    }
-}
+                val bItemMat = bItemMat.toLowerCase()
 
+                if (allowed.isEmpty()) {
+                    val suffix = bItemMat.split("_").last()
+                    val autoState =
+                        when (suffix) {
+                            "boots" -> "boots"
+                            "chestplate" -> "chestplate"
+                            "leggings" -> "leggings"
+                            "helmet" -> "helmet"
+                            else -> "hand"
+                        }
+                    allowed.add(autoState)
+                }
 
+                if (actSource.contains("hand") && allowed.contains("hand")) {
 
-fun mmoAttributeCalculate(item: ModernSItem, player: Player, defSource: ModifierSource, defslot: EquipmentSlot, actSource: String, bItemMat: String, async: Boolean = true) {
-    submit(async = async) {
-        if (!DependencyHelper().isPluginInstalled("MythicLib")) return@submit
+                } else {
+                    if (!allowed.contains(actSource)) {
+                        devLog("actSource: $actSource not match. skipping attribute loading.")
+                        return@submit
+                    }
+                }
 
+                devLog("Allowed list: $allowed")
 
-        val playerData = MMOPlayerData(player.uniqueId)
+                val idString = mmoData["mmo:id"]?.toString() ?: return@submit
+                val slot = mmoData["mmo:slot"]?.let { EquipmentSlot.valueOf(it.toString()) } ?: defslot
+                val source = mmoData["mmo:source"]?.let { ModifierSource.valueOf(it.toString()) } ?: defSource
 
-        playerData.let { cache ->
-            // val mmoData = itemCache[item.key]?.get("mmo") as Map<String, Any?>? ?: item.data.filter { (key, value) -> key.startsWith("mmo:") }
-            val mmoData = item.data.filter { (key, value) -> key.startsWith("mmo:") }.toMutableMap()
+                devLog("ID: $idString, Slot: $slot, Source: $source")
 
-            devLog("mmoData: $mmoData")
+                for (key in mmoFilter) {
+                    mmoData.remove("mmo:$key")
+                }
 
-            val allowed = (mmoData["mmo:allowed"] as? List<String>? ?: return@submit).toMutableList() // 由于做了特殊处理，这里为null只能是没有mmo相关的选项。直接返回
+                for (data in mmoData) {
 
-            val bItemMat = bItemMat.toLowerCase()
+                    val atb = solveStatModifier(data)
+                    devLog("atb modifier: $atb")
 
-            if (allowed.isEmpty()) {
-                // 自动判断
-                val autoState =
-                    if (bItemMat.endsWith("boots")) "boots"
-                    else if (bItemMat.endsWith("chestplate")) "chestplate"
-                    else if (bItemMat.endsWith("leggings")) "leggings"
-                    else if (bItemMat.endsWith("helmet")) "helmet"
-                    else "hand"
-                allowed.add(autoState)
-            }
+                    val uuid = (idString + "_" + atb.atbID).generateUUID()
 
-            if (actSource.contains("hand") && allowed.contains("hand")) {
-                // 对hand做特殊处理，如果符合就跳过判断
-            } else {
-                if (!allowed.contains(actSource)) {
-                    devLog("actSource: $actSource not match. skipping attribute loading.")
-                    return@submit
+                    StatModifier(
+                        uuid,
+                        "sertraline_item",
+                        atb.atbID,
+                        atb.atbValue,
+                        atb.atbType,
+                        slot,
+                        source,
+                    ).register(playerData)
+
+                    devLog("registering modifier: ${uuid.toString() + "," + "SertralineItem" + "," + atb.atbID + "," + atb.atbValue + "," + atb.atbType + "," + slot + "," + source}")
                 }
             }
-
-
-            val uuid = (mmoData["mmo:uuid"] ?: return@submit).toString().toUUID()
-            val slot = mmoData["mmo:slot"]?.let { EquipmentSlot.valueOf(it.toString()) } ?: defslot
-            val source = mmoData["mmo:source"]?.let { ModifierSource.valueOf(it.toString()) } ?: defSource
-
-            for (key in mmoFilter) {
-                mmoData.remove("mmo:$key")
-            }
-
-            for (data in mmoData) {
-                val atb = solveStatModifier(data)
-                devLog("atb modifier: $atb")
-                val modifier = StatModifier(
-                    uuid,
-                    "SertralineItem",
-                    atb.atbID,
-                    atb.atbValue,
-                    atb.atbType,
-                    slot,
-                    source,
-                )
-
-                devLog("registering modifier: $modifier")
-                modifier.register(cache)
-            }
         }
     }
-}
 
-fun solveStatModifier(input: Map.Entry<String, Any?>): MMOAttributeValue {
+    fun solveStatModifier(input: Map.Entry<String, Any?>): MMOAttributeValue {
 
-    val str = input.value.toString()
+        val str = input.value.toString()
 
-    val type = when (str.last()) {
-        '%', 'c', 'm' -> ModifierType.RELATIVE
-        'a', 's' -> ModifierType.ADDITIVE_MULTIPLIER
-        else -> return MMOAttributeValue(
+        val type = when (str.last()) {
+            '%', 'c', 'm' -> ModifierType.RELATIVE
+            'a', 's' -> ModifierType.ADDITIVE_MULTIPLIER
+            else -> return MMOAttributeValue(
+                input.key.removePrefix("mmo:"),
+                str.toDoubleOrNull() ?: 1.0,
+                ModifierType.FLAT
+            )
+        }
+
+        return MMOAttributeValue(
             input.key.removePrefix("mmo:"),
-            str.toDoubleOrNull() ?: 1.0,
-            ModifierType.FLAT
+            str.dropLast(1).toDoubleOrNull() ?: 1.0,
+            type
         )
     }
 
-    return MMOAttributeValue(
-        input.key.removePrefix("mmo:"),
-        str.dropLast(1).toDoubleOrNull() ?: 1.0,
-        type
+    data class MMOAttributeValue(
+        val atbID: String,
+        val atbValue: Double = 1.0,
+        val atbType: ModifierType = ModifierType.FLAT,
     )
 }
-
-data class MMOAttributeValue(
-    val atbID: String,
-    val atbValue: Double = 1.0,
-    val atbType: ModifierType = ModifierType.FLAT,
-)

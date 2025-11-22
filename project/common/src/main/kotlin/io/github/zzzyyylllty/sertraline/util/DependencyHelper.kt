@@ -31,7 +31,23 @@ val dependencies = listOf(
     "uniitem"
 )
 
-class DependencyHelper {
+object DependencyHelper {
+
+    val mmLib by lazy {
+        isPluginInstalled("MythicLib")
+    }
+
+    val papi by lazy {
+        isPluginInstalled("PlaceholderAPI")
+    }
+
+    val pe by lazy {
+        isPluginInstalled("packetevents")
+    }
+
+
+
+
     fun isPluginInstalled(name: String): Boolean {
         return (Bukkit.getPluginManager().getPlugin(name) != null)
     }

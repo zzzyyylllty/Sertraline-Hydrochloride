@@ -9,7 +9,7 @@ import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 
 fun registerNativeTagAdapter() {
 
-    if (DependencyHelper().isPluginInstalled("PlaceholderAPI")) tagManager.registerProcessor("papi") { data, player ->
+    if (DependencyHelper.papi) tagManager.registerProcessor("papi") { data, player ->
         devLog("Tag adapting papi")
         papiTagProcessor(data, player)
     }

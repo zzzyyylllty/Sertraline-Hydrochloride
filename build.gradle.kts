@@ -56,6 +56,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
         maven("https://repo.aeoliancloud.com/release")
         maven("https://repo.aeoliancloud.com/releases")
         maven("https://repo.xiao-jie.top/repository/maven-releases")
