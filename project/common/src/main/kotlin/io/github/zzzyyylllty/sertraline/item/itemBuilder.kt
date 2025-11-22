@@ -15,7 +15,9 @@ import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
+import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -77,7 +79,7 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 
 fun ItemStack.rebuild(player: Player?): ItemStack {
 
-    val tag = this.getItemTag(true)
+    val tag = this.clone().getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return this
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
@@ -103,10 +105,56 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
 
 fun ItemStack.rebuildLore(player: Player?) {
 
-    val tag = this.getItemTag(true)
+    val tag = this.clone().getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
     this.lore(regen.lore())
+}
+
+
+/**
+ * This will lost about 2%(3 in 76) Component data.
+ * */
+fun ItemStack.rebuildUnsafe(player: Player?) {
+
+    val tag = this.clone().getItemTag(true)
+    val sID = tag["sertraline_id"]?.asString() ?: return
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
+    val newTag = regen.getItemTag()
+    keep.forEach {
+        newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())
+    }
+    var rewrited = regen.setItemTag(newTag)
+    this.setItemMeta(rewrited.itemMeta)
+}
+
+fun ItemStack.rebuildName(player: Player?) {
+    val tag = this.clone().getItemTag(true)
+    val sID = tag["sertraline_id"]?.asString() ?: return
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    if (VersionHelper().isOrAbove12005()) {
+        this.setData(DataComponentTypes.ITEM_NAME, regen.displayName())
+    } else {
+        val meta = this.itemMeta
+        meta.displayName(regen.displayName())
+        this.setItemMeta(meta)
+    }
+}
+
+fun ItemStack.rebuildDisplay(player: Player?) {
+
+    val tag = this.clone().getItemTag(true)
+    val sID = tag["sertraline_id"]?.asString() ?: return
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    this.lore(regen.lore())
+
 }

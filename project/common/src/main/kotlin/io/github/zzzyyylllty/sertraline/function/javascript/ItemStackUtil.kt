@@ -3,6 +3,8 @@ package io.github.zzzyyylllty.sertraline.function.javascript
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
+import io.github.zzzyyylllty.sertraline.item.rebuildName
+import io.github.zzzyyylllty.sertraline.item.rebuildUnsafe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.ItemTag
@@ -31,5 +33,13 @@ object ItemStackUtil {
 
     fun rebuildLore(itemStack: ItemStack,player: Player?) {
         itemStack.rebuildLore(player)
+    }
+
+    fun rebuildName(itemStack: ItemStack,player: Player?) {
+        itemStack.rebuildName(player)
+    }
+
+    fun rebuildUnsafe(itemStack: ItemStack,player: Player?) {
+        itemStack.rebuildUnsafe(player)
     }
 }
