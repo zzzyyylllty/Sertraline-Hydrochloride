@@ -61,7 +61,7 @@ fun onInteract(e: PlayerInteractEvent) {
 }
 @SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onLogin"), ThrottleActionParam(e.player, e, null))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onLogin"), ThrottleActionParam(e.player, e, null)) // todo
 }
 
 @SubscribeEvent

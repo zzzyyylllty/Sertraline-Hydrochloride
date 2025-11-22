@@ -83,7 +83,7 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
     val sID = tag["sertraline_id"]?.asString() ?: return this
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData, amount = this.amount)
     val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
     val newTag = regen.getItemTag()
     keep.forEach {
@@ -140,7 +140,7 @@ fun ItemStack.rebuildName(player: Player?) {
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
     if (VersionHelper().isOrAbove12005()) {
-        this.setData(DataComponentTypes.ITEM_NAME, regen.displayName())
+        this.setData(DataComponentTypes.CUSTOM_NAME, regen.displayName())
     } else {
         val meta = this.itemMeta
         meta.displayName(regen.displayName())
