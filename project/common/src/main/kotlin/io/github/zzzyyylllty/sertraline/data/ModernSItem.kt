@@ -82,7 +82,6 @@ data class Action(
 
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)
-        }
 
         javaScript?.let {
             val hash = it.generateHash()
@@ -127,6 +126,7 @@ data class Action(
 //            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)
 //        }
 
+        }
     }
 }
 

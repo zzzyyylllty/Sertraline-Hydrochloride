@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.listener.action
 import io.github.zzzyyylllty.sertraline.util.ActionHelper.throttleAction
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.entity.AbstractArrow
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -70,7 +71,6 @@ fun onAttack(e: EntityDamageByEntityEvent) {
 
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
-
     throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))
 }
 
