@@ -69,11 +69,12 @@ data class Action(
 
 
 
-    fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, cancellableEvent: Cancellable?, sqlI: ModernSItem) {
+    fun runAction(player: Player, data: Map<String, Any?>, i: ItemStack?, e: Event?, cancellableEvent: Cancellable?, sqlI: ModernSItem, abItem: ItemStack?) {
 
         val parsedData = data.toMutableMap()
         parsedData["sItem"] = sqlI
         parsedData["bItem"] = i
+        parsedData["abItem"] = abItem
         parsedData["event"] = e
         parsedData["cancellableEvent"] = cancellableEvent
         parsedData["player"] = player

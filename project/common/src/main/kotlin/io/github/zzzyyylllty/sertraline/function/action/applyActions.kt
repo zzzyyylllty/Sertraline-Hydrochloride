@@ -15,7 +15,7 @@ import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.nms.getItemTag
 
-fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStack, islot: Int? = null) {
+fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStack, abItem: ItemStack? = null) {
     val player = this@applyActions
     val inv = player.inventory
     val id = i.getItemTag(true)["sertraline_id"]?.asString() ?: return
@@ -32,10 +32,10 @@ fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStac
     actions.forEach {
         if (it.async ?: true) submitAsync {
             if (item == null) item = itemSerializer(id, player)
-            it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, ce, item!!)
+            it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, ce, item!!, abItem)
         } else {
             if (item == null) item = itemSerializer(id, player)
-            it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, ce, item!!)
+            it.runAction(player, getSavedData(item, i, true, player).collect(), i, e, ce, item!!, abItem)
         }
     }
 }

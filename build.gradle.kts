@@ -38,7 +38,7 @@ allprojects {
             fileAssets = "assets"
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
-            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl)
+            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl, Metrics)
             // install("bukkit-nms-tag-component")
         }
         version {

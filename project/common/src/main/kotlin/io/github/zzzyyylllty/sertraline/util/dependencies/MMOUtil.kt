@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
 import io.github.zzzyyylllty.sertraline.util.serialize.toUUID
 import io.github.zzzyyylllty.sertraline.util.toLowerCase
+import io.lumine.mythic.lib.MythicLib
 import io.lumine.mythic.lib.api.player.EquipmentSlot
 import io.lumine.mythic.lib.api.player.MMOPlayerData
 import io.lumine.mythic.lib.api.stat.StatMap
@@ -51,7 +52,14 @@ import taboolib.common.platform.function.submitAsync
 //        mmoStatCacheMap.remove(e.player.uniqueId.toString())
 //    }
 //}
+
+
 object MMOUtil {
+
+//    fun register() {
+//        MythicLib.plugin.stats.registerStat()
+//    }
+
 
     fun mmoAttributeCalculate(
         item: ModernSItem,

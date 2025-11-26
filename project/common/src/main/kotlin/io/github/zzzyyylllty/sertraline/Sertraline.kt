@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
@@ -227,6 +228,8 @@ object Sertraline : Plugin() {
             loadMappingFiles()
             loadItemFiles()
             loadLoreFormatFiles()
+
+            SertralineReloadEvent().call()
         }
     }
 //

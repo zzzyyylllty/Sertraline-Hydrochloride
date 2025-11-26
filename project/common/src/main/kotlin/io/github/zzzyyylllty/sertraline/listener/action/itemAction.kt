@@ -1,14 +1,11 @@
 package io.github.zzzyyylllty.sertraline.listener.action
 
-import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.function.action.applyActions
+import io.github.zzzyyylllty.sertraline.util.ActionHelper.throttleAction
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
-import org.bukkit.event.block.Action.*
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -19,19 +16,7 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
-import taboolib.common.function.throttle
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.submitAsync
-import taboolib.platform.util.attacker
-
-
-val throttleAction = throttle<ThrottleActionLink, ThrottleActionParam>(config.getLong("action.throttle-time", 500)){ link, data ->
-    if (data.i2 == null || data.i2.isEmpty) {
-        devLog("ItemStack is null or air or amount == 0,Skipping actions.")
-    } else {
-        data.p.applyActions(link.str, data.e, data.ce, data.i2)
-    }
-}
 
 
 data class ThrottleActionLink(
@@ -42,15 +27,15 @@ data class ThrottleActionParam(
     val p: Player,
     val e: Event,
     val ce: Cancellable?,
-    val i2 : ItemStack? = null,
-    val islot : Int? = null
+    val bItem : ItemStack? = null,
+    val abItem : ItemStack? = null
 )
 
 @SubscribeEvent
 fun onInteract(e: PlayerInteractEvent) {
 
     val uuid = e.player.uniqueId.toString()
-    val param = ThrottleActionParam(e.player, e, e, e.item, e.hand?.ordinal)
+    val param = ThrottleActionParam(e.player, e, e, e.item)
 
     throttleAction(ThrottleActionLink(uuid, "onClick"), param)
     if (e.action.isRightClick) {
@@ -66,7 +51,8 @@ fun onLogin(e: PlayerLoginEvent) {
 
 @SubscribeEvent
 fun onPreAttack(e: PrePlayerAttackEntityEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPreAttack"), ThrottleActionParam(e.player, e, e, e.player.activeItem, e.player.activeItemHand.ordinal))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPreAttack"), ThrottleActionParam(e.player, e, e, e.player.activeItem))
+
 }
 
 @SubscribeEvent
@@ -85,7 +71,7 @@ fun onAttack(e: EntityDamageByEntityEvent) {
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
 
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.hand.ordinal))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))
 }
 
 @SubscribeEvent
@@ -98,7 +84,7 @@ fun onDrop(e: PlayerDropItemEvent) {
 }
 @SubscribeEvent
 fun onPickup(e: PlayerPickupItemEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPickUp"), ThrottleActionParam(e.player, e, e, e.item.itemStack, e.remaining))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPickUp"), ThrottleActionParam(e.player, e, e, e.item.itemStack))
 }
 @SubscribeEvent
 fun onClickInventory(e: InventoryClickEvent) {
@@ -106,12 +92,12 @@ fun onClickInventory(e: InventoryClickEvent) {
         val player = e.whoClicked as Player
         throttleAction(
             ThrottleActionLink(player.uniqueId.toString(), "onInventoryClick"),
-            ThrottleActionParam(player, e, e, e.currentItem, e.slot)
+            ThrottleActionParam(player, e, e, e.currentItem, e.cursor)
         )
     }
 }
 @SubscribeEvent
 fun onSwap(e: PlayerSwapHandItemsEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Main"), ThrottleActionParam(e.player, e, e, e.mainHandItem, e.player.activeItemHand.ordinal))
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Off"), ThrottleActionParam(e.player, e, e, e.offHandItem))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Main"), ThrottleActionParam(e.player, e, e, e.mainHandItem, e.offHandItem))
+    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Off"), ThrottleActionParam(e.player, e, e, e.offHandItem, e.mainHandItem))
 }

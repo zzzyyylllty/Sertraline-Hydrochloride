@@ -75,7 +75,6 @@ tasks {
 
         // 从taboolibMainTask产物复制并过滤premium包
         from(zipTree(baseJarFile)) {
-            // 过滤掉所有premium包相关路径，示例路径需根据实际项目修改
             exclude("io/github/zzzyyylllty/sertraline/premium/*")
         }
     }
