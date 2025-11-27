@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.data
 import com.google.gson.Gson
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
+import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionComponent.FluxonComponentObject
 import io.github.zzzyyylllty.sertraline.function.javascript.EventUtil
@@ -15,6 +16,8 @@ import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import org.bukkit.Bukkit
@@ -22,24 +25,35 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
 import taboolib.common5.compileJS
 import taboolib.module.nms.getItemTag
 import javax.script.SimpleBindings
 
-val defaultData by lazy {
-    linkedMapOf(
-        "mmUtil" to mmUtil,
-        "mmJsonUtil" to mmJsonUtil,
-        "jsonUtils" to jsonUtils,
-        "ItemStackUtil" to ItemStackUtil,
-        "EventUtil" to EventUtil,
-        "ThreadUtil" to ThreadUtil,
-        "PlayerUtil" to PlayerUtil,
-        "Math" to Math::class.java,
-        "System" to System::class.java,
-        "Bukkit" to Bukkit::class.java,
-        "Gson" to Gson::class.java
-    )
+var defaultData = LinkedHashMap<String, Any?>()
+
+@Awake(LifeCycle.ENABLE)
+fun registerExternalData() {
+    defaultData.putAll(
+        linkedMapOf(
+            "mmUtil" to mmUtil,
+            "mmJsonUtil" to mmJsonUtil,
+            "mmLegacySectionUtil" to mmLegacySectionUtil,
+            "mmLegacyAmpersandUtil" to mmLegacyAmpersandUtil,
+            "jsonUtils" to jsonUtils,
+            "ItemStackUtil" to ItemStackUtil,
+            "EventUtil" to EventUtil,
+            "ThreadUtil" to ThreadUtil,
+            "PlayerUtil" to PlayerUtil,
+            "Math" to Math::class.java,
+            "System" to System::class.java,
+            "Bukkit" to Bukkit::class.java,
+            "Gson" to Gson::class.java
+        ))
+    val event = SertralineCustomScriptDataLoadEvent(defaultData)
+    event.call()
+    defaultData = event.defaultData
 }
 
 data class ModernSItem(

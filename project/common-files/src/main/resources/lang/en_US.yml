@@ -31,3 +31,6 @@ Editor_Item_Suffix: "<!i><#cc99ff>Left-click to get 1 item,\n<!i><#cc99ff>SHIFT 
 Editor_Title: "Sertraline"
 Editor_previouspage_Name: "Previous Page"
 Editor_nextpage_Name: "Next Page"
+Editor_error_Name: "<red>[ Item Generation Failed ]"
+Item_Not_Exist: "<red>Item {0} Not Exist."
+Item_Give: "<#66ccff>You get {0}x {1}"

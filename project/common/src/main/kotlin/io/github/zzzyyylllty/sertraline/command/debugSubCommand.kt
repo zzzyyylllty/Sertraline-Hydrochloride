@@ -193,7 +193,16 @@ object DebugCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                if (sender is Player) sender.sendMessage(sertralineItemBuilder(id,sender).displayName()) else sender.sendStringAsComponent("Must a player.")
+                if (sender is Player) {
+                    sertralineItemBuilder(
+                        id,
+                        sender
+                    )?.let {
+                        sender.sendMessage(it.displayName())
+                    } ?: sender.sendStringAsComponent("Item not exist.")
+                } else {
+                    sender.sendStringAsComponent("Must a player.")
+                }
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
@@ -204,7 +213,12 @@ object DebugCommand {
                     val tabooPlayer = context.player("player")
                     // 转化为Bukkit的Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    sender.sendMessage(sertralineItemBuilder(id,bukkitPlayer).displayName())
+                    sertralineItemBuilder(
+                        id,
+                        bukkitPlayer
+                    )?.let {
+                        sender.sendMessage(it.displayName())
+                    } ?: sender.sendStringAsComponent("Item not exist.")
                 }
             }
         }

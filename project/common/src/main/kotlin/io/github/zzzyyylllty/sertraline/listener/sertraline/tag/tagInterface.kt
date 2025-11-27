@@ -48,15 +48,20 @@ class TagProcessorManager {
         }
         var json = itemData.itemJson
         itemData.repl.forEach { (key, value) ->
-            if (value != "null" && value != null) {
+            json = if (value != "null" && value != null) {
                 // 如果替换的值不是空的
-                json = json.replace("\${$key}$", value)
+                json
+                    .replace("\${$key}$", value)
+                    .replace("\"\${$key}$\"", value)
             } else if (!key.endsWith("!!")) {
                 // 如果key不被标记为非空，即可空，即数值为null时也会被替换成null。
-                json = json.replace("\${$key}$", "null")
+                json
+                    .replace("\${$key}$", "null")
+                    .replace("\"\${$key}$\"", "null")
             } else {
                 // 如果key被标记为非空，即数值为null时也会被替换成空字符串。
-                json = json.replace("\${$key}$", "")
+                json.replace("\${$key}$", "")
+                    .replace("\"\${$key}$\"", "")
             }
         }
         return json

@@ -48,7 +48,7 @@ class ItemExplorer {
 
             // 生成每个元素对应的物品
             onGenerate(async = true) { player, element, index, slot ->
-                val item = sertralineItemBuilder(element.key, player)
+                val item = sertralineItemBuilder(element.key, player) ?: GuiItem("error", "ARROW").build()
                 val meta = item.itemMeta
                 val lore = meta.lore()?.toMutableList() ?: mutableListOf()
                 lore.addAll(suffix)
@@ -64,7 +64,7 @@ class ItemExplorer {
                 when (event.clickEvent().click) {
                     LEFT -> bukkitPlayer.giveItem(sertralineItemBuilder(element.key, bukkitPlayer, amount = 1))
                     SHIFT_LEFT -> {
-                        val itemStack = sertralineItemBuilder(element.key, bukkitPlayer)
+                        val itemStack = sertralineItemBuilder(element.key, bukkitPlayer)!!
                         itemStack.amount = (itemStack.maxStackSize)
                         bukkitPlayer.giveItem(itemStack)
                     }

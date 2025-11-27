@@ -58,15 +58,20 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
     }
 }
 
+fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack? {
+    return sertralineItemBuilderInternal(template, player, source, amount, overrideData)?.rebuild(player)
+}
 
-
-fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack {
+/**
+ * 如要生成物品
+ * */
+fun sertralineItemBuilderInternal(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack? {
     val pTemplate = itemMap[template] ?: return ItemStack(Material.GRASS_BLOCK)
     val data = pTemplate.data.toMutableMap()
     overrideData?.let {
         it.forEach { it -> data[it.key] = it.value }
     }
-    val template = itemSerializer(pTemplate.copy(data = data), player) ?: return ItemStack(Material.GRASS_BLOCK)
+    val template = itemSerializer(pTemplate.copy(data = data), player)?.let { itemSerializer(it, player) }  ?: return null
     val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
@@ -83,7 +88,7 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
     val sID = tag["sertraline_id"]?.asString() ?: return this
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData, amount = this.amount)
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, amount = this.amount) ?: throw NullPointerException("Item $sID Not Exist")
     val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
     val newTag = regen.getItemTag()
     keep.forEach {
@@ -109,7 +114,7 @@ fun ItemStack.rebuildLore(player: Player?) {
     val sID = tag["sertraline_id"]?.asString() ?: return
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData) ?: throw NullPointerException("Item $sID Not Exist")
     this.lore(regen.lore())
 }
 
@@ -123,7 +128,7 @@ fun ItemStack.rebuildUnsafe(player: Player?) {
     val sID = tag["sertraline_id"]?.asString() ?: return
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData) ?: throw NullPointerException("Item $sID Not Exist")
     val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
     val newTag = regen.getItemTag()
     keep.forEach {
@@ -138,7 +143,7 @@ fun ItemStack.rebuildName(player: Player?) {
     val sID = tag["sertraline_id"]?.asString() ?: return
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData) ?: throw NullPointerException("Item $sID Not Exist")
     if (VersionHelper().isOrAbove12005()) {
         this.setData(DataComponentTypes.CUSTOM_NAME, regen.displayName())
     } else {
@@ -154,7 +159,7 @@ fun ItemStack.rebuildDisplay(player: Player?) {
     val sID = tag["sertraline_id"]?.asString() ?: return
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
-    val regen = sertralineItemBuilder(sID, player,overrideData = overrideData)
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData) ?: throw NullPointerException("Item $sID Not Exist")
     this.lore(regen.lore())
 
 }

@@ -4,6 +4,8 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
 import io.github.zzzyyylllty.sertraline.gui.ItemExplorer
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
+import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -14,6 +16,7 @@ import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.util.asList
+import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -48,7 +51,20 @@ object ItemCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
-                if (sender is Player) sender.giveItem(sertralineItemBuilder(id,sender))
+                if (sender is Player) {
+                    val item = sertralineItemBuilder(id,sender) ?: run {
+                        sender.sendStringAsComponent(
+                            sender.asLangText(
+                                "Item_Not_Exist"
+                            )
+                        )
+                        null
+                    }
+                    item?.let {
+                        sender?.giveItem(it)
+                        sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                    }
+                }
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
@@ -59,14 +75,39 @@ object ItemCommand {
                     val tabooPlayer = context.player("player")
                     // 转化为Bukkit的Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    bukkitPlayer?.giveItem(sertralineItemBuilder(id,bukkitPlayer))
+                    val item = sertralineItemBuilder(id,bukkitPlayer) ?: run {
+                        sender.sendStringAsComponent(
+                            sender.asLangText(
+                                "Item_Not_Exist"
+                            )
+                        )
+                        null
+                    }
+                    item?.let {
+                        bukkitPlayer?.giveItem(it)
+                        bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                    }
                 }
 
                 dynamic("amount") {
                     execute<CommandSender> { sender, context, argument ->
                         val id = context["id"]
-                        val amount = context["amount"]
-                        if (sender is Player) sender.giveItem(sertralineItemBuilder(id,sender, amount = amount.toInt()))
+                        val amount = context["amount"].toInt()
+                        val tabooPlayer = context.player("player")
+                        // 转化为Bukkit的Player
+                        val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                        val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
+                            sender.sendStringAsComponent(
+                                sender.asLangText(
+                                    "Item_Not_Exist"
+                                )
+                            )
+                            null
+                        }
+                        item?.let {
+                            bukkitPlayer?.giveItem(it)
+                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", amount, mmUtil.serialize(it.displayName())))
+                        }
                     }
                     suggestion<CommandSender>(uncheck = true) { sender, context ->
                         listOf("1","64","16")
@@ -74,11 +115,22 @@ object ItemCommand {
                     bool("silent") {
                         execute<CommandSender> { sender, context, argument ->
                             val id = context["id"]
+                            val amount = context["amount"].toInt()
                             val tabooPlayer = context.player("player")
                             // 转化为Bukkit的Player
                             val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                            val amount = context["amount"]
-                            bukkitPlayer?.giveItem(sertralineItemBuilder(id,bukkitPlayer, amount = amount.toInt()))
+                            val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
+                                sender.sendStringAsComponent(
+                                    sender.asLangText(
+                                        "Item_Not_Exist"
+                                    )
+                                )
+                                null
+                            }
+                            item?.let {
+                                bukkitPlayer?.giveItem(it)
+                                if (context.bool("silent")) bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", amount, mmUtil.serialize(it.displayName())))
+                            }
                         }
                     }
                 }

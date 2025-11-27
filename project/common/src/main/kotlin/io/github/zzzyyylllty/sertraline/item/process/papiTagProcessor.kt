@@ -17,18 +17,24 @@ import taboolib.platform.compat.replacePlaceholder
 fun papiTagProcessor(data: ProcessItemTagData,player: Player?): ProcessItemTagData {
     val repl = data.repl.toMutableMap()
     var json = data.itemJson
-    if (config.getBoolean("tags.papi",true)) {
-        val processlist = repl.filter { it.key.startsWith("papi:") }
-        processlist.forEach {
-            val orginial = it.key.processRawTagKey("papi:")
-            val split = orginial.split("?:")
-            val section = split.first()
-            val default = if (split.size >= 2) split.last() else null
+
+    processTagPrefix(
+        prefix = "papi",
+        jsonKey = "tags.papi",
+        dataSourceEmptyCheck = { false },
+        getReplaceValue = { parseResult, section, default, cleanedSection ->
             val papi = "%$section%".replacePlaceholderSafety(player)
-            val replace = if (papi == "%$section%" || papi == "null") default else papi
-            if (replace != null) repl[it.key] = replace
-        }
-        json = json.replacePlaceholderSafety(player)
-    }
+            devLog("papi: $papi")
+            if (papi == "%$section%" || papi == "null") default else papi
+        },
+        json = json,
+        repl = repl
+    )
+
+    val regex = Regex("\"%([^%]+)%\"")
+    json = (regex.replace(json) { matchResult ->
+        "%${matchResult.groupValues[1]}%"
+    }).replacePlaceholderSafety(player)
+
     return data.copy(repl = repl, itemJson = json)
 }
