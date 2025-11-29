@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -24,6 +25,7 @@ import taboolib.common.platform.event.SubscribeEvent
 data class ThrottleActionLink(
     val uuid: String,
     val str: String,
+    val subStr: String? = null,
 )
 data class ThrottleActionParam(
     val p: Player,
@@ -35,7 +37,6 @@ data class ThrottleActionParam(
 
 @SubscribeEvent
 fun onInteract(e: PlayerInteractEvent) {
-
     val uuid = e.player.uniqueId.toString()
     val param = ThrottleActionParam(e.player, e, e, e.item)
 
@@ -48,13 +49,22 @@ fun onInteract(e: PlayerInteractEvent) {
 }
 @SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onLogin"), ThrottleActionParam(e.player, e, null)) // todo
+    val inv = e.player.inventory
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onLogin", "main"), ThrottleActionParam(e.player, e, null, inv.itemInMainHand))
+    throttleAction(ThrottleActionLink(uuid, "onLogin", "off"), ThrottleActionParam(e.player, e, null, inv.itemInOffHand))
+    inv.helmet?.let { throttleAction(ThrottleActionLink(uuid, "onLogin", "helmet"), ThrottleActionParam(e.player, e, null, it)) }
+    inv.chestplate?.let { throttleAction(ThrottleActionLink(uuid, "onLogin", "chestplate"), ThrottleActionParam(e.player, e, null, it)) }
+    inv.leggings?.let { throttleAction(ThrottleActionLink(uuid, "onLogin", "leggings"), ThrottleActionParam(e.player, e, null, it)) }
+    inv.boots?.let { throttleAction(ThrottleActionLink(uuid, "onLogin", "boots"), ThrottleActionParam(e.player, e, null, it)) }
 }
 
 @SubscribeEvent
-fun onPreAttack(e: PrePlayerAttackEntityEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPreAttack"), ThrottleActionParam(e.player, e, e, e.player.activeItem))
-
+fun onMine(e: BlockBreakEvent) {
+    val inv = e.player.inventory
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onMine", "main"), ThrottleActionParam(e.player, e, e, inv.itemInMainHand))
+    throttleAction(ThrottleActionLink(uuid, "onMine", "off"), ThrottleActionParam(e.player, e, e, inv.itemInOffHand))
 }
 
 @SubscribeEvent
@@ -72,20 +82,24 @@ fun onAttack(e: EntityDamageByEntityEvent) {
 
 @SubscribeEvent
 fun onConsume(e: PlayerItemConsumeEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))
 }
 
 @SubscribeEvent
 fun onBreak(e: PlayerItemBreakEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onBreak"), ThrottleActionParam(e.player, e, null, e.brokenItem))
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onBreak"), ThrottleActionParam(e.player, e, null, e.brokenItem))
 }
 @SubscribeEvent
 fun onDrop(e: PlayerDropItemEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onDrop"), ThrottleActionParam(e.player, e, e, e.itemDrop.itemStack))
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onDrop"), ThrottleActionParam(e.player, e, e, e.itemDrop.itemStack))
 }
 @SubscribeEvent
 fun onPickup(e: PlayerPickupItemEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onPickUp"), ThrottleActionParam(e.player, e, e, e.item.itemStack))
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onPickUp"), ThrottleActionParam(e.player, e, e, e.item.itemStack))
 }
 @SubscribeEvent
 fun onClickInventory(e: InventoryClickEvent) {
@@ -99,6 +113,7 @@ fun onClickInventory(e: InventoryClickEvent) {
 }
 @SubscribeEvent
 fun onSwap(e: PlayerSwapHandItemsEvent) {
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Main"), ThrottleActionParam(e.player, e, e, e.mainHandItem, e.offHandItem))
-    throttleAction(ThrottleActionLink(e.player.uniqueId.toString(), "onSwap@Off"), ThrottleActionParam(e.player, e, e, e.offHandItem, e.mainHandItem))
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onSwap", "main"), ThrottleActionParam(e.player, e, e, e.mainHandItem, e.offHandItem))
+    throttleAction(ThrottleActionLink(uuid, "onSwap", "off"), ThrottleActionParam(e.player, e, e, e.offHandItem, e.mainHandItem))
 }

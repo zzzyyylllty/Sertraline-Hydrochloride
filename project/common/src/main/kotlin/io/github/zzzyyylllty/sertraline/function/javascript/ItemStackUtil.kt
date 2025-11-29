@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.javascript
 
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
+import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.rebuildName
 import io.github.zzzyyylllty.sertraline.item.rebuildUnsafe
@@ -37,6 +38,10 @@ object ItemStackUtil {
 
     fun rebuildName(itemStack: ItemStack,player: Player?) {
         itemStack.rebuildName(player)
+    }
+
+    fun rebuild(itemStack: ItemStack,player: Player?): ItemStack {
+        return itemStack.rebuild(player)
     }
 
     fun rebuildUnsafe(itemStack: ItemStack,player: Player?) {

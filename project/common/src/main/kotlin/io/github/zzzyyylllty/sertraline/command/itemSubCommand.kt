@@ -55,7 +55,7 @@ object ItemCommand {
                     val item = sertralineItemBuilder(id,sender) ?: run {
                         sender.sendStringAsComponent(
                             sender.asLangText(
-                                "Item_Not_Exist"
+                                "Item_Not_Exist", id
                             )
                         )
                         null
@@ -78,7 +78,7 @@ object ItemCommand {
                     val item = sertralineItemBuilder(id,bukkitPlayer) ?: run {
                         sender.sendStringAsComponent(
                             sender.asLangText(
-                                "Item_Not_Exist"
+                                "Item_Not_Exist", id
                             )
                         )
                         null
@@ -99,7 +99,7 @@ object ItemCommand {
                         val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
                             sender.sendStringAsComponent(
                                 sender.asLangText(
-                                    "Item_Not_Exist"
+                                    "Item_Not_Exist", id
                                 )
                             )
                             null
@@ -122,7 +122,7 @@ object ItemCommand {
                             val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
                                 sender.sendStringAsComponent(
                                     sender.asLangText(
-                                        "Item_Not_Exist"
+                                        "Item_Not_Exist", id
                                     )
                                 )
                                 null

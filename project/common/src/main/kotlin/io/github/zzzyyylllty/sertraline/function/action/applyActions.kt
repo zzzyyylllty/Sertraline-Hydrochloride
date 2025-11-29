@@ -16,6 +16,7 @@ import taboolib.common.platform.function.submitAsync
 import taboolib.module.nms.getItemTag
 
 fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStack, abItem: ItemStack? = null) {
+    devLog("Triggering action $trigger - ${e.eventName}")
     val player = this@applyActions
     val inv = player.inventory
     val id = i.getItemTag(true)["sertraline_id"]?.asString() ?: return

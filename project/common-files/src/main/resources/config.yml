@@ -67,10 +67,11 @@ rebuild:
   keep-data:
     - sertraline_data
     - sertraline_revision
-# 警告: keep-component 在部分情境下不会生效，不保证该功能可以稳定运行。
-# Warning: keep-component may not work in some cases, and it is not guaranteed to run stably.
-# keep-component:
-#   - minecraft:custom_name
+  keep-component:
+    - minecraft:custom_name
+    - minecraft:damage
+    - minecraft:max_damage
+    - minecraft:repair_cost
 
 # 发包相关功能
 # Packet related features

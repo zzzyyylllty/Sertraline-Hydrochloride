@@ -24,6 +24,7 @@ object ActionHelper {
                     devLog("ItemStack is null or air or amount == 0,Skipping actions.")
                 } else {
                     data.p.applyActions(link.str, data.e, data.ce, data.bItem)
+                    data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
                 }
             }
         }
@@ -34,6 +35,7 @@ object ActionHelper {
                 devLog("ItemStack is null or air or amount == 0,Skipping actions.")
             } else {
                 data.p.applyActions(link.str, data.e, data.ce, data.bItem)
+                data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
             }
         }
     }
