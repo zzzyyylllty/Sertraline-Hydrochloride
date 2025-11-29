@@ -28,6 +28,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.expansion.JexlCompiledScript
+import taboolib.expansion.setupPlayerDatabase
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
@@ -35,6 +36,7 @@ import taboolib.module.kether.KetherShell
 import taboolib.module.lang.Language
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
+import java.io.File
 import java.time.format.DateTimeFormatter
 import javax.script.CompiledScript
 import javax.script.ScriptEngineManager
@@ -184,6 +186,11 @@ object Sertraline : Plugin() {
 
     override fun onLoad() {
         fluxonInst = FluxonRuntime.getInstance()
+        if (config.getBoolean("database.enable", false)) {
+            setupPlayerDatabase(config.getConfigurationSection("database")!!)
+        } else {
+            setupPlayerDatabase(File("${config.getString("database.filename") ?: "data"}.db"))
+        }
     }
 
     override fun onEnable() {

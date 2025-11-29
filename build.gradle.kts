@@ -26,7 +26,7 @@ allprojects {
             // 调试模式
             debug = true
             // 是否在开发模式下强制下载依赖
-            forceDownloadInDev = true
+            forceDownloadInDev = false
             // 中央仓库地址
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
@@ -38,7 +38,7 @@ allprojects {
             fileAssets = "assets"
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
-            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl, Metrics)
+            install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl, Metrics, DatabasePlayer)
             // install("bukkit-nms-tag-component")
         }
         version {

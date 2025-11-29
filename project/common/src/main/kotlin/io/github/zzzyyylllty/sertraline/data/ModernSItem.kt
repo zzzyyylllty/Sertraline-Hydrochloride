@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.data
 import com.google.gson.Gson
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
+import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionComponent.FluxonComponentObject
@@ -14,6 +15,7 @@ import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
+import io.github.zzzyyylllty.sertraline.util.data.DataUtil
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
@@ -46,6 +48,8 @@ fun registerExternalData() {
             "EventUtil" to EventUtil,
             "ThreadUtil" to ThreadUtil,
             "PlayerUtil" to PlayerUtil,
+            "SertralineAPI" to SertralineAPI::class.java,
+            "DataUtil" to DataUtil,
             "Math" to Math::class.java,
             "System" to System::class.java,
             "Bukkit" to Bukkit::class.java,

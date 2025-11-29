@@ -36,3 +36,9 @@ fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,p
     }
     return data
 }
+
+fun ItemStack.getSertralineId(): String? {
+
+    val tag = this.clone().getItemTag(true)
+    return tag["sertraline_id"]?.asString()
+}

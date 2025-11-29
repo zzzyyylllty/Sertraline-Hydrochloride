@@ -15,13 +15,14 @@ import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
     name = "sertralineitem",
-    aliases = ["items","needyitemi","depazi"],
+    aliases = ["items","needyitemi","depazi", "di"],
     permission = "sertraline.command.item",
     description = "DEBUG Command of DepazItems.",
     permissionMessage = "",
@@ -50,53 +51,34 @@ object ItemCommand {
     val give = subCommand {
         dynamic("id") {
             execute<CommandSender> { sender, context, argument ->
-                val id = context["id"]
-                if (sender is Player) {
-                    val item = sertralineItemBuilder(id,sender) ?: run {
-                        sender.sendStringAsComponent(
-                            sender.asLangText(
-                                "Item_Not_Exist", id
+                submitAsync {
+                    val id = context["id"]
+                    if (sender is Player) {
+                        val item = sertralineItemBuilder(id,sender) ?: run {
+                            sender.sendStringAsComponent(
+                                sender.asLangText(
+                                    "Item_Not_Exist", id
+                                )
                             )
-                        )
-                        null
-                    }
-                    item?.let {
-                        sender?.giveItem(it)
-                        sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
-                    }
-                }
+                            null
+                        }
+                        item?.let {
+                            sender?.giveItem(it)
+                            sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                        }
+                    }}
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
             }
             player("player") {
                 execute<CommandSender> { sender, context, argument ->
-                    val id = context["id"]
-                    val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
-                    val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                    val item = sertralineItemBuilder(id,bukkitPlayer) ?: run {
-                        sender.sendStringAsComponent(
-                            sender.asLangText(
-                                "Item_Not_Exist", id
-                            )
-                        )
-                        null
-                    }
-                    item?.let {
-                        bukkitPlayer?.giveItem(it)
-                        bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
-                    }
-                }
-
-                dynamic("amount") {
-                    execute<CommandSender> { sender, context, argument ->
+                    submitAsync {
                         val id = context["id"]
-                        val amount = context["amount"].toInt()
                         val tabooPlayer = context.player("player")
                         // 转化为Bukkit的Player
                         val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                        val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
+                        val item = sertralineItemBuilder(id,bukkitPlayer) ?: run {
                             sender.sendStringAsComponent(
                                 sender.asLangText(
                                     "Item_Not_Exist", id
@@ -106,20 +88,19 @@ object ItemCommand {
                         }
                         item?.let {
                             bukkitPlayer?.giveItem(it)
-                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", amount, mmUtil.serialize(it.displayName())))
-                        }
-                    }
-                    suggestion<CommandSender>(uncheck = true) { sender, context ->
-                        listOf("1","64","16")
-                    }
-                    bool("silent") {
-                        execute<CommandSender> { sender, context, argument ->
+                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                        }}
+                }
+
+                dynamic("amount") {
+                    execute<CommandSender> { sender, context, argument ->
+                        submitAsync {
                             val id = context["id"]
                             val amount = context["amount"].toInt()
                             val tabooPlayer = context.player("player")
                             // 转化为Bukkit的Player
                             val bukkitPlayer = tabooPlayer.castSafely<Player>()
-                            val item = sertralineItemBuilder(id,bukkitPlayer, amount = amount) ?: run {
+                            val item = sertralineItemBuilder(id, bukkitPlayer, amount = amount) ?: run {
                                 sender.sendStringAsComponent(
                                     sender.asLangText(
                                         "Item_Not_Exist", id
@@ -129,7 +110,45 @@ object ItemCommand {
                             }
                             item?.let {
                                 bukkitPlayer?.giveItem(it)
-                                if (context.bool("silent")) bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", amount, mmUtil.serialize(it.displayName())))
+                                bukkitPlayer?.sendStringAsComponent(
+                                    bukkitPlayer.asLangText(
+                                        "Item_Give",
+                                        amount,
+                                        mmUtil.serialize(it.displayName())
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    suggestion<CommandSender>(uncheck = true) { sender, context ->
+                        listOf("1","64","16")
+                    }
+                    bool("silent") {
+                        execute<CommandSender> { sender, context, argument ->
+                            submitAsync {
+                                val id = context["id"]
+                                val amount = context["amount"].toInt()
+                                val tabooPlayer = context.player("player")
+                                // 转化为Bukkit的Player
+                                val bukkitPlayer = tabooPlayer.castSafely<Player>()
+                                val item = sertralineItemBuilder(id, bukkitPlayer, amount = amount) ?: run {
+                                    sender.sendStringAsComponent(
+                                        sender.asLangText(
+                                            "Item_Not_Exist", id
+                                        )
+                                    )
+                                    null
+                                }
+                                item?.let {
+                                    bukkitPlayer?.giveItem(it)
+                                    if (context.bool("silent")) bukkitPlayer?.sendStringAsComponent(
+                                        bukkitPlayer.asLangText(
+                                            "Item_Give",
+                                            amount,
+                                            mmUtil.serialize(it.displayName())
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

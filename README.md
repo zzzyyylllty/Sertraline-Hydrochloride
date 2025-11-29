@@ -26,6 +26,9 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
   <a href="https://discord.com/invite/VHs958jJXj">
     <img src="https://img.shields.io/discord/1272636652447338561?style=for-the-badge&label=DISCORD&color=%23ff66cc"/>
   </a>
+  <a href="https://deepwiki.com/zzzyyylllty/Sertraline-Hydrochloride">
+    <img src="https://img.shields.io/badge/Ask-DEEPWIKI-aqua?style=for-the-badge"/>
+  </a>
 </p>
 
 **SERTRALINE Supports 1.21.4-1.21.10!**

@@ -14,7 +14,9 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
+import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
 import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil.refreshAttributes
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -22,13 +24,16 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
+import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
+import taboolib.expansion.setupDataContainer
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
+import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 
 @CommandHeader(
@@ -132,15 +137,6 @@ object DebugCommand {
             }
         }
     }
-    @CommandBody
-    val testComponents = subCommand {
-        execute<CommandSender> { sender, context, argument ->
-            val inv = (sender as Player).inventory
-            val components = asNMSCopy(inv.itemInMainHand).getComponentsNMS()
-            sender.sendStringAsComponent(components.toString())
-        }
-    }
-
 
     @CommandBody
     val refreshAttributes = subCommand {
@@ -150,11 +146,24 @@ object DebugCommand {
     }
 
     @CommandBody
-    val testComponentsFiltered = subCommand {
+    val dumpComponent = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val inv = (sender as Player).inventory
             val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
-            sender.sendStringAsComponent(components.toString())
+            sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+        }
+        bool("full") {
+            execute<CommandSender> { sender, context, argument ->
+                if (context.bool("full")) {
+                    val inv = (sender as Player).inventory
+                    val components = asNMSCopy(inv.itemInMainHand).getComponentsNMS()
+                    sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+                } else {
+                    val inv = (sender as Player).inventory
+                    val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
+                    sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+                }
+            }
         }
     }
 
@@ -185,6 +194,13 @@ object DebugCommand {
             val inv = (sender as Player).inventory
             val item = inv.itemInMainHand
             sender.sendMessage("GetTag - NOT OnlyCustom: ${item.getItemTag(false)}")
+        }
+    }
+
+    @CommandBody
+    val setupDataContainer = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            (sender as Player).setupDataContainer()
         }
     }
 

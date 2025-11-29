@@ -111,3 +111,13 @@ action:
   # 0 to disable
   throttle:
     onConsume: 0
+
+database:
+  enable: false  # true: MySQL; false: SQLite
+  filename: data # data.db for SQLite Database File.
+  host: localhost
+  port: 3306
+  user: x_angelkawaii_x
+  password: angelkawaii2
+  database: sertraline
+  table: sertraline_data
