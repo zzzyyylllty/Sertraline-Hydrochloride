@@ -10,6 +10,7 @@ import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
 // import org.yaml.snakeyaml.Yaml
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFile
+import taboolib.common.platform.function.releaseResourceFolder
 import taboolib.common.platform.function.warning
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Type
@@ -20,7 +21,7 @@ fun loadItemFiles() {
     infoL("Item_Load")
     if (!File(getDataFolder(), "workspace").exists()) {
         warningL("ItemLoad_Regen")
-        releaseResourceFile("workspace/item.yml")
+        releaseResourceFolder("workspace/default")
     }
     val files = File(getDataFolder(), "workspace").listFiles()
     if (files == null) {

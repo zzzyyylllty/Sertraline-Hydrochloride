@@ -1,0 +1,20 @@
+blade_of_mythic:
+  mmo:
+    attack-damage: 2020
+    max-health: 5%
+    # If allowed is null or left a emptylist, Sertraline will detect material's suffix (e.g. diamond_boots -> boots)
+    allowed: ["hand"]
+  sertraline:
+    tier: S
+  xbuilder:
+    name: "<!i>&9Mythic Blade"
+    lore: |
+      
+      <!i><aqua>+2,020 Attack Damage.
+      <!i><aqua>+5% Health.
+
+      <!i><red>Warning! 
+      <!i><red>Due to the loading mechanism of MMO plugins,
+      <!i><red>the attributes still do not work when only MythicLib is installed.
+      <!i><red>You need install MMOItems or MMOCore to let attributes work.
+    material: BLAZE_ROD

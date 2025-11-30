@@ -224,6 +224,6 @@ object DataCommand {
         }
         if (map.isEmpty()) sender.sendStringAsComponent(sender.asLangText("PlayerData_Browse_Empty"))
         return str
-            .replace("cooldown.", "<#ffcc66><bold>cooldown.</bold></#ffcc66>")
+            .replace("cooldown.", "<#ffcc66><u>cooldown.</u></#ffcc66>")
     }
 }

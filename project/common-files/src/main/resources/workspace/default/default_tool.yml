@@ -1,0 +1,69 @@
+
+# A block-placing wand that places a specific block.
+block_wand:
+  xbuilder:
+    name: "<!i>&aBlock Wand"
+    lore: |
+      <!i><gray>Replaces a Logged block when Right clicked.
+      <!i><gold>Log a block when Shift-Right clicked.
+    material: STICK
+  sertraline:
+    tier: C
+    vars:
+      block_type: "STONE" # The block type to place
+    actions:
+      onRightClick:
+        - async: false
+          js: |
+            // Get the block the player is looking at.
+            var block = player.getTargetBlockExact(16); // Range of 16 blocks.
+            if (!player.isSneaking()) {
+
+              // Check if the block is air.
+              if (block != null && !block.isAir) {
+              
+                var success = false;
+
+                // Set the block type.
+                try {
+                  block.setType(org.bukkit.Material.valueOf(block_type), false);
+                  success = true
+                } catch (e) {
+                  player.sendActionBar(mmUtil.deserialize("<red>Invalid block type: " + block_type));
+                }
+                if (success) player.sendActionBar(mmUtil.deserialize("<green>Block placed!"));
+              } else {
+                player.sendActionBar(mmUtil.deserialize("<red>Too far away! (>16 blocks)"));
+              }
+            } else {
+
+              var tag = ItemStackUtil.getItemTag(bItem);
+              var target = block.type
+
+              player.sendActionBar(mmUtil.deserialize("<dark_aqua>Logged blocks: " + target + " successfully."));
+
+              // Modify item stored data.
+              tag.putDeep("sertraline_data.block_type", target.toString());
+
+              // Save data
+              ItemStackUtil.setItemTagDirect(bItem, tag);
+
+            }
+
+ultimate_pickaxe:
+  sertraline:
+    tier: S
+    actions:
+      onMine:
+        - async: false # If cancel event or modify event content, async must be false (default to true).
+          js: |
+            player.sendMessage(mmUtil.deserialize("<aqua>Test.")); 
+  xbuilder:
+    name: "<!i><#cc99cc>Dr. XingChen's Ultimate Pickaxe"
+    lore: |
+      
+      <!i><#aaaadd>A pickaxe cotains ultimate features.
+
+      <!i><#cc99cc>Dr. XingChen's <#aaaadd>Masterpiece that Represents the
+      <!i><#aaaadd>Culmination of Achievements.
+    material: DIAMOND_PICKAXE

@@ -1,0 +1,157 @@
+sertraline_pills_14:
+  sertraline:
+    tier: A
+    vars:
+      pills: 14
+      total: 14
+    actions:
+      onConsume:
+        - async: false
+          js: |
+            var tag = ItemStackUtil.getItemTag(bItem);
+            PlayerUtil.addPotionEffect(player, "SLOWNESS", 300, 2, true, true, true)
+            PlayerUtil.addPotionEffect(player, "BLINDNESS", 30, 0, true, true, true)
+            var modified = pills - 1;
+            player.sendMessage(mmUtil.deserialize("<#CCC600>" + modified + " left."))
+            tag.putDeep("sertraline_data.pills", modified);
+
+            if (bItem.amount > 1) {
+              bItem.amount -= 1
+              var newItem = bItem.clone()
+              newItem.amount = 1
+              ItemStackUtil.setItemTagDirect(newItem, tag);
+              ItemStackUtil.rebuildLore(newItem, player);
+              if (modified > 0) player.give(newItem)
+            } else {
+              ItemStackUtil.setItemTagDirect(bItem, tag);
+              if (modified <= 0) bItem.amount = 0 
+            }
+            ItemStackUtil.rebuildLore(bItem, player);
+            event.replacement = bItem
+            
+  xbuilder:
+    name: "<!i><gradient:#66ffff:#99ccff:#aa99cc>Sertraline Pills</gradient> <#00aaaa><font:uniform>(14 Pills)"
+    lore: |
+
+      <#dddddd>14 Pills version.
+
+      <!i><#ff66ff>AkaCandyKAngel<gray> took this in 2023.
+      <!i><gray>But at now, <#9900cc>zero <gray>needs to take this too.
+
+      <!i><gray>Left pills: <green>${var:pillsAsIn}$</green><gray> /${var:totalAsIn}$
+    material: COOKED_BEEF
+sertraline_pills_42:
+  sertraline:
+    tier: A
+    vars:
+      pills: 42
+      total: 42
+    actions:
+      onConsume:
+        - async: false
+          js: |
+            var tag = ItemStackUtil.getItemTag(bItem);
+            PlayerUtil.addPotionEffect(player, "SLOWNESS", 300, 2, true, true, true)
+            PlayerUtil.addPotionEffect(player, "BLINDNESS", 30, 0, true, true, true)
+            var modified = pills - 1;
+            player.sendMessage(mmUtil.deserialize("<#CCC600>" + modified + " left."))
+            tag.putDeep("sertraline_data.pills", modified);
+
+            if (bItem.amount > 1) {
+              bItem.amount -= 1
+              var newItem = bItem.clone()
+              newItem.amount = 1
+              ItemStackUtil.setItemTagDirect(newItem, tag);
+              ItemStackUtil.rebuildLore(newItem, player);
+              if (modified > 0) player.give(newItem)
+            } else {
+              ItemStackUtil.setItemTagDirect(bItem, tag);
+              if (modified <= 0) bItem.amount = 0 
+            }
+            ItemStackUtil.rebuildLore(bItem, player);
+            event.replacement = bItem
+  xbuilder:
+    name: "<!i><gradient:#66ffff:#99ccff:#aa99cc>Sertraline Pills</gradient> <#aa00aa><font:uniform>(42 Pills)"
+    lore: |
+
+      <#dddddd>42 Pills version.
+
+      <!i><#ff66ff>AkaCandyKAngel<gray> took this in 2023.
+      <!i><gray>But at now, <#9900cc>zero <gray>needs to take this too.
+
+      <!i><gray>Left pills: <green>${var:pillsAsIn}$</green><gray> /${var:totalAsIn}$
+    material: COOKED_BEEF
+
+speed_potion_cookie:
+  xbuilder:
+    name: "<!i>&eSpeed Cookie"
+    lore: |
+      <!i><white>Grants temporary speed boost when consumed.
+    material: COOKIE
+  sertraline:
+    tier: E
+    actions:
+      onRightClick:
+        - async: false
+          js: |
+            // Apply a speed potion effect.
+            // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 200, 1)); // 200 ticks (10 seconds), amplifier 1(Level 2).
+            player.sendMessage(mmUtil.deserialize("<green>Speed boost applied!"));
+
+            // Remove one item from the stack.
+            bItem.amount--;
+
+bagged_zero_calorie_sugar:
+  xbuilder:
+    name: "<!i><#cc99e5>Bagged Zero-Calorie Sugar"
+    lore: |
+      <!i><gray>A pack of zero-calorie candies packaged in bags.
+
+      <!i><gray>It will be produced from June 18th to August 31st 2025,
+      <!i><gray>to commemorate <#ff66ff>AkaCandy</#ff66ff>'s special relationship with <#9900cc>zero</#9900cc>.
+
+      <!i><gray>After <#ff66ff>AkaCandy</#ff66ff> broke up with <#9900cc>zero</#9900cc> on August 31st,
+      <!i><gray>the candy was discontinued.
+    material: SUGAR
+  sertraline:
+    tier: E
+    actions:
+      onRightClick:
+        - async: false
+          js: |
+            // Apply a speed potion effect.
+            // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 1200, 1));
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 12000, 1));
+            player.sendMessage(mmUtil.deserialize("<#66ff66>Tastes good."));
+
+            // Remove one item from the stack.
+            bItem.amount--;
+
+bagged_crystal_sugar:
+  xbuilder:
+    name: "<!i><#99cce5>Bagged Crystal Sugar"
+    lore: |
+      <!i><gray>A pack of rock sugar packaged in bags.
+      <!i><gray>Produced by <gradient:#ff6666:#ffff66:#66ff66:#66ffff:#6666ff:#ff66ff>ChoTen Supervision Office</gradient>.
+
+      <!i><gray>The first batch of production will begin after September 22, 2025.
+
+      <!i><gray>The production of this food is to commemorate <#66ccff>Mr. BlueIce</#66ccff> and <#ff66ff>AkaCandy</#ff66ff>.
+    material: SUGAR
+    glow: true
+  sertraline:
+    tier: E
+    actions:
+      onRightClick:
+        - async: false
+          js: |
+            // Apply a speed potion effect.
+            // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NAUSEA, 120, 1));
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 12000, 1));
+            player.sendMessage(mmUtil.deserialize("<#66ff66>Better than Zero-Calorie."));
+
+            // Remove one item from the stack.
+            bItem.amount--;

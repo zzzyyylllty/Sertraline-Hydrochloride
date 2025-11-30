@@ -1,0 +1,97 @@
+doe_card:
+  sertraline:
+    tier: D
+    lore-format: miscloreformat # Use miscloreformat
+    vals:
+      hiddenlore: |
+        Game is Dawn of the Evenstar.
+        Game designed by Hidayo Mikoyo.
+  xbuilder:
+    name: "<!i>&7Tabletop Game Card"
+    lore: |
+      <!i><white>A tabletop game card.
+    material: paper
+book_of_multi_language:
+  xbuilder:
+    name: "<!i>&6Book of Multi Language"
+    lore: |
+      <!i><white>A book of multi-script language.
+    material: book
+  sertraline:
+    vals:
+      testvariable: 114514
+    actions:
+      onLeftClick:
+        - condition: check 1 == 1
+        - gjs: |
+            player.sendMessage(mmUtil.deserialize("<gradient:yellow:#aaaa66>A welcome from GraalJS!"));
+          kether: |
+            minitell inline "<gradient:white:gray>Hello, kether with val {{ &val }} !"
+          js: |
+            var days = 1;
+            var base = 100;
+            var daily = days * 10;
+            var weekBonus = (days / 7) * 100;
+            var tag = ItemStackUtil.getItemTag(bItem);
+            tag.put("Javascript_Modifyed_NBT", "Hello, Javascript!");
+            ItemStackUtil.setItemTagDirect(bItem, tag);
+            player.sendMessage(mmUtil.deserialize("<gradient:red:gold>Hello, JavaScript with math " + weekBonus.toString() + " !"))
+          jexl: |
+            player.sendMessage(mmUtil.deserialize("<gradient:dark_aqua:blue>Hello, Jexl with math " + Math.max(1, 2) + " !"))
+          fluxon: |
+            import 'sertraline:bukkit'
+            import 'sertraline:component'
+            v = "Fluxon!";
+            &player::sendMessage("Hello, " + &v + "With insert a item variable " + &testvariable)
+star_of_recall:
+  xbuilder:
+    name: "<!i>&bRecall Star"
+    lore: |
+      <!i><white>A star of recall.
+    material: nether_star
+  sertraline:
+    tier: D
+    lore-format: miscloreformat # Use miscloreformat
+    vals:
+      hiddenlore: |
+        Right click to consume and back to Spawn.
+    actions:
+      onRightClick:
+        - gjs: |
+            // Nashorn JavaScript Engine only support ECMAScript 5.1.
+            // So If use async/await/const/lambda/Promise/template-vars, must use GraalJS Engine For ECMAScript 6+ features.
+
+            // Use async function
+            async function tpSpawn() {
+              var spawnlocation = player.respawnLocation
+              var location = player.location
+              if (spawnlocation == null) spawnlocation = player.world.spawnLocation
+
+              // 5 Seconds warmup
+              for (var i = 5; i > 0; i--) {
+                if (location.x != player.location.x || location.z != player.location.z) {
+                  player.sendMessage(mmUtil.deserialize("<red>Teleport cancelled."));
+                  player.give(returnItem);
+                  return true;
+                }
+
+                // Send Message
+                player.sendMessage(mmUtil.deserialize("<yellow>Don't move. Teleport in " + i + "..."));
+
+                // Sleep 1s
+                ThreadUtil.sleep(1000);
+              }
+
+              player.teleportAsync(spawnlocation);
+              player.sendMessage(mmUtil.deserialize("<aqua>Teleported to " + spawnlocation.x + ", " + spawnlocation.y + ", " + spawnlocation.z + "!"));
+              return true;
+            }
+
+            // Generate Return Item
+            var returnItem = bItem.clone();
+            returnItem.amount = 1
+
+            // Cost Item
+            bItem.amount--
+            player.sendMessage(mmUtil.deserialize("Don't move. Start teleporting..."));
+            tpSpawn()

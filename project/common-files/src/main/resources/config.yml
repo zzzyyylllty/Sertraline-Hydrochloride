@@ -68,7 +68,7 @@ rebuild:
     - sertraline_data
     - sertraline_revision
   keep-component:
-    - minecraft:custom_name
+#    - minecraft:custom_name
     - minecraft:damage
     - minecraft:max_damage
     - minecraft:repair_cost
@@ -98,11 +98,32 @@ tags:
   val: true
   var: true
   dynamic: true
+  kether: true
+
+attribute:
+
+  # 默认防抖时间
+  # Default debounce time
+  # Example: debounce-time: 250
+  # updateAttribute() // Start timer
+  # updateAttribute() // Reset timer
+  # updateAttribute() // Reset timer from 0ms
+  #
+  # // after 250 ms
+  # // updateAttribute execute.
+  debounce-time: 250
 
 action:
 
   # 默认节流时间
   # Default throttle time
+  # Example: throttle-time: 500
+  # runAction() // Execute ✅
+  # runAction() // Ignore ❌
+  # runAction() // Ignore ❌
+  #
+  # // after 500 ms
+  # runAction() // Execute ✅
   throttle-time: 500
 
   # 为每个动作设置不同的节流时间

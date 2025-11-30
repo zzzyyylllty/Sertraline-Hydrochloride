@@ -1,0 +1,178 @@
+sword_of_skyline:
+  sertraline:
+    tier: D
+    lore-format: defaultloreformat # Use defaultloreformat
+  xbuilder:
+    name: "<!i>&7Sword Of &eSkyline"
+    lore: |
+      <st><!i><#8888ff>NK_Xingchen&8 &floves&8 <#9900cc>zero&f</st> Before.
+      <!i><#ff66ff>AkaCandyKAngel &floves <#66ccff><i>Mr. BlueIce</i><white>.
+      <!i><gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient> supports &x&6&9&c&f&a&cLegacy &#8899aaColor Codes&f. www
+    material: DIAMOND_SWORD
+    flags: [HIDE_ENCHANTS]
+    glow: true # This will auto add Unbreaking I Enchant.
+    attributes:
+      ATTACK_DAMAGE:
+        amount: 2025
+        operation: ADD_NUMBER
+        slot: HAND
+      ATTACK_SPEED:
+        amount: 6 
+        operation: ADD_NUMBER
+        slot: HAND
+      ARMOR:
+        amount: 6
+        operation: ADD_NUMBER
+        slot: HAND
+
+sword_of_counter:
+  sertraline:
+    tier: C
+    vars:
+      count: 0
+    actions:
+      onAttack:
+        - js: |
+            var tag = ItemStackUtil.getItemTag(bItem);
+            var added = count + event.damage;
+            tag.putDeep("sertraline_data.count", added);
+            ItemStackUtil.setItemTagDirect(bItem, tag);
+            player.sendMessage(mmUtil.deserialize("This item's damage count: " + added))
+            ItemStackUtil.rebuildLore(bItem, player);
+  xbuilder:
+    name: "<!i>&7Sword Of &6Counter"
+    lore: |
+      <!i><white>Total Damage Count: <yellow>${var:countAsIn}$
+    material: IRON_SWORD
+
+sword_of_soulbound:
+  sertraline:
+    tier: C
+    vars:
+      bound: "%player_name%"
+    actions:
+      onAttack:
+        - async: false # If cancel event or modify event content, async must be false (default to true).
+          js: |
+            if (bound != player.name) {
+              player.sendMessage(mmUtil.deserialize("<red>This Item is soulbound by player: " + bound + ", you can't use it."));
+              event.setCancelled(true)
+            } else {
+              player.sendActionBar(mmUtil.deserialize("<green>You are using your soulbound item."));
+            }
+  xbuilder:
+    name: "<!i>&7Sword Of <gradient:red:gold>SoulBound"
+    lore: |
+      <!i><white>Bound player: <yellow>${var:bound}$
+      <!i><white>This is just a <aqua>JavaScript Feature <white>Example.
+      <!i><white>We will provide soulbound officialy in future.
+    material: IRON_SWORD
+
+sword_of_ultimate_damage:
+  sertraline:
+    tier: S
+    actions:
+      onAttack:
+        - async: false # If cancel event or modify event content, async must be false (default to true).
+          js: |
+            event.damage = 100
+  xbuilder:
+    name: "<!i>&eGolden Sword Of &cOne hundred Damage"
+    lore: |
+      <!i><gold>+100 Damage.
+    material: GOLDEN_SWORD
+
+sword_of_glasnost:
+  sertraline:
+    tier: S
+    actions:
+      onAttack:
+        - async: false # If cancel event or modify event content, async must be false (default to true).
+          js: |
+            if (DataUtil.isInCooldown(player, "sword_of_glasnost")) {
+
+              var sec = Math.ceil(DataUtil.getCooldownLeftLong(player, "sword_of_glasnost") / 100) / 10
+              player.sendActionBar(mmUtil.deserialize("<#999999><i>Extra Damage Skill is in cooldown, " + sec + "s left."))
+
+            } else {
+
+              var location = player.getLocation();
+              var world = location.getWorld();
+              world.spawnParticle(org.bukkit.Particle.SOUL, location, 20, 0.5, 0.5, 0.5, 0.05); // Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
+              world.playSound(location, org.bukkit.Sound.BLOCK_BELL_USE, org.bukkit.SoundCategory.MASTER, 0.5, 1.5);
+              DataUtil.setCooldown(player, "sword_of_glasnost", 10.0)
+
+              event.damage += 19.91
+              player.sendActionBar(mmUtil.deserialize("<#FF4422>Extra Damage Skill Triggered, current damage is <yellow>" + (Math.ceil(event.damage) * 10) / 10 + "</yellow>."))
+            }
+  xbuilder:
+    name: "<!i><#96efff>Sword O' <#ff6699>Glasnost"
+    lore: |
+      <gray>GLASNOST, The Russian word for openness, 
+      <gray>Glasnost was introduced as a public policy by Mikhail Gorbachev. 
+
+      <!i><#eeee66>Effects On Attack:
+      <!i>&7- <#3333ee>Gain 19.91 Extra Attack Damage. <#666699><i>- 10s cooldown.
+    material: GOLDEN_SWORD
+
+sword_of_eternal_frozen:
+  sertraline:
+    tier: S
+    vars:
+      chance: "%sertraline_random:40to80%"
+    actions:
+      onAttack:
+        - async: false
+          js: |
+            // Get the entity being attacked.
+            var target = event.entity;
+
+            // Check if the target is a living entity. This is crucial to avoid errors if the target is not an entity that can have potion effects.
+            if (target instanceof org.bukkit.entity.LivingEntity && Math.random() * 100 <= chance) {
+              
+              PlayerUtil.showTitle(player, mmUtil.deserialize(" "), mmUtil.deserialize("<#66ccff><bold>❄"), 5, 20, 5);
+
+              player.sendActionBar(mmUtil.deserialize("<#66ccff>Eternal Frozen Sword <white>Skill Activated!"));
+              
+              // Apply slowness effect (Slowness II, 5 seconds).
+              target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 300, 1)); // 300 ticks (15 seconds), amplifier 1 (Level 2).
+
+              // Play particle effect (CLOUD effect).  Adjust the particle and count as desired.
+              var location = target.getLocation();
+              var world = location.getWorld();
+              world.spawnParticle(org.bukkit.Particle.CLOUD, location, 20, 0.5, 0.5, 0.5, 0.05); // Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
+              world.playSound(location, org.bukkit.Sound.ENTITY_ELDER_GUARDIAN_CURSE, org.bukkit.SoundCategory.MASTER, 0.5, 1.5);
+
+              if (event.isCritical && Math.random() <= 0.2 && chance < 85) {
+                var tag = ItemStackUtil.getItemTag(bItem);
+                var added = Number(chance) + 1;
+                tag.putDeep("sertraline_data.chance", added);
+                ItemStackUtil.setItemTagDirect(bItem, tag);
+                player.sendMessage(mmUtil.deserialize("Increased <yellow>1%</yellow> skill chance."))
+                ItemStackUtil.rebuildLore(bItem, player);
+              }
+            }
+  xbuilder:
+    name: "<!i><b><u><#9999ff>Mr. BlueICE's</u> <gradient:#66ccff:white:#66ccff><i>Eternal Frozen Sword"
+    lore: |
+      
+      <!i><#66ccff>Mr. BlueIce's <#aabbcc>sword.
+      <!i><#aabbcc>Hard and Unbreakable.
+
+      <!i><#aabbcc>On Attacking with an <#66ccaa>LivingEntity</#66ccaa>, 
+      <!i><#aabbcc>There is a chance to trigger a skill.
+      <!i><#aabbcc>Skill will grant <#0000ff>Slowness II</#0000ff> in <#0000ff>15</#0000ff> seconds to your opponent.
+
+      <!i><#556677>When you land a critical hit,
+      <!i><#556677>There is a 20% chance to permanently increase skill probability by <yellow>1%</yellow>
+      <#556677>(with a maximum cap of 85%)
+
+      <!i><#ffffaa>Current Trigger Skill Chance: <yellow>${var:chanceAsIn}$% ${kether: if check get chance >= 85 then *<red>[Maximum]!!}$
+    material: DIAMOND_SWORD
+    glow: true # This will auto add Unbreaking I Enchant.
+    unbreakable: true
+    attributes:
+      ATTACK_DAMAGE:
+        amount: 16
+        operation: ADD_NUMBER
+        slot: HAND
