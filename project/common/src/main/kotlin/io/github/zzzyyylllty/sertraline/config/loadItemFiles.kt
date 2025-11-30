@@ -20,7 +20,7 @@ import java.io.File
 fun loadItemFiles() {
     infoL("Item_Load")
     if (!File(getDataFolder(), "workspace").exists()) {
-        warningL("ItemLoad_Regen")
+        warningL("Item_Load_Regen")
         releaseResourceFolder("workspace/default")
     }
     val files = File(getDataFolder(), "workspace").listFiles()

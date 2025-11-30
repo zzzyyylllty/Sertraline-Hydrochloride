@@ -41,7 +41,7 @@ fun CommandSender?.infoS(message: String, bothSendConsole: Boolean = false) {
 }
 
 fun CommandSender?.warningS(message: String, bothSendConsole: Boolean = false) {
-    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
+    (this ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#ffee66>WARN</#ffee66>]</gray> <#eeeeaa>$message")
     if (this != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#ffee66>WARNI</#ffee66>]</gray> <#eeeeaa>$message")
 }
 
