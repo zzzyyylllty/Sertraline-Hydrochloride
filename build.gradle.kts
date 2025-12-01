@@ -123,7 +123,7 @@ allprojects {
     }
 
     dependencies {
-        taboo("io.github.zzzyyylllty:EmbianComponent:1.0.1")
+        taboo("io.github.zzzyyylllty:EmbianComponent:1.0.2")
 
         // 服务器 API
         implementation(rootProject.libs.paperapi)
@@ -157,7 +157,7 @@ allprojects {
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         compileOnly(rootProject.libs.bundles.jackson)
-        compileOnly(rootProject.libs.uniitemall)
+        compileOnly(rootProject.libs.bundles.uniitem)
         taboo(rootProject.libs.kotlin.stdlib) // 将 kotlin("stdlib") 替换为此格式
     }
 

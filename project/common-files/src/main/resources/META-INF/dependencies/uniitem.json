@@ -5,6 +5,40 @@
       "io.github.projectunified.uniitem",
       "io.github.zzzyyylllty.sertraline.library.uniitem"
     ],
+    "test": [],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "io.github.projectunified:uni-item-api:$uniItemVersion",
+    "relocate": [
+      "io.github.projectunified.uniitem",
+      "io.github.zzzyyylllty.sertraline.library.uniitem"
+    ],
+    "test": [
+      "io.github.projectunified.uniitem.all.AllItemProvider"
+    ],
+    "transitive": false,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "io.github.projectunified:uni-item-multi:$uniItemVersion",
+    "relocate": [
+      "io.github.projectunified.uniitem",
+      "io.github.zzzyyylllty.sertraline.library.uniitem"
+    ],
     "test": [
       "io.github.projectunified.uniitem.all.AllItemProvider"
     ],

@@ -22,7 +22,7 @@ import taboolib.platform.util.giveItem
 
 @CommandHeader(
     name = "sertralineitem",
-    aliases = ["items","needyitemi","depazi", "di"],
+    aliases = ["items","needyitemi","depazi", "di", "si"],
     permission = "sertraline.command.item",
     description = "DEBUG Command of DepazItems.",
     permissionMessage = "",
