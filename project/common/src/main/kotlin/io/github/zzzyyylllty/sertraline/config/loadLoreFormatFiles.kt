@@ -70,6 +70,7 @@ fun loadLoreFormat(key: String, arg: Map<String, Any?>) {
         settings = LoreSetting(
             overwrite = c.getDeep(arg, "settings.overwrite") as? Boolean ?: true,
             visual = c.getDeep(arg, "settings.visual") as? Boolean ?: true,
+            skipBlank = c.getDeep(arg, "settings.auto-skip-blank") as? Boolean ?: true,
         ),
         elements = elements
     )

@@ -27,15 +27,26 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
     // 如果模式不匹配
     if (loreFormat.settings.visual != isVisual) return null
 
-    val map = if (loreFormat.settings.overwrite) mutableListOf() else orgLore?.toMutableList() ?: mutableListOf()
+    val lore = mutableListOf<String>()
 
     loreFormat.elements.forEach { element ->
         // 开始显示lore
         if (handleLoreExists(element, item)) {
-            map.addAll(handleKeyLore(item, element, player))
+            lore.addAll(handleKeyLore(item, element, player))
         }
     }
-    return map
+
+    val nLore = if (loreFormat.settings.skipBlank) mergeConsecutiveEmptyStrings(lore) else lore
+
+    val compList = if (loreFormat.settings.overwrite) {
+        nLore.toComponent()
+    } else {
+        val orgList = orgLore?.toMutableList() ?: mutableListOf()
+        orgList.addAll(nLore.toComponent())
+        orgList
+    }
+
+    return compList
 }
 
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
@@ -91,7 +102,7 @@ fun handleLoreExists(element: LoreElement,item: ModernSItem): Boolean {
     }
 }
 
-fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<Component> {
+fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<String> {
     val key = element.key
     return if (key != null) {
         val keyValueList = if (key.startsWith("*")) {
@@ -101,10 +112,10 @@ fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<
         } ?: emptyList()
 
         keyValueList.map { value ->
-            value.performNormalPlaceholders(element.content, player, item).toComponent()
+            value.performNormalPlaceholders(element.content, player, item)
         }
     } else {
-        element.content.performPlaceholders(item, player)?.toComponent()?.let { listOf(it) } ?: emptyList()
+        element.content.performPlaceholders(item, player)?.let { listOf(it) } ?: emptyList()
     }
 }
 
@@ -114,4 +125,27 @@ fun handleExistLore(key: String,item: ModernSItem): Boolean {
     } else {
         item.data[key] != null
     }
+}
+
+fun mergeConsecutiveEmptyStrings(list: List<String>): List<String> {
+    if (list.isEmpty()) {
+        return emptyList()
+    }
+
+    val result = mutableListOf<String>()
+    var lastWasEmpty = false
+
+    for (item in list) {
+        if (item.isEmpty()) {
+            if (!lastWasEmpty) {
+                result.add("")
+                lastWasEmpty = true
+            }
+        } else {
+            result.add(item)
+            lastWasEmpty = false
+        }
+    }
+
+    return result
 }

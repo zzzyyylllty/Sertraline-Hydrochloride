@@ -14,7 +14,8 @@ data class LoreFormat(
 
 data class LoreSetting(
     val overwrite: Boolean = true,
-    val visual: Boolean = true
+    val visual: Boolean = false,
+    val skipBlank: Boolean = true
 )
 
 data class LoreElement(
