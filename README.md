@@ -35,6 +35,10 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 </div>
 
+## Item Plugins Contrast
+
+<img width="2000" height="1132" alt="855d861e-3e76-4b79-9fff-8fdb14aec058" src="https://github.com/user-attachments/assets/fccf866e-72aa-4156-b6f9-61653f78fefe" />
+
 ## Special Thanks
 
 ### Thanks for other Projects
