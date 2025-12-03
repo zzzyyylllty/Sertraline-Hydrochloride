@@ -13,11 +13,13 @@ import io.github.zzzyyylllty.sertraline.function.kether.parseKether
 import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponentJson
+import io.github.zzzyyylllty.sertraline.util.toLowerCase
 import org.bukkit.entity.Player
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.kether.KetherFunction
 import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
+import kotlin.math.roundToInt
 
 fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
 
@@ -50,14 +52,40 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
 }
 
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
-    val numeral = this.toString().toDoubleOrNull()
+    val numeral = this.toString().toDoubleOrNull() ?: 0.0
     val string = this.toString()
-    var content = content
-    if (numeral != null) {
-        if (numeral > 0.0) config.getString("placeholders.plus", "+")?.let { content = content.replace("{plus}", it) }
-        if (numeral < 0.0) config.getString("placeholders.minus", "-")?.let { content = content.replace("{minus}", it) }
+//    var content = content
+//    if (numeral != null) {
+//        content = content.replace("{plus}", if (numeral > 0.0) config.getString("placeholders.plus", "+") ?: "+" else "")
+//        content = content.replace("{minus}", if (numeral < 0.0) config.getString("placeholders.minus", "-") ?: "-" else "")
+//    }
+//    content = content
+//        .replace("{value}", string).performPlaceholders(sItem, player).toString()
+//        .replace("{round}", string).performPlaceholders(sItem, player)?.toDouble()?.roundToInt().toString()
+//        .replace("{auto}", string).performPlaceholders(sItem, player)?.toDouble()?.round
+
+    val regex = "\\{(.*?)}".toRegex() // 匹配 ${xxx} 的正则表达式
+    val parse = mutableListOf<String>() // 创建一个Map来存储结果
+
+    regex.findAll(content).forEach { matchResult ->
+        val key = matchResult.groupValues[1]
+        parse.add(key)
     }
-    content = content.replace("{value}", string).performPlaceholders(sItem, player).toString()
+
+    var content = content
+
+    for (entry in parse) {
+        val nentry = entry.toLowerCase()
+        content = content.replace("{$entry}", when {
+            nentry == "plus" -> if (numeral > 0.0) config.getString("placeholders.plus", "+") ?: "+" else ""
+            nentry == "minus" -> if (numeral < 0.0) config.getString("placeholders.minus", "-") ?: "-" else ""
+            nentry == "value" -> string
+            nentry == "auto" -> string.removeSuffix(".0")
+            nentry.startsWith("round:") -> "%${nentry.removePrefix("round:")}.2f".format(string.toDoubleOrNull() ?: 0.0)
+            else -> continue
+        }.performPlaceholders(sItem, player)!!
+        )
+    }
     return content
 }
 fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {

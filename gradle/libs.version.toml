@@ -1,6 +1,7 @@
 
 [versions]
 taboolib = "6.2.4-3b3cd67"
+#taboolib = "6.2.4-local-dev"
 taboolibPlugin = "2.0.27"
 kotlin = "2.2.0"
 nashorn = "15.4"

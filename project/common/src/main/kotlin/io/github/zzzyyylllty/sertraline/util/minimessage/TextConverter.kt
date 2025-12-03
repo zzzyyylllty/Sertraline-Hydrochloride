@@ -10,7 +10,6 @@ fun List<Any?>.legacyToMiniMessage(): List<Any?> {
     this.forEach { list.add(it.legacyToMiniMessage()) }
     return list
 }
-
 fun String.legacyToMiniMessage(): String {
     var text = this
 
@@ -18,14 +17,22 @@ fun String.legacyToMiniMessage(): String {
     // 匹配形式：&x&6&6&c&c&f&f （固定6个16进制字符）
     val legacyHexPattern = Regex("&x((&[0-9a-fA-F]){6})")
     text = legacyHexPattern.replace(text) { matchResult ->
-        val hexChars = matchResult.groupValues[1].chunked(2).joinToString("") { it.substring(1) }
-        "<#$hexChars>"
+        if (isInsidePlaceholder(text, matchResult.range)) {
+            matchResult.value
+        } else {
+            val hexChars = matchResult.groupValues[1].chunked(2).joinToString("") { it.substring(1) }
+            "<#$hexChars>"
+        }
     }
 
     // 2. 处理现代形式的 Hex Hex代码：&#66ccff 或 &#ABCDEF
     val modernHexPattern = Regex("&#([0-9a-fA-F]{6})")
     text = modernHexPattern.replace(text) { matchResult ->
-        "<#${matchResult.groupValues[1].lowercase()}>"
+        if (isInsidePlaceholder(text, matchResult.range)) {
+            matchResult.value
+        } else {
+            "<#${matchResult.groupValues[1].lowercase()}>"
+        }
     }
 
     // 3. 处理颜色代码（旧版，无大小写敏感）
@@ -50,7 +57,13 @@ fun String.legacyToMiniMessage(): String {
 
     for ((code, tag) in colorMap) {
         val pattern = Regex("[&§]$code", RegexOption.IGNORE_CASE)
-        text = pattern.replace(text, tag)
+        text = pattern.replace(text) { matchResult ->
+            if (isInsidePlaceholder(text, matchResult.range)) {
+                matchResult.value
+            } else {
+                tag
+            }
+        }
     }
 
     // 4. 处理格式代码
@@ -64,11 +77,30 @@ fun String.legacyToMiniMessage(): String {
 
     for ((code, tag) in formatMap) {
         val pattern = Regex("[&§]$code", RegexOption.IGNORE_CASE)
-        text = pattern.replace(text, tag)
+        text = pattern.replace(text) { matchResult ->
+            if (isInsidePlaceholder(text, matchResult.range)) {
+                matchResult.value
+            } else {
+                tag
+            }
+        }
     }
 
     // 5. 处理重置代码
-    text = Regex("[&§]r", RegexOption.IGNORE_CASE).replace(text, "<reset>")
+    text = Regex("[&§]r", RegexOption.IGNORE_CASE).replace(text) { matchResult ->
+        if (isInsidePlaceholder(text, matchResult.range)) {
+            matchResult.value
+        } else {
+            "<reset>"
+        }
+    }
 
     return text
+}
+
+fun isInsidePlaceholder(text: String, range: IntRange): Boolean {
+    val start = text.lastIndexOf("\${", range.first)
+    val end = text.indexOf("}$", range.last)
+
+    return start != -1 && end != -1 && start < range.first && end > range.last
 }

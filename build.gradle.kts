@@ -31,7 +31,8 @@ allprojects {
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
 //            repoTabooLib = "https://repo.xiao-jie.top/repository/maven-releases"
-             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
+//             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
+            repoTabooLib = project.repositories.mavenLocal().url.toString()
             // 依赖下载目录
             fileLibs = "libraries"
             // 资源下载目录
@@ -56,6 +57,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
         maven("https://repo.aeoliancloud.com/release")
         maven("https://repo.aeoliancloud.com/releases")
@@ -123,7 +125,9 @@ allprojects {
     }
 
     dependencies {
+//        compileOnly("com.github.cryptomorin:XSeries:master-57d7b42")
         taboo("io.github.zzzyyylllty:EmbianComponent:1.0.2")
+        compileOnly("com.willfp:eco:6.77.2")
 
         // 服务器 API
         implementation(rootProject.libs.paperapi)
@@ -150,14 +154,11 @@ allprojects {
         implementation(rootProject.libs.bundles.reflex)
         implementation(rootProject.libs.bundles.asm)
         implementation(rootProject.libs.bundles.adventure)
-
-
-
         taboo(rootProject.libs.arim)
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         compileOnly(rootProject.libs.bundles.jackson)
-        compileOnly(rootProject.libs.bundles.uniitem)
+        taboo(rootProject.libs.bundles.uniitem)
         taboo(rootProject.libs.kotlin.stdlib) // 将 kotlin("stdlib") 替换为此格式
     }
 

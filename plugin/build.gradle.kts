@@ -23,6 +23,7 @@ taboolib {
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
             name("packetevents").optional(true)
+            name("eco").optional(true)
             // name("ProtocolLib").optional(true)
             // 可选依赖.
             // name("XXX").optional(true)

@@ -30,6 +30,11 @@ xbuilder:lore:
   - xbuilder:lore
 xbuilder:material:
   - xbuilder:material
+#xbuilder:custom-model-data:
+#  - xbuilder:custom-model-data
+#  - xbuilder:custommodeldata
+#  - xbuilder:modeldata
+#  - xbuilder:cmd
 visual:material:
   - visual:material
 minecraft:material:

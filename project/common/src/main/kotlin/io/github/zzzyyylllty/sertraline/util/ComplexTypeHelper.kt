@@ -1,10 +1,10 @@
 package io.github.zzzyyylllty.sertraline.util
 
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import com.google.common.base.Strings
 import io.github.zzzyyylllty.sertraline.data.Action
-import java.math.BigDecimal
-import kotlin.collections.component1
-import kotlin.collections.component2
+import org.bukkit.Color
+import taboolib.library.xseries.XItemStack
+import java.util.*
 
 class ComplexTypeHelper(val input: Any?) {
     fun getAsActions(): Map<String, List<Action>>? {
@@ -30,6 +30,33 @@ class ComplexTypeHelper(val input: Any?) {
         }
         return actions
     }
+    fun parseColor(): Color? {
+        var str = input.toString()
+        if (Strings.isNullOrEmpty(str)) return null
+        val rgb = str!!.replace(" ", "").split(',')
+        if (rgb.size == 3) {
+            return Color.fromRGB(
+                    rgb[0].toInt(),
+                    rgb[1].toInt(),
+                    rgb[2].toInt(),
+            )
+        }
+        // If we read a number that starts with 0x, SnakeYAML has already converted it to base-10
+        try {
+            return Color.fromRGB(str.toInt())
+        } catch (ignored: NumberFormatException) {
+        }
+        // Trim any prefix, parseInt only accepts digits
+        if (str.startsWith("#")) {
+            str = str.substring(1)
+        }
+        return try {
+            Color.fromRGB(str.toInt(16))
+        } catch (e: NumberFormatException) {
+            null
+        }
+    }
+
 
 }
 

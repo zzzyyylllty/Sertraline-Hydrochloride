@@ -71,3 +71,22 @@ miscloreformat:
     - key: "sertraline:tier"
       content: "<!i><white>Item Tier: <blue>{value}"
     - content: "<#aabbcc>--------------------"
+
+mmolore:
+  settings:
+    overwrite: true
+    visual: false
+    auto-skip-blank: true
+  elements:
+    - content: ""
+    - key: "*sertraline.vals.lore"
+      content: "<!i><#cccccc>| {value}"
+    - key: "*sertraline.vals.graylore"
+      content: "<!i><#777777>| {value}"
+    - content: ""
+    - key: "mmo:ATTACK_DAMAGE"
+      # {auto} for automatic round or show full value
+      # e.g. value:
+      # 114.514 -> 114.514
+      # 66.0 -> 66
+      content: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"

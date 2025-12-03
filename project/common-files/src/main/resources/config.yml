@@ -113,6 +113,12 @@ attribute:
   # // updateAttribute execute.
   debounce-time: 250
 
+  mythiclib:
+
+    # 删除原版物品属性
+    # Delete vanilla item attributes
+    remove-vanilla-attribute: false
+
 action:
 
   # 默认节流时间
@@ -142,3 +148,11 @@ database:
   password: angelkawaii2
   database: sertraline
   table: sertraline_data
+
+performance:
+  adventure:
+    # 使用将列表替换为带分割符号的单行文本以节省性能开销
+    # 这可能带来兼容性问题，谨慎使用
+    # Replace the list with a single-line text containing delimiters to reduce performance overhead
+    # This may cause compatibility issues, so use it with caution
+    use-split-replace-list-serialize: false

@@ -2,21 +2,27 @@ package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
+import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
+import org.bukkit.Color
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.components.CustomModelDataComponent
 import taboolib.library.xseries.XItemStack
+import kotlin.math.roundToInt
 
 fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
 
+    val configMap = (sItem.config["xbuilder"] as Map<String, Any?>?)?.toMutableMap() ?: return item
+
     val orgItemType = item.type
 
-    val configMap = (sItem.config["xbuilder"] as Map<String, Any?>?)?.toMutableMap()
     for (entry in XItemStack.serialize(item)) {
-        configMap?.let { it[entry.key] = entry.value }
+        configMap.let { it[entry.key] = entry.value }
     }
 
     // 反序列化得到的XItemStack包装类型（可能是Wrapped Bukkit ItemStack或者继承）
-    val xDeserialized = configMap?.let { XItemStack.deserialize(it) }
+    val xDeserialized = configMap.let { XItemStack.deserialize(it) }
 
     // 从反序列化结果拿到ItemMeta，准备合并
     val deserializedMeta = xDeserialized?.itemMeta
