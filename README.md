@@ -5,6 +5,8 @@
 ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 <div align="center">
+  
+<img width="2010" height="1125" alt="42ddc36e-7fe7-4b43-b927-f20c91ff1bd0" src="https://github.com/user-attachments/assets/258bc7c3-6dcc-4a24-8ac9-9ee358f62c89" />
 
 <img alt="AVATAR" src="https://github.com/user-attachments/assets/4e876740-8759-4b0d-a42c-7a8cf9692f9d" />
 
