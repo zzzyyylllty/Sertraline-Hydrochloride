@@ -112,13 +112,6 @@ attribute:
   # // after 250 ms
   # // updateAttribute execute.
   debounce-time: 250
-
-  mythiclib:
-
-    # 删除原版物品属性
-    # Delete vanilla item attributes
-    remove-vanilla-attribute: false
-
 action:
 
   # 默认节流时间

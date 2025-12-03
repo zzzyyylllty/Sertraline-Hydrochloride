@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.util.dependencies
 
+import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
@@ -40,7 +41,9 @@ object AttributeUtil {
                 if (playerData != null) {
                     val statMap = playerData.statMap
                     for (instance in statMap.instances) {
-                        instance.removeIf { key -> key.startsWith("sertraline_item") }
+                        instance.removeIf { key ->
+                            key.startsWith("sertraline_item")
+                        }
                     }
 
 
