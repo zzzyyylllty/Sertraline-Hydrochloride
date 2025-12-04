@@ -120,7 +120,6 @@ bagged_zero_calorie_sugar:
       onRightClick:
         - async: false
           js: |
-            // Apply a speed potion effect.
             // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 1200, 1));
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 12000, 1));
@@ -147,7 +146,6 @@ bagged_crystal_sugar:
       onRightClick:
         - async: false
           js: |
-            // Apply a speed potion effect.
             // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NAUSEA, 120, 1));
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 12000, 1));

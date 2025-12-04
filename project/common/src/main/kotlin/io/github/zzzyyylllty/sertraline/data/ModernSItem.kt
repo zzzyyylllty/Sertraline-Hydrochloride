@@ -32,6 +32,7 @@ import taboolib.common.platform.Awake
 import taboolib.common5.compileJS
 import taboolib.module.nms.getItemTag
 import javax.script.SimpleBindings
+import kotlin.collections.Map
 
 var defaultData = LinkedHashMap<String, Any?>()
 
@@ -62,11 +63,37 @@ fun registerExternalData() {
 
 data class ModernSItem(
     val key: String,
-    val data: Map<String, Any?> = mapOf(),
-    val config: Map<String, Any?> = mapOf(),
+    val data: LinkedHashMap<String, Any?> = linkedMapOf<String, Any?>(),
+    val config: LinkedHashMap<String, Any?> = linkedMapOf<String, Any?>(),
 ) {
     fun serialize(): String? {
         return jsonUtils.toJson(this)
+    }
+
+    fun getDeepData(location: String): Any? {
+        val split = location.split(":")
+        if (split.size >= 2) {
+            val major = split[0]
+            val section = location.removePrefix("${split[0]}:")
+            return (data[major] as? Map<*,*>?)?.get(section)
+        } else return data[location] as? Map<*,*>?
+    }
+    fun getMajorData(location: String): Any? {
+        return data[location] as? Map<*,*>?
+    }
+
+    fun setDeepData(location: String, value: Any?) {
+        val split = location.split(":")
+        if (split.size >= 2) {
+            val major = split[0]
+            val section = location.removePrefix("${split[0]}:")
+            val cvalue = (data[major] as? Map<*,*>?)?.toMutableMap()
+            cvalue?.set(section, value)
+            data[major] = cvalue
+        } else data[location] = value
+    }
+    fun setMajorData(location: String, value: Any?) {
+        data[location] = value
     }
 }
 

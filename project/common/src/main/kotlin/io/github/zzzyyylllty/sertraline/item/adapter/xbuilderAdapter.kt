@@ -1,9 +1,13 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
+import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
+import io.github.zzzyyylllty.sertraline.util.loreformat.performPlaceholders
+import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
+import net.kyori.adventure.text.Component
 import org.bukkit.Color
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -32,8 +36,14 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
 
     val c = AdapterUtil(sItem.data)
     val prefix = "xbuilder"
-    val name = c.getTextComponent("$prefix:name", sItem, player)
-    val lore = c.getTextComponentList("$prefix:lore", sItem, player)
+    val name = sItem.getDeepData("$prefix:name")?.toString().performPlaceholders(sItem, player)?.toComponent()
+    val lore = run {
+        val get = sItem.getDeepData("$prefix:lore")
+        val list = get as? List<*> ?: listOf(get.toString())
+        val retList : MutableList<Component> = mutableListOf()
+        list.asListEnhanded()?.forEach { retList.add(it.performPlaceholders(sItem, player)!!.toComponent()) }
+        retList
+    }
 
     // 这里优先用反序列化meta的内容，但保留原始meta的自定义内容
     if (deserializedMeta != null) {

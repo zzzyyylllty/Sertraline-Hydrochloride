@@ -26,7 +26,7 @@ fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStac
         devLog("Can't get preload actions for $trigger, fallback to complextypehelper to get as actions.")
         item = itemSerializer(id, player) ?: return
         ComplexTypeHelper(
-            item.data["sertraline:actions"]
+            item.getDeepData("sertraline:actions")
         ).getAsActions()
     }
     val actions = allActions?.get(trigger) ?: return

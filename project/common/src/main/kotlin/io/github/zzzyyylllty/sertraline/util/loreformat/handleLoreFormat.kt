@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
 
     // 获取loreformat
-    val loreFormat = loreFormats[item.data["sertraline:lore-format"]] ?: return null
+    val loreFormat = loreFormats[item.getDeepData("sertraline:lore-format")] ?: return null
 
     // 如果模式不匹配
     if (loreFormat.settings.visual != isVisual) return null
@@ -136,7 +136,7 @@ fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<
         val keyValueList = if (key.startsWith("*")) {
             configUtil.getDeep(item.config, key.removePrefix("*")).asListEnhanded()
         } else {
-            item.data[key].asListEnhanded()
+            item.getDeepData(key).asListEnhanded()
         } ?: emptyList()
 
         keyValueList.map { value ->
@@ -151,7 +151,7 @@ fun handleExistLore(key: String,item: ModernSItem): Boolean {
     return if (key.startsWith("*")) {
         configUtil.existDeep(item.config, key.removePrefix("*"))
     } else {
-        item.data[key] != null
+        item.getDeepData(key) != null
     }
 }
 

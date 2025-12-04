@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
+@Deprecated("设计过于傻逼，重构后不适合再使用")
 public class AdapterUtil(val input: Map<String, Any?>?) {
     fun getString(location: String): String? {
         return input?.get(location)?.toString()

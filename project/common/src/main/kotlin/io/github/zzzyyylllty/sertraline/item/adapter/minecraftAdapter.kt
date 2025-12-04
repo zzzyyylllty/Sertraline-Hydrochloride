@@ -8,14 +8,14 @@ import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 
 fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemStack {
-    var item = item
-    val filtered = sItem.data.filter {
-        it.key.startsWith("minecraft:") && (it.value != null)
-    }
+    val item = item
+    val filtered = (sItem.data["minecraft"] as? Map<*,*>)?.filter {
+        it.value != null
+    } ?: return item
     if (filtered.isEmpty()) return item
     var nmsItem = asNMSCopy(item)
     filtered.forEach {
-        nmsItem.setComponentNMS(it.key, it.value!!)?.let { nmsItem = it }
+        nmsItem.setComponentNMS(it.key.toString(), it.value!!)?.let { nmsItem = it }
     }
     return asBukkitCopy(nmsItem)
 }

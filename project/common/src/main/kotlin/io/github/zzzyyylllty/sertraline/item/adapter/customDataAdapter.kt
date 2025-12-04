@@ -13,7 +13,7 @@ import java.util.LinkedHashMap
 fun customDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
 
     val tag = item.getItemTag(true)
-    val map = (sItem.data["custom_data:custom_data"] as Map<String, Any>?)
+    val map = (sItem.getDeepData("custom_data") as Map<String, Any>?)
     if (map == null || map.isEmpty()) {
         devLog("custom_data is null or empty, skipping adapting.")
         return item

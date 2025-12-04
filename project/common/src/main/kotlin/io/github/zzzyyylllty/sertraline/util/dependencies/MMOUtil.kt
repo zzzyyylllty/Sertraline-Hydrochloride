@@ -73,11 +73,13 @@ object MMOUtil {
         submit(async = async) {
 
             playerData.let { cache ->
-                val mmoData = item.data.filter { (key, value) -> key.startsWith("mmo:") }.toMutableMap()
+                val mmoData = (item.data["mmo"] as? Map<*,*>)?.filter {
+                    it.value != null
+                }?.toMutableMap() ?: return@let
 
                 devLog("mmoData: $mmoData") // 添加日志
 
-                val allowed = (mmoData["mmo:allowed"] as? List<String>? ?: return@submit).toMutableList()
+                val allowed = (mmoData["allowed"] as? List<String>? ?: return@let).toMutableList()
 
                 val bItemMat = bItemMat.toLowerCase()
 
@@ -105,19 +107,19 @@ object MMOUtil {
 
                 devLog("Allowed list: $allowed")
 
-                val idString = mmoData["mmo:id"]?.toString() ?: return@submit
-                val slot = mmoData["mmo:slot"]?.let { EquipmentSlot.valueOf(it.toString()) } ?: defslot
-                val source = mmoData["mmo:source"]?.let { ModifierSource.valueOf(it.toString()) } ?: defSource
+                val idString = mmoData["id"]?.toString() ?: return@submit
+                val slot = mmoData["slot"]?.let { EquipmentSlot.valueOf(it.toString()) } ?: defslot
+                val source = mmoData["source"]?.let { ModifierSource.valueOf(it.toString()) } ?: defSource
 
                 devLog("ID: $idString, Slot: $slot, Source: $source")
 
                 for (key in mmoFilter) {
-                    mmoData.remove("mmo:$key")
+                    mmoData.remove("$key")
                 }
 
                 for (data in mmoData) {
 
-                    val atb = solveStatModifier(data)
+                    val atb = solveStatModifier(data.key, data.value)
                     devLog("atb modifier: $atb")
 
                     val uuid = (idString + "_" + atb.atbID).generateUUID()
@@ -138,22 +140,23 @@ object MMOUtil {
         }
     }
 
-    fun solveStatModifier(input: Map.Entry<String, Any?>): MMOAttributeValue {
+    fun solveStatModifier(key: Any?, value: Any?): MMOAttributeValue {
 
-        val str = input.value.toString()
+        val key = key.toString()
+        val str = value.toString()
 
         val type = when (str.last()) {
             '%', 'c', 'm' -> ModifierType.RELATIVE
             'a', 's' -> ModifierType.ADDITIVE_MULTIPLIER
             else -> return MMOAttributeValue(
-                input.key.removePrefix("mmo:"),
+                key,
                 str.toDoubleOrNull() ?: 1.0,
                 ModifierType.FLAT
             )
         }
 
         return MMOAttributeValue(
-            input.key.removePrefix("mmo:"),
+            key,
             str.dropLast(1).toDoubleOrNull() ?: 1.0,
             type
         )

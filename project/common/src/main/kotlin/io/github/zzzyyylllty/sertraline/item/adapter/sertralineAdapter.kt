@@ -12,7 +12,7 @@ import taboolib.module.nms.setItemTag
 
 fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
 
-    val dataMap = (sItem.data["sertraline:vars"] as Map<String, Any?>?)?.toMutableMap()
+    val dataMap = (sItem.getDeepData("sertraline:vars") as Map<String, Any?>?)?.toMutableMap()
     val tag = item.getItemTag(true)
     tag["sertraline_data"] = dataMap
     val item = item.setItemTag(tag, true)

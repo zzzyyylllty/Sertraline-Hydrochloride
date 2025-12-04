@@ -13,7 +13,7 @@ import taboolib.module.nms.getItemTag
 
 fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,player: Player?): ItemData {
 
-    val itemVal = item?.data["sertraline:vals"] as Map<String, Any?>?
+    val itemVal = item?.getDeepData("sertraline:vals") as Map<String, Any?>?
     val itemVar = mutableMapOf<String, Any?>()
     ((itemStack?.getItemTag(true)["sertraline_data"]?.parseMapNBT()))?.let {
         (it).let { it ->
@@ -21,9 +21,9 @@ fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,p
             itemVar.putAll(it)
         }
     } ?: run {
-        (item?.data["sertraline:vars"] as Map<String, Any?>?)?.let { itemVar.putAll(it) }
+        (item?.getDeepData("sertraline:vars") as Map<String, Any?>?)?.let { itemVar.putAll(it) }
     }
-    val itemDynamic = (item?.data["sertraline:dynamics"] as Map<String, Any?>?)
+    val itemDynamic = (item?.getDeepData("sertraline:dynamics") as Map<String, Any?>?)
 
     val data = ItemData(itemVal, itemVar, itemDynamic, item?.key)
 

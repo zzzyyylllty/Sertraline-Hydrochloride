@@ -11,7 +11,6 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.impl.getComponentsNMSFiltered
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
@@ -67,12 +66,13 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
  * */
 fun sertralineItemBuilderInternal(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
     val pTemplate = itemMap[template] ?: return null
-    val data = pTemplate.data.toMutableMap()
     overrideData?.let {
-        it.forEach { it -> data[it.key] = it.value }
+        it.forEach {
+            pTemplate.setDeepData(it.key, it.value)
+        }
     }
-    val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate.copy(data = data), player)  ?: return null
-    val itemSource = source ?: itemSource(template.data["xbuilder:material"] ?: template.data["minecraft:material"], player)
+    val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
+    val itemSource = source ?: itemSource(template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material"), player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
 
