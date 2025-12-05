@@ -177,7 +177,7 @@ object Sertraline : Plugin() {
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
     var devMode = true
-    val configUtil by lazy { ConfigUtil() }
+    val configUtil by lazy { ConfigUtil }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
     val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }

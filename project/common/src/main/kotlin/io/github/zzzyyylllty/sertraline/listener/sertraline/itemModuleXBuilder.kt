@@ -12,7 +12,7 @@ import taboolib.platform.BukkitListener.BukkitListener
 fun itemModuleXBuilder(e: ItemLoadEvent) {
     
     val prefix = "xbuilder"
-    val c = ConfigUtil()
+    val c = ConfigUtil
 
     val features = listOf(
         "$prefix:material",

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.Gson
+import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
@@ -75,7 +76,13 @@ data class ModernSItem(
         if (split.size >= 2) {
             val major = split[0]
             val section = location.removePrefix("${split[0]}:")
-            return (data[major] as? Map<*,*>?)?.get(section)
+            return if (!section.contains(".")) {
+                // 不需要深层读取
+                (data[major] as? Map<*, *>?)?.get(section)
+            } else {
+                // 需要深层读取
+                configUtil.getDeep(data[major] as? Map<*, *>, section)
+            }
         } else return data[location] as? Map<*,*>?
     }
     fun getMajorData(location: String): Any? {

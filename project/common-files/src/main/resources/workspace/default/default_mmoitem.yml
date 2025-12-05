@@ -17,4 +17,10 @@ blade_of_mythic:
       <!i><red>Due to the loading mechanism of MMO plugins,
       <!i><red>the attributes still do not work when only MythicLib is installed.
       <!i><red>You need install MMOItems or MMOCore to let attributes work.
+
+      <dark_gray><i>For certain reasons, 
+      <dark_gray><i>we do not recommend using MMO as the attribute system.
+      <dark_gray><i>We prefer plugins like AttributePlus,
+      <dark_gray><i>which provide attributes through lore.
+      <dark_gray><i>Using MMO as the attribute system may cause noticeable lag in attack speed.
     material: BLAZE_ROD

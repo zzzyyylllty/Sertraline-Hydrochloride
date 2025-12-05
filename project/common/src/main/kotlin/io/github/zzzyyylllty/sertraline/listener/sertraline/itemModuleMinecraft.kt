@@ -93,7 +93,7 @@ fun mcFeatures(prefix: String): List<String> {
 fun itemModuleMinecraft(e: ItemLoadEvent) {
 
     val prefix = "minecraft"
-    val c = ConfigUtil()
+    val c = ConfigUtil
 
 
     e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))
@@ -103,7 +103,7 @@ fun itemModuleMinecraft(e: ItemLoadEvent) {
 fun itemModuleVisual(e: ItemLoadEvent) {
 
     val prefix = "visual"
-    val c = ConfigUtil()
+    val c = ConfigUtil
 
 
     e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))

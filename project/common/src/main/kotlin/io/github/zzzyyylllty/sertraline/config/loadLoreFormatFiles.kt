@@ -52,7 +52,7 @@ fun loadLoreFormatFile(file: File) {
 }
 
 fun loadLoreFormat(key: String, arg: Map<String, Any?>) {
-    val c = ConfigUtil()
+    val c = ConfigUtil
     val elementConfigs = c.getDeep(arg, "elements") as List<*>
     val elements = mutableListOf<LoreElement>()
     elementConfigs.forEach {

@@ -12,7 +12,7 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
     //if (settings.)
 
     val prefix = "sertraline"
-    val c = ConfigUtil()
+    val c = ConfigUtil
 
     val features = listOf(
         "$prefix:tier",

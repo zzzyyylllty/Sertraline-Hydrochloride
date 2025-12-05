@@ -15,7 +15,7 @@ val mmoFilter = listOf("id", "source", "slot", "allowed")
 fun itemModuleMMO(e: ItemLoadEvent) {
 
     val prefix = "mmo"
-    val c = ConfigUtil()
+    val c = ConfigUtil
 
 
     ((e.arguments["mmo"]) as Map<String, Any>?)?.let {

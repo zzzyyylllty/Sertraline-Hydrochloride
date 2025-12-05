@@ -8,7 +8,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
 import io.github.zzzyyylllty.sertraline.util.serialize.isListOfType
 import taboolib.module.lang.asLangText
 
-public class ConfigUtil {
+object ConfigUtil {
     fun getString(input: Any?): String? {
         return input?.toString()
     }
@@ -26,7 +26,7 @@ public class ConfigUtil {
         var current: Any? = input
 
         for (key in keys) {
-            if (current !is Map<*, *>) return null
+            if (current !is Map<*, *>) return input
             current = current[key]
         }
         return current
