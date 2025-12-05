@@ -57,7 +57,7 @@ ultimate_pickaxe:
       onMine:
         - async: false # If cancel event or modify event content, async must be false (default to true).
           js: |
-            player.sendMessage(mmUtil.deserialize("<aqua>Test.")); 
+            player.sendMessage(mmUtil.deserialize("<aqua>Not yet imped."));
   xbuilder:
     name: "<!i><#cc99cc>Dr. XingChen's Ultimate Pickaxe"
     lore: |

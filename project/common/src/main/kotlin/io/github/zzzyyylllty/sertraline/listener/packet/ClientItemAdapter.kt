@@ -68,18 +68,16 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
     var visualMaterial: Material? = null
 
     if (packetComponent) {
-        val filtered = (sItem.data["visual"] as? Map<*,*>)?.filter {
-            it.value != null
-        }?.toMutableMap() ?: return asBukkitCopy(item)
+        val filtered = (sItem.data["visual"] as? Map<*,*>)?.toMutableMap() ?: return asBukkitCopy(item)
         if (!filtered.isEmpty()) {
 
-            filtered["visual:material"]?.let {
+            filtered["material"]?.let {
                 visualMaterial = XMaterial.valueOf(it.toString().toUpperCase()).get() ?: Material.STONE
-                filtered.remove("visual:material")
+                filtered.remove("material")
             }
 
             filtered.forEach { (key, value) ->
-                resultItem.setComponentNMS(key.toString().replace("visual", "minecraft"), value!!)?.let { resultItem = it }
+                resultItem.setComponentNMS("minecraft:$key", value!!)?.let { resultItem = it }
             }
         }
     }
@@ -94,21 +92,19 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
 
 @Deprecated("Performance Issue")
 fun visualComponentSetter(item: ItemStack, sItem: ModernSItem): ItemStack {
-    val filtered = (sItem.data["visual"] as? Map<*,*>)?.filter {
-        it.value != null
-    }?.toMutableMap() ?: return item
+    val filtered = (sItem.data["visual"] as? Map<*,*>)?.toMutableMap() ?: return item
     if (filtered.isEmpty()) return item
 
     var resultItem = item
-    filtered["visual:material"]?.let {
+    filtered["material"]?.let {
         resultItem.type = XMaterial.valueOf(it.toString()).get() ?: Material.STONE
-        filtered.remove("visual:material")
+        filtered.remove("material")
     }
 
     if (!filtered.isEmpty()) {
         var nmsItem = asNMSCopy(resultItem)
         filtered.forEach { (key, value) ->
-            nmsItem.setComponentNMS(key.toString().replace("visual", "minecraft"), value!!)?.let { nmsItem = it }
+            nmsItem.setComponentNMS("minecraft:$key", value!!)?.let { nmsItem = it }
         }
         resultItem = asBukkitCopy(nmsItem)
     }
