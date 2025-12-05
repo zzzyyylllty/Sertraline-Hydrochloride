@@ -3,7 +3,9 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
+import io.github.zzzyyylllty.sertraline.config.asListEnhanded
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
+import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.platform.BukkitListener.BukkitListener
@@ -92,19 +94,19 @@ fun mcFeatures(prefix: String): List<String> {
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleMinecraft(e: ItemLoadEvent) {
 
-    val prefix = "minecraft"
-    val c = ConfigUtil
-
-
-    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))
+    ((e.arguments["minecraft"]) as Map<String, Any?>?)?.let {
+        for (component in it) {
+            e.itemData["minecraft:${component.key.replace("-","_")}"] = component.value
+        }
+    }
 }
 
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleVisual(e: ItemLoadEvent) {
 
-    val prefix = "visual"
-    val c = ConfigUtil
-
-
-    e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, mcFeatures(prefix), e.itemData))
+    ((e.arguments["visual"]) as Map<String, Any?>?)?.let {
+        for (component in it) {
+            e.itemData["visual:${component.key.replace("-","_")}"] = component.value
+        }
+    }
 }

@@ -23,6 +23,8 @@ import taboolib.module.nms.setItemTag
 import taboolib.platform.util.deserializeToItemStack
 import taboolib.platform.util.serializeToByteArray
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
+import org.bukkit.NamespacedKey
+import kotlin.math.roundToInt
 
 private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 private val packetLore by lazy { config.getBoolean("packet.packet-lore", true) }
@@ -66,23 +68,48 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
 
     var resultItem = item
     var visualMaterial: Material? = null
+    val autoComponents = LinkedHashMap<String, Any>()
 
     if (packetComponent) {
         val filtered = (sItem.data["visual"] as? Map<*,*>)?.toMutableMap() ?: return asBukkitCopy(item)
         if (!filtered.isEmpty()) {
+            devLog(filtered.toString())
 
             filtered["material"]?.let {
                 visualMaterial = XMaterial.valueOf(it.toString().toUpperCase()).get() ?: Material.STONE
                 filtered.remove("material")
             }
 
+            filtered.remove("auto_lore")?.let { autoComponents["autoLore"] = it }
+            filtered.remove("auto_name")?.let { autoComponents["autoName"] = it }
+            filtered.remove("auto_custom_model_data")?.let { autoComponents["autoCMD"] = it }
+            filtered.remove("auto_model")?.let { autoComponents["autoModel"] = it }
+
             filtered.forEach { (key, value) ->
-                resultItem.setComponentNMS("minecraft:$key", value!!)?.let { resultItem = it }
+                devLog("Component - $key = $value")
+                if (value != null) resultItem.setComponentNMS("minecraft:$key", value)?.let { resultItem = it }
             }
+
+
         }
     }
 
     var resultBItem = asBukkitCopy(resultItem)
+    devLog("autoComponents: $autoComponents")
+    if (autoComponents.isNotEmpty()) {
+        val meta = resultBItem.itemMeta
+        autoComponents.forEach { (key, value) ->
+            when (key) {
+                "autoName" -> meta.displayName(value.toString().toComponent())
+                "autoLore" -> ((value.asListEnhanded())?.toComponent() ?: listOf(value.toString().toComponent())).let {
+                    meta.lore(it)
+                }
+                "autoCMD" -> meta.setCustomModelData(value.toString().toDouble().roundToInt())
+                "autoModel" -> meta.itemModel = NamespacedKey.fromString(value.toString())
+            }
+            resultBItem.setItemMeta(meta)
+        }
+    }
     val tag = resultBItem.getItemTag()
     tag["sertraline_oitem"] = serialized
     resultBItem = resultBItem.setItemTag(tag)

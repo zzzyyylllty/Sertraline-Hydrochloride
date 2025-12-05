@@ -39,7 +39,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
     val name = sItem.getDeepData("$prefix:name")?.toString().performPlaceholders(sItem, player)?.toComponent()
     val lore = run {
         val get = sItem.getDeepData("$prefix:lore")
-        val list = get as? List<*> ?: get?.let { listOf(it.toString()) } ?: return@run null
+        val list = get.asListEnhanded() ?: return@run null
         val retList : MutableList<Component> = mutableListOf()
         list.asListEnhanded()?.forEach { it.performPlaceholders(sItem, player)?.toComponent()?.let { element -> retList.add(element) } }
         retList
