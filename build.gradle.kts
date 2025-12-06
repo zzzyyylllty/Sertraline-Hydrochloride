@@ -31,8 +31,8 @@ allprojects {
             repoCentral = "https://maven.aliyun.com/repository/central"
             // TabooLib 仓库地址
 //            repoTabooLib = "https://repo.xiao-jie.top/repository/maven-releases"
-//             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
-            repoTabooLib = project.repositories.mavenLocal().url.toString()
+             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
+//            repoTabooLib = project.repositories.mavenLocal().url.toString()
             // 依赖下载目录
             fileLibs = "libraries"
             // 资源下载目录
