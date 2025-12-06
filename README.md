@@ -31,11 +31,19 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
   <a href="https://deepwiki.com/zzzyyylllty/Sertraline-Hydrochloride">
     <img src="https://img.shields.io/badge/Ask-DEEPWIKI-aqua?style=for-the-badge"/>
   </a>
+  <a href="https://afdian.com/a/liminalskyline">
+    <img src="https://img.shields.io/badge/Donate-AFDIAN-dd66ff?style=for-the-badge"/>
+  </a>
+
 </p>
 
 **SERTRALINE Supports 1.21.4-1.21.10!**
 
 </div>
+
+## Donate!
+
+Click here to donate via [Afdian](https://afdian.com/a/liminalskyline).
 
 ## Item Plugins Contrast
 
