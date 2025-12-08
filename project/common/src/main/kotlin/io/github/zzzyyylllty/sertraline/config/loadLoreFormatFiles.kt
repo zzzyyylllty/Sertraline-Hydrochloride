@@ -37,17 +37,22 @@ fun loadLoreFormatFiles() {
 }
 fun loadLoreFormatFile(file: File) {
     devLog("Loading file ${file.name}")
-    if (!checkRegexMatch(file.name, (config["file-load.lore-format"] ?:".*").toString())) {
-        devLog("${file.name} not match regex, skipping...")
-        return
-    }
-    val map = multiExtensionLoader(file)
-    if (map != null) for (it in map.entries) {
-        val key = it.key
-        val value = map[key]
-        loadLoreFormat(key, value as Map<String, Any?>)
+
+    if (file.isDirectory) file.listFiles()?.forEach {
+        loadLoreFormatFile(it)
     } else {
-        devLog("Map is null, skipping.")
+        if (!checkRegexMatch(file.name, (config["file-load.lore-format"] ?: ".*").toString())) {
+            devLog("${file.name} not match regex, skipping...")
+            return
+        }
+        val map = multiExtensionLoader(file)
+        if (map != null) for (it in map.entries) {
+            val key = it.key
+            val value = map[key]
+            loadLoreFormat(key, value as Map<String, Any?>)
+        } else {
+            devLog("Map is null, skipping.")
+        }
     }
 }
 

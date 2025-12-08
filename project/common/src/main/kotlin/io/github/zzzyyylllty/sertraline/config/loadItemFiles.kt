@@ -38,27 +38,32 @@ fun loadItemFiles() {
 }
 fun loadItemFile(file: File) {
     devLog("Loading file ${file.name}")
-    if (!checkRegexMatch(file.name, (config["file-load.item"] ?:".*").toString())) {
-        devLog("${file.name} not match regex, skipping...")
-        return
-    }
-    /*
-    val yaml = Yaml()
-    val obj = yaml.load<Map<String?, Any?>?>(file.inputStream())
-    val entries = obj.entries
-    for (it in entries) {
-        val key = it.key ?: continue
-        val value = obj[key]
-        devLog("Key: $key")
-        devLog("Value: $value")
-        ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
-    }*/
-    val map = multiExtensionLoader(file)
-    if (map != null) for (it in map.entries) {
-        val key = it.key
-        val value = map[key]
-        ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
+
+    if (file.isDirectory) file.listFiles()?.forEach {
+        loadItemFile(it)
     } else {
-        devLog("Map is null, skipping.")
+        if (!checkRegexMatch(file.name, (config["file-load.item"] ?: ".*").toString())) {
+            devLog("${file.name} not match regex, skipping...")
+            return
+        }
+        /*
+        val yaml = Yaml()
+        val obj = yaml.load<Map<String?, Any?>?>(file.inputStream())
+        val entries = obj.entries
+        for (it in entries) {
+            val key = it.key ?: continue
+            val value = obj[key]
+            devLog("Key: $key")
+            devLog("Value: $value")
+            ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
+        }*/
+        val map = multiExtensionLoader(file)
+        if (map != null) for (it in map.entries) {
+            val key = it.key
+            val value = map[key]
+            ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
+        } else {
+            devLog("Map is null, skipping.")
+        }
     }
 }

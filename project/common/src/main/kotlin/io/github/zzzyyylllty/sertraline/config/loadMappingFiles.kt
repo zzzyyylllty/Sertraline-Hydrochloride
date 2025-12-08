@@ -31,6 +31,10 @@ fun loadMappingFiles() {
 fun loadMappingFile(file: File) {
     devLog("Loading file ${file.name}")
 
+    if (file.isDirectory) file.listFiles()?.forEach {
+        loadMappingFile(it)
+    } else {
+
     val map = multiExtensionLoader(file)
     if (!checkRegexMatch(file.name, (config["file-load.mapping"] ?:".*").toString())) {
         devLog("${file.name} not match regex, skipping...")
@@ -56,5 +60,6 @@ fun loadMappingFile(file: File) {
             mappings[key] = value
             devLog("Mapping Loaded: $key - $value")
         }
+    }
     }
 }
