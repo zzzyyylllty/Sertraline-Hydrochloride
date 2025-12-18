@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline
 
+import io.github.zzzyyylllty.sertraline.api.SertralineAPI
+import io.github.zzzyyylllty.sertraline.api.SertralineAPIImpl
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
@@ -161,7 +163,8 @@ object Sertraline : Plugin() {
 
     @Config("config.yml")
     lateinit var config: Configuration
-    
+
+    val api: SertralineAPI? by lazy { SertralineAPIImpl().INSTANCE }
     val plugin by lazy { this }
     val dataFolder by lazy { nativeDataFolder() }
     val console by lazy { console() }
@@ -183,6 +186,10 @@ object Sertraline : Plugin() {
     val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }
     val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
     val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
+
+    fun api() : SertralineAPI {
+        return api ?: error("SertralineAPI has not finished loading, or failed to load!")
+    }
 
     override fun onLoad() {
         fluxonInst = FluxonRuntime.getInstance()

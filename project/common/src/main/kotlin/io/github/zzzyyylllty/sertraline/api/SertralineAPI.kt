@@ -11,6 +11,10 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+public class SertralineAPIImpl: SertralineAPI {
+    public val INSTANCE = SertralineAPIImpl()
+}
+
 public interface SertralineAPI {
 
     /**
