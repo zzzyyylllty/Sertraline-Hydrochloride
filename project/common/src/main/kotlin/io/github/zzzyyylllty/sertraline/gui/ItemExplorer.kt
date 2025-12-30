@@ -2,7 +2,7 @@ package io.github.zzzyyylllty.sertraline.gui
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.util.gui.GuiItem
@@ -24,17 +24,17 @@ class ItemExplorer {
 
         player.openMenu<PageableChest<ModernSItem>>(console.asLangText("Editor_Title")) {
 
-            val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.toComponent() ?: emptyList() }
+            val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanced()?.toComponent() ?: emptyList() }
 
 
             rows(6)
 
             map(
-                "---------",
-                "-#######-",
-                "-#######-",
-                "-#######-",
-                "-#######-",
+                "#########",
+                "#########",
+                "#########",
+                "#########",
+                "#########",
                 "---B-C---"
             )
 

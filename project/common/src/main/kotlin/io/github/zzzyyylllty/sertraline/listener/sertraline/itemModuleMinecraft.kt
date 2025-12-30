@@ -3,7 +3,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import taboolib.common.platform.event.EventPriority

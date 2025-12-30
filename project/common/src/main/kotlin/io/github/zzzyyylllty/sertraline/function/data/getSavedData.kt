@@ -1,6 +1,6 @@
 package io.github.zzzyyylllty.sertraline.function.data
 
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ItemData
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -30,7 +30,7 @@ fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,p
     if (evalDynamic) {
         val newDynamic = mutableMapOf<String, Any>()
         itemDynamic?.forEach { entry ->
-            entry.value.asListEnhanded()?.evalKether(player, data.collect())?.get()?.let { newDynamic[entry.key] = it }
+            entry.value.asListEnhanced()?.evalKether(player, data.collect())?.get()?.let { newDynamic[entry.key] = it }
             return ItemData(itemVal, itemVar, newDynamic, item.key)
         }
     }

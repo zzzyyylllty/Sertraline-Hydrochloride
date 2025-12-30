@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
 import io.github.zzzyyylllty.sertraline.util.loreformat.performPlaceholders
@@ -34,14 +34,13 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
     // 使用原始item的meta作为基础，合并反序列化meta的书名与附加属性（名字、lore等）
     val originalMeta = item.itemMeta
 
-    val c = AdapterUtil(sItem.data)
     val prefix = "xbuilder"
     val name = sItem.getDeepData("$prefix:name")?.toString().performPlaceholders(sItem, player)?.toComponent()
     val lore = run {
         val get = sItem.getDeepData("$prefix:lore")
-        val list = get.asListEnhanded() ?: return@run null
+        val list = get.asListEnhanced() ?: return@run null
         val retList : MutableList<Component> = mutableListOf()
-        list.asListEnhanded()?.forEach { it.performPlaceholders(sItem, player)?.toComponent()?.let { element -> retList.add(element) } }
+        list.asListEnhanced()?.forEach { it.performPlaceholders(sItem, player)?.toComponent()?.let { element -> retList.add(element) } }
         retList
     }
 

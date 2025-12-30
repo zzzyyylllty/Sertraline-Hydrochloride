@@ -2,7 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.packet
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
@@ -29,7 +29,7 @@ import kotlin.math.roundToInt
 private val carriedItemFieldInContainerClick by lazy { if (VersionHelper().isUniversal) "carriedItem" else "item" }
 private val packetLore by lazy { config.getBoolean("packet.packet-lore", true) }
 private val packetComponent by lazy { config.getBoolean("packet.packet-component", true) }
-val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanded()?.toComponent() ?: emptyList() }
+val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanced()?.toComponent() ?: emptyList() }
 
 /**
  * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
@@ -101,7 +101,7 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
         autoComponents.forEach { (key, value) ->
             when (key) {
                 "autoName" -> meta.displayName(value.toString().toComponent())
-                "autoLore" -> ((value.asListEnhanded())?.toComponent() ?: listOf(value.toString().toComponent())).let {
+                "autoLore" -> ((value.asListEnhanced())?.toComponent() ?: listOf(value.toString().toComponent())).let {
                     meta.lore(it)
                 }
                 "autoCMD" -> meta.setCustomModelData(value.toString().toDouble().roundToInt())

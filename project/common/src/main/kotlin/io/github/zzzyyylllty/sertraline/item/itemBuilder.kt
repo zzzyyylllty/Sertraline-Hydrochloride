@@ -6,7 +6,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
@@ -88,7 +88,7 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, amount = this.amount, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
-    val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
+    val keep = config["rebuild.keep-data"].asListEnhanced() ?: listOf("sertraline_data","sertraline_revision")
     val newTag = regen.getItemTag()
     keep.forEach {
         newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())
@@ -96,7 +96,7 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
     var rewrited = regen.setItemTag(newTag)
     var rewritedNMS = asNMSCopy(rewrited)
 
-    val keepComp = config["rebuild.keep-component"].asListEnhanded() ?: listOf()
+    val keepComp = config["rebuild.keep-component"].asListEnhanced() ?: listOf()
     if (!keepComp.isEmpty()) {
         val orgComponent = asNMSCopy(this).getComponentsFilteredNMS()
         keepComp.forEach {
@@ -130,7 +130,7 @@ fun ItemStack.rebuildUnsafe(player: Player?) {
     var regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
 
     var rewritedNMS = asNMSCopy(regen)
-    val keepComp = config["rebuild.keep-component"].asListEnhanded() ?: listOf()
+    val keepComp = config["rebuild.keep-component"].asListEnhanced() ?: listOf()
     if (!keepComp.isEmpty()) {
         val orgComponent = asNMSCopy(this).getComponentsFilteredNMS()
         keepComp.forEach {
@@ -139,7 +139,7 @@ fun ItemStack.rebuildUnsafe(player: Player?) {
         regen = asBukkitCopy(rewritedNMS)
     }
 
-    val keep = config["rebuild.keep-data"].asListEnhanded() ?: listOf("sertraline_data","sertraline_revision")
+    val keep = config["rebuild.keep-data"].asListEnhanced() ?: listOf("sertraline_data","sertraline_revision")
     val newTag = regen.getItemTag()
     keep.forEach {
         newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())

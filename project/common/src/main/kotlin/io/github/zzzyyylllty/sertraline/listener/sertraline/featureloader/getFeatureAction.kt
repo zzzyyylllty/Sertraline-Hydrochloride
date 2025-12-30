@@ -5,8 +5,8 @@ import io.github.zzzyyylllty.sertraline.Sertraline.gjsScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
-import io.github.zzzyyylllty.sertraline.config.asListedStringEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.config.asListedStringEnhanced
 import io.github.zzzyyylllty.sertraline.event.FeatureLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
@@ -34,14 +34,14 @@ fun getFeatureAction(e: FeatureLoadEvent) {
         rawList.forEach { it ->
 
             list.add(linkedMapOf(
-                "condition" to (it["condition"] ?: it["require"] ?: it["requirement"] ?: it["requirements"]).asListEnhanded(),
+                "condition" to (it["condition"] ?: it["require"] ?: it["requirement"] ?: it["requirements"]).asListEnhanced(),
                 "async" to (it["async"])?.toBooleanTolerance(),
-                "kether" to (it["kether"] ?: it["ke"]).asListEnhanded(),
-                "javascript" to (it["javascript"] ?: it["js"]).asListedStringEnhanded(),
-                "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanded(),
-                "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanded(),
-                "graaljs" to (it["graaljs"] ?: it["gjs"]).asListedStringEnhanded(),
-                // "kotlinscript" to (it["kotlinscript"] ?: it["kts"] ?: it["kt"]).asListedStringEnhanded()
+                "kether" to (it["kether"] ?: it["ke"]).asListEnhanced(),
+                "javascript" to (it["javascript"] ?: it["js"]).asListedStringEnhanced(),
+                "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanced(),
+                "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanced(),
+                "graaljs" to (it["graaljs"] ?: it["gjs"]).asListedStringEnhanced(),
+                // "kotlinscript" to (it["kotlinscript"] ?: it["kts"] ?: it["kt"]).asListedStringEnhanced()
             ))
         }
 

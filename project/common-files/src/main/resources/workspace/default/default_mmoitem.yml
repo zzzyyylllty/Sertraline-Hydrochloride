@@ -4,6 +4,7 @@ blade_of_mythic:
     max-health: 5%
     # If allowed is null or left a emptylist, Sertraline will detect material's suffix (e.g. diamond_boots -> boots)
     allowed: ["hand"]
+    fix-attack-speed: true
   sertraline:
     tier: S
   xbuilder:

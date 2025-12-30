@@ -1,8 +1,7 @@
-package io.github.zzzyyylllty.sertraline.listener.bukkit
+package io.github.zzzyyylllty.sertraline.listener.attribute
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemHeldEvent

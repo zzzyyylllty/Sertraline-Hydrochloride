@@ -1,6 +1,6 @@
 package io.github.zzzyyylllty.sertraline.item.process
 
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.function.data.getSavedData
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.ProcessItemTagData
@@ -70,7 +70,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?): ProcessIte
             val split = orginial.split("?:")
             val section = split.first()
             val default = if (split.size >= 2) split.last() else null
-            val replace = itemDynamic[section].asListEnhanded()?.evalKether(data.player, collect, cacheId = "${name}_dynamic")?.get() ?: default
+            val replace = itemDynamic[section].asListEnhanced()?.evalKether(data.player, collect, cacheId = "${name}_dynamic")?.get() ?: default
             if (replace != null) repl[it.key] = replace.toString()
         }
     }*/
@@ -116,7 +116,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?): ProcessIte
         jsonKey = "tags.dynamic",
         dataSourceEmptyCheck = { itemDynamic?.isEmpty() ?: true },
         getReplaceValue = { parseResult, section, default, cleanedSection ->
-            itemDynamic?.get(cleanedSection)?.asListEnhanded()
+            itemDynamic?.get(cleanedSection)?.asListEnhanced()
                 ?.evalKether(data.player, collect, cacheId = "${name}_dynamic")
                 ?.get() ?: default
         },

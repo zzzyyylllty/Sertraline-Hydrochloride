@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item.process
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.function.data.getSavedData
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether

@@ -3,7 +3,7 @@ package io.github.zzzyyylllty.sertraline.util.loreformat
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
-import io.github.zzzyyylllty.sertraline.config.asListEnhanded
+import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.LineMode
 import io.github.zzzyyylllty.sertraline.data.LineMode.*
 import io.github.zzzyyylllty.sertraline.data.LoreElement
@@ -134,9 +134,9 @@ fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<
     val key = element.key
     return if (key != null) {
         val keyValueList = if (key.startsWith("*")) {
-            configUtil.getDeep(item.config, key.removePrefix("*")).asListEnhanded()
+            configUtil.getDeep(item.config, key.removePrefix("*")).asListEnhanced()
         } else {
-            item.getDeepData(key).asListEnhanded()
+            item.getDeepData(key).asListEnhanced()
         } ?: emptyList()
 
         keyValueList.map { value ->
