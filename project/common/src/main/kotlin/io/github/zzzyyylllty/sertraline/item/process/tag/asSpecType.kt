@@ -62,7 +62,7 @@ fun processTagPrefix(
             replaceValue
         }
 
-        if (replace != null) target["$prefix:${key}"] = replace.toString()
+        target["$prefix:${key}"] = replace.toString()
     }
 }
 

@@ -107,7 +107,6 @@ class TagProcessorManager {
 
         devLog("groupedRepl: $groupedRepl")
         devLog("itemData: $itemData")
-        devLog("targetRepl: $target")
         devLog("useProcessors: $useProcessors")
 
         for ((name, processor) in useProcessors) {
@@ -117,6 +116,8 @@ class TagProcessorManager {
         }
 
         var json = itemJson.replacePlaceholderSafety(player)
+
+        devLog("targetRepl: $target")
 
         target.forEach { (key, value) ->
             json = if (value != "null" && value != null) {
