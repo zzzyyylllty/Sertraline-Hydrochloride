@@ -1,1 +1,40 @@
 # nothing yet
+counter_sword_maker:
+  display:
+    title: "Counter Sword Station"
+    layout:
+      - "#########"
+      - "#IIIIIII#"
+      - "#IIIIIII#"
+      - "#IIIIIII#"
+      - "#IIIIIII#"
+      - "##<###>##"
+    elements:
+      background:
+        char: '#'
+        material: GRAY_STAINED_GLASS_PANE
+        name: "<dark_gray>background"
+        lore: |
+          <dark_gray>Nothing to see here :)
+      next_page: # next page not support char, must set a slot.
+        slot: 50
+        roll: true # cycle toggle page
+        material: ARROW
+        name: "<green>Next Page {next_page}%"
+        lore: |
+          toggle to page {next_page}
+        onclick:
+          LEFT: |
+            minitell inline "<green>Toggled to page {{ &next_page }}"
+      previous_page: # previous page not support char, must set a slot.
+        slot: 48
+        roll: true # cycle toggle page
+        material: ARROW
+        name: "<green>Previous Page {previous_page}"
+        lore: |
+          toggle to page {previous_page}
+        onclick:
+          LEFT: |
+            minitell inline "<green>Toggled to page {{ &previous_page }}"
+    key: 'I'
+  recipes:
