@@ -29,25 +29,21 @@ import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
 
 
-fun itemSource(input: Any?,player: Player?): ItemStack {
-    val str = input.toString()
+fun itemSource(str: String,player: Player?): ItemStack {
     val split = str.split(":").toMutableList()
     val key = split.first()
     split.removeFirst()
-    devLog("str: $str | split: $split | key: $key")
     val item = try {
         if (!str.contains(":") || str.startsWith("minecraft:")) {
-            devLog("Using vanilla item")
-            buildItem(XMaterial.valueOf(
+            XMaterial.valueOf(
                 (if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()
-            ))
+            ).parseItem()
         } else {
             val provider = AllItemProvider()
             if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
         }
     } catch (e: Exception) {
         severeS(console.asLangText("Error_External_ItemStack_Generation_Failed",str, e))
-        devLog("ItemStack generation failed")
         e.printStackTrace()
         null
     }
@@ -81,7 +77,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
         }
     }
     val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
-    val itemSource = source ?: itemSource(template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material"), player)
+    val itemSource = source ?: itemSource((template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material")).toString(), player)
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
 

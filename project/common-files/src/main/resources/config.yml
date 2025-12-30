@@ -149,3 +149,9 @@ performance:
     # Replace the list with a single-line text containing delimiters to reduce performance overhead
     # This may cause compatibility issues, so use it with caution
     use-split-replace-list-serialize: false
+
+fixes:
+  xbuilder:
+
+    # XItemStack相关模块未更新 ItemModel 部分，重新添加 ItemModel
+    reapply-item-model: true

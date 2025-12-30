@@ -20,6 +20,7 @@ Warning_No_Mapping: "Warning! Mappings for configuration entry {0} not found! Di
 Warning_Component_Provider_Overwrite: "Warning! A Component Provider was overwritten. The key of the overwritten handler is: {0}"
 Warning_Component_Setting_Failed: "Warning! Failed to set Component. The corresponding Component was not found, it may not exist in the current version. Component to be set: {0} = {1}"
 Warning_Component_Setting_Failed_Exception: "Warning! Failed to set Component. Component to be set: {0} = {1}, Exception: {2}"
+Warning_Item_Generation_Failed: "Warning: Generated Material (from {0}) is null, returning grass block."
 Error_Component_Getting_Failed_Exception: "Error! Failed to get Component. Component to be retrieved: {0}, Exception: {1}"
 LoreFormat_Load: "Loading lore formats."
 LoreFormat_Load_Regen: "Lore formats not found, regenerating."

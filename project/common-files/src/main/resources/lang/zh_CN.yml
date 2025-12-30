@@ -18,6 +18,7 @@ Error_Invalid_Priority: "发生了一个错误: 无效的事件监听器类型 {
 Error_External_ItemStack_Generation_Failed: "发生了一个错误: 无法生成外部物品 {0}. Exception: {1}"
 Warning_No_Mapping: "警告! 为配置项 {0} 的 Mappings 未找到! 你是否更新了版本却没有重新生成 internal 文件夹? 尝试删除 plugins/Sertraline/internal/mapping 来解决!"
 Warning_Component_Provider_Overwrite: "警告! Component Provider 被覆盖,覆盖的处理器 key 为: {0}"
+Warning_Item_Generation_Failed: "警告! 物品源 {0} 解析失败或为空, 正在返回草方块。"
 Warning_Component_Setting_Failed: "警告! Component 设置失败，未找到对应 Component，可能是该组件在当前版本不存在。要设置的 Component: {0} = {1}"
 Warning_Component_Setting_Failed_Exception: "警告! Component 设置失败。要设置的 Component: {0} = {1}， Exception: {2}"
 Error_Component_Getting_Failed_Exception: "错误! Component 获取失败。要获取的 Component: {0}， Exception: {1}"

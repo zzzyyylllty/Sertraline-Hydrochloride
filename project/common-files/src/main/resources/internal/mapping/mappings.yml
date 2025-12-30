@@ -30,6 +30,9 @@ xbuilder:lore:
   - xbuilder:lore
 xbuilder:material:
   - xbuilder:material
+xbuilder:item-model:
+  - xbuilder:item-model
+  - xbuilder:model
 #xbuilder:custom-model-data:
 #  - xbuilder:custom-model-data
 #  - xbuilder:custommodeldata

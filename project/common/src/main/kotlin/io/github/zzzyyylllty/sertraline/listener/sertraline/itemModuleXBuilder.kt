@@ -18,6 +18,7 @@ fun itemModuleXBuilder(e: ItemLoadEvent) {
         "$prefix:material",
         "$prefix:name",
         "$prefix:lore",
+        "$prefix:item-model",
     )
 
     e.itemData.putAll(c.getFeatures(e.itemKey, e.arguments, features, e.itemData))
