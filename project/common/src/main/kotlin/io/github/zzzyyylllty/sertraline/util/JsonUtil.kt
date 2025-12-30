@@ -1,42 +1,52 @@
 package io.github.zzzyyylllty.sertraline.util
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import com.google.gson.reflect.TypeToken
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import kotlin.jvm.java
+import io.github.zzzyyylllty.sertraline.util.serialize.typeadapter.AnyValueTypeAdapter
+import io.github.zzzyyylllty.sertraline.util.serialize.typeadapter.ArrayListAnyTypeAdapter
+import io.github.zzzyyylllty.sertraline.util.serialize.typeadapter.LinkedHashMapAnyTypeAdapter
 import kotlin.math.round
 
-val jsonUtils = GsonBuilder()
-    .setVersion(1.0)
-    .disableHtmlEscaping()
-    .disableInnerClassSerialization()
-    .setPrettyPrinting()
-    .excludeFieldsWithModifiers()
-    .setLenient()
-    .create()
+// 定义 TypeToken
+val linkedHashMapStringType = object : TypeToken<LinkedHashMap<String, Any?>>() {}.type
+val arrayListAnyType = object : TypeToken<ArrayList<Any?>>() {}.type
 
-val mcClassLoader: ClassLoader by lazy {
-    Class.forName("net.minecraft.server.MinecraftServer").classLoader
+// 构建 Gson 实例的步骤
+val jsonUtils: Gson by lazy {
+    val builder = GsonBuilder()
+        .setVersion(1.0)
+        .disableHtmlEscaping()
+        .disableInnerClassSerialization()
+        // .setPrettyPrinting() // 强烈建议禁用，影响性能最大
+        .excludeFieldsWithModifiers()
+        .setLenient() // 根据你的需求决定是否保留宽松模式
+
+    // 先创建一个基础的 Gson 实例，用于 AnyValueTypeAdapter 内部可能需要调用的地方
+    // 但在这个新设计中，AnyValueTypeAdapter 的递归是直接通过自身方法调用的，
+    // 所以这里直接传入一个“辅助”gson实例即可
+    val tempGson = builder.create()
+
+    // 实例化我们的 AnyValueTypeAdapter
+    val anyValueAdapter = AnyValueTypeAdapter(tempGson)
+
+    // 注册针对特定泛型类型的 TypeAdapter
+    builder.registerTypeAdapter(linkedHashMapStringType, LinkedHashMapAnyTypeAdapter(anyValueAdapter))
+    builder.registerTypeAdapter(arrayListAnyType, ArrayListAnyTypeAdapter(anyValueAdapter))
+    // 对于 List<Any?> 的情况，ModernSItem 中并没有直接声明 List<Any?>，
+    // 而是作为 Any? 的值出现。所以我们主要需要保证 Map<String, Any?> 的 Any? 能被处理。
+    // 如果你在 ModernSItem 外部直接有一个 List<Any?> 字段，就需要注册它的 TypeAdapter。
+    // 然而，对于 Map/List 内部的值是 Any? 的情况，AnyValueTypeAdapter 的递归处理已经足够了。
+    // 因为 LinkedHashMapAnyTypeAdapter 和 ArrayListAnyTypeAdapter 内部在处理值时，
+    // 都会调用 anyValueAdapter.write(out, value) 或 anyValueAdapter.read(reader)。
+
+    builder.create()
 }
-
-fun parseStringToMinecraftJsonElement(jsonString: String): JsonElement {
-    val mcClassLoader = mcClassLoader
-    val jsonParserClass = Class.forName("com.google.gson.JsonParser", true, mcClassLoader)
-    val parseStringMethod = jsonParserClass.getMethod("parseString", String::class.java)
-    return parseStringMethod.invoke(null, jsonString) as JsonElement
-}
-
-fun parseJsonStringWithMCGson(json: String): JsonElement {
-    //val mcClassLoader = mcClassLoader
-    //val jsonParserClass = Class.forName("com.google.gson.JsonParser", true, mcClassLoader)
-    //val parseStringMethod = jsonParserClass.getMethod("parseString", String::class.java)
-    return (jsonUtils.toJsonTree(json) as com.google.gson.JsonElement)
-
-}
-
 
 fun unwrapJson(value: Any?): Any? {
     when (value) {

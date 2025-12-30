@@ -64,12 +64,13 @@ fun registerExternalData() {
 
 data class ModernSItem(
     val key: String,
-    val data: LinkedHashMap<String, Any?> = linkedMapOf<String, Any?>(),
-    val config: LinkedHashMap<String, Any?> = linkedMapOf<String, Any?>(),
+    val data: LinkedHashMap<String, Any?> = linkedMapOf(),
+    val config: LinkedHashMap<String, Any?> = linkedMapOf(),
 ) {
     fun serialize(): String? {
         return jsonUtils.toJson(this)
     }
+
 
     fun getDeepData(location: String): Any? {
         val split = location.split(":")
@@ -104,7 +105,7 @@ data class ModernSItem(
     }
 }
 
-fun deserializeSItem(string: String): ModernSItem? {
+fun deserializeSItem(string: String): ModernSItem {
     return jsonUtils.fromJson(string, ModernSItem::class.java)
 }
 

@@ -160,6 +160,8 @@ allprojects {
         compileOnly(rootProject.libs.bundles.jackson)
         taboo(rootProject.libs.bundles.uniitem)
         taboo(rootProject.libs.kotlin.stdlib) // 将 kotlin("stdlib") 替换为此格式
+//        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.8.1") { isTransitive = false }
+//        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1") { isTransitive = false }
     }
 
 

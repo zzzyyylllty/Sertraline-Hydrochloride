@@ -12,17 +12,18 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
-import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.TagProcessorManager
-import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.registerNativeTagAdapter
+import io.github.zzzyyylllty.sertraline.item.process.tag.TagProcessorManager
+import io.github.zzzyyylllty.sertraline.item.process.tag.registerNativeTagAdapter
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import taboolib.common.LifeCycle
+import taboolib.common.env.RuntimeDependencies
+import taboolib.common.env.RuntimeDependency
 import taboolib.common.env.RuntimeEnv
 import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
@@ -41,7 +42,6 @@ import taboolib.module.lang.event.SystemSelectLocaleEvent
 import java.io.File
 import java.time.format.DateTimeFormatter
 import javax.script.CompiledScript
-import javax.script.ScriptEngineManager
 
 
 //@RuntimeDependencies(

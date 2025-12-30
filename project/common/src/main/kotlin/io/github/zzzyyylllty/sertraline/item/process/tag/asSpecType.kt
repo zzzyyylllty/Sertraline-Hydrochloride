@@ -1,12 +1,7 @@
-package io.github.zzzyyylllty.sertraline.item.process
+package io.github.zzzyyylllty.sertraline.item.process.tag
 
-import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.ProcessItemTagData
-import io.github.zzzyyylllty.sertraline.listener.sertraline.tag.processRawTagKey
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
-import java.math.BigDecimal
-import kotlin.math.round
+import kotlin.collections.iterator
 import kotlin.math.roundToInt
 
 /**
@@ -40,18 +35,17 @@ fun parseSection(section: String): ParseResult? {
 // 通用处理方法
 fun processTagPrefix(
     prefix: String,
-    jsonKey: String,
     dataSourceEmptyCheck: () -> Boolean,
     getReplaceValue: (ParseResult?, String?, String?, String?) -> Any?,
-    json: String,
-    repl: MutableMap<String, String?>,
+    repl: List<String>,
+    target: MutableMap<String, String?>,
 ) {
-    if (!config.getBoolean(jsonKey, true) || dataSourceEmptyCheck() || !json.contains("$prefix:")) return
+    if (dataSourceEmptyCheck()) return
 
-    val processList = repl.filter { it.key.startsWith("$prefix:") }
+    val repl = repl
 
-    processList.forEach { entry ->
-        val original = entry.key.processRawTagKey("$prefix:")
+    repl.forEach { key ->
+        val original = key.processRawTagKey()
         val split = original.split("?:")
         val section = split.first()
         val default = if (split.size >= 2) split.last() else null
@@ -68,8 +62,7 @@ fun processTagPrefix(
             replaceValue
         }
 
-
-        if (replace != null) repl[entry.key] = replace.toString()
+        if (replace != null) target["$prefix:${key}"] = replace.toString()
     }
 }
 
@@ -94,7 +87,7 @@ fun asSpecTypeSolved(input: Any?, parseResult: ParseResult): Any? {
                 "Bd" -> input.toString().toBigDecimal()
                 "Li" -> (input as? List<*>?)?.joinToString(sep)
                 "Ma" -> {
-                    val split = sep.split("|")
+                    val split = sep.split("`")
                     (input as? Map<*, *>?)?.joinToStringExtended(split[0], if (split.size > 1) split[1] else ",")
                 }
 

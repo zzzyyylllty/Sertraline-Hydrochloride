@@ -1,4 +1,4 @@
-package io.github.zzzyyylllty.sertraline.listener.sertraline.tag
+package io.github.zzzyyylllty.sertraline.item.process.tag
 
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -9,13 +9,13 @@ import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 
 fun registerNativeTagAdapter() {
 
-    if (DependencyHelper.papi) tagManager.registerProcessor("papi") { data, player ->
+    if (DependencyHelper.papi) tagManager.registerProcessor("papi", listOf("papi")) { data, player, repl, target ->
         devLog("Tag adapting papi")
-        papiTagProcessor(data, player)
+        papiTagProcessor(data, player, repl, target)
     }
-    tagManager.registerProcessor("sertraline") { data, player ->
+    tagManager.registerProcessor("sertraline", listOf("val","var","dynamic","kether")) { data, player, repl, target ->
         devLog("Tag adapting sertraline")
-        sertralineTagProcessor(data, player)
+        sertralineTagProcessor(data, player, repl, target)
     }
 
 }

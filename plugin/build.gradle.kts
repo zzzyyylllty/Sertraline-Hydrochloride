@@ -37,7 +37,7 @@ taboolib {
     relocate("ink.ptms.um","io.github.zzzyyylllty.sertraline.library.um")
     // relocate("com.google", "io.github.zzzyyylllty.sertraline.library.google")
     relocate("com.alibaba", "io.github.zzzyyylllty.sertraline.library.alibaba")
-    relocate("kotlinx.serialization", "kotlinx.serialization170")
+    relocate("kotlinx.serialization", "kotlinx.serialization181")
     // relocate("de.tr7zw.changeme.nbtapi","io.github.zzzyyylllty.sertraline.library.nbtapi")
     relocate("io.github.projectunified.uniitem","io.github.zzzyyylllty.sertraline.library.uniitem")
     relocate("com.fasterxml.jackson","io.github.zzzyyylllty.sertraline.library.jackson")

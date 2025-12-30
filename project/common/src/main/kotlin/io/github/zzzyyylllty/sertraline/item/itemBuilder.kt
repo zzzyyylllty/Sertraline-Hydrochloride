@@ -57,6 +57,15 @@ fun itemSource(input: Any?,player: Player?): ItemStack {
     }
 }
 
+/**
+ * 生成指定物品。
+ *
+ * @param template SertralineID
+ * @param player 玩家
+ * @param source 物品源，留空则不覆盖
+ * @param amount 数量
+ * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
+ * */
 fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack? {
     return sertralineItemBuilderInternal(template, player, source, amount, overrideData)?.rebuild(player)
 }
@@ -64,7 +73,7 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 /**
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
-fun sertralineItemBuilderInternal(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
+fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
     val pTemplate = itemMap[template] ?: return null
     overrideData?.let {
         it.forEach {
