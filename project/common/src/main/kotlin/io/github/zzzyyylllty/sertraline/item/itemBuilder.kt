@@ -63,7 +63,7 @@ fun itemSource(str: String,player: Player?): ItemStack {
  * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
  * */
 fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack? {
-    return sertralineItemBuilderInternal(template, player, source, amount, overrideData)?.rebuild(player)
+    return sertralineItemBuilderInternal(template, player, source, amount, overrideData)?.rebuildBypassKeepData(player)
 }
 
 /**
@@ -110,6 +110,17 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
         rewrited = asBukkitCopy(rewritedNMS)
     }
     return rewrited
+}
+
+fun ItemStack.rebuildBypassKeepData(player: Player?): ItemStack {
+
+    val tag = this.clone().getItemTag(true)
+    val sID = tag["sertraline_id"]?.asString() ?: return this
+    val overrideData = mutableMapOf<String, Any?>()
+    overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
+    val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, amount = this.amount, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
+
+    return regen
 }
 
 fun ItemStack.rebuildLore(player: Player?) {

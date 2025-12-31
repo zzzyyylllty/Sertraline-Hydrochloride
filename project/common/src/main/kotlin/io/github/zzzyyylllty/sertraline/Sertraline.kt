@@ -15,6 +15,7 @@ import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNati
 import io.github.zzzyyylllty.sertraline.item.process.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.item.process.tag.registerNativeTagAdapter
 import io.github.zzzyyylllty.sertraline.logger.infoL
+import io.github.zzzyyylllty.sertraline.logger.infoLSync
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
@@ -209,7 +210,7 @@ object Sertraline : Plugin() {
     }
 
     override fun onDisable() {
-        infoL("Disable")
+        infoLSync("Disable")
     }
     /*
     fun compat() {

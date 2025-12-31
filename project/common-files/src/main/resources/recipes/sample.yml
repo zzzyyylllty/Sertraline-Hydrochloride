@@ -1,0 +1,3 @@
+doe_card:
+  provider: Simple # Simple(Bukkit) or Complex(NMS). Complex currently not available.
+  type: Shaped

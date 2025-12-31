@@ -23,9 +23,9 @@ val jsonUtils: Gson by lazy {
         .setVersion(1.0)
         .disableHtmlEscaping()
         .disableInnerClassSerialization()
-        // .setPrettyPrinting() // 强烈建议禁用，影响性能最大
+        // .setPrettyPrinting()
         .excludeFieldsWithModifiers()
-        .setLenient() // 根据你的需求决定是否保留宽松模式
+        .setLenient()
 
     // 先创建一个基础的 Gson 实例，用于 AnyValueTypeAdapter 内部可能需要调用的地方
     // 但在这个新设计中，AnyValueTypeAdapter 的递归是直接通过自身方法调用的，

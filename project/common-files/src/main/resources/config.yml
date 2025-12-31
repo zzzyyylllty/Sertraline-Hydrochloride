@@ -72,6 +72,7 @@ rebuild:
     - minecraft:damage
     - minecraft:max_damage
     - minecraft:repair_cost
+    - minecraft:enchantments
 
 # 发包相关功能
 # Packet related features

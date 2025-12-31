@@ -49,7 +49,7 @@ fun loadLoreFormatFile(file: File) {
         if (map != null) for (it in map.entries) {
             val key = it.key
             val value = map[key]
-            loadLoreFormat(key, value as Map<String, Any?>)
+            loadLoreFormat(key, value as Map<String, Any?>? ?: linkedMapOf())
         } else {
             devLog("Map is null, skipping.")
         }

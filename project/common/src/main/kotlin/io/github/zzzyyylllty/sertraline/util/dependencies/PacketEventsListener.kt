@@ -118,6 +118,5 @@ fun handleItemStack(
     itemStack: com.github.retrooper.packetevents.protocol.item.ItemStack
 ): com.github.retrooper.packetevents.protocol.item.ItemStack {
     if (itemStack.type == ItemTypes.AIR) return itemStack
-    devLog("Handling ITEMSTACK")
     return SpigotConversionUtil.fromBukkitItemStack(SpigotConversionUtil.toBukkitItemStack(itemStack).s2c(player))
 }

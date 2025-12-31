@@ -22,6 +22,9 @@ val prefix = "[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>]"
 fun infoL(node: String,vararg args: Any) {
     consoleSender.infoS(console.asLangText(node,args))
 }
+fun infoLSync(node: String,vararg args: Any) {
+    consoleSender.infoSSync(console.asLangText(node,args))
+}
 fun severeL(node: String,vararg args: Any) {
     consoleSender.severeS(console.asLangText(node,args))
 }
@@ -48,9 +51,14 @@ fun CommandSender?.debugS(message: String, bothSendConsole: Boolean = false) {
 fun CommandSender?.infoS(message: String, bothSendConsole: Boolean = false) {
     val sender = this
     submitAsync {
+        (sender ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ccff>INFO</#66ccff>]</gray> <reset>$message")
+        if (sender != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
+    }
+}
+fun CommandSender?.infoSSync(message: String, bothSendConsole: Boolean = false) {
+    val sender = this
     (sender ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ccff>INFO</#66ccff>]</gray> <reset>$message")
     if (sender != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ccff>INFOS</#66ccff>]</gray> <reset>$message")
-    }
 }
 
 fun CommandSender?.warningS(message: String, bothSendConsole: Boolean = false) {

@@ -61,7 +61,7 @@ fun loadItemFile(file: File) {
         if (map != null) for (it in map.entries) {
             val key = it.key
             val value = map[key]
-            ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
+            ItemLoadEvent(key, value as? Map<String, Any?>? ?: linkedMapOf(), linkedMapOf()).call()
         } else {
             devLog("Map is null, skipping.")
         }
