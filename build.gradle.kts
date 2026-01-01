@@ -122,6 +122,7 @@ allprojects {
         maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
         maven("https://repo.extendedclip.com/releases/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
+        maven("https://repo.gtemc.net/releases/")
     }
 
     dependencies {
@@ -158,8 +159,9 @@ allprojects {
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         compileOnly(rootProject.libs.bundles.jackson)
-        taboo(rootProject.libs.bundles.uniitem)
-        taboo(rootProject.libs.kotlin.stdlib) // 将 kotlin("stdlib") 替换为此格式
+        taboo("cn.gtemc:itembridge:1.0.17")
+//        taboo(rootProject.libs.bundles.uniitem)
+        taboo(rootProject.libs.kotlin.stdlib) // // 将 kotlin("stdlib") 替换为此格式
 //        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.8.1") { isTransitive = false }
 //        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1") { isTransitive = false }
     }

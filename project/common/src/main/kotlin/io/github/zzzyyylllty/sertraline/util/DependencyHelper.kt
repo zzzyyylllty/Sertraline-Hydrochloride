@@ -28,7 +28,7 @@ val dependencies = listOf(
     "gson",
     "jackson",
     // "kotlincrypto",
-    "uniitem"
+//    "uniitem"
 )
 
 object DependencyHelper {

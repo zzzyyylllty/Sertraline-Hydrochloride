@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item
 
-import io.github.projectunified.uniitem.all.AllItemProvider
-import io.github.projectunified.uniitem.api.ItemKey
+//import io.github.projectunified.uniitem.all.AllItemProvider
+//import io.github.projectunified.uniitem.api.ItemKey
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
@@ -12,6 +12,7 @@ import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
+import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
@@ -39,8 +40,13 @@ fun itemSource(str: String,player: Player?): ItemStack {
                 (if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()
             ).parseItem()
         } else {
-            val provider = AllItemProvider()
-            if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
+//            val provider = AllItemProvider()
+//            if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
+            if (player != null) {
+                ExternalItemHelper.itemBridge?.build(key, player, split.joinToString(":"))?.get()
+            } else {
+                ExternalItemHelper.itemBridge?.build(key, split.joinToString(":"))?.get()
+            }
         }
     } catch (e: Exception) {
         severeS(console.asLangText("Error_External_ItemStack_Generation_Failed",str, e))
