@@ -2,14 +2,6 @@ package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
-import io.github.zzzyyylllty.sertraline.logger.severeS
-import io.github.zzzyyylllty.sertraline.logger.severeSSync
-import org.bukkit.Bukkit
-import org.tabooproject.reflex.ReflexClass
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
-import net.minecraft.core.registries.BuiltInRegistries
-import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
 object ItemTagManager {
