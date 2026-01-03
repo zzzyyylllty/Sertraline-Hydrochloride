@@ -1,3 +1,24 @@
 doe_card:
-  provider: Simple # Simple(Bukkit) or Complex(NMS). Complex currently not available.
-  type: Shaped
+  provider: SIMPLE # Simple(Bukkit) or Complex(NMS). Complex currently not available.
+  format: SHAPED # Shaped / Shapeless
+  type: CRAFTING
+
+  # filter input's data
+  input-data-filter:
+    - "xbuilder"
+    - "minecraft"
+
+  pattern:
+    - "AAA"
+    - "CCB"
+    - "AAA"
+  ingredients:
+    A: "sertraline:doe_card"
+    B: "minecraft:stick"
+    C: "minecraft:diamond"
+  result:
+    id: sertraline:doe_card
+    function:
+      - type: kether
+        kether: tell "Hello!"
+    count: 1

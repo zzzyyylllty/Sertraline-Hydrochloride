@@ -17,5 +17,4 @@ object ExternalItemHelper {
             .detectSupportedPlugins()
             .removeById("sertraline")
             .build()
-
 }

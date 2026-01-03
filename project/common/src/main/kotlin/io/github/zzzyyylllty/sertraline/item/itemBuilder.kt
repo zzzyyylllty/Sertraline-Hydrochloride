@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
@@ -77,6 +78,27 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
  * */
 fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
     val pTemplate = itemMap[template] ?: return null
+    overrideData?.let {
+        it.forEach {
+            pTemplate.setDeepData(it.key, it.value)
+        }
+    }
+    val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
+    val itemSource = source ?: itemSource((template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material")).toString(), player)
+    val item = itemManager.processItem(template, itemSource, player)
+    item.amount = amount
+
+    val tag = item.getItemTag()
+    tag["sertraline_id"] = template.key
+    return item.setItemTag(tag)
+}
+
+/**
+ * 使用临时的 ModernSItem，用于配方中剔除部分数据
+ * 如要生成物品请使用 [sertralineItemBuilder]
+ * */
+fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
+    val pTemplate = template
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)

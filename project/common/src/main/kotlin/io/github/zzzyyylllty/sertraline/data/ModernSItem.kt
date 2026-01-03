@@ -59,6 +59,7 @@ fun registerExternalData() {
         ))
     val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()
+
     defaultData = event.defaultData
 }
 

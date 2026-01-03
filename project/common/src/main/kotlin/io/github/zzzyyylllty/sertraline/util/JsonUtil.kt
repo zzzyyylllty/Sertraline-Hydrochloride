@@ -13,11 +13,9 @@ import io.github.zzzyyylllty.sertraline.util.serialize.typeadapter.ArrayListAnyT
 import io.github.zzzyyylllty.sertraline.util.serialize.typeadapter.LinkedHashMapAnyTypeAdapter
 import kotlin.math.round
 
-// 定义 TypeToken
 val linkedHashMapStringType = object : TypeToken<LinkedHashMap<String, Any?>>() {}.type
 val arrayListAnyType = object : TypeToken<ArrayList<Any?>>() {}.type
 
-// 构建 Gson 实例的步骤
 val jsonUtils: Gson by lazy {
     val builder = GsonBuilder()
         .setVersion(1.0)
@@ -27,23 +25,14 @@ val jsonUtils: Gson by lazy {
         .excludeFieldsWithModifiers()
         .setLenient()
 
-    // 先创建一个基础的 Gson 实例，用于 AnyValueTypeAdapter 内部可能需要调用的地方
-    // 但在这个新设计中，AnyValueTypeAdapter 的递归是直接通过自身方法调用的，
-    // 所以这里直接传入一个“辅助”gson实例即可
     val tempGson = builder.create()
 
-    // 实例化我们的 AnyValueTypeAdapter
+    // 实例化
     val anyValueAdapter = AnyValueTypeAdapter(tempGson)
 
-    // 注册针对特定泛型类型的 TypeAdapter
+    // 注册
     builder.registerTypeAdapter(linkedHashMapStringType, LinkedHashMapAnyTypeAdapter(anyValueAdapter))
     builder.registerTypeAdapter(arrayListAnyType, ArrayListAnyTypeAdapter(anyValueAdapter))
-    // 对于 List<Any?> 的情况，ModernSItem 中并没有直接声明 List<Any?>，
-    // 而是作为 Any? 的值出现。所以我们主要需要保证 Map<String, Any?> 的 Any? 能被处理。
-    // 如果你在 ModernSItem 外部直接有一个 List<Any?> 字段，就需要注册它的 TypeAdapter。
-    // 然而，对于 Map/List 内部的值是 Any? 的情况，AnyValueTypeAdapter 的递归处理已经足够了。
-    // 因为 LinkedHashMapAnyTypeAdapter 和 ArrayListAnyTypeAdapter 内部在处理值时，
-    // 都会调用 anyValueAdapter.write(out, value) 或 anyValueAdapter.read(reader)。
 
     builder.create()
 }
@@ -72,20 +61,19 @@ fun unwrapJson(value: Any?): Any? {
                     try {
                         val asDouble = numberString.toDouble()
 
-                        // Special handling for Byte (only 0 and 1)
                         if (asDouble == 0.0 || asDouble == 1.0) {
                             return asDouble.toInt().toByte()
                         }
-                        // Try to convert to Long
+                        // Long
                         try {
-                            if (asDouble == round(asDouble)) { // Ensure Double value is equal to Long value (no decimal part)
+                            if (asDouble == round(asDouble)) {
                                 val asLong = asDouble.toLong()
 
-                                // Try to convert to Int
+                                // Int
                                 if (asLong in Int.MIN_VALUE..Int.MAX_VALUE) {
                                     val asInt = asLong.toInt()
 
-                                    // Try to convert to Short
+                                    // Short
                                     if (asInt in Short.MIN_VALUE..Short.MAX_VALUE) {
                                         val asShort = asInt.toShort()
                                         return asShort
@@ -111,17 +99,17 @@ fun unwrapJson(value: Any?): Any? {
                         } catch (_: Exception) {
                         }
 
-                        return asDouble // If none of the above conversions are satisfied, return Double
+                        return asDouble
                     } catch (e: NumberFormatException) {
-                        return numberString // If it cannot be parsed into Double, return String
+                        return numberString
                     }
                 }
                 value.isString -> return value.asString
-                else -> return value.toString() // Handle other primitive types if needed
+                else -> return value.toString()
             }
         }
-        is JsonElement -> return value.toString() // Fallback for other JsonElement types
+        is JsonElement -> return value.toString()
         null -> return null
-        else -> return value // Return the original value if it's not a Json type
+        else -> return value
     }
 }

@@ -16,7 +16,9 @@ import io.github.zzzyyylllty.sertraline.item.process.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.item.process.tag.registerNativeTagAdapter
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.infoLSync
+import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.logger.severeSSync
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import org.bukkit.command.CommandSender
@@ -43,7 +45,6 @@ import taboolib.module.lang.event.SystemSelectLocaleEvent
 import java.io.File
 import java.time.format.DateTimeFormatter
 import javax.script.CompiledScript
-
 
 //@RuntimeDependencies(
 //    RuntimeDependency(
@@ -181,6 +182,8 @@ object Sertraline : Plugin() {
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
     var devMode = true
+    var allowAsyncLog = true
+    var isEnabled = false
     val configUtil by lazy { ConfigUtil }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
@@ -202,7 +205,7 @@ object Sertraline : Plugin() {
     }
 
     override fun onEnable() {
-
+        isEnabled = true
         infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
@@ -224,6 +227,7 @@ object Sertraline : Plugin() {
 
             config.reload()
             devMode = config.getBoolean("debug",false)
+            allowAsyncLog = config.getBoolean("async-logging", true)
 
             itemMap.clear()
             mappings.clear()
@@ -283,7 +287,7 @@ object Sertraline : Plugin() {
         devLog("Starting loading dependencies...")
         for (name in dependencies) {
             try {
-                devLog("Trying to load dependencies from file $name")
+                infoSSync("Trying to load dependencies from file $name")
                 val resource = Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
                 if (resource == null) {
                     severeS("Resource META-INF/dependencies/$name.json not found!")
@@ -292,10 +296,10 @@ object Sertraline : Plugin() {
 
                 if (useTaboo) RuntimeEnv.ENV_DEPENDENCY.loadFromLocalFile(resource) else SertralineLocalDependencyHelper().loadFromLocalFile(resource)
 
-                devLog("Trying to load dependencies from file $name ... DONE.")
+                infoSSync("Trying to load dependencies from file $name ... DONE.")
             } catch (e: Exception) {
-                severeS("Trying to load dependencies from file $name FAILED.")
-                severeS("Exception: $e")
+                severeSSync("Trying to load dependencies from file $name FAILED.")
+                severeSSync("Exception: $e")
                 e.printStackTrace()
             }
         }

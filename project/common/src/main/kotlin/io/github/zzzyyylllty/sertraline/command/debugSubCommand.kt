@@ -15,6 +15,7 @@ import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
 import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
+import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil.refreshAttributes
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.Material
@@ -57,6 +58,27 @@ object DebugCommand {
         createModernHelper()
     }
 
+    @CommandBody
+    val testTags = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            // 注册自定义标签
+            ItemTagManager.registerCustomTag("myplugin:special_items", listOf("minecraft:diamond_sword", "minecraft:netherite_sword"))
+
+            // 给物品添加自定义标签
+            ItemTagManager.addItemToCustomTag("minecraft:golden_apple", "myplugin:food_items")
+
+            // 获取某个标签的所有物品
+            val axes = ItemTagManager.getItemsByTag("minecraft:axes")
+            sender.infoS("Axes: $axes")
+
+            val specialItems = ItemTagManager.getItemsByTag("myplugin:special_items")
+            sender.infoS("Special items: $specialItems")
+
+            // 检查物品是否有标签
+            val hasTag = ItemTagManager.hasItemTag("minecraft:diamond_sword", "minecraft:axes")
+            sender.infoS("Diamond sword is an axe: $hasTag")
+        }
+    }
     @CommandBody
     val getMappings = subCommand {
         execute<CommandSender> { sender, context, argument ->

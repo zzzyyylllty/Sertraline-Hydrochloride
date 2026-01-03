@@ -128,6 +128,7 @@ allprojects {
     dependencies {
 //        compileOnly("com.github.cryptomorin:XSeries:master-57d7b42")
         taboo("io.github.zzzyyylllty:EmbianComponent:1.0.2")
+        compileOnly("ink.ptms.chemdah:api:1.1.17")
         compileOnly("com.willfp:eco:6.77.2")
 
         // 服务器 API
@@ -160,6 +161,9 @@ allprojects {
         taboo(rootProject.libs.kotlincrypto.sha2)
         compileOnly(rootProject.libs.bundles.jackson)
         taboo("cn.gtemc:itembridge:1.0.17")
+//        compileOnly("ink.ptms.core:v12104:12104:mapped")
+//        compileOnly("ink.ptms.core:v12104:12104:universal")
+        taboo("ink.ptms:um:1.2.1")
 //        taboo(rootProject.libs.bundles.uniitem)
         taboo(rootProject.libs.kotlin.stdlib) // // 将 kotlin("stdlib") 替换为此格式
 //        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.8.1") { isTransitive = false }

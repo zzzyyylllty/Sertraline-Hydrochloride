@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.logger.severeSSync
 import taboolib.common.ClassAppender
 import taboolib.library.reflex.Reflex
 import java.lang.reflect.Field
@@ -21,7 +22,7 @@ fun assembleCBClass(className: String): String {
 }
 
 
-val holderClass by lazy { getClazz("net.minecraft.core.Holder")!! }
+val holderClass by lazy { getClazz("net.minecraft.core.Holder") }
 
 fun unwrapValue(obj: Any): Any {
     if (obj is java.util.Optional<*>) {
@@ -51,12 +52,12 @@ fun unwrapValue(obj: Any): Any {
 }
 
 
-fun getClazz(className: String): Class<*>? {
+fun getClazz(className: String): Class<*> {
     return try {
         Class.forName(className)
     } catch (e: Throwable) {
-        severeS("GetClazz for $className failed. Stacktrace: $e")
-        null
+        severeSSync("GetClazz for $className failed. Stacktrace: $e")
+        throw e
     }
 }
 
