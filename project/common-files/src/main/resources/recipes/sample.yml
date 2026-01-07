@@ -3,10 +3,15 @@ doe_card:
   format: SHAPED # Shaped / Shapeless
   type: CRAFTING
 
-  # filter input's data
-  input-data-filter:
-    - "xbuilder"
-    - "minecraft"
+  input-options:
+    # filter input's Sertraline data
+    data-filter:
+      - "xbuilder"
+      - "minecraft"
+    components:
+      mode: REMOVE # REMOVE OR KEEP
+      elements:
+        - minecraft:custom_data
 
   pattern:
     - "AAA"

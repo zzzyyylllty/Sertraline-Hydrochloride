@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.command
 import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
 import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import taboolib.common.platform.command.component.CommandComponentDynamic
 import taboolib.common.platform.command.component.CommandComponentLiteral
@@ -97,7 +98,7 @@ object SertralineMainCommand {
     @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            sender.infoS("Reloading...")
+            sender.infoSSync("Reloading...")
             try {
                 reloadCustomConfig(true)
                 sender.fineS("Reloaded.")

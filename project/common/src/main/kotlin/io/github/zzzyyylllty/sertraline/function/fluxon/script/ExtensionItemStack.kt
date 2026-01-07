@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.ItemMeta
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
-import taboolib.library.xseries.XMaterial
+import com.cryptomorin.xseries.XMaterial
 
 
 @Awake(LifeCycle.ENABLE)

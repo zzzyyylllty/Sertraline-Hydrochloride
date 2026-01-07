@@ -3,7 +3,7 @@ package io.github.zzzyyylllty.sertraline.util
 import com.google.common.base.Strings
 import io.github.zzzyyylllty.sertraline.data.Action
 import org.bukkit.Color
-import taboolib.library.xseries.XItemStack
+import com.cryptomorin.xseries.XItemStack
 import java.util.*
 
 class ComplexTypeHelper(val input: Any?) {

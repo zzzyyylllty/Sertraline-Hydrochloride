@@ -5,7 +5,7 @@ import com.willfp.eco.core.items.CustomItem
 import io.github.zzzyyylllty.sertraline.data.*
 import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
-import taboolib.library.xseries.XItemStack
+import com.cryptomorin.xseries.XItemStack
 import top.maplex.arim.tools.itemmanager.ItemManager
 
 

@@ -22,7 +22,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.library.xseries.XMaterial
+import com.cryptomorin.xseries.XMaterial
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy

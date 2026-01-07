@@ -40,6 +40,7 @@ allprojects {
             // 是否启用隔离加载器（即完全隔离模式）
             enableIsolatedClassloader = false
             install(Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether, CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI, BukkitUtil, Jexl, Metrics, DatabasePlayer)
+            install(BukkitNMS)
             // install("bukkit-nms-tag-component")
         }
         version {
@@ -126,9 +127,10 @@ allprojects {
     }
 
     dependencies {
-//        compileOnly("com.github.cryptomorin:XSeries:master-57d7b42")
+        taboo("com.github.cryptomorin:XSeries:v13.6.0")
         taboo("io.github.zzzyyylllty:EmbianComponent:1.0.2")
         compileOnly("ink.ptms.chemdah:api:1.1.17")
+        compileOnly("ink.ptms:nms-all:1.0.0")
         compileOnly("com.willfp:eco:6.77.2")
 
         // 服务器 API

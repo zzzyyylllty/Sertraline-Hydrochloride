@@ -37,9 +37,15 @@ fun warningL(node: String,vararg args: Any) {
 fun CommandSender?.fineS(message: String, bothSendConsole: Boolean = false) {
     val sender = this
     submit(async = allowAsyncLog) {
-    (sender ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ffcc>FINE</#66ffcc>]</gray> <reset>$message")
-    if (sender != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
+        (sender ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ffcc>FINE</#66ffcc>]</gray> <reset>$message")
+        if (sender != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
     }
+}
+
+fun CommandSender?.fineSSync(message: String, bothSendConsole: Boolean = false) {
+    val sender = this
+        (sender ?:consoleSender).sendStringAsComponent("<gray>$prefix [<#66ffcc>FINE</#66ffcc>]</gray> <reset>$message")
+        if (sender != null && bothSendConsole) consoleSender.sendStringAsComponent("<gray>$prefix [<#66ffcc>FINES</#66ffcc>]</gray> <reset>$message")
 }
 
 fun CommandSender?.debugS(message: String, bothSendConsole: Boolean = false) {

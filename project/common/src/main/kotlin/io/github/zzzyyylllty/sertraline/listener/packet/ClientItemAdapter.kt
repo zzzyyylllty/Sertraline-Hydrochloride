@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.impl.removeComponentNMS
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import io.github.zzzyyylllty.sertraline.impl.setComponent
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
@@ -14,7 +15,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import taboolib.library.xseries.XMaterial
+import com.cryptomorin.xseries.XMaterial
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
@@ -38,7 +39,6 @@ fun ItemStack.c2s(): ItemStack {
     val tag = this.getItemTag()
     val deserialized = (tag["sertraline_oitem"]?.asByteArray())?.deserializeToItemStack()
         ?: run {
-            devLog("OItem not found, skipping c2s.")
             return this
         }
     return deserialized
@@ -73,7 +73,6 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
     if (packetComponent) {
         val filtered = (sItem.data["visual"] as? Map<*,*>)?.toMutableMap() ?: return asBukkitCopy(item)
         if (!filtered.isEmpty()) {
-            devLog(filtered.toString())
 
             filtered["material"]?.let {
                 visualMaterial = XMaterial.valueOf(it.toString().toUpperCase()).get() ?: Material.STONE
@@ -86,8 +85,8 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
             filtered.remove("auto_model")?.let { autoComponents["autoModel"] = it }
 
             filtered.forEach { (key, value) ->
-                devLog("Component - $key = $value")
                 if (value != null) resultItem.setComponentNMS("minecraft:$key", value)?.let { resultItem = it }
+                else resultItem = resultItem.removeComponentNMS("minecraft:$key")
             }
 
 

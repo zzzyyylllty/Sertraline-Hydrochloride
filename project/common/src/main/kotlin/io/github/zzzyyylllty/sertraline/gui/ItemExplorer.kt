@@ -10,7 +10,7 @@ import io.github.zzzyyylllty.sertraline.util.gui.build
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType.*
-import taboolib.library.xseries.XMaterial
+import com.cryptomorin.xseries.XMaterial
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
@@ -38,7 +38,7 @@ class ItemExplorer {
                 "---B-C---"
             )
 
-            set('-', XMaterial.GRAY_STAINED_GLASS_PANE) { name = " " }
+            set('-', GuiItem("background", "BLACK_STAINED_GLASS_PANE").build())
 
             // 设置可用槽位（通过字符）
             slotsBy('#')

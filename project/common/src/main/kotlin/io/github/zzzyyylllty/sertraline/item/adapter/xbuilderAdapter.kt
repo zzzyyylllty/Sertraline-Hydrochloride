@@ -14,7 +14,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.components.CustomModelDataComponent
-import taboolib.library.xseries.XItemStack
+import com.cryptomorin.xseries.XItemStack
 import kotlin.math.roundToInt
 
 fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {

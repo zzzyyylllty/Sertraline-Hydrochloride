@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
 import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
@@ -283,8 +284,8 @@ object Sertraline : Plugin() {
     }
 
 
-    fun solveDependencies(dependencies: List<String>,useTaboo: Boolean = false) {
-        devLog("Starting loading dependencies...")
+    fun solveDependencies(dependencies: List<String>, useTaboo: Boolean = false) {
+        devLogSync("Starting loading dependencies...")
         for (name in dependencies) {
             try {
                 infoSSync("Trying to load dependencies from file $name")
