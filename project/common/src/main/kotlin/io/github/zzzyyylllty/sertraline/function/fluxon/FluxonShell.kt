@@ -2,13 +2,12 @@ package io.github.zzzyyylllty.sertraline.function.fluxon
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.tabooproject.fluxon.Fluxon
-import org.tabooproject.fluxon.interpreter.Interpreter
 import org.tabooproject.fluxon.interpreter.ReturnValue
-import org.tabooproject.fluxon.parser.ParseException
-import org.tabooproject.fluxon.parser.ParseResult
+import org.tabooproject.fluxon.parser.error.ParseException
+import org.tabooproject.fluxon.parser.ParsedScript
 import org.tabooproject.fluxon.runtime.Environment
 import org.tabooproject.fluxon.runtime.FluxonRuntime
-import org.tabooproject.fluxon.runtime.FluxonRuntimeError
+import org.tabooproject.fluxon.runtime.error.FluxonRuntimeError
 import taboolib.common.platform.function.warning
 import java.util.concurrent.TimeUnit
 
@@ -16,21 +15,13 @@ object FluxonShell {
 
     val scriptCache = Caffeine.newBuilder()
         .expireAfterAccess(1, TimeUnit.HOURS)
-        .build<String, List<ParseResult>>()
+        .build<String, ParsedScript>()
 
     /**
      * 解释脚本但不执行
      */
     fun parse(script: String, env: Environment.() -> Unit = {}): ParseScript {
         return ParseScript(parse(script, FluxonRuntime.getInstance().newEnvironment().also(env)))
-    }
-    /**
-     * 解释脚本但不执行
-     */
-    fun preload(script: String, env: Environment.() -> Unit = {}) {
-        // 构建脚本环境
-        val environment = FluxonRuntime.getInstance().newEnvironment().also(env)
-        scriptCache.get(script) { parse(script, environment) }!!
     }
 
     /**
@@ -45,10 +36,11 @@ object FluxonShell {
         val environment = FluxonRuntime.getInstance().newEnvironment().also(env)
         // 解析脚本（如果有缓存则跳过解析过程）
         val parsed = if (useCache) {
-            scriptCache.get(script) { parse(script, environment) }!!
+            parse(script, environment)?.let { parse -> scriptCache.get(script) { parse } }
         } else {
             parse(script, environment)
         }
+        if (parsed == null) return null
         return invoke(parsed, environment)
     }
 
@@ -58,10 +50,9 @@ object FluxonShell {
      * @param parsed      已解析的脚本
      * @param environment 脚本执行环境
      */
-    fun invoke(parsed: List<ParseResult>, environment: Environment): Any? {
-        val interpreter = Interpreter(environment)
+    fun invoke(parsed: ParsedScript, environment: Environment): Any? {
         return try {
-            interpreter.execute(parsed)
+            parsed.eval(environment)
         } catch (ex: ReturnValue) {
             ex.value
         } catch (ex: FluxonRuntimeError) {
@@ -70,12 +61,13 @@ object FluxonShell {
         }
     }
 
-    fun parse(script: String, environment: Environment): List<ParseResult> {
+    fun parse(script: String, environment: Environment): ParsedScript? {
         return try {
             Fluxon.parse(script.removePrefix(";"), environment)
         } catch (ex: ParseException) {
-            warning("an error was happen in trying parse script: $script . error is:\n${ex.formatDiagnostic()}")
-            emptyList()
+            warning("Error in parsing FLUXON script: $script :\n${ex.formatDiagnostic()}")
+            ex.printStackTrace()
+            null
         }
     }
 }

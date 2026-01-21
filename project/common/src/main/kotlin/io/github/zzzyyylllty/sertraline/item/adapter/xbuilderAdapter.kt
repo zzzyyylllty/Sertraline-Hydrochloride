@@ -27,13 +27,12 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         configMap.let { it[entry.key] = entry.value }
     }
 
-    // 反序列化得到的XItemStack包装类型（可能是Wrapped Bukkit ItemStack或者继承）
-    val xDeserialized = configMap.let { XItemStack.deserialize(it) }
+    val xDeserialized = configMap.let { XItemStack.Deserializer().fromMap(it).read() }
 
-    // 从反序列化结果拿到ItemMeta，准备合并
+    // 从反序列化结果拿到ItemMeta
     val deserializedMeta = xDeserialized.itemMeta
 
-    // 使用原始item的meta作为基础，合并反序列化meta的书名与附加属性（名字、lore等）
+    // 合并反序列化meta的书名与附加属性
     val originalMeta = item.itemMeta
 
     val prefix = "xbuilder"
@@ -47,7 +46,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         retList
     }
 
-    // 这里优先用反序列化meta的内容，但保留原始meta的自定义内容
+    // 优先用反序列化meta的内容，但保留原始meta的自定义内容
     if (deserializedMeta != null) {
         if (name != null) {
             deserializedMeta.displayName(name)

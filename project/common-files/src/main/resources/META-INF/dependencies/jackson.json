@@ -3,7 +3,7 @@
   "value": "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion",
   "relocate": [
     "com.fasterxml.jackson",
-    "io.github.zzzyyylllty.sertraline.library.jackson"
+    "io.github.zzzyyylllty.sertraline.dep.jackson"
   ],
   "test": [
     "com.fasterxml.jackson.core.JsonFactory"
@@ -22,7 +22,7 @@
     "value": "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
     "relocate": [
       "com.fasterxml.jackson",
-      "io.github.zzzyyylllty.sertraline.library.jackson"
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
     ],
     "test": [
       "com.fasterxml.jackson.databind.ObjectMapper"
@@ -41,7 +41,7 @@
     "value": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion",
     "relocate": [
       "com.fasterxml.jackson",
-      "io.github.zzzyyylllty.sertraline.library.jackson"
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
     ],
     "test": [
       "com.fasterxml.jackson.dataformat.toml.YamlFactory"
@@ -60,7 +60,7 @@
     "value": "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:$jacksonVersion",
     "relocate": [
       "com.fasterxml.jackson",
-      "io.github.zzzyyylllty.sertraline.library.jackson"
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
     ],
     "test": [
       "com.fasterxml.jackson.dataformat.toml.TomlFactory"
@@ -79,7 +79,7 @@
     "value": "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
     "relocate": [
       "com.fasterxml.jackson",
-      "io.github.zzzyyylllty.sertraline.library.jackson"
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
     ],
     "test": [
       "com.fasterxml.jackson.annotation.JsonView"

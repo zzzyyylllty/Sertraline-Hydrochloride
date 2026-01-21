@@ -22,7 +22,8 @@ class ComplexTypeHelper(val input: Any?) {
                     it["javascript"] as? String?,
                     it["jexl"] as? String?,
                     it["fluxon"] as? String?,
-                    it["graaljs"] as? String?
+                    it["graaljs"] as? String?,
+                    it["mythic"] as? List<String>?
                     // it["kotlinscript"] as? String?,
                 ))
             }

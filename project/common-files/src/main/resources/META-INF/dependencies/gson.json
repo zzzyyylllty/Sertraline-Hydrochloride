@@ -6,7 +6,7 @@
     ],
     "relocate": [
       "com.google.gson",
-      "io.github.zzzyyylllty.sertraline.library.gson"
+      "io.github.zzzyyylllty.sertraline.dep.gson"
     ],
     "transitive": true,
     "ignoreOptional": false,

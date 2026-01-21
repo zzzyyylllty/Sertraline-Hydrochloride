@@ -66,8 +66,10 @@ object GraalJsUtil {
 
         return Context.newBuilder(GJS_LANG_ID)
             .allowAllAccess(true)
-            .allowHostAccess(hostAccess)
+//            .allowHostAccess(hostAccess)
             .engine(globalGJSEngine)
+            .allowHostAccess(HostAccess.ALL) // 允许访问所有主机类
+            .allowHostClassLookup { true } // 允许查找所有类
             .build()
     }
 

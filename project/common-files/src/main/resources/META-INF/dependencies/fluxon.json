@@ -4,7 +4,7 @@
     "repository": "https://repo.tabooproject.org/repository/releases",
     "relocate": [
       "org.tabooproject.fluxon",
-      "io.github.zzzyyylllty.sertraline.library.fluxon"
+      "io.github.zzzyyylllty.sertraline.dep.fluxon"
     ],
     "test": [
       "org.tabooproject.fluxon.runtime.FluxonRuntime"
@@ -22,7 +22,7 @@
     "repository": "https://repo.tabooproject.org/repository/releases",
     "relocate": [
       "org.tabooproject.fluxon",
-      "io.github.zzzyyylllty.sertraline.library.fluxon"
+      "io.github.zzzyyylllty.sertraline.dep.fluxon"
     ],
     "test": [
       "org.tabooproject.fluxon.runtime.FluxonRuntime"
@@ -40,7 +40,7 @@
     "repository": "https://repo.tabooproject.org/repository/releases",
     "relocate": [
       "org.tabooproject.fluxon",
-      "io.github.zzzyyylllty.sertraline.library.fluxon"
+      "io.github.zzzyyylllty.sertraline.dep.fluxon"
     ],
     "test": [
       "org.tabooproject.fluxon.runtime.FluxonRuntime"

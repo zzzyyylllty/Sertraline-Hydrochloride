@@ -3,7 +3,7 @@
     "value": "com.mojang:datafixerupper:$datafixerupperVersion",
     "relocate": [
       "com.mojang.datafixers",
-      "io.github.zzzyyylllty.sertraline.library.datafixers"
+      "io.github.zzzyyylllty.sertraline.dep.datafixers"
     ],
     "test": [
       "com.mojang.datafixers.DataFixerUpper"

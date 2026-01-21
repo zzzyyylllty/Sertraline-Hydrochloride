@@ -50,102 +50,102 @@ import javax.script.CompiledScript
 //@RuntimeDependencies(
 //    RuntimeDependency(
 //        value = "!com.google.code.gson:gson:2.10.1",
-//        relocate = ["!com.google.gson", "!io.github.zzzyyylllty.sertraline.library.gson"]
+//        relocate = ["!com.google.gson", "!io.github.zzzyyylllty.sertraline.dep.gson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!org.graalvm.polyglot:js:25.0.1",
 //        // repository = "https://repo1.maven.org/maven2",
-//        relocate = ["!graalvm.polyglot.js", "!io.github.zzzyyylllty.sertraline.library.js"]
+//        relocate = ["!graalvm.polyglot.js", "!io.github.zzzyyylllty.sertraline.dep.js"]
 //    ),
 //    RuntimeDependency(
 //        value = "!org.graalvm.polyglot:polyglot:25.0.1",
 //        // repository = "https://repo1.maven.org/maven2",
-//        relocate = ["!org.graalvm.polyglot", "!io.github.zzzyyylllty.sertraline.library.polyglot"]
+//        relocate = ["!org.graalvm.polyglot", "!io.github.zzzyyylllty.sertraline.dep.polyglot"]
 //    ),
 //    RuntimeDependency(
 //        value = "!org.kotlincrypto.hash:sha2:0.7.0",
-//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.library.hash"]
+//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.dep.hash"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.github.ben-manes.caffeine:caffeine:3.2.3",
-//        relocate = ["!com.github.benmanes.caffeine", "!io.github.zzzyyylllty.sertraline.library.caffeine"]
+//        relocate = ["!com.github.benmanes.caffeine", "!io.github.zzzyyylllty.sertraline.dep.caffeine"]
 //    ),
 //    RuntimeDependency(
 //        value = "!org.tabooproject.fluxon:core:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
-//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!org.tabooproject.fluxon:core-console:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
-//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!org.tabooproject.fluxon:core-jsr223:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
-//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.library.fluxon"],
+//        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!com.mojang:datafixerupper:8.0.16",
 //        // repository = "https://libraries.minecraft.net",
-//        relocate = ["!com.mojang.datafixerupper", "!io.github.zzzyyylllty.sertraline.library.datafixerupper"]
+//        relocate = ["!com.mojang.datafixerupper", "!io.github.zzzyyylllty.sertraline.dep.datafixerupper"]
 //    ),
 //    RuntimeDependency(
 //        value = "!io.github.projectunified:uni-item-all:2.3.1",
-//        relocate = ["!io.github.projectunified.uniitem", "!io.github.zzzyyylllty.sertraline.library.uniitem"],
+//        relocate = ["!io.github.projectunified.uniitem", "!io.github.zzzyyylllty.sertraline.dep.uniitem"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-serializer-legacy:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-api:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-minimessage:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-nbt:4.19.0",
-//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.library.kyori"],
+//        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
 //        transitive = false  // 不下载传递依赖
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.dep.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.core:jackson-databind:2.16.1",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.dep.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.core:jackson-annotations:2.16.1",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.dep.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.dep.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.16.1",
-//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.library.jackson"]
+//        relocate = ["!com.fasterxml.jackson", "!io.github.zzzyyylllty.sertraline.dep.jackson"]
 //    ),
 //    RuntimeDependency(
 //        value = "!top.maplex.arim:Arim:1.3.2",
 //        repository = "https://repo.tabooproject.org/repository/releases",
-//        relocate = ["!top.maplex.arim", "!io.github.zzzyyylllty.sertraline.library.arim"]
+//        relocate = ["!top.maplex.arim", "!io.github.zzzyyylllty.sertraline.dep.arim"]
 //    ),
 //    RuntimeDependency(
 //        value = "!org.kotlincrypto.hash:sha2:0.7.0",
-//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.library.hash"]
+//        relocate = ["!org.kotlincrypto.hash", "!io.github.zzzyyylllty.sertraline.dep.hash"]
 //    ),
 //)
 class RuntimeEnv

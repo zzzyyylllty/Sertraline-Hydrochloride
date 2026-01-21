@@ -1,21 +1,15 @@
 package io.github.zzzyyylllty.sertraline.util
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import io.github.zzzyyylllty.sertraline.Sertraline
+import com.cryptomorin.xseries.XMaterial
+import ink.ptms.um.event.MobDropLoadEvent
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import org.bukkit.Bukkit
-import taboolib.common.ClassAppender
-import taboolib.common.LifeCycle
-import taboolib.common.env.RuntimeEnv
-import taboolib.common.platform.Awake
-import java.io.File
-import java.net.URL
-import java.nio.charset.StandardCharsets
+import org.bukkit.entity.Player
+import taboolib.common.platform.Ghost
+import taboolib.common.platform.event.SubscribeEvent
 import java.util.*
-import javax.script.ScriptEngineManager
+import kotlin.math.roundToInt
 
 
 val dependencies = listOf(
@@ -37,6 +31,10 @@ object DependencyHelper {
         isPluginInstalled("MythicLib")
     }
 
+    val mm by lazy {
+        isPluginInstalled("MythicMobs")
+    }
+
     val papi by lazy {
         isPluginInstalled("PlaceholderAPI")
     }
@@ -55,3 +53,39 @@ object DependencyHelper {
 }
 
 
+@Ghost
+@SubscribeEvent
+fun onDropLoad(event: MobDropLoadEvent) {
+    // 注册自定义掉落
+
+    devLog("[MMCompat] dropName: ${event.dropName}")
+    if (!event.dropName.contains("sertraline")) return
+    val id = extractItemId(event.dropName)
+    devLog("[MMCompat] ID: $id")
+
+    event.registerItem { dropMeta ->
+        val killer = dropMeta.cause as? Player
+        val id = event.dropName
+        val item = sertralineItemBuilder(id, killer)
+        item?.amount = dropMeta.amount.roundToInt()
+        item ?: XMaterial.STONE.parseItem()!!
+    }
+}
+
+private fun extractItemId(line: String): String? {
+    if (line.startsWith("sertraline ")) {
+        val nextSpaceIndex = line.indexOf(' ', 11)
+        return if (nextSpaceIndex == -1)
+            line.substring(11)
+        else
+            line.substring(11, nextSpaceIndex)
+    }
+    if (line.startsWith("sertraline:")) {
+        val spaceIndex = line.indexOf(' ', 11)
+        return if (spaceIndex == -1)
+            line.substring(11)
+        else
+            line.substring(11, spaceIndex)
+    }
+    return null
+}

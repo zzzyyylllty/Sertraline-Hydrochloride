@@ -10,13 +10,17 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityShootBowEvent
+import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerEggThrowEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
+import org.bukkit.event.player.PlayerRiptideEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.SubscribeEvent
@@ -46,6 +50,22 @@ fun onInteract(e: PlayerInteractEvent) {
     } else if (e.action.isLeftClick) {
         throttleAction(ThrottleActionLink(uuid, "onLeftClick"), param)
     }
+}
+
+@SubscribeEvent
+fun onShoot(e: EntityShootBowEvent) {
+    val player = e.entity as? Player? ?: return
+    val uuid = player.uniqueId.toString()
+    val param = ThrottleActionParam(player, e, e, e.bow)
+    throttleAction(ThrottleActionLink(uuid, "onShoot"), param)
+}
+
+@SubscribeEvent
+fun onShootTrident(e: PlayerRiptideEvent) {
+    val player = e.player
+    val uuid = player.uniqueId.toString()
+    val param = ThrottleActionParam(player, e, null, e.item)
+    throttleAction(ThrottleActionLink(uuid, "onShootTrident"), param)
 }
 @SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {

@@ -1,12 +1,8 @@
 package io.github.zzzyyylllty.sertraline.util
 
-import com.github.retrooper.packetevents.protocol.recipe.Ingredient
-import com.willfp.eco.core.items.CustomItem
 import io.github.zzzyyylllty.sertraline.data.*
 import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
-import com.cryptomorin.xseries.XItemStack
-import top.maplex.arim.tools.itemmanager.ItemManager
 
 
 val temporarySItemCache = mutableMapOf<SertralineRecipeFilter, ModernSItem>()

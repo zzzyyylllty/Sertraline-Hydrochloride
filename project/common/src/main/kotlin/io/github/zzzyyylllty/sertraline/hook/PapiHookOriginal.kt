@@ -56,12 +56,18 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
         return true //
     }
 
-    override fun onRequest(player: OfflinePlayer?, params: kotlin.String): kotlin.String? {
+    override fun onRequest(player: OfflinePlayer?, paramRaw: kotlin.String): kotlin.String? {
+        
+        val split = paramRaw.split("?:")
+        val def = if (split.size >= 2) split.last() else null
+        val params = if (def != null) paramRaw.removeSuffix("?:$def") else paramRaw
+        
+        
         if (params.startsWith("kether:") || params.startsWith("ke:")) {
             val data = mutableMapOf<String, Any?>()
             data.putAll(defaultData)
             data["player"] = player
-            return params.removePrefix("kether:").removePrefix("ke:").evalKether(player as? CommandSender?, data).get().toString()
+            return params.removePrefix("kether:").removePrefix("ke:").evalKether(player as? CommandSender?, data).get().defaultValue(def)
 
         } else if (params.startsWith("javascript:") || params.startsWith("js:")) {
             val data = mutableMapOf<String, Any?>()
@@ -81,7 +87,7 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
                         it.eval(SimpleBindings(data))
                     }
                 }
-            }.toString()
+            }.defaultValue(def)
 
         } else if (params.startsWith("jexl:") || params.startsWith("je:")) {
             val data = mutableMapOf<String, Any?>()
@@ -101,7 +107,7 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
                         it.eval(data)
                     }
                 }
-            }.toString()
+            }.defaultValue(def)
 
         } else if (params.startsWith("graaljs:") || params.startsWith("gjs:")) {
             val data = mutableMapOf<String, Any?>()
@@ -121,58 +127,82 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
                 FluxonShell.invoke(it) {
                     root.rootVariables += data
                 }
-            }.toString()
+            }.defaultValue(def)
 
         } else if (params.startsWith("config:")) {
-            return config[params.removePrefix("config:")].toString()
+            return config[params.removePrefix("config:")].defaultValue(def)
 
         } else if (params.startsWith("random:") || params.startsWith("rand:")) {
             val param = params.removePrefix("random:").removePrefix("rand:")
             val split = param.split("to")
             return run {
-                if (split.toString().contains(".")) random(split[0].toDouble(), split[1].toDouble()) else random(
+                if (split.defaultValue(def).contains(".")) random(split[0].toDouble(), split[1].toDouble()) else random(
                     split[0].toInt(),
                     split[1].toInt()
                 )
-            }.toString()
+            }.defaultValue(def)
 
         } else if (params.startsWith("data:")) {
             val param = params.removePrefix("data:")
             return run {
                 player?.player?.let { DataUtil.getDataRaw(it, param) }
-            }.toString()
+            }.defaultValue(def)
+        } else if (params.startsWith("data1:")) {
+            val param = params.removePrefix("data1:")
+            return run {
+                player?.player?.let { round((DataUtil.getDataAsDouble(it, param) ?: 0.0)*1000 / 100.0)/10 }
+            }.defaultValue(def)
+        } else if (params.startsWith("data2:")) {
+            val param = params.removePrefix("data2:")
+            return run {
+                player?.player?.let { round((DataUtil.getDataAsDouble(it, param) ?: 0.0)*1000 / 10.0)/100 }
+            }.defaultValue(def)
+        } else if (params.startsWith("data1a:")) {
+            val param = params.removePrefix("data1a:")
+            return run {
+                player?.player?.let { round((DataUtil.getDataAsDouble(it, param) ?: 0.0)*1000 / 100.0)/10 }
+            }.defaultValue(def).removeSuffix(".0")
+        } else if (params.startsWith("data2a:")) {
+            val param = params.removePrefix("data2a:")
+            return run {
+                player?.player?.let { round((DataUtil.getDataAsDouble(it, param) ?: 0.0)*1000 / 10.0)/100 }
+            }.defaultValue(def).removeSuffix(".0")
         } else if (params.startsWith("cdleftmil:")) {
             val param = params.removePrefix("cdleftmil:")
             return run {
                 player?.player?.let { DataUtil.getCooldownLeftLong(it, param) }
-            }.toString()
+            }.defaultValue(def)
         } else if (params.startsWith("cdleftsec:")) {
             val param = params.removePrefix("cdleftsec:")
             return run {
                 player?.player?.let { round((DataUtil.getCooldownLeftLong(it, param) ?: 0) / 1000.0).roundToInt() }
-            }.toString()
+            }.defaultValue(def)
         } else if (params.startsWith("cdleftsec1:")) {
             val param = params.removePrefix("cdleftsec1:")
             return run {
                 player?.player?.let { round((DataUtil.getCooldownLeftLong(it, param) ?: 0) / 100.0)/10 }
-            }.toString()
+            }.defaultValue(def)
         } else if (params.startsWith("cdleftsec2:")) {
             val param = params.removePrefix("cdleftsec2:")
             return run {
                 player?.player?.let { round((DataUtil.getCooldownLeftLong(it, param) ?: 0) / 10.0)/100 }
-            }.toString()
+            }.defaultValue(def)
         } else if (params.startsWith("cdleftsec1a:")) {
             val param = params.removePrefix("cdleftsec1a:")
             return run {
                 player?.player?.let { round((DataUtil.getCooldownLeftLong(it, param) ?: 0) / 100.0)/10 }
-            }.toString().removeSuffix(".0")
+            }.defaultValue(def).removeSuffix(".0")
         } else if (params.startsWith("cdleftsec2a:")) {
             val param = params.removePrefix("cdleftsec2a:")
             return run {
                 player?.player?.let { round((DataUtil.getCooldownLeftLong(it, param) ?: 0) / 10.0)/100 }
-            }.toString().removeSuffix(".0")
+            }.defaultValue(def).removeSuffix(".0")
         }
 
         return null
     }
+}
+
+fun Any?.defaultValue(def: String?): String {
+    return this?.toString() ?: def.toString()
 }

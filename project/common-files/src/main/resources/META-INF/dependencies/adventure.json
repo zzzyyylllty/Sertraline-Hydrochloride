@@ -3,7 +3,7 @@
     "value": "net.kyori:adventure-text-serializer-legacy:$adventureVersion",
     "relocate": [
       "net.kyori",
-      "io.github.zzzyyylllty.sertraline.library.kyori"
+      "io.github.zzzyyylllty.sertraline.dep.kyori"
     ],
     "test": [
       "net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer"
@@ -21,7 +21,7 @@
     "value": "net.kyori:adventure-text-serializer-gson:$adventureVersion",
     "relocate": [
       "net.kyori",
-      "io.github.zzzyyylllty.sertraline.library.kyori"
+      "io.github.zzzyyylllty.sertraline.dep.kyori"
     ],
     "test": [
       "net.kyori.adventure.text.serializer.gson.GsonComponentSerializer"
@@ -39,7 +39,7 @@
     "value": "net.kyori:adventure-api:$adventureVersion",
     "relocate": [
       "net.kyori",
-      "io.github.zzzyyylllty.sertraline.library.kyori"
+      "io.github.zzzyyylllty.sertraline.dep.kyori"
     ],
     "test": [],
     "transitive": false,
@@ -55,7 +55,7 @@
     "value": "net.kyori:adventure-text-minimessage:$adventureVersion",
     "relocate": [
       "net.kyori",
-      "io.github.zzzyyylllty.sertraline.library.kyori"
+      "io.github.zzzyyylllty.sertraline.dep.kyori"
     ],
     "test": [
       "net.kyori.adventure.text.minimessage.MiniMessage"

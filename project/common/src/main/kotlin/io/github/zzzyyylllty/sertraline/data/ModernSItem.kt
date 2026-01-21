@@ -1,19 +1,20 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.Gson
+import ink.ptms.um.Mythic
 import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
-import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionComponent.FluxonComponentObject
 import io.github.zzzyyylllty.sertraline.function.javascript.EventUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.ItemStackUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.PlayerUtil
 import io.github.zzzyyylllty.sertraline.function.javascript.ThreadUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
+import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
@@ -24,16 +25,17 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import org.bukkit.Bukkit
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
+import taboolib.common.platform.function.submit
 import taboolib.common5.compileJS
-import taboolib.module.nms.getItemTag
+import taboolib.platform.util.bukkitPlugin
 import javax.script.SimpleBindings
-import kotlin.collections.Map
 
 var defaultData = LinkedHashMap<String, Any?>()
 
@@ -55,9 +57,11 @@ fun registerExternalData() {
             "Math" to Math::class.java,
             "System" to System::class.java,
             "Bukkit" to Bukkit::class.java,
-            "Gson" to Gson::class.java
+            "Gson" to Gson::class.java,
+            "bukkitPlugin" to bukkitPlugin,
+            "scheduler" to Bukkit.getScheduler()
         ))
-    val event = SertralineCustomScriptDataLoadEvent(defaultData)
+    val event =SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()
 
     defaultData = event.defaultData
@@ -118,6 +122,7 @@ data class Action(
     val jexl: String? = null,
     val fluxon: String? = null,
     val gjs: String? = null,
+    val mythic: List<String>? = null,
 //    val kotlinScript: String? = null,
 ) {
 
@@ -137,44 +142,61 @@ data class Action(
         if (condition?.evalKetherBoolean(player, parsedData) ?: true) {
             kether?.evalKether(player, parsedData)
 
-        javaScript?.let {
-            val hash = it.generateHash()
-            val cache = jsScriptCache[hash]
-            if (cache != null) {
-                cache.eval(SimpleBindings(parsedData))
-            } else {
-                val compiled = it.compileJS()
-                compiled?.let { it ->
-                    jsScriptCache[hash] = it
-                    it.eval(SimpleBindings(parsedData))
+            javaScript?.let {
+                val hash = it.generateHash()
+                val cache = jsScriptCache[hash]
+                if (cache != null) {
+                    cache.eval(SimpleBindings(parsedData))
+                } else {
+                    val compiled = it.compileJS()
+                    compiled?.let { it ->
+                        jsScriptCache[hash] = it
+                        it.eval(SimpleBindings(parsedData))
+                    }
                 }
             }
-        }
 
-        jexl?.let {
-            val hash = it.generateHash()
-            val cache = jexlScriptCache[hash]
-            if (cache != null) {
-                cache.eval(parsedData)
-            } else {
-                val compiled = prodJexlCompiler.compileToScript(it)
-                compiled.let { it ->
-                    jexlScriptCache[hash] = it
-                    it.eval(parsedData)
+            jexl?.let {
+                val hash = it.generateHash()
+                val cache = jexlScriptCache[hash]
+                if (cache != null) {
+                    cache.eval(parsedData)
+                } else {
+                    val compiled = prodJexlCompiler.compileToScript(it)
+                    compiled.let { it ->
+                        jexlScriptCache[hash] = it
+                        it.eval(parsedData)
+                    }
                 }
             }
-        }
 
-        fluxon?.let {
-            FluxonShell.invoke(it) {
-                root.rootVariables += parsedData
+            fluxon?.let {
+                FluxonShell.invoke(it) {
+                    root.rootVariables += parsedData
+                }
             }
-        }
 
-        gjs?.let {
-            GraalJsUtil.cachedEval(it, parsedData)
-        }
+            gjs?.let {
+                GraalJsUtil.cachedEval(it, parsedData)
+            }
 
+            if (DependencyHelper.mm) mythic?.let {
+                it.forEach {
+                    val filterData = defaultData.filter { (key, value) -> value != null } as Map<String, Any>
+                    val skillLine = it.split("~")
+                    val trigger = skillLine.getOrNull(1)?.let { name -> Mythic.API.getSkillTrigger(name) } ?: Mythic.API.getDefaultSkillTrigger()
+                    val skill = Mythic.API.getSkillMechanic(it.removeSuffix(" ~$trigger"))
+                    skill?.execute(
+                        trigger,
+                        player,
+                        player,
+                        emptySet(),
+                        emptySet(),
+                        0f,
+                        filterData
+                    )
+                }
+            }
 
 //        kotlinScript?.let {
 //            runKotlinScriptJsr223(it, parsedData, bukkitPlugin::class.java.classLoader)

@@ -3,7 +3,7 @@
     "value": "com.github.ben-manes.caffeine:caffeine:$caffeineVersion",
     "relocate": [
       "com.github.benmanes.caffeine",
-      "io.github.zzzyyylllty.sertraline.library.caffeine"
+      "io.github.zzzyyylllty.sertraline.dep.caffeine"
     ],
     "test": [
       "com.github.benmanes.caffeine.cache.Caffeine"

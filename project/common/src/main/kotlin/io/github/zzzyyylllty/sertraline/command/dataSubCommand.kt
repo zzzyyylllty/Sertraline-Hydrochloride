@@ -189,6 +189,136 @@ object DataCommand {
     }
 
     @CommandBody
+    val getCooldown = subCommand {
+        dynamic("id") {
+            execute<CommandSender> { sender, context, argument ->
+                submitAsync {
+                    val player = sender as? Player? ?: run {
+                        sender.severeS(sender.asLangText("Player_Only_Command"))
+                        return@submitAsync
+                    }
+                    val key = context["id"]
+                    val data = DataUtil.getCooldownLeftLong(player, key)?.toDouble()?.div(1000)
+                    var message = sender.asLangText("PlayerCooldown_Fetch", player.name, key, data ?: "<i>null")
+                    sender.infoS(message, false)
+                }
+            }
+            player("player") {
+                execute<CommandSender> { sender, context, argument ->
+                    submitAsync {
+                        val id = context["id"]
+                        val tabooPlayer = context.player("player")
+                        // 转化为Bukkit的Player
+                        val player = tabooPlayer.castSafely<Player>() ?: run {
+                            sender.severeS(sender.asLangText("Player_Not_Exist"))
+                            return@submitAsync
+                        }
+                        val key = context["id"]
+                        val data = DataUtil.getCooldownLeftLong(player, key)?.toDouble()?.div(1000)
+                        var message = sender.asLangText("PlayerCooldown_Fetch", player.name, key, data ?: "<i>null")
+                        sender.infoS(message, false)
+                    }
+                }
+            }
+        }
+    }
+
+
+    @CommandBody
+    val removeCooldown = subCommand {
+        dynamic("id") {
+            execute<CommandSender> { sender, context, argument ->
+                submitAsync {
+                    val player = sender as? Player? ?: run {
+                        sender.severeS(sender.asLangText("Player_Only_Command"))
+                        return@submitAsync
+                    }
+                    val key = context["id"]
+                    DataUtil.resetCooldown(player, key)
+                    var message = sender.asLangText("PlayerCooldown_Remove", player.name, key)
+                    sender.infoS(message, false)
+                }
+            }
+            player("player") {
+                execute<CommandSender> { sender, context, argument ->
+                    submitAsync {
+                        val id = context["id"]
+                        val tabooPlayer = context.player("player")
+                        // 转化为Bukkit的Player
+                        val player = tabooPlayer.castSafely<Player>() ?: run {
+                            sender.severeS(sender.asLangText("Player_Not_Exist"))
+                            return@submitAsync
+                        }
+                        val key = context["id"]
+                        DataUtil.resetCooldown(player, key)
+                        var message = sender.asLangText("PlayerCooldown_Remove", player.name, key)
+                        sender.infoS(message, false)
+                    }
+                }
+            }
+        }
+    }
+
+
+    @CommandBody
+    val setCooldown = subCommand {
+        player("player") {
+            dynamic("id") {
+                dynamic("value") {
+                    execute<CommandSender> { sender, context, argument ->
+                        submitAsync {
+                            val id = context["id"]
+                            val dvalue = context["value"]
+                            val tabooPlayer = context.player("player")
+                            // 转化为Bukkit的Player
+                            val player = tabooPlayer.castSafely<Player>() ?: run {
+                                sender.severeS(sender.asLangText("Player_Not_Exist"))
+                                return@submitAsync
+                            }
+                            val key = context["id"]
+                            DataUtil.setCooldown(player, key, dvalue.toDouble())
+                            var message = sender.asLangText("PlayerCooldown_Modify", player.name, key, dvalue)
+                            sender.infoS(message, false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @CommandBody
+    val clearCooldown = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            submitAsync {
+                val player = sender as? Player? ?: run {
+                    sender.severeS(sender.asLangText("Player_Only_Command"))
+                    return@submitAsync
+                }
+                DataUtil.resetAllCooldown(player)
+                var message = sender.asLangText("PlayerCooldown_Clear", player.name)
+                sender.infoS(message, false)
+            }
+
+        }
+        player("player") {
+            execute<CommandSender> { sender, context, argument ->
+                submitAsync {
+                    val tabooPlayer = context.player("player")
+                    // 转化为Bukkit的Player
+                    val player = tabooPlayer.castSafely<Player>() ?: run {
+                        sender.severeS(sender.asLangText("Player_Not_Exist"))
+                        return@submitAsync
+                    }
+                    DataUtil.resetAllCooldown(player)
+                    var message = sender.asLangText("PlayerCooldown_Clear", player.name)
+                    sender.infoS(message, false)
+                }
+
+            }
+        }
+    }
+
+    @CommandBody
     val browse = subCommand {
         execute<CommandSender> { sender, context, argument ->
             submitAsync {
