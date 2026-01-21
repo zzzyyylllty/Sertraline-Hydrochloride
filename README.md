@@ -73,7 +73,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
+    implementation("com.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
 }
 ```
 
