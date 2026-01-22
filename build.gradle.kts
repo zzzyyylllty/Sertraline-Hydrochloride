@@ -24,7 +24,7 @@ allprojects {
 
     taboolib {
         env {
-            debug = true
+            debug = false
             forceDownloadInDev = false
             repoCentral = "https://maven.aliyun.com/repository/central"
             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
@@ -71,6 +71,7 @@ allprojects {
         // 其他仓库
         maven("https://jitpack.io")
         maven("https://repo.gtemc.net/releases/")
+//        maven("https://repo.gtemc.net/releases/")
         maven {
             url = uri("https://nexus.maplex.top/repository/maven-public/")
             isAllowInsecureProtocol = true

@@ -1,11 +1,6 @@
 package io.github.zzzyyylllty.sertraline.hook
 
-import ink.ptms.chemdah.api.event.InferItemHookEvent
-import ink.ptms.chemdah.core.quest.selector.DataMatch
-import ink.ptms.chemdah.core.quest.selector.Flags
-import ink.ptms.chemdah.core.quest.selector.InferItem
-import ink.ptms.chemdah.taboolib.module.kether.action.transform.CheckType
-import ink.ptms.chemdah.um.Mythic
+import ink.ptms.um.Mythic
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.data.getSertralineId

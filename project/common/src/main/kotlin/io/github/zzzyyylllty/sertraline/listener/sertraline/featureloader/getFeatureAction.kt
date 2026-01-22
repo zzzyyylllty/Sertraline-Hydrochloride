@@ -41,7 +41,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
                 "jexl" to (it["jexl"] ?: it["je"]).asListedStringEnhanced(),
                 "fluxon" to (it["fluxon"] ?: it["fl"]).asListedStringEnhanced(),
                 "graaljs" to (it["graaljs"] ?: it["gjs"]).asListedStringEnhanced(),
-                "mythic" to (it["mythic"] ?: it["mythic"]).asListEnhanced(),
+                "mythic" to (it["mythic"] ?: it["mm"]).asListEnhanced(),
                 // "kotlinscript" to (it["kotlinscript"] ?: it["kts"] ?: it["kt"]).asListedStringEnhanced()
             ))
         }

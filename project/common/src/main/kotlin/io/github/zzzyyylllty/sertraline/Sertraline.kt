@@ -167,7 +167,7 @@ object Sertraline : Plugin() {
     @Config("config.yml")
     lateinit var config: Configuration
 
-    val api: SertralineAPI? by lazy { SertralineAPIImpl().INSTANCE }
+    val api: SertralineAPI? by lazy { SertralineAPIImpl() }
     val plugin by lazy { this }
     val dataFolder by lazy { nativeDataFolder() }
     val console by lazy { console() }

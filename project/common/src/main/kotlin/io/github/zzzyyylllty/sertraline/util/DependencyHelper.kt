@@ -32,6 +32,7 @@ object DependencyHelper {
     }
 
     val mm by lazy {
+        devLog("Hooked into Mythicmobs? ${isPluginInstalled("MythicMobs")}")
         isPluginInstalled("MythicMobs")
     }
 

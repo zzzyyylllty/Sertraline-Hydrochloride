@@ -2,10 +2,12 @@ package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.Gson
 import ink.ptms.um.Mythic
+import io.github.zzzyyylllty.sertraline.Sertraline.api
 import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.javascript.EventUtil
@@ -52,7 +54,7 @@ fun registerExternalData() {
             "EventUtil" to EventUtil,
             "ThreadUtil" to ThreadUtil,
             "PlayerUtil" to PlayerUtil,
-            "SertralineAPI" to SertralineAPI::class.java,
+            "SertralineAPI" to api,
             "DataUtil" to DataUtil,
             "Math" to Math::class.java,
             "System" to System::class.java,
@@ -61,7 +63,7 @@ fun registerExternalData() {
             "bukkitPlugin" to bukkitPlugin,
             "scheduler" to Bukkit.getScheduler()
         ))
-    val event =SertralineCustomScriptDataLoadEvent(defaultData)
+    val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()
 
     defaultData = event.defaultData
@@ -181,11 +183,13 @@ data class Action(
             }
 
             if (DependencyHelper.mm) mythic?.let {
-                it.forEach {
-                    val filterData = defaultData.filter { (key, value) -> value != null } as Map<String, Any>
-                    val skillLine = it.split("~")
-                    val trigger = skillLine.getOrNull(1)?.let { name -> Mythic.API.getSkillTrigger(name) } ?: Mythic.API.getDefaultSkillTrigger()
-                    val skill = Mythic.API.getSkillMechanic(it.removeSuffix(" ~$trigger"))
+                it.forEach { str ->
+                    val filterData = parsedData.filter { (key, value) -> value != null } as Map<String, Any>
+                    val skillLine = str.split("~")
+                    val triggerName = skillLine.getOrNull(1)
+                    val trigger = triggerName?.let { name -> Mythic.API.getSkillTrigger(name) } ?: Mythic.API.getDefaultSkillTrigger()
+                    val skill = Mythic.API.getSkillMechanic(skillLine[0])
+                    devLog("skill: $skill | skillLine: $skillLine | trigger: $trigger | triggerName: $triggerName")
                     skill?.execute(
                         trigger,
                         player,

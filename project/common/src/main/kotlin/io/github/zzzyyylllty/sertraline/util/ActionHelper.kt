@@ -20,22 +20,22 @@ object ActionHelper {
             val time = config.getLong("action.throttle.${link.str}", config.getLong("action.throttle-time", 500))
             if (time < 1) null else
             throttle<ThrottleActionLink, ThrottleActionParam>(time) { link, data ->
-                if (data.bItem == null || data.bItem.isEmpty) {
+                if (data.bItem == null || data.bItem.isEmpty || data.bItem.amount <= 0) {
                     devLog("ItemStack is null or air or amount == 0,Skipping actions.")
                 } else {
                     data.p.applyActions(link.str, data.e, data.ce, data.bItem)
-                    data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
+                    if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
                 }
             }
         }
         if (instance != null) {
             instance(link, data)
         } else {
-            if (data.bItem == null || data.bItem.isEmpty) {
+            if (data.bItem == null || data.bItem.isEmpty || data.bItem.amount <= 0) {
                 devLog("ItemStack is null or air or amount == 0,Skipping actions.")
             } else {
                 data.p.applyActions(link.str, data.e, data.ce, data.bItem)
-                data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
+                if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
             }
         }
     }
