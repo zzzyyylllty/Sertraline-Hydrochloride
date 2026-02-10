@@ -1,5 +1,7 @@
 package io.github.zzzyyylllty.sertraline.listener.action
 
+import io.github.zzzyyylllty.sertraline.impl.getComponent
+import io.github.zzzyyylllty.sertraline.impl.getComponentJava
 import io.github.zzzyyylllty.sertraline.util.ActionHelper.throttleAction
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.title.Title
@@ -8,6 +10,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
+import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityShootBowEvent
@@ -100,7 +103,7 @@ fun onAttack(e: EntityDamageByEntityEvent) {
     throttleAction(ThrottleActionLink(player.uniqueId.toString(), "onAttack"), ThrottleActionParam(player, e, e, item))
 }
 
-@SubscribeEvent
+@SubscribeEvent(priority = taboolib.common.platform.event.EventPriority.MONITOR)
 fun onConsume(e: PlayerItemConsumeEvent) {
     val uuid = e.player.uniqueId.toString()
     throttleAction(ThrottleActionLink(uuid, "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))

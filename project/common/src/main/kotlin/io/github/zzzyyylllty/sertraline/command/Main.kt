@@ -98,10 +98,10 @@ object SertralineMainCommand {
     @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            sender.infoSSync("Reloading...")
+            sender.sendStringAsComponent("<yellow>Reloading...")
             try {
                 reloadCustomConfig(true)
-                sender.fineS("Reloaded.")
+                sender.sendStringAsComponent("<green>Reloaded.")
             }
             catch (e: Exception) {
 

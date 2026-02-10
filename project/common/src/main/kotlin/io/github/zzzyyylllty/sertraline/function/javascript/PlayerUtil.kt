@@ -4,9 +4,12 @@ import com.github.retrooper.packetevents.protocol.dialog.input.Input
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.Title.Times.times
+import org.bukkit.Bukkit
+import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -45,6 +48,7 @@ object PlayerUtil {
             )
         }
     }
+
     fun removePotionEffect(player: Player, type: String) {
         submit {
             player.removePotionEffect(

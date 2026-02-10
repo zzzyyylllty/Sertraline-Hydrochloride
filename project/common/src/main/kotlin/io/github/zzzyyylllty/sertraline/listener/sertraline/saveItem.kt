@@ -24,9 +24,11 @@ fun itemModuleSave(e: ItemLoadEvent) {
             data[major] = majormap
         } else data[location] = entry.value
     }
-    itemMap[e.itemKey] = ModernSItem(
+    val sItem = ModernSItem(
         e.itemKey,
         data = data as LinkedHashMap<*,*> as LinkedHashMap<String, Any?>,
         config = e.arguments as LinkedHashMap<*,*> as LinkedHashMap<String, Any?>
     )
+    itemDebugger(e, sItem)
+    itemMap[e.itemKey] = sItem
 }

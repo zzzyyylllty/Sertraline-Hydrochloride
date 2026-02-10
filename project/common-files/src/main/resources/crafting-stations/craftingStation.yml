@@ -3,7 +3,7 @@ counter_sword_maker:
     # For onDone agents.
     enable-tracker: true
   display:
-    title: "Counter Sword Station"
+    title: "Sample+- Station"
 
     # GUI Layout
     layout:
@@ -28,8 +28,9 @@ counter_sword_maker:
         lore: |
           toggle to page {next_page}
         onclick:
-          LEFT: |
-            minitell inline "<green>Toggled to page {{ &next_page }}"
+          LEFT:
+            ke: |
+               minitell inline "<green>Toggled to page {{ &previous_page }}"
       previous_page: # previous page not support char, must set a slot.
         slot: 48
         roll: true # cycle toggle page
@@ -38,8 +39,9 @@ counter_sword_maker:
         lore: |
           toggle to page {previous_page}
         onclick:
-          LEFT: |
-            minitell inline "<green>Toggled to page {{ &previous_page }}"
+          LEFT:
+            ke: |
+               minitell inline "<green>Toggled to page {{ &previous_page }}"
     key: 'I'
   recipes:
     test_recipe:

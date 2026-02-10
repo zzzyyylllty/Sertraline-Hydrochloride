@@ -167,7 +167,7 @@ object Sertraline : Plugin() {
     @Config("config.yml")
     lateinit var config: Configuration
 
-    val api: SertralineAPI? by lazy { SertralineAPIImpl() }
+    val _api: SertralineAPI? by lazy { SertralineAPIImpl() }
     val plugin by lazy { this }
     val dataFolder by lazy { nativeDataFolder() }
     val console by lazy { console() }
@@ -193,7 +193,7 @@ object Sertraline : Plugin() {
     val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
 
     fun api() : SertralineAPI {
-        return api ?: error("SertralineAPI has not finished loading, or failed to load!")
+        return _api ?: throw IllegalStateException("Sertraline API not present,or failed to load")
     }
 
     override fun onLoad() {
@@ -210,7 +210,6 @@ object Sertraline : Plugin() {
         infoL("Enable")
         Language.enableSimpleComponent = true
         reloadCustomConfig()
-
     }
 
     override fun onDisable() {

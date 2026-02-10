@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.Gson
 import ink.ptms.um.Mythic
+import io.github.zzzyyylllty.sertraline.Sertraline._api
 import io.github.zzzyyylllty.sertraline.Sertraline.api
 import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
@@ -54,7 +55,7 @@ fun registerExternalData() {
             "EventUtil" to EventUtil,
             "ThreadUtil" to ThreadUtil,
             "PlayerUtil" to PlayerUtil,
-            "SertralineAPI" to api,
+            "SertralineAPI" to _api,
             "DataUtil" to DataUtil,
             "Math" to Math::class.java,
             "System" to System::class.java,

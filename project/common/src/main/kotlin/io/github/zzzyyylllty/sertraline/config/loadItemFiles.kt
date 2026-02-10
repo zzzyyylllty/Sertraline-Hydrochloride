@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
 // import org.yaml.snakeyaml.Yaml
@@ -19,51 +20,62 @@ import java.io.File
 
 fun loadItemFiles() {
     infoL("Item_Load")
+    var loadedCount = 0
+
     if (!File(getDataFolder(), "workspace").exists()) {
         warningL("Item_Load_Regen")
         releaseResourceFolder("workspace/default")
     }
+
     val files = File(getDataFolder(), "workspace").listFiles()
     if (files == null) {
-        warningL("Item_Load_Not_Found")
+        severeL("Item_Load_Not_Found")
         return
     }
+
     for (file in files) {
-        // If directory load file in it...
-        if (file.isDirectory) file.listFiles()?.forEach {
+        if (file.isDirectory) {
+            file.listFiles()?.forEach {
+                if (loadItemFile(it)) loadedCount++
+            }
+        } else {
+            if (loadItemFile(file)) loadedCount++
+        }
+    }
+
+    infoL("Item_Load_Complete", loadedCount)
+}
+
+fun loadItemFile(file: File): Boolean {
+    if (file.isDirectory) {
+        file.listFiles()?.forEach {
             loadItemFile(it)
         }
-        else loadItemFile(file)
+        return false
     }
-}
-fun loadItemFile(file: File) {
-    devLog("Loading file ${file.name}")
 
-    if (file.isDirectory) file.listFiles()?.forEach {
-        loadItemFile(it)
-    } else {
-        if (!checkRegexMatch(file.name, (config["file-load.item"] ?: ".*").toString())) {
-            devLog("${file.name} not match regex, skipping...")
-            return
-        }
-        /*
-        val yaml = Yaml()
-        val obj = yaml.load<Map<String?, Any?>?>(file.inputStream())
-        val entries = obj.entries
-        for (it in entries) {
-            val key = it.key ?: continue
-            val value = obj[key]
-            devLog("Key: $key")
-            devLog("Value: $value")
-            ItemLoadEvent(key, value as Map<String, Any?>, linkedMapOf()).call()
-        }*/
+    val regex = (config["file-load.item"] ?: ".*").toString()
+    if (!checkRegexMatch(file.name, regex)) {
+        return false
+    }
+
+    return try {
         val map = multiExtensionLoader(file)
-        if (map != null) for (it in map.entries) {
-            val key = it.key
+
+        if (map == null || map.isEmpty()) {
+            severeL("Item_Load_Error_Empty", file.name)
+            return false
+        }
+
+        for (entry in map.entries) {
+            val key = entry.key
             val value = map[key]
             ItemLoadEvent(key, value as? Map<String, Any?>? ?: linkedMapOf(), linkedMapOf()).call()
-        } else {
-            devLog("Map is null, skipping.")
         }
+
+        true
+    } catch (e: Exception) {
+        severeL("Item_Load_Error_Parse", file.name, e.message ?: "Unknown error")
+        false
     }
 }

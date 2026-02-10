@@ -15,12 +15,13 @@ import java.util.LinkedHashMap
 
 fun mmoAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
 
-    val fix = (sItem.getDeepData("mmo:fix-attack-speed") as Boolean?)
+    val fix = (sItem.getDeepData("mmo:fix-attack-speed") as? Boolean?)
     if (fix == null) {
         devLog("mmo build setting is null or empty, skipping adapting.")
         return item
     }
-    item.itemMeta.addAttributeModifier(
+    val meta = item.itemMeta
+    meta.addAttributeModifier(
         Attribute.ATTACK_SPEED,
         AttributeModifier(
             NamespacedKey.fromString("mmoitems:decoy")!!,
@@ -28,6 +29,7 @@ fun mmoAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack 
             AttributeModifier.Operation.ADD_NUMBER
         )
     )
+    item.setItemMeta(meta)
 
     return item
 
