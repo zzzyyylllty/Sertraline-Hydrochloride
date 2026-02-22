@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.config
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.infoL
@@ -20,7 +21,6 @@ import java.io.File
 
 fun loadItemFiles() {
     infoL("Item_Load")
-    var loadedCount = 0
 
     if (!File(getDataFolder(), "workspace").exists()) {
         warningL("Item_Load_Regen")
@@ -36,14 +36,14 @@ fun loadItemFiles() {
     for (file in files) {
         if (file.isDirectory) {
             file.listFiles()?.forEach {
-                if (loadItemFile(it)) loadedCount++
+                loadItemFile(it)
             }
         } else {
-            if (loadItemFile(file)) loadedCount++
+            loadItemFile(file)
         }
     }
 
-    infoL("Item_Load_Complete", loadedCount)
+    infoL("Item_Load_Complete", itemMap.size)
 }
 
 fun loadItemFile(file: File): Boolean {

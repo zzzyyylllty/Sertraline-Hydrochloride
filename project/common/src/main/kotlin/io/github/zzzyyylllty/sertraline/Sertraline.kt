@@ -279,7 +279,7 @@ object Sertraline : Plugin() {
 
     @Awake(LifeCycle.INIT)
     fun initDependenciesInit() {
-        solveDependencies(dependencies)
+        solveDependencies(dependencies, true)
     }
 
 
