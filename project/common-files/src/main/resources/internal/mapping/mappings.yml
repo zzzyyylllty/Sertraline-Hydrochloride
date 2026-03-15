@@ -7,6 +7,8 @@
 # If you want to add mappings, please create more files in this directory to add
 # If there are multiple identical key names, they will be automatically merged
 
+sertraline:no-sertraline-id:
+  - sertraline:no-sertraline-id
 sertraline:tier:
   - sertraline:tier
 sertraline:vals:

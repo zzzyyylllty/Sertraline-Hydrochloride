@@ -88,9 +88,13 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
     val item = itemManager.processItem(template, itemSource, player)
     item.amount = amount
 
-    val tag = item.getItemTag()
-    tag["sertraline_id"] = template.key
-    return item.setItemTag(tag)
+    if (template.getDeepData("sertraline:no-sertraline-id") as? Boolean? ?: false) {
+        return item
+    } else {
+        val tag = item.getItemTag()
+        tag["sertraline_id"] = template.key
+        return item.setItemTag(tag)
+    }
 }
 
 /**

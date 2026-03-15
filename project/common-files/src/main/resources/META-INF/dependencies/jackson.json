@@ -1,23 +1,42 @@
 [
   {
-  "value": "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion",
-  "relocate": [
-    "com.fasterxml.jackson",
-    "io.github.zzzyyylllty.sertraline.dep.jackson"
-  ],
-  "test": [
-    "com.fasterxml.jackson.core.JsonFactory"
-  ],
+    "value": "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
+    "relocate": [
+      "com.fasterxml.jackson",
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
+    ],
+    "test": [
+      "com.fasterxml.jackson.annotation.JsonView"
+    ],
     "repository": "https://repo1.maven.org/maven2",
-  "transitive": true,
-  "ignoreOptional": false,
-  "ignoreException": false,
-  "scopes": [
-    "compile",
-    "runtime"
-  ],
-  "external": true
-},
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
+  {
+    "value": "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion",
+    "relocate": [
+      "com.fasterxml.jackson",
+      "io.github.zzzyyylllty.sertraline.dep.jackson"
+    ],
+    "test": [
+      "com.fasterxml.jackson.core.JsonFactory"
+    ],
+    "repository": "https://repo1.maven.org/maven2",
+    "transitive": true,
+    "ignoreOptional": false,
+    "ignoreException": false,
+    "scopes": [
+      "compile",
+      "runtime"
+    ],
+    "external": true
+  },
   {
     "value": "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
     "relocate": [

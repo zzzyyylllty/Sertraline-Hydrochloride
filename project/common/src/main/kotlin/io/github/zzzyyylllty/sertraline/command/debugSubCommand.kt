@@ -36,6 +36,7 @@ import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
+import taboolib.platform.util.isAir
 
 @CommandHeader(
     name = "sertralinedebug",
@@ -171,20 +172,32 @@ object DebugCommand {
     val dumpComponent = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val inv = (sender as Player).inventory
-            val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
+            val item = inv.itemInMainHand
+            if (item.isAir || item.isEmpty || item.amount <= 0) {
+                sender.sendMessage("item cannot be null")
+                return@execute
+            }
+            val components = asNMSCopy(item).getComponentsNMSFiltered()
             sender.sendMessage(ComponentFormatter.formatComponentMap(components))
         }
         bool("full") {
             execute<CommandSender> { sender, context, argument ->
+                val inv = (sender as Player).inventory
+                val item = inv.itemInMainHand
+                if (item.isAir || item.isEmpty || item.amount <= 0) {
+                    sender.sendMessage("item cannot be null")
+                    return@execute
+                }
                 if (context.bool("full")) {
-                    val inv = (sender as Player).inventory
-                    val components = asNMSCopy(inv.itemInMainHand).getComponentsNMS()
+                    val components = asNMSCopy(item).getComponentsNMS()
                     sender.sendMessage(ComponentFormatter.formatComponentMap(components))
                 } else {
-                    val inv = (sender as Player).inventory
-                    val components = asNMSCopy(inv.itemInMainHand).getComponentsNMSFiltered()
+                    val components = asNMSCopy(item).getComponentsNMSFiltered()
                     sender.sendMessage(ComponentFormatter.formatComponentMap(components))
                 }
+            }
+            suggestion<CommandSender>(uncheck = true) { sender, context ->
+                listOf("true", "false")
             }
         }
     }

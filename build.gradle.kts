@@ -81,7 +81,7 @@ allprojects {
     dependencies {
         // TabooLib 依赖
         taboo("com.github.cryptomorin:XSeries:v13.6.0")
-        taboo("com.github.zzzyyylllty:EmbianComponent:1.0.3")
+        taboo("com.github.zzzyyylllty:EmbianComponent:1.0.4")
         taboo("cn.gtemc:itembridge:1.0.17")
         taboo("ink.ptms:um:1.2.1")
         taboo(platform(rootProject.libs.kotlincrypto.bom))
@@ -105,7 +105,7 @@ allprojects {
         compileOnly(rootProject.libs.caffeine)
         compileOnly(rootProject.libs.gson)
         compileOnly(rootProject.libs.bundles.graalvm)
-        compileOnly(rootProject.libs.bundles.jackson)
+        taboo(rootProject.libs.bundles.jackson)
         taboo("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // 本地依赖

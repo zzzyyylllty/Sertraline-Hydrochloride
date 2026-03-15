@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.listener.sertraline
 
+import com.fasterxml.jackson.annotation.JsonView
 import io.github.zzzyyylllty.sertraline.Sertraline.consoleSender
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
@@ -20,7 +21,8 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
         "$prefix:vals",
         "$prefix:vars",
         "$prefix:dynamics",
-        "$prefix:actions"
+        "$prefix:actions",
+        "$prefix:no-sertraline-id"
     )
 
 

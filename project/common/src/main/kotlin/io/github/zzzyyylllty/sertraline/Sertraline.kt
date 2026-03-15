@@ -26,9 +26,11 @@ import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import taboolib.common.LifeCycle
+import taboolib.common.PrimitiveSettings
 import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.env.RuntimeEnv
+import taboolib.common.env.RuntimeEnvDependency
 import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
@@ -185,7 +187,6 @@ object Sertraline : Plugin() {
     var devMode = true
     var allowAsyncLog = true
     var isEnabled = false
-    val configUtil by lazy { ConfigUtil }
     val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
     val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
     val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }

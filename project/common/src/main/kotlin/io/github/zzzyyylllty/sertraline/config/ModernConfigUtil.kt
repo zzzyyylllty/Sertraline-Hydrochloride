@@ -26,7 +26,7 @@ object ConfigUtil {
         var current: Any? = input
 
         for (key in keys) {
-            if (current !is Map<*, *>) return input
+            if (current !is Map<*, *>) return null  // ✓ 改为 null
             current = current[key]
         }
         return current

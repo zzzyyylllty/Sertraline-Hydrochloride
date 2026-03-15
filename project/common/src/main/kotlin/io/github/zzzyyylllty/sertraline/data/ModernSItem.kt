@@ -4,10 +4,10 @@ import com.google.gson.Gson
 import ink.ptms.um.Mythic
 import io.github.zzzyyylllty.sertraline.Sertraline._api
 import io.github.zzzyyylllty.sertraline.Sertraline.api
-import io.github.zzzyyylllty.sertraline.Sertraline.configUtil
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
 import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
+import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
@@ -81,18 +81,27 @@ data class ModernSItem(
 
 
     fun getDeepData(location: String): Any? {
-        val split = location.split(":")
-        if (split.size >= 2) {
-            val major = split[0]
-            val section = location.removePrefix("${split[0]}:")
-            return if (!section.contains(".")) {
-                // 不需要深层读取
-                (data[major] as? Map<*, *>?)?.get(section)
-            } else {
-                // 需要深层读取
-                configUtil.getDeep(data[major] as? Map<*, *>, section)
-            }
-        } else return data[location] as? Map<*,*>?
+        val colonIndex = location.indexOf(':')
+
+        if (colonIndex <= 0) {
+            // minecraft -> data["minecraft"]
+            return data[location]
+        }
+
+        // 获取主键对应的数据
+        val major = location.substring(0, colonIndex)
+        val majorData = data[major] as? Map<*, *> ?: return null
+
+        // 获取section部分
+        val section = location.substring(colonIndex + 1)
+
+        return if ('.' in section) {
+            // minecraft:food.saturation 深层读取
+            ConfigUtil.getDeep(majorData, section)  // ✓ 正确
+        } else {
+            // minecraft:food 浅层读取
+            majorData[section]  // ✓ 正确
+        }
     }
     fun getMajorData(location: String): Any? {
         return data[location] as? Map<*,*>?
