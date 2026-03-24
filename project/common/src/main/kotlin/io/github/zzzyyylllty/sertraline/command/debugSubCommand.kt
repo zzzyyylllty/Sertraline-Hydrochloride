@@ -11,7 +11,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
-import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
 import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
@@ -70,35 +70,35 @@ object DebugCommand {
 
             // 获取某个标签的所有物品
             val axes = ItemTagManager.getItemsByTag("minecraft:axes")
-            sender.infoS("Axes: $axes")
+            sender.sendStringAsComponent("Axes: $axes")
 
             val specialItems = ItemTagManager.getItemsByTag("myplugin:special_items")
-            sender.infoS("Special items: $specialItems")
+            sender.sendStringAsComponent("Special items: $specialItems")
 
             // 检查物品是否有标签
             val hasTag = ItemTagManager.hasItemTag("minecraft:diamond_sword", "minecraft:axes")
-            sender.infoS("Diamond sword is an axe: $hasTag")
+            sender.sendStringAsComponent("Diamond sword is an axe: $hasTag")
         }
     }
     @CommandBody
     val getMappings = subCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = mappings.toString()
-            sender.infoS(message, false)
+            sender.sendStringAsComponent(message)
         }
     }
     @CommandBody
     val getItems = subCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = itemMap.toString()
-            sender.infoS(message, false)
+            sender.sendStringAsComponent(message)
         }
     }
     @CommandBody
     val getItemCaches = subCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = itemCache.toString()
-            sender.infoS(message, false)
+            sender.sendStringAsComponent(message)
         }
     }
 
@@ -108,17 +108,26 @@ object DebugCommand {
             execute<CommandSender> { sender, context, argument ->
                 val id = context["id"]
                 val message = itemMap[id].toString()
-                sender.infoS(message, false)
+                sender.sendStringAsComponent(message)
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
                 itemMap.keys.asList()
             }
         }
     }
+
+    @CommandBody
+    val getItemIDs = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val message = itemMap.keys.toString()
+            sender.sendStringAsComponent(message)
+        }
+
+    }
     @CommandBody
     val getConfig = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            sender.infoS(config.toString())
+            sender.sendStringAsComponent(config.toString())
         }
     }
     @CommandBody

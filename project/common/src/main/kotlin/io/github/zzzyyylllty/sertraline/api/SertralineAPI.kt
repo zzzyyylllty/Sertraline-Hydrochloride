@@ -23,6 +23,14 @@ public interface SertralineAPI {
         return Sertraline.itemMap[s]
     }
 
+
+    /**
+     * Get All items
+     * */
+    public fun getAllItems(): LinkedHashMap<String, ModernSItem> {
+        return Sertraline.itemMap
+    }
+
     /**
      * Build a item for player.
      * @param [sItem] - Sertraline ID

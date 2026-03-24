@@ -14,6 +14,7 @@ dependencyResolutionManagement {
 
 pluginManagement {
     repositories {
+        maven("https://repo.tabooproject.org/repository/releases")
         gradlePluginPortal()
         maven("https://repo.papermc.io/repository/maven-public/")
     }

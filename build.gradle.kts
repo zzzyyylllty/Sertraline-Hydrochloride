@@ -47,8 +47,13 @@ allprojects {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
+
+        maven("https://repo1.maven.org/maven2")
+        maven("https://jitpack.io")
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 
         // 阿里云镜像（优先级高）
         maven("https://maven.aliyun.com/repository/public")
@@ -80,7 +85,7 @@ allprojects {
 
     dependencies {
         // TabooLib 依赖
-        taboo("com.github.cryptomorin:XSeries:v13.6.0")
+        taboo("com.github.cryptomorin:XSeries:13.6.0")
         taboo("com.github.zzzyyylllty:EmbianComponent:1.0.4")
         taboo("cn.gtemc:itembridge:1.0.17")
         taboo("ink.ptms:um:1.2.1")

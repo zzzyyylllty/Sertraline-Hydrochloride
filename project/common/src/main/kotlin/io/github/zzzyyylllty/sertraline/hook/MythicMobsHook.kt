@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.event.SertralineCustomScriptDataLoadEvent
 import io.github.zzzyyylllty.sertraline.function.data.getSertralineId
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import org.bukkit.inventory.ItemStack
@@ -20,7 +21,7 @@ import taboolib.module.nms.getItemTag
 fun mmDataHook(e: SertralineCustomScriptDataLoadEvent) {
     if (Mythic.isLoaded()) {
         val api = Mythic.API
-        infoS("Hooking onto mythicmobs")
+        infoSSync("Hooking onto mythicmobs")
         e.defaultData["UMAPI"] = api
     }
 }

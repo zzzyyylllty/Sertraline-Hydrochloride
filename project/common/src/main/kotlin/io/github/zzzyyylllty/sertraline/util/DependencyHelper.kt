@@ -57,7 +57,6 @@ object DependencyHelper {
 @Ghost
 @SubscribeEvent
 fun onDropLoad(event: MobDropLoadEvent) {
-    // 注册自定义掉落
 
     devLog("[MMCompat] dropName: ${event.dropName}")
     if (!event.dropName.contains("sertraline")) return

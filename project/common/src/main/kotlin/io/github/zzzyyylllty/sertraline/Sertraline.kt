@@ -178,7 +178,7 @@ object Sertraline : Plugin() {
     val dataSource by lazy { host.createDataSource() }
     var fluxonInst: FluxonRuntime? = null
 
-    var itemMap = LinkedHashMap<String, ModernSItem>()
+    var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>() 
     var loreFormats = LinkedHashMap<String, LoreFormat>() 
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
