@@ -166,7 +166,7 @@ class RuntimeEnv
 object Sertraline : Plugin() {
 
 
-    @Config("config.yml")
+    @Config("config.yml", migrate = true)
     lateinit var config: Configuration
 
     val _api: SertralineAPI? by lazy { SertralineAPIImpl() }

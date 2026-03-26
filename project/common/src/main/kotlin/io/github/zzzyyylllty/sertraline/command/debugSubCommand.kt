@@ -29,14 +29,18 @@ import taboolib.common.platform.command.bool
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
 import taboolib.expansion.setupDataContainer
+import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Type
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.isAir
+import java.io.File
 
 @CommandHeader(
     name = "sertralinedebug",
@@ -135,6 +139,23 @@ object DebugCommand {
         execute<CommandSender> { sender, context, argument ->
             val p = sender as Player
             p.giveItem(sertralineItemBuilder("depaz_pills",p))
+        }
+    }
+    @CommandBody
+    val generateItemNameFile = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val nameConf = Configuration.empty(Type.YAML)
+            itemMap.forEach {
+                val name = it.value.getDeepData("xbuilder:name")
+                    ?: it.value.getDeepData("minecraft:item_name")
+                    ?: it.value.getDeepData("minecraft:custom_name")
+                    ?: it.value.getDeepData("visual:item_name")
+                    ?: it.value.getDeepData("visual:custom_name")
+                    ?: "No name provided."
+                nameConf[it.key] = name
+            }
+            nameConf.saveToFile(File(getDataFolder(), "itemoutputnames.yml"))
+            sender.sendMessage("saved all item names to itemoutputnames.yml")
         }
     }
     @CommandBody

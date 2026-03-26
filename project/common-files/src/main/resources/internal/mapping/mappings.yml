@@ -35,11 +35,11 @@ xbuilder:material:
 xbuilder:item-model:
   - xbuilder:item-model
   - xbuilder:model
-#xbuilder:custom-model-data:
-#  - xbuilder:custom-model-data
-#  - xbuilder:custommodeldata
-#  - xbuilder:modeldata
-#  - xbuilder:cmd
+xbuilder:custom-model-data:
+  - xbuilder:custom-model-data
+  - xbuilder:custommodeldata
+  - xbuilder:modeldata
+  - xbuilder:cmd
 visual:material:
   - visual:material
 minecraft:material:
