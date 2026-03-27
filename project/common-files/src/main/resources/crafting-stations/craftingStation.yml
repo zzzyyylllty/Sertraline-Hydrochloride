@@ -3,7 +3,7 @@ counter_sword_maker:
     # For onDone agents.
     enable-tracker: true
   display:
-    title: "Sample+- Station"
+    title: "Sample Station"
 
     # GUI Layout
     layout:
@@ -18,39 +18,37 @@ counter_sword_maker:
         char: '#'
         material: GRAY_STAINED_GLASS_PANE
         name: "<dark_gray>background"
-        lore: |
+        lore: |-
           <dark_gray>Nothing to see here :)
       next_page: # next page not support char, must set a slot.
         slot: 50
         roll: true # cycle toggle page
         material: ARROW
         name: "<green>Next Page {next_page}%"
-        lore: |
+        lore: |-
           toggle to page {next_page}
-        onclick:
-          LEFT:
-            ke: |
-               minitell inline "<green>Toggled to page {{ &previous_page }}"
+        agents:
+          onLeft: |-
+            player.sendMessage("toggled")
       previous_page: # previous page not support char, must set a slot.
         slot: 48
         roll: true # cycle toggle page
         material: ARROW
         name: "<green>Previous Page {previous_page}"
-        lore: |
+        lore: |-
           toggle to page {previous_page}
-        onclick:
-          LEFT:
-            ke: |
-               minitell inline "<green>Toggled to page {{ &previous_page }}"
+        agents:
+          onLeft: |-
+            player.sendMessage("toggled")
     key: 'I'
   recipes:
     test_recipe:
 
       # Displayed name in gui
-      display-name: "Dawn of Evenstar's card" # OR ["Paper", "Papers"] for plural.
+      displayName: "Dawn of Evenstar's card" # OR ["Paper", "Papers"] for plural.
 
       # Displayed time in gui. null for auto use time.
-      display-time: "1~10s"
+      displayTime: "1~10s"
 
       time: "{{ random 1 to 10 }}"
 
@@ -62,15 +60,12 @@ counter_sword_maker:
           type: Scaled
           amount: "%player_health%"
           required: "20"
-          condition:
-            ke: check papi "%player_health%" >= 20
+          condition: PlayerUtil.parsePlaceholders(player, "%player_health%") >= 20
           agents:
-            onSuccess:
-              ke: |
-                minitell "Your health is greater than 20, good job!"
-            onFail:
-              ke: |
-                minitell "Your health is not greater than 20!"
+            onSuccess: |-
+              player.sendMessage("Your health is < 20")
+            onFail: |-
+              player.sendMessage("Your health is < 20")
 
       # If not define any message here, use default message in config.
       messages:
@@ -78,44 +73,26 @@ counter_sword_maker:
 
       # Displayed item in GUI. If leave a blank, use output list's first item.
       display:
-        # Pre-Build item.
-        # If your item is from player-required item source, or you used placeholder in your item,
-        # disable preload. (disabled by default)
-        preload: true
         # Display item source. If leave a blank, use output list's first item.
-        item: grass_block # or other like craftengine::default:topaz. (plugin::item)
+        item: grass_block # or other like craftengine:default:topaz. (plugin:item)
         parameters:
           name: "Doe Card"
       inputs:
-        # Support ChoTen Item Formula.
-        # Like:
-        # ~paper[nbt.MMOITEMS_ITEM_ID=RARE_DIAMOND] - Add ~ to use vanilla item
-        # doe_card
-        # doe_card[nbt.MMOITEMS_ITEM_ID=RARE_DIAMOND]
-        - item: "paper"
+        # Support jhqwqmc's ItemBridge Item Formula.
+        # Like: craftengine:default:topaz
+        - item: "minecraft:paper"
 
           # Displayed name in gui
-          display-name: "Paper" # OR ["Paper", "Papers"] for plural.
+          displayName: "Paper" # OR ["Paper", "Papers"] for plural.
       outputs:
-        - item: "sertraline::doe_card"
+        - item: "sertraline:doe_card"
           # parameters:
           # name: "Override name"
       agents:
         # On started to make a recipe
-        onStart:
-          ke: |
-            minitell inline "<green>Started to make {{ &recipe_name }}"
-        # If recipe is done.
-        # Regardless of whether the GUI is opened or not, it will be triggered after the production is completed.
-        # Very suitable for reminding players that the recipe has been completed when they are busy with other things.
-        # Note: The enable tracker option must be enabled within this Crafting Stations.
-        onDone:
-          ke: |
-            minitell inline "<green>{{ &recipe_name }} is done."
-        # Cancel a recipe.
-        onCancel:
-          ke: |
-            minitell inline "<red>{{ &recipe_name }} is cancelled."
-        onClaim:
-          ke: |
-            minitell inline "<red>{{ &recipe_name }} is claimed."
+        onStart: |-
+          player.sendMessage("Starting to make" + recipe.name)
+        onCancel: |-
+          player.sendMessage("making" + recipe.name + "is cancelled.")
+        onClaim: |-
+          player.sendMessage("making" + recipe.name + "is ended!")

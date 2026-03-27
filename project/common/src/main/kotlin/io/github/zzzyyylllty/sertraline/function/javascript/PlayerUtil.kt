@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
+import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.Title.Times.times
@@ -47,6 +48,10 @@ object PlayerUtil {
                 )
             )
         }
+    }
+
+    fun parsePlaceholders(player: Player, string: String): String {
+        return PlaceholderAPI.setPlaceholders(player, string)
     }
 
     fun removePotionEffect(player: Player, type: String) {

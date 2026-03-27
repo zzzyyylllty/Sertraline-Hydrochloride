@@ -18,6 +18,7 @@ import io.github.zzzyyylllty.sertraline.function.javascript.ThreadUtil
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
+import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
@@ -55,6 +56,7 @@ fun registerExternalData() {
             "EventUtil" to EventUtil,
             "ThreadUtil" to ThreadUtil,
             "PlayerUtil" to PlayerUtil,
+            "ItemBridge" to ExternalItemHelper,
             "SertralineAPI" to _api,
             "DataUtil" to DataUtil,
             "Math" to Math::class.java,
