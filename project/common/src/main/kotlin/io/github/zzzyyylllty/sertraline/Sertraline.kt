@@ -3,9 +3,11 @@ package io.github.zzzyyylllty.sertraline
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.api.SertralineAPIImpl
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
+import io.github.zzzyyylllty.sertraline.config.loadCraftingStationFiles
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
+import io.github.zzzyyylllty.sertraline.data.CraftingStation
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -180,7 +182,8 @@ object Sertraline : Plugin() {
 
     var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>() 
-    var loreFormats = LinkedHashMap<String, LoreFormat>() 
+    var loreFormats = LinkedHashMap<String, LoreFormat>()
+    var craftingStations = LinkedHashMap<String, CraftingStation>() 
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
@@ -233,6 +236,7 @@ object Sertraline : Plugin() {
             itemMap.clear()
             mappings.clear()
             loreFormats.clear()
+            craftingStations.clear()
 
             ketherScriptCache.clear()
             jsScriptCache.clear()
@@ -248,6 +252,7 @@ object Sertraline : Plugin() {
             loadMappingFiles()
             loadItemFiles()
             loadLoreFormatFiles()
+            loadCraftingStationFiles()
 
             SertralineReloadEvent().call()
         }

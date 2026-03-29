@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.command
 import io.github.zzzyyylllty.embiancomponent.EmbianComponent.SafetyComponentSetter
 import io.github.zzzyyylllty.embiancomponent.tools.getComponentsNMSFiltered
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.Sertraline.craftingStations
 import io.github.zzzyyylllty.sertraline.Sertraline.itemCache
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
@@ -124,6 +125,15 @@ object DebugCommand {
     val getItemIDs = subCommand {
         execute<CommandSender> { sender, context, argument ->
             val message = itemMap.keys.toString()
+            sender.sendStringAsComponent(message)
+        }
+
+    }
+
+    @CommandBody
+    val getStations = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val message = craftingStations.toString()
             sender.sendStringAsComponent(message)
         }
 
