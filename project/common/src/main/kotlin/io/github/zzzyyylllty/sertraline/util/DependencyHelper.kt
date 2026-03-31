@@ -73,7 +73,7 @@ fun onDropLoad(event: MobDropLoadEvent) {
 }
 
 private fun extractItemId(line: String): String? {
-    if (line.startsWith("sertraline ")) {
+    if (line.startsWith("sertraline_")) {
         val nextSpaceIndex = line.indexOf(' ', 11)
         return if (nextSpaceIndex == -1)
             line.substring(11)
