@@ -274,12 +274,12 @@ object Sertraline : Plugin() {
 
     @SubscribeEvent
     fun lang(event: PlayerSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
+        event.locale = config.getString("lang", "en_US")!!
     }
 
     @SubscribeEvent
     fun lang(event: SystemSelectLocaleEvent) {
-        event.locale = config.getString("lang", "zh_CN")!!
+        event.locale = config.getString("lang", "en_US")!!
     }
 
 
