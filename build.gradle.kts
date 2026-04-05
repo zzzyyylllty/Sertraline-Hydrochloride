@@ -110,7 +110,7 @@ allprojects {
         compileOnly(rootProject.libs.caffeine)
         compileOnly(rootProject.libs.gson)
         compileOnly(rootProject.libs.bundles.graalvm)
-        taboo(rootProject.libs.bundles.jackson)
+        compileOnly(rootProject.libs.bundles.jackson)
         taboo("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // 本地依赖

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.data
 
 import com.google.gson.Gson
 import ink.ptms.um.Mythic
+import io.github.zzzyyylllty.sertraline.Sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline._api
 import io.github.zzzyyylllty.sertraline.Sertraline.api
 import io.github.zzzyyylllty.sertraline.Sertraline.jexlScriptCache
@@ -56,7 +57,7 @@ fun registerExternalData() {
             "EventUtil" to EventUtil,
             "ThreadUtil" to ThreadUtil,
             "PlayerUtil" to PlayerUtil,
-            "ItemBridge" to ExternalItemHelper,
+            "ExternalItemHelper" to ExternalItemHelper,
             "SertralineAPI" to _api,
             "DataUtil" to DataUtil,
             "Math" to Math::class.java,
@@ -64,7 +65,8 @@ fun registerExternalData() {
             "Bukkit" to Bukkit::class.java,
             "Gson" to Gson::class.java,
             "bukkitPlugin" to bukkitPlugin,
-            "scheduler" to Bukkit.getScheduler()
+            "scheduler" to Bukkit.getScheduler(),
+            "SertralineObj" to Sertraline
         ))
     val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()

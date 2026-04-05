@@ -25,4 +25,18 @@ object ExternalItemHelper {
             .detectSupportedPlugins()
 //            .removeById("sertraline")
             .build()
+    fun build(player: Player, plugin: String, name: String): ItemStack? {
+        return try {
+            itemBridgeAll?.build(plugin, player, name)?.get()
+        } catch (e: NoSuchElementException) {
+            null
+        }
+    }
+    fun buildNoPlayer(plugin: String, name: String): ItemStack? {
+        return try {
+            itemBridgeAll?.build(plugin, name)?.get()
+        } catch (e: NoSuchElementException) {
+            null
+        }
+    }
 }

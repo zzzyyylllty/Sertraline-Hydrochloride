@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.config
 
+import io.github.zzzyyylllty.sertraline.Sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -19,7 +20,7 @@ import taboolib.module.configuration.Type
 import java.io.File
 
 
-fun loadItemFiles() {
+fun loadItemFiles(incremental: Boolean = config.getBoolean("incremental-loading.enable", false)) {
     infoL("Item_Load")
 
     if (!File(getDataFolder(), "workspace").exists()) {
@@ -27,23 +28,55 @@ fun loadItemFiles() {
         releaseResourceFolder("workspace/default")
     }
 
-    val files = File(getDataFolder(), "workspace").listFiles()
-    if (files == null) {
+    val workspaceDir = File(getDataFolder(), "workspace")
+
+    if (incremental) {
+        loadItemFilesIncremental(workspaceDir)
+    } else {
+        loadItemFilesFull(workspaceDir)
+    }
+
+    infoL("Item_Load_Complete", itemMap.size)
+}
+
+private fun loadItemFilesFull(workspaceDir: File) {
+    if (!workspaceDir.exists()) {
         severeL("Item_Load_Not_Found")
         return
     }
 
+    workspaceDir.walk()
+        .filter { it.isFile }
+        .forEach { file ->
+            loadItemFile(file)
+        }
+}
+
+private fun loadItemFilesIncremental(workspaceDir: File) {
+    val filePattern = config["file-load.item"]?.toString() ?: ".*"
+    val files = workspaceDir.walk()
+        .filter { it.isFile && checkRegexMatch(it.name, filePattern) }
+        .toList()
+
+    var loadedCount = 0
+    var skippedCount = 0
+
     for (file in files) {
-        if (file.isDirectory) {
-            file.listFiles()?.forEach {
-                loadItemFile(it)
+        val lastModified = Sertraline.fileLastModified[file.absolutePath]
+        val currentModified = file.lastModified()
+
+        // 只加载新文件或修改过的文件
+        if (lastModified == null || lastModified < currentModified) {
+            if (loadItemFile(file)) {
+                Sertraline.fileLastModified[file.absolutePath] = currentModified
+                loadedCount++
             }
         } else {
-            loadItemFile(file)
+            skippedCount++
         }
     }
 
-    infoL("Item_Load_Complete", itemMap.size)
+    infoL("Item_Load_Incremental_Stats", loadedCount, skippedCount, files.size)
 }
 
 fun loadItemFile(file: File): Boolean {

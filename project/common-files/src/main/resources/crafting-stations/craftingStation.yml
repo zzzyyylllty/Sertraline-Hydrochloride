@@ -13,6 +13,7 @@ counter_sword_maker:
       - "#IIIIIII#"
       - "#IIIIIII#"
       - "##<###>##"
+    key: 'I'
     elements:
       background:
         char: '#'
@@ -24,7 +25,7 @@ counter_sword_maker:
         slot: 50
         roll: true # cycle toggle page
         material: ARROW
-        name: "<green>Next Page {next_page}%"
+        name: "<green>Next Page {next_page}"
         lore: |-
           toggle to page {next_page}
         agents:
@@ -40,16 +41,11 @@ counter_sword_maker:
         agents:
           onLeft: |-
             player.sendMessage("toggled")
-    key: 'I'
   recipes:
     test_recipe:
 
-      # Displayed name in gui
-      displayName: "Dawn of Evenstar's card" # OR ["Paper", "Papers"] for plural.
-
-      # Displayed time in gui. null for auto use time.
-      displayTime: "1~10s"
-
+      displayName: "Dawn of Evenstar's card" # Displayed name in gui OR ["Paper", "Papers"] for plural.
+      displayTime: "1~10s" # Displayed time in gui. null for auto use time.
       time: "{{ random 1 to 10 }}"
 
       options:
@@ -67,19 +63,17 @@ counter_sword_maker:
             onFail: |-
               player.sendMessage("Your health is < 20")
 
-      # If not define any message here, use default message in config.
-      messages:
+      messages: # If not define any message here, use default message in config.
         ConditionNotMetScaled: "Condition not met: {condition_name} - {condition_amount}/{condition_required}"
 
-      # Displayed item in GUI. If leave a blank, use output list's first item.
-      display:
+      display: # Displayed item in GUI. If leave a blank, use output list's first item.
         # Display item source. If leave a blank, use output list's first item.
         item: grass_block # or other like craftengine:default:topaz. (plugin:item)
         parameters:
           name: "Doe Card"
+
       inputs:
-        # Support jhqwqmc's ItemBridge Item Formula.
-        # Like: craftengine:default:topaz
+        # Support jhqwqmc's ItemBridge Item Formula Like: craftengine:default:topaz
         - item: "minecraft:paper"
 
           # Displayed name in gui
@@ -89,10 +83,13 @@ counter_sword_maker:
           # parameters:
           # name: "Override name"
       agents:
-        # On started to make a recipe
-        onStart: |-
-          player.sendMessage("Starting to make" + recipe.name)
-        onCancel: |-
-          player.sendMessage("making" + recipe.name + "is cancelled.")
-        onClaim: |-
-          player.sendMessage("making" + recipe.name + "is ended!")
+        # onStart: |-
+        # onCancel: |-
+        # onClaim: |-
+  agents:
+    onStart: |-
+      player.sendMessage("Starting to make" + recipe.name)
+    onCancel: |-
+      player.sendMessage("making" + recipe.name + "is cancelled.")
+    onClaim: |-
+      player.sendMessage("making" + recipe.name + "is ended!")

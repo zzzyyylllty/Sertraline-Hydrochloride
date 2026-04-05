@@ -144,6 +144,18 @@ database:
   table: sertraline_data
 
 performance:
+  # 增量加载配置，只加载修改过的文件
+  # Incremental loading, only load modified files
+  incremental-loading:
+    enable: true
+    # 监控的文件类型
+    # File types to monitor
+    monitor:
+      - item
+      - mapping
+      - lore-format
+      - crafting-station
+
   adventure:
     # 使用将列表替换为带分割符号的单行文本以节省性能开销
     # 这可能带来兼容性问题，谨慎使用

@@ -74,14 +74,33 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
 }
 
 /**
+ * 生成带var数据的指定物品。
+ *
+ * @param template SertralineID
+ * @param player 玩家
+ * @param source 物品源，留空则不覆盖
+ * @param amount 数量
+ * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
+ * @param vars 自带物品数据变量
+ * */
+fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, vars: Map<String, Any?>? = null): ItemStack? {
+    return sertralineItemBuilderInternal(template, player, source, amount, overrideData,vars = vars)?.rebuildBypassKeepData(player)
+}
+
+/**
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
-fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
+fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null): ItemStack? {
     val pTemplate = itemMap[template] ?: return null
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
         }
+    }
+    vars?.let {
+        val ovars = pTemplate.getDeepData("sertraline:vars") as? MutableMap<String, Any?>? ?: run { return@let }
+        ovars.putAll(it)
+        pTemplate.setDeepData("sertraline:vars", ovars)
     }
     val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
     val itemSource = source ?: itemSource((template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material")).toString(), player)

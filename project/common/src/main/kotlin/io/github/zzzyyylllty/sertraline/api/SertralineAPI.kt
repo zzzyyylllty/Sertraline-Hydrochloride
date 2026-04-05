@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.rebuildName
 import io.github.zzzyyylllty.sertraline.item.rebuildUnsafe
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
+import io.github.zzzyyylllty.sertraline.item.sertralineVarItemBuilder
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -27,7 +28,7 @@ public interface SertralineAPI {
     /**
      * Get All items
      * */
-    public fun getAllItems(): LinkedHashMap<String, ModernSItem> {
+    public fun getAllItems(): Map<String, ModernSItem> {
         return Sertraline.itemMap
     }
 
@@ -43,6 +44,19 @@ public interface SertralineAPI {
         return sertralineItemBuilder(sItem, player, source, amount, overrideData)
     }
 
+
+    /**
+     * Build a item for player with vars.
+     * @param [sItem] - Sertraline ID
+     * @param [player] - Player
+     * @param [source] - Item Build Source. null for auto.
+     * @param [amount] - Item amount.
+     * @param [overrideData] - Override SItem Data.
+     * */
+    public fun buildDataItem(sItem: String, player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null,vars: Map<String, Any?>? = null): ItemStack? {
+        return sertralineVarItemBuilder(sItem, player, source, amount, overrideData, vars)
+    }
+
     /**
      * Get Sertraline ID, null = not exist
      * */
@@ -53,7 +67,7 @@ public interface SertralineAPI {
     /**
      * Is this item is Sertraline Item?
      * */
-    public fun isVaildItem(itemStack: ItemStack): Boolean {
+    public fun isValidItem(itemStack: ItemStack): Boolean {
         return itemStack.getSertralineId() != null
     }
 
@@ -104,7 +118,7 @@ public interface SertralineAPI {
      * Re-Generate whole for an Sertraline ItemStack and write to original Item by **itemMeta**.
      * Will change input item.
      *
-     * This is Unsafe method because it will lose 3 of 76 DataComponent in 1.21.4.
+     * This is Unsafe method because it will lose DataComponent. 3 of 76 DataComponent in 1.21.4.
      * */
     fun rebuildUnsafe(itemStack: ItemStack,player: Player?) {
         itemStack.rebuildUnsafe(player)

@@ -22,10 +22,14 @@ import io.github.zzzyyylllty.sertraline.logger.infoLSync
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.severeSSync
+import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.Cache
+import java.util.concurrent.TimeUnit
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import taboolib.common.LifeCycle
 import taboolib.common.PrimitiveSettings
@@ -49,6 +53,7 @@ import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
 import java.io.File
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.ConcurrentHashMap
 import javax.script.CompiledScript
 
 //@RuntimeDependencies(
@@ -180,21 +185,22 @@ object Sertraline : Plugin() {
     val dataSource by lazy { host.createDataSource() }
     var fluxonInst: FluxonRuntime? = null
 
-    var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
-    var mappings = LinkedHashMap<String, List<String>?>() 
-    var loreFormats = LinkedHashMap<String, LoreFormat>()
-    var craftingStations = LinkedHashMap<String, CraftingStation>() 
+    var itemMap: ConcurrentHashMap<String, ModernSItem> = ConcurrentHashMap<String, ModernSItem>()
+    var mappings = ConcurrentHashMap<String, List<String>?>()
+    var loreFormats = ConcurrentHashMap<String, LoreFormat>()
+    var craftingStations = ConcurrentHashMap<String, CraftingStation>()
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
     var devMode = true
     var allowAsyncLog = true
     var isEnabled = false
-    val ketherScriptCache by lazy { LinkedHashMap<String, KetherShell.Cache?>() }
-    val jsScriptCache by lazy { LinkedHashMap<String, CompiledScript?>() }
-    val gjsScriptCache by lazy { LinkedHashMap<String, Source?>() }
-    val jexlScriptCache by lazy { LinkedHashMap<String, JexlCompiledScript?>() }
-    val itemCache by lazy { LinkedHashMap<String, Map<String, Any?>?>() }
+    val fileLastModified: MutableMap<String, Long> = mutableMapOf()
+    val ketherScriptCache: HashMap<String, KetherShell.Cache?> = hashMapOf()
+    val jsScriptCache: HashMap<String, CompiledScript?> = hashMapOf()
+    val gjsScriptCache: HashMap<String, Source?> = hashMapOf()
+    val jexlScriptCache: HashMap<String, JexlCompiledScript?> = hashMapOf()
+    val itemCache: HashMap<String, Map<String, Any?>?> = hashMapOf()
 
     fun api() : SertralineAPI {
         return _api ?: throw IllegalStateException("Sertraline API not present,or failed to load")
@@ -237,12 +243,6 @@ object Sertraline : Plugin() {
             mappings.clear()
             loreFormats.clear()
             craftingStations.clear()
-
-            ketherScriptCache.clear()
-            jsScriptCache.clear()
-            jexlScriptCache.clear()
-            gjsScriptCache.clear()
-            itemCache.clear()
 
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()
@@ -310,6 +310,5 @@ object Sertraline : Plugin() {
             }
         }
     }
-
 
 }

@@ -5,9 +5,6 @@
       "com.github.benmanes.caffeine",
       "io.github.zzzyyylllty.sertraline.dep.caffeine"
     ],
-    "test": [
-      "com.github.benmanes.caffeine.cache.Caffeine"
-    ],
     "transitive": true,
     "ignoreOptional": false,
     "ignoreException": false,

@@ -41,6 +41,12 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 </div>
 
+## AI Questions
+
+This project is used Claude and Deepseek for performance optimization.
+
+But the basic part is 100% humanmade!
+
 ## Donate!
 
 Click here to donate via [Afdian](https://afdian.com/a/liminalskyline).

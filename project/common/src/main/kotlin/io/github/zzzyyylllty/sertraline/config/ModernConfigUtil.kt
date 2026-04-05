@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
 import io.github.zzzyyylllty.sertraline.util.serialize.isListOfType
 import taboolib.module.lang.asLangText
+import java.util.concurrent.ConcurrentHashMap
 
 object ConfigUtil {
     fun getString(input: Any?): String? {
@@ -96,6 +97,9 @@ fun getFeatureDefault(input: Map<*, *>?, feature: String): Any? {
     return null
 }
 
+private val regexCache = ConcurrentHashMap<String, Regex>()
+
 fun checkRegexMatch(input: String, regex: String): Boolean {
-    return input.matches(regex.toRegex())
+    val compiledRegex = regexCache.computeIfAbsent(regex) { it.toRegex() }
+    return input.matches(compiledRegex)
 }
