@@ -185,10 +185,10 @@ object Sertraline : Plugin() {
     val dataSource by lazy { host.createDataSource() }
     var fluxonInst: FluxonRuntime? = null
 
-    var itemMap: ConcurrentHashMap<String, ModernSItem> = ConcurrentHashMap<String, ModernSItem>()
-    var mappings = ConcurrentHashMap<String, List<String>?>()
-    var loreFormats = ConcurrentHashMap<String, LoreFormat>()
-    var craftingStations = ConcurrentHashMap<String, CraftingStation>()
+    var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
+    var mappings = LinkedHashMap<String, List<String>?>()
+    var loreFormats = LinkedHashMap<String, LoreFormat>()
+    var craftingStations = LinkedHashMap<String, CraftingStation>()
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }

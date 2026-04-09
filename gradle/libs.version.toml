@@ -1,6 +1,6 @@
 
 [versions]
-taboolib = "6.2.4-e7fd043"
+taboolib = "6.3.0-0e96352"
 #taboolib = "6.2.4-local-dev"
 taboolibPlugin = "2.0.31"
 kotlin = "2.2.0"
