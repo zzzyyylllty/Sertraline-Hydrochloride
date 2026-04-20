@@ -27,10 +27,10 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         configMap.let { it[entry.key] = entry.value }
     }
 
-    val xDeserialized = configMap.let { XItemStack.Deserializer().fromMap(it).read() }
+    val xDeserialized = configMap.let { XItemStack.deserializer().fromConfig(it) }
 
     // 从反序列化结果拿到ItemMeta
-    val deserializedMeta = xDeserialized.itemMeta
+    val deserializedMeta = xDeserialized.deserialize().itemMeta
 
     // 合并反序列化meta的书名与附加属性
     val originalMeta = item.itemMeta
@@ -42,7 +42,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         val get = sItem.getDeepData("$prefix:lore")
         val list = get.asListEnhanced() ?: return@run null
         val retList : MutableList<Component> = mutableListOf()
-        list.asListEnhanced()?.forEach { it.performPlaceholders(sItem, player)?.toComponent()?.let { element -> retList.add(element) } }
+        list.asListEnhanced()?.performPlaceholders(sItem, player)?.forEach { it.toComponent()?.let { element -> retList.add(element) } }
         retList
     }
 

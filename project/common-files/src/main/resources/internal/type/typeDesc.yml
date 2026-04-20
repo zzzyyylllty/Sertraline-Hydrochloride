@@ -298,6 +298,8 @@ BLOCK:
   provider: BLOCK
 TIER:
   provider: TIER
+TYPE:
+  provider: TYPE
 SOUND:
   provider: SOUND
 RECIPE:

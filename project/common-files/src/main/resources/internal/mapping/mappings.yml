@@ -6,7 +6,10 @@
 # If server reboot this file will regenerate
 # If you want to add mappings, please create more files in this directory to add
 # If there are multiple identical key names, they will be automatically merged
-
+sertraline:type:
+  - sertraline:type
+sertraline:level:
+  - sertraline:level
 sertraline:no-sertraline-id:
   - sertraline:no-sertraline-id
 sertraline:tier:

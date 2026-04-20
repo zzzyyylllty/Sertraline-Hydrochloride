@@ -112,7 +112,7 @@ attribute:
   #
   # // after 250 ms
   # // updateAttribute execute.
-  debounce-time: 0
+  debounce-time: 1000
 action:
 
   # 默认节流时间

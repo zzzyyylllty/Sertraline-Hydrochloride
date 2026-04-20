@@ -15,6 +15,27 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
     val dataMap = (sItem.getDeepData("sertraline:vars") as Map<String, Any?>?)?.toMutableMap()
     val tag = item.getItemTag(true)
     tag["sertraline_data"] = dataMap
+
+    // 写入类型到NBT
+    val typeData = sItem.getDeepData("sertraline:type")
+    if (typeData != null) {
+        val typeId = when (typeData) {
+            is io.github.zzzyyylllty.sertraline.data.Type -> typeData.id
+            else -> typeData.toString()
+        }
+        tag["sertraline_type"] = typeId
+    }
+
+    // 写入品质到NBT
+    val tierData = sItem.getDeepData("sertraline:tier")
+    if (tierData != null) {
+        val tierId = when (tierData) {
+            is io.github.zzzyyylllty.sertraline.data.Tier -> tierData.id
+            else -> tierData.toString()
+        }
+        tag["sertraline_tier"] = tierId
+    }
+
     val item = item.setItemTag(tag, true)
 
     // lore format

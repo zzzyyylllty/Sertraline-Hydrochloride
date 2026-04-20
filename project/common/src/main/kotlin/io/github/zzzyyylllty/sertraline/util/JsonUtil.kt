@@ -23,6 +23,7 @@ val jsonUtils: Gson by lazy {
         .disableInnerClassSerialization()
         // .setPrettyPrinting()
         .excludeFieldsWithModifiers()
+        .serializeNulls()
         .setLenient()
 
     val tempGson = builder.create()

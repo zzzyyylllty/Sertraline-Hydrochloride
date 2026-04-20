@@ -79,7 +79,7 @@ data class OmniItem(
             parameters["lore"].asListEnhanced()?.toComponent()?.let { itemStack.lore(it) }
 
         }
-        if (components != null && components.isNotEmpty()) {
+        if (!components.isNullOrEmpty()) {
             if (VersionHelper().isOrAbove12005()) {
                 var nmsStack = asNMSCopy(itemStack)
                 components.forEach {

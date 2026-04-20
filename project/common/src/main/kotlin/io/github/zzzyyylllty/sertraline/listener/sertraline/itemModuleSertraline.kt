@@ -17,6 +17,8 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
 
     val features = listOf(
         "$prefix:tier",
+        "$prefix:type",
+        "$prefix:level",
         "$prefix:lore-format",
         "$prefix:vals",
         "$prefix:vars",

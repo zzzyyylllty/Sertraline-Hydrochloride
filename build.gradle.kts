@@ -81,13 +81,17 @@ allprojects {
             url = uri("https://nexus.maplex.top/repository/maven-public/")
             isAllowInsecureProtocol = true
         }
+        maven("https://repo.skriptlang.org/releases")
+        maven("https://repo.destroystokyo.com/repository/maven-public/")
     }
 
     dependencies {
         // TabooLib 依赖
-        taboo("com.github.cryptomorin:XSeries:13.6.0")
-        taboo("com.github.zzzyyylllty:EmbianComponent:1.0.4")
+        // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")
+        taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
+        taboo("com.github.zzzyyylllty:EmbianComponent:1.0.5")
         taboo("cn.gtemc:itembridge:1.0.17")
+
         taboo("ink.ptms:um:1.2.1")
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
@@ -101,6 +105,7 @@ allprojects {
         compileOnly("ink.ptms.chemdah:api:1.1.17")
         compileOnly("ink.ptms:nms-all:1.0.0")
         compileOnly("com.willfp:eco:6.77.2")
+        compileOnly("com.github.SkriptLang:Skript:2.14.3")
         compileOnly(rootProject.libs.mythiclibdist)
         compileOnly(rootProject.libs.placeholderapi)
         compileOnly(rootProject.libs.packeteventsspigot)
@@ -112,6 +117,7 @@ allprojects {
         compileOnly(rootProject.libs.bundles.graalvm)
         compileOnly(rootProject.libs.bundles.jackson)
         taboo("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+        compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
         // 本地依赖
         compileOnly(fileTree("libs"))
@@ -182,7 +188,8 @@ project(":project:common-files") {
                 "caffeineVersion" to rootProject.libs.versions.caffeine.get(),
                 "fluxonVersion" to rootProject.libs.versions.fluxon.get(),
                 "datafixerupperVersion" to rootProject.libs.versions.datafixerupper.get(),
-                "uniItemVersion" to rootProject.libs.versions.uniItem.get(),
+                "asmVersion" to rootProject.libs.versions.asm.get(),
+//                "uniItemVersion" to rootProject.libs.versions.uniItem.get(),
                 "adventureVersion" to rootProject.libs.versions.adventure.get(),
                 "jacksonVersion" to rootProject.libs.versions.jackson.get(),
                 "arimVersion" to rootProject.libs.versions.arim.get()

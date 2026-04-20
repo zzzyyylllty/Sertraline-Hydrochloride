@@ -26,5 +26,5 @@ fun itemModuleSave(e: ItemLoadEvent) {
         config = e.arguments as LinkedHashMap<*,*> as LinkedHashMap<String, Any?>
     )
     itemDebugger(e, sItem)
-    itemMap[e.itemKey] = sItem
+    e.itemKey?.let { itemMap[it] = sItem }
 }

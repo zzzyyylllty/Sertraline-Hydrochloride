@@ -18,7 +18,7 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
         val get = input?.get(location) ?: return null
         val list = get as? List<*> ?: listOf(get.toString())
         val retList : MutableList<Component> = mutableListOf()
-        list.asListEnhanced()?.forEach { retList.add(it.toString().performPlaceholders(sItem, player)!!.toComponent()) }
+        list.asListEnhanced()?.performPlaceholders(sItem, player)?.forEach { retList.add(it.toComponent()) }
         return retList
     }
     fun getInt(location: String): Int? {

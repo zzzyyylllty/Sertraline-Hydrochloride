@@ -1,6 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.javascript
 
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
+import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.logger.severeS
@@ -18,6 +20,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.submit
+import taboolib.module.kether.KetherShell
 import taboolib.module.nms.ItemTag
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
@@ -52,6 +55,14 @@ object PlayerUtil {
 
     fun parsePlaceholders(player: Player, string: String): String {
         return PlaceholderAPI.setPlaceholders(player, string)
+    }
+
+    fun parseKether(player: Player, string: String, vars: Map<String, Any?>): Any? {
+        return string.evalKetherValue(player, vars)
+    }
+
+    fun parseKetherList(player: Player, string: List<String>, vars: Map<String, Any?>): Any? {
+        return string.evalKether(player, vars).get()
     }
 
     fun removePotionEffect(player: Player, type: String) {

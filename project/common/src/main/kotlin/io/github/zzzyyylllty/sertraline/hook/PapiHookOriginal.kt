@@ -21,6 +21,8 @@ import taboolib.common.util.random
 import taboolib.common5.compileJS
 import taboolib.expansion.getDataContainer
 import taboolib.platform.BukkitPlugin
+import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.script.SimpleBindings
 import kotlin.Boolean
 import kotlin.collections.set
@@ -132,16 +134,40 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
         } else if (params.startsWith("config:")) {
             return config[params.removePrefix("config:")].defaultValue(def)
 
+
         } else if (params.startsWith("random:") || params.startsWith("rand:")) {
             val param = params.removePrefix("random:").removePrefix("rand:")
-            val split = param.split("to")
-            return run {
-                if (split.defaultValue(def).contains(".")) random(split[0].toDouble(), split[1].toDouble()) else random(
-                    split[0].toInt(),
-                    split[1].toInt()
-                )
-            }.defaultValue(def)
 
+            val regex = Regex("""^(-?\d+(?:\.\d+)?)to(-?\d+(?:\.\d+)?)(?::(\d+)([ucdf])?)?$""", RegexOption.IGNORE_CASE)
+            val match = regex.matchEntire(param) ?: return def
+
+            val startStr = match.groupValues[1]
+            val endStr = match.groupValues[2]
+            val scaleStr = match.groupValues[3]
+            val modeStr = match.groupValues[4]
+
+            val start = startStr.toDouble()
+            val end = endStr.toDouble()
+
+            val value = random(start, end)
+
+            return run {
+                // 没有 :xx，保持原逻辑
+                if (scaleStr.isBlank()) {
+                    if (startStr.contains(".") || endStr.contains(".")) value else value.toInt()
+                } else {
+                    val scale = scaleStr.toInt()
+                    val roundingMode = when (modeStr.lowercase()) {
+                        "u", "c" -> RoundingMode.CEILING   // 向上
+                        "d", "f" -> RoundingMode.FLOOR     // 向下
+                        else -> RoundingMode.HALF_UP       // 默认四舍五入
+                    }
+                    BigDecimal.valueOf(value)
+                        .setScale(scale, roundingMode)
+                        .stripTrailingZeros()
+                        .toPlainString()
+                }
+            }.defaultValue(def)
         } else if (params.startsWith("data:")) {
             val param = params.removePrefix("data:")
             return run {

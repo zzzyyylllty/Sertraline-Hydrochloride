@@ -55,11 +55,7 @@ object ItemCommand {
                     val id = context["id"]
                     if (sender is Player) {
                         val item = sertralineItemBuilder(id,sender) ?: run {
-                            sender.sendStringAsComponent(
-                                sender.asLangText(
-                                    "Item_Not_Exist", id
-                                )
-                            )
+                            sender.sendStringAsComponent(sender.asLangText("Item_Not_Exist", id))
                             null
                         }
                         item?.let {

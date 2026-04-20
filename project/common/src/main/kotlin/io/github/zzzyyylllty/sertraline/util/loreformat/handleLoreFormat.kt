@@ -2,24 +2,25 @@ package io.github.zzzyyylllty.sertraline.util.loreformat
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
+import io.github.zzzyyylllty.sertraline.Sertraline.tiers
+import io.github.zzzyyylllty.sertraline.Sertraline.types
+import io.github.zzzyyylllty.sertraline.Sertraline.levels
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
-import io.github.zzzyyylllty.sertraline.data.LineMode
 import io.github.zzzyyylllty.sertraline.data.LineMode.*
 import io.github.zzzyyylllty.sertraline.data.LoreElement
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
-import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.data.Tier
+import io.github.zzzyyylllty.sertraline.data.Type
+import io.github.zzzyyylllty.sertraline.data.Level
 import io.github.zzzyyylllty.sertraline.function.kether.parseKether
 import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
-import io.github.zzzyyylllty.sertraline.util.minimessage.toComponentJson
 import io.github.zzzyyylllty.sertraline.util.toLowerCase
 import org.bukkit.entity.Player
-import taboolib.common.util.replaceWithOrder
-import taboolib.module.kether.KetherFunction
-import taboolib.module.kether.ScriptOptions
 import taboolib.platform.compat.replacePlaceholder
-import kotlin.math.roundToInt
+import io.github.zzzyyylllty.sertraline.util.jsonUtils
+
 
 fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
 
@@ -51,7 +52,7 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
     return compList
 }
 
-fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem): String {
+fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem, skipGeneralPlaceholders: Boolean = false): String {
     val numeral = this.toString().toDoubleOrNull() ?: 0.0
     val string = this.toString()
 //    var content = content
@@ -75,22 +76,84 @@ fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: Modern
     var content = content
 
     for (entry in parse) {
-        val nentry = entry.toLowerCase()
-        content = content.replace("{$entry}", when {
-            nentry == "plus" -> if (numeral > 0.0) config.getString("placeholders.plus", "+") ?: "+" else ""
-            nentry == "minus" -> if (numeral < 0.0) config.getString("placeholders.minus", "-") ?: "-" else ""
-            nentry == "value" -> string
-            nentry == "auto" -> string.removeSuffix(".0")
-            nentry.startsWith("round:") -> "%${nentry.removePrefix("round:")}.2f".format(string.toDoubleOrNull() ?: 0.0)
+        val entry = entry.toLowerCase()
+        val new = when {
+            entry == "plus" -> if (numeral > 0.0) config.getString("placeholders.plus", "+") ?: "+" else ""
+            entry == "minus" -> if (numeral < 0.0) config.getString("placeholders.minus", "-") ?: "-" else ""
+            entry == "value" -> string
+            entry == "auto" -> string.removeSuffix(".0")
+            entry.startsWith("round:") -> "%${entry.removePrefix("round:")}.2f".format(string.toDoubleOrNull() ?: 0.0)
             else -> continue
-        }.performPlaceholders(sItem, player)!!
+        }
+        content = content.replace("{$entry}", if (skipGeneralPlaceholders) new else new.performPlaceholders(sItem, player)!!
         )
+    }
+    // 处理品质占位符和其他占位符
+    if (!skipGeneralPlaceholders) {
+        content = content.performPlaceholders(sItem, player) ?: content
     }
     return content
 }
+
+fun String.replaceTierPlaceholders(tier: Tier): String {
+    return this
+        .replace("{tier}", tier.name)
+        .replace("{tier:format}", tier.color + tier.name)
+        .replace("{tier:weight}", tier.weight.toString())
+        .replace("{tier:description}", tier.description)
+        .replace("{tier:id}", tier.id)
+        .replace("{tier:color}", tier.color)
+}
+
+fun String.replaceTypePlaceholders(type: Type): String {
+    return this
+        .replace("{type}", type.name)
+        .replace("{type:name}", type.name)
+        .replace("{type:id}", type.id)
+        .replace("{type:parent}", type.parent ?: "")
+        .replace("{type:description}", type.description)
+}
+
+fun String.replaceLevelPlaceholders(level: Level): String {
+    return this
+        .replace("{level}", level.name)
+        .replace("{level:name}", level.name)
+        .replace("{level:id}", level.id)
+        .replace("{level:description}", level.description)
+        .replace("{level:color}", level.color)
+        .replace("{level:weight}", level.weight.toString())
+}
+
 fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
     var content = this ?: run {
         return null
+    }
+
+    if (content.contains("tier")) {
+        val tierData = sItem.getDeepData("sertraline:tier")
+        val tier = when (tierData) {
+            is Tier -> tierData
+            else -> tiers[tierData?.toString()]
+        }
+        tier?.let { content = content.replaceTierPlaceholders(it) }
+    }
+
+    if (content.contains("type")) {
+        val typeData = sItem.getDeepData("sertraline:type")
+        val type = when (typeData) {
+            is Type -> typeData
+            else -> types[typeData?.toString()]
+        }
+        type?.let { content = content.replaceTypePlaceholders(it) }
+    }
+
+    if (content.contains("level")) {
+        val levelData = sItem.getDeepData("sertraline:level")
+        val level = when (levelData) {
+            is Level -> levelData
+            else -> levels[levelData?.toString()]
+        }
+        level?.let { content = content.replaceLevelPlaceholders(it) }
     }
 
     player?.let { content = content.replacePlaceholder(it) }
@@ -139,8 +202,25 @@ fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<
             item.getDeepData(key).asListEnhanced()
         } ?: emptyList()
 
-        keyValueList.map { value ->
-            value.performNormalPlaceholders(element.content, player, item)
+        if (keyValueList.isEmpty()) return emptyList()
+
+        // First perform normal placeholders without general placeholders
+        val intermediateList = keyValueList.map { value ->
+            value.performNormalPlaceholders(element.content, player, item, skipGeneralPlaceholders = true)
+        }
+
+        // Serialize list to JSON, apply placeholders, then deserialize
+        try {
+            val json = jsonUtils.toJson(intermediateList)
+            val replacedJson = json.performPlaceholders(item, player) ?: json
+            // Deserialize back to List<String>
+            val array = jsonUtils.fromJson(replacedJson, Array<String>::class.java)
+            array.toList()
+        } catch (_: Exception) {
+            // Fallback to individual processing if JSON serialization fails
+            keyValueList.map { value ->
+                value.performNormalPlaceholders(element.content, player, item)
+            }
         }
     } else {
         element.content.performPlaceholders(item, player)?.let { listOf(it) } ?: emptyList()
@@ -176,4 +256,19 @@ fun mergeConsecutiveEmptyStrings(list: List<String>): List<String> {
     }
 
     return result
+}
+
+fun List<String>.performPlaceholders(sItem: ModernSItem, player: Player?): List<String> {
+    if (isEmpty()) return emptyList()
+    // Serialize list to JSON, apply placeholders, then deserialize
+    try {
+        val json = jsonUtils.toJson(this)
+        val replacedJson = json.performPlaceholders(sItem, player) ?: json
+        // Deserialize back to List<String>
+        val array = jsonUtils.fromJson(replacedJson, Array<String>::class.java)
+        return array.toList()
+    } catch (_: Exception) {
+        // Fallback to individual processing if JSON serialization fails
+        return map { it.performPlaceholders(sItem, player) ?: it }
+    }
 }

@@ -12,7 +12,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.submitAsync
 
 
-val debounceRefreshStat = debounce<Player>(config.getLong("attribute.debounce-time",250)) { player ->
+val debounceRefreshStat = debounce<Player>(config.getLong("attribute.debounce-time",1000)) { player ->
     AttributeUtil.refreshAttributes(player)
 }
 

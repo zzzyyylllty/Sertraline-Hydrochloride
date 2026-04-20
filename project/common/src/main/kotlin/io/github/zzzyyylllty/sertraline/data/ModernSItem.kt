@@ -35,6 +35,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.inventory.ItemStack
+import org.tabooproject.fluxon.Fluxon
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.function.submit
@@ -66,13 +67,22 @@ fun registerExternalData() {
             "Gson" to Gson::class.java,
             "bukkitPlugin" to bukkitPlugin,
             "scheduler" to Bukkit.getScheduler(),
-            "SertralineObj" to Sertraline
+            "SertralineObj" to Sertraline,
+            "FluxonShell" to FluxonShell,
         ))
     val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()
 
     defaultData = event.defaultData
 }
+
+data class RevisionData(
+    val firstBuild: Long,
+    val lastUpdated: Long,
+    val revisionId: Long,
+    val firstBuildPlayer: String,
+    val firstBuildPlayerUUID: String,
+)
 
 data class ModernSItem(
     val key: String,

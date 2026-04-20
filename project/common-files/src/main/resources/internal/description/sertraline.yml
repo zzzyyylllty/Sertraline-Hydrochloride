@@ -19,6 +19,7 @@ _info:
     min: 0
     max: 99999
 sertraline:tier: TIER
+sertraline:type: TYPE
 sertraline:vals:
   _: ANY
 sertraline:vars:

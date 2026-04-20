@@ -15,7 +15,7 @@ mythicLib = "1.7.1-SNAPSHOT"
 placeholderApi = "2.11.7"
 packetEvents = "2.10.1"
 adventure = "4.25.0"
-uniItem = "2.3.2"
+#uniItem = "2.3.2"
 datafixerupper = "8.0.16"
 fluxon = "1.5.4"
 
@@ -41,9 +41,9 @@ placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "pl
 packeteventsspigot = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetEvents" }
 datafixerupper = { group = "com.mojang", name = "datafixerupper", version.ref = "datafixerupper" }
 fluxoncore = { group = "org.tabooproject.fluxon", name = "core", version.ref = "fluxon" }
-uniitem-all = { group = "io.github.projectunified", name = "uni-item-all", version.ref = "uniItem" }
-uniitem-api = { group = "io.github.projectunified", name = "uni-item-api", version.ref = "uniItem" }
-uniitem-multi = { group = "io.github.projectunified", name = "uni-item-multi", version.ref = "uniItem" }
+#uniitem-all = { group = "io.github.projectunified", name = "uni-item-all", version.ref = "uniItem" }
+#uniitem-api = { group = "io.github.projectunified", name = "uni-item-api", version.ref = "uniItem" }
+#uniitem-multi = { group = "io.github.projectunified", name = "uni-item-multi", version.ref = "uniItem" }
 
 # TabooProject Reflex
 reflex-analyser = { group = "org.tabooproject.reflex", name = "analyser", version.ref = "reflex" }
@@ -103,7 +103,7 @@ jackson = [
 # GraalVM 捆绑包
 graalvm = ["graalvm-polyglot", "graalvm-js"]
 kotlincrypto = ["kotlincrypto-bom", "kotlincrypto-sha2"]
-uniitem = ["uniitem-all", "uniitem-api", "uniitem-multi"]
+#uniitem = ["uniitem-all", "uniitem-api", "uniitem-multi"]
 
 
 [plugins]

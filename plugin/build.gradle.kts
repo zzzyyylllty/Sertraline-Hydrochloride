@@ -40,7 +40,9 @@ taboolib {
     relocate("org.tabooproject.fluxon", "io.github.zzzyyylllty.sertraline.dep.fluxon")
     relocate("com.github.benmanes.caffeine", "io.github.zzzyyylllty.sertraline.dep.caffeine")
     relocate("org.kotlincrypto", "io.github.zzzyyylllty.sertraline.dep.kotlincrypto")
+//    relocate("org.objectweb.asm", "io.github.zzzyyylllty.sertraline.dep.asm")
 }
+
 
 tasks {
     val taboolibMainTask = named("taboolibMainTask")

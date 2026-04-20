@@ -11,6 +11,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType.*
 import com.cryptomorin.xseries.XMaterial
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
@@ -61,6 +62,10 @@ class ItemExplorer {
             // 元素点击事件
             onClick { event, element ->
                 val bukkitPlayer = event.clicker
+                if (itemMap.get(element.key) == null) {
+                    warningS("GUI item ${element.key} not found.")
+                    return@onClick
+                }
                 when (event.clickEvent().click) {
                     LEFT -> bukkitPlayer.giveItem(sertralineItemBuilder(element.key, bukkitPlayer, amount = 1))
                     SHIFT_LEFT -> {

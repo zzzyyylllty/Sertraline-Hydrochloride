@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.Ghost
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.info
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -15,6 +16,7 @@ import kotlin.math.roundToInt
 val dependencies = listOf(
     "adventure",
     // "arim",
+    "asm",
     "caffeine",
     "datafixerupper",
     "fluxon",
@@ -45,8 +47,6 @@ object DependencyHelper {
     }
 
 
-
-
     fun isPluginInstalled(name: String): Boolean {
         return (Bukkit.getPluginManager().getPlugin(name) != null)
     }
@@ -54,18 +54,17 @@ object DependencyHelper {
 }
 
 
-@Ghost
+//@Ghost
 @SubscribeEvent
 fun onDropLoad(event: MobDropLoadEvent) {
 
     devLog("[MMCompat] dropName: ${event.dropName}")
     if (!event.dropName.contains("sertraline")) return
-    val id = extractItemId(event.dropName)
+    val id = extractItemId(event.dropName) ?: return
     devLog("[MMCompat] ID: $id")
 
     event.registerItem { dropMeta ->
         val killer = dropMeta.cause as? Player
-        val id = event.dropName
         val item = sertralineItemBuilder(id, killer)
         item?.amount = dropMeta.amount.roundToInt()
         item ?: XMaterial.STONE.parseItem()!!

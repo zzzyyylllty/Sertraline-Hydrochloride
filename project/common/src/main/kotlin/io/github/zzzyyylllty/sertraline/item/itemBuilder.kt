@@ -23,6 +23,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import com.cryptomorin.xseries.XMaterial
+import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
@@ -91,27 +92,36 @@ fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack?
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null): ItemStack? {
-    val pTemplate = itemMap[template] ?: return null
+    val pTemplate = itemMap[template]?.serialize()?.let { deserializeSItem(it) } ?: return null
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
         }
     }
     vars?.let {
-        val ovars = pTemplate.getDeepData("sertraline:vars") as? MutableMap<String, Any?>? ?: run { return@let }
+        val ovars = pTemplate.getDeepData("sertraline:vars") as? MutableMap<String, Any?>? ?: mutableMapOf()
         ovars.putAll(it)
         pTemplate.setDeepData("sertraline:vars", ovars)
     }
-    val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
-    val itemSource = source ?: itemSource((template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material")).toString(), player)
-    val item = itemManager.processItem(template, itemSource, player)
+    val processedTemplate = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
+    val itemSource = source ?: itemSource((processedTemplate.getDeepData("xbuilder:material") ?: processedTemplate.getDeepData("minecraft:material")).toString(), player)
+    val item = itemManager.processItem(processedTemplate, itemSource, player)
     item.amount = amount
 
-    if (template.getDeepData("sertraline:no-sertraline-id") as? Boolean? ?: false) {
+    if (processedTemplate.getDeepData("sertraline:no-sertraline-id") as? Boolean? ?: false) {
         return item
     } else {
         val tag = item.getItemTag()
-        tag["sertraline_id"] = template.key
+        tag["sertraline_id"] = processedTemplate.key
+        // 写入类型到NBT
+        val typeData = processedTemplate.getDeepData("sertraline:type")
+        if (typeData != null) {
+            val typeId = when (typeData) {
+                is io.github.zzzyyylllty.sertraline.data.Type -> typeData.id
+                else -> typeData.toString()
+            }
+            tag["sertraline_type"] = typeId
+        }
         return item.setItemTag(tag)
     }
 }
@@ -121,19 +131,28 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
-    val pTemplate = template
+    val pTemplate = template.serialize()?.let { deserializeSItem(it) } ?: return null
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
         }
     }
-    val template = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
-    val itemSource = source ?: itemSource((template.getDeepData("xbuilder:material") ?: template.getDeepData("minecraft:material")).toString(), player)
-    val item = itemManager.processItem(template, itemSource, player)
+    val processedTemplate = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
+    val itemSource = source ?: itemSource((processedTemplate.getDeepData("xbuilder:material") ?: processedTemplate.getDeepData("minecraft:material")).toString(), player)
+    val item = itemManager.processItem(processedTemplate, itemSource, player)
     item.amount = amount
 
     val tag = item.getItemTag()
-    tag["sertraline_id"] = template.key
+    tag["sertraline_id"] = processedTemplate.key
+    // 写入类型到NBT
+    val typeData = processedTemplate.getDeepData("sertraline:type")
+    if (typeData != null) {
+        val typeId = when (typeData) {
+            is io.github.zzzyyylllty.sertraline.data.Type -> typeData.id
+            else -> typeData.toString()
+        }
+        tag["sertraline_type"] = typeId
+    }
     return item.setItemTag(tag)
 }
 

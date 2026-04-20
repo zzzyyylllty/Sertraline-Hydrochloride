@@ -112,7 +112,7 @@ object MMOUtil {
 
                 StatModifier(
                     uuid,
-                    "sertraline_item",
+                    "sertraline_item_$actSource",
                     atb.atbID,
                     atb.atbValue,
                     atb.atbType,

@@ -18,7 +18,8 @@ loreformat:
     - key: "xbuilder:lore"
       content: "<!i><#999999>| {value}"
     - key: "sertraline:tier"
-      content: "<!i><white>Item Tier: <blue>{value}"
+      # {tier:id}, {tier:name}, {tier:desc}, {tier:color}, {tier:weight}
+      content: "<!i><white>Item Tier: <blue>{tier:format}"
     # 如果是单项 则是该内容toString之后的内容
     # If the key points to a single value, it will be converted to a string.
     # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
@@ -47,7 +48,6 @@ loreformat:
     - key: "*sertraline.vals.effect"
       content: "<blue>Effect: {value}"
     - content: "<#aabbcc>--------------------"
-
 
 miscloreformat:
   settings:

@@ -95,7 +95,7 @@ fun loadItemFile(file: File): Boolean {
     return try {
         val map = multiExtensionLoader(file)
 
-        if (map == null || map.isEmpty()) {
+        if (map.isNullOrEmpty()) {
             severeL("Item_Load_Error_Empty", file.name)
             return false
         }

@@ -7,9 +7,15 @@ import io.github.zzzyyylllty.sertraline.config.loadCraftingStationFiles
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
+import io.github.zzzyyylllty.sertraline.config.loadTierFiles
+import io.github.zzzyyylllty.sertraline.config.loadTypeFiles
+import io.github.zzzyyylllty.sertraline.config.loadLevelFiles
 import io.github.zzzyyylllty.sertraline.data.CraftingStation
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.data.Tier
+import io.github.zzzyyylllty.sertraline.data.Type
+import io.github.zzzyyylllty.sertraline.data.Level
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
 import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
@@ -189,6 +195,9 @@ object Sertraline : Plugin() {
     var mappings = LinkedHashMap<String, List<String>?>()
     var loreFormats = LinkedHashMap<String, LoreFormat>()
     var craftingStations = LinkedHashMap<String, CraftingStation>()
+    var tiers = LinkedHashMap<String, Tier>()
+    var types = LinkedHashMap<String, Type>()
+    var levels = LinkedHashMap<String, Level>()
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
     val tagManager by lazy { TagProcessorManager() }
@@ -243,6 +252,9 @@ object Sertraline : Plugin() {
             mappings.clear()
             loreFormats.clear()
             craftingStations.clear()
+            tiers.clear()
+            types.clear()
+            levels.clear()
 
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()
@@ -253,6 +265,9 @@ object Sertraline : Plugin() {
             loadItemFiles()
             loadLoreFormatFiles()
             loadCraftingStationFiles()
+            loadTierFiles()
+            loadTypeFiles()
+            loadLevelFiles()
 
             SertralineReloadEvent().call()
         }

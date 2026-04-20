@@ -15,7 +15,7 @@ fun itemSerializer(itemStack: ItemStack,player: Player?): ModernSItem? {
     val json = item.serialize()
     return deserializeSItem(tagManager.processItem(json!!, item, itemStack, player))
 }
-fun itemSerializer(item: ModernSItem,player: Player?): ModernSItem? {
+fun itemSerializer(item: ModernSItem,player: Player?): ModernSItem {
     val json = item.serialize()
     return deserializeSItem(tagManager.processItem(json!!, item, null, player))
 }

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.removeComponentNMS
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import org.bukkit.entity.Player
@@ -10,13 +11,20 @@ import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 
 fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemStack {
     val item = item
-    val map = (sItem.data["minecraft"] as? Map<*,*>) ?: return item
+    val map = (sItem.getMajorData("minecraft") as? Map<String, Any?>) ?: return item
     if (map.isEmpty()) return item
     var nmsItem = asNMSCopy(item)
 
+    devLog("sItem: $sItem")
+    devLog("map: $map")
     map.forEach { (key, value) ->
-        if (value != null) nmsItem.setComponentNMS(key.toString(), value)?.let { nmsItem = it }
-        else nmsItem = nmsItem.removeComponentNMS(key.toString())
+        if (value != null) {
+            devLog("Setting $key component.")
+            nmsItem.setComponentNMS(key, value)?.let { nmsItem = it }
+        } else {
+            devLog("DataComponent $key is null. now removing component.")
+            nmsItem.removeComponentNMS(key)
+        }
     }
     return asBukkitCopy(nmsItem)
 }

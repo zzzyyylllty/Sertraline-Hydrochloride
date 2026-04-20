@@ -47,6 +47,6 @@ data class ConditionConfig(
 
 data class StationRecipeInput(
     val displayName: String,
-    val input: String,
+    val input: OmniItem,
     val plural: String?,
 )

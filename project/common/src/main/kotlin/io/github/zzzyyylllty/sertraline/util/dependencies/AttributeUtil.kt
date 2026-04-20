@@ -10,6 +10,7 @@ import io.lumine.mythic.lib.api.player.MMOPlayerData
 import io.lumine.mythic.lib.player.modifier.ModifierSource
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 
 data class ItemBound(
@@ -35,80 +36,46 @@ object AttributeUtil {
             inv.leggings?.let { bItem -> itemSerializer(bItem, player)?.let { itemList["leggings"] = ItemBound(it, bItem) } }
             inv.boots?.let { bItem -> itemSerializer(bItem, player)?.let { itemList["boots"] = ItemBound(it, bItem) } }
 
-
             if (DependencyHelper.mmLib) {
                 val playerData = MMOPlayerData.getOrNull(player)
                 if (playerData != null) {
                     val statMap = playerData.statMap
-                    for (instance in statMap.instances) {
-                        instance.removeIf { key ->
-                            key.startsWith("sertraline_item")
+
+
+                    // 一次性删除所有旧修饰符（包括不带槽位后缀和带槽位后缀的）
+                    submit {
+                        for (instance in statMap.instances) {
+                            instance.removeIf { key ->
+                                key == "sertraline_item" || key.startsWith("sertraline_item_")
+                            }
                         }
-                    }
-
-
-                    // 主手和副手
-                    itemList.get("mainhand")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.MAINHAND_ITEM,
-                            EquipmentSlot.MAIN_HAND,
-                            "mainhand",
-                            bItem.type.name
-                        )
-                    }
-                    itemList.get("offhand")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.OFFHAND_ITEM,
-                            EquipmentSlot.OFF_HAND,
-                            "offhand",
-                            bItem.type.name
-                        )
-                    }
-
-                    // 护甲
-                    itemList.get("helmet")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.ARMOR,
-                            EquipmentSlot.HEAD,
-                            "helmet",
-                            bItem.type.name
-                        )
-                    }
-                    itemList.get("chestplate")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.ARMOR,
-                            EquipmentSlot.CHEST,
-                            "chestplate",
-                            bItem.type.name
-                        )
-                    }
-                    itemList.get("leggings")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.ARMOR,
-                            EquipmentSlot.LEGS,
-                            "leggings",
-                            bItem.type.name
-                        )
-                    }
-                    itemList.get("boots")?.let { (sItem, bItem) ->
-                        mmoAttributeCalculate(
-                            sItem,
-                            playerData,
-                            ModifierSource.ARMOR,
-                            EquipmentSlot.FEET,
-                            "boots",
-                            bItem.type.name
-                        )
+                        // 为每个有物品的槽位添加新修饰符
+                        itemList.forEach { (slot, itemBound) ->
+                            val sItem = itemBound.sItem
+                            val bItem = itemBound.bItem
+                            val (defSource, defSlot) = when (slot) {
+                                "mainhand" -> Pair(ModifierSource.MAINHAND_ITEM, EquipmentSlot.MAIN_HAND)
+                                "offhand" -> Pair(ModifierSource.OFFHAND_ITEM, EquipmentSlot.OFF_HAND)
+                                else -> Pair(
+                                    ModifierSource.ARMOR, when (slot) {
+                                        "helmet" -> EquipmentSlot.HEAD
+                                        "chestplate" -> EquipmentSlot.CHEST
+                                        "leggings" -> EquipmentSlot.LEGS
+                                        "boots" -> EquipmentSlot.FEET
+                                        else -> EquipmentSlot.OTHER
+                                    }
+                                )
+                            }
+                            mmoAttributeCalculate(
+                                sItem,
+                                playerData,
+                                defSource,
+                                defSlot,
+                                slot,
+                                bItem.type.name,
+                                async = false
+                            )
+                        }
                     }
                 }
             }
