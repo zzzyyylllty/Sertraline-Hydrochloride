@@ -199,4 +199,40 @@ object ItemTagManager {
     fun getAllTags(): Set<String> {
         return (vanillaItemTags.keys + customItemTags.keys).toSet()
     }
+
+    /**
+     * 解析标签字符串，支持多种格式并提取数量
+     * @param tagString 标签字符串，如 "tag:planks 2"、"#minecraft:planks"、"minecraft:planks"
+     * @return Pair(规范化标签Key, 数量)，数量默认为1
+     */
+    fun parseTagString(tagString: String): Pair<String, Int> {
+        var normalized = tagString.trim()
+
+        // 去除#前缀
+        if (normalized.startsWith("#")) {
+            normalized = normalized.substring(1)
+        }
+
+        // 检查是否包含数量（空格分隔）
+        val parts = normalized.split("\\s+".toRegex())
+        val base = parts[0]
+        val amount = if (parts.size > 1) {
+            parts[1].toIntOrNull() ?: 1
+        } else {
+            1
+        }
+
+        // 转换tag:前缀为minecraft:
+        var tagKey = base
+        if (tagKey.startsWith("tag:")) {
+            tagKey = "minecraft:" + tagKey.substring(4)
+        }
+
+        // 如果没有命名空间，添加minecraft:
+        if (!tagKey.contains(":")) {
+            tagKey = "minecraft:$tagKey"
+        }
+
+        return Pair(tagKey, amount)
+    }
 }

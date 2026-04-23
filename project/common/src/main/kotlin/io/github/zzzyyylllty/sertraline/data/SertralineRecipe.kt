@@ -25,14 +25,16 @@ sealed class RecipeIngredient {
     /**
      * 具体物品
      * @param itemId 物品ID，如 "minecraft:oak_planks"
+     * @param amount 数量，默认为1
      */
-    data class Item(val itemId: String) : RecipeIngredient()
+    data class Item(val itemId: String, val amount: Int = 1) : RecipeIngredient()
 
     /**
      * 标签
      * @param tagId 标签ID，如 "minecraft:planks"（不需要#前缀）
+     * @param amount 数量，默认为1
      */
-    data class Tag(val tagId: String) : RecipeIngredient()
+    data class Tag(val tagId: String, val amount: Int = 1) : RecipeIngredient()
 
     /**
      * 多个选项（或关系）

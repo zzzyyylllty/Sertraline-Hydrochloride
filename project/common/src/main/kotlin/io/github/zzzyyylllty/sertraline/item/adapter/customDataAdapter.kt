@@ -13,12 +13,15 @@ import java.util.LinkedHashMap
 fun customDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
 
     val tag = item.getItemTag(true)
-    val map = (sItem.getDeepData("custom_data") as Map<String, Any>?)
+    var map = (sItem.getDeepData("custom_data") as Map<String, Any?>?)
     if (map == null || map.isEmpty()) {
         devLog("custom_data is null or empty, skipping adapting.")
         return item
     }
-    (transferBooleanToByte(map) as Map<String, Any>).forEach {
+    if (map.keys.firstOrNull() == "custom_data") {
+        map = map["custom_data"] as Map<String, Any?>?
+    }
+    (transferBooleanToByte(map) as Map<String, Any?>).forEach {
         tag.put(it.key, it.value)
     }
     val item = item.setItemTag(tag, true)

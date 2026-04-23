@@ -45,8 +45,16 @@ loreformat:
       lineMode: ANY
       lineRequire:
         - "*sertraline.vals.effect"
-    - key: "*sertraline.vals.effect"
-      content: "<blue>Effect: {value}"
+    - key: "sertraline:type"
+    - content: "<!i><#AAAAAA>| <#cccccc>类型: {type:name}"
+    - key: "sertraline:tier"
+    - content: "<!i><#AAAAAA>| <#cccccc>品质: {tier:format}"
+    - key: "sertraline:level"
+      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
+    - key: "minecraft:food.nutrition"
+      content: "<!i><#AAAAAA>| <gold>Hunger <#aabbcc>{plus}{minus}{auto}"
+    - key: "minecraft:food.saturation"
+      content: "<!i><#AAAAAA>| <gold>Saturation <#aabbcc>{plus}{minus}{auto}"
     - content: "<#aabbcc>--------------------"
 
 miscloreformat:

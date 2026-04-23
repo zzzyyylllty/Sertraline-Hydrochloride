@@ -10,6 +10,7 @@ import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.config.loadTierFiles
 import io.github.zzzyyylllty.sertraline.config.loadTypeFiles
 import io.github.zzzyyylllty.sertraline.config.loadLevelFiles
+import io.github.zzzyyylllty.sertraline.config.loadRecipeFiles
 import io.github.zzzyyylllty.sertraline.data.CraftingStation
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
@@ -26,11 +27,13 @@ import io.github.zzzyyylllty.sertraline.item.process.tag.registerNativeTagAdapte
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.infoLSync
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
+import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.severeSSync
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
+import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
 import com.github.benmanes.caffeine.cache.Caffeine
@@ -268,6 +271,7 @@ object Sertraline : Plugin() {
             loadTierFiles()
             loadTypeFiles()
             loadLevelFiles()
+            loadRecipeFiles()
 
             SertralineReloadEvent().call()
         }
@@ -301,6 +305,16 @@ object Sertraline : Plugin() {
     @Awake(LifeCycle.INIT)
     fun initDependenciesInit() {
         solveDependencies(dependencies, true)
+    }
+
+    @Awake(LifeCycle.ENABLE)
+    fun initItemTags() {
+        try {
+            ItemTagManager.initializeVanillaTags()
+            infoL("ItemTagManager initialized successfully")
+        } catch (e: Exception) {
+            severeL("Failed to initialize ItemTagManager: ${e.message}")
+        }
     }
 
 

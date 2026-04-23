@@ -50,6 +50,11 @@ allprojects {
         mavenCentral()
         mavenLocal()
 
+
+        // TabooLib
+        maven {
+            url = uri("https://repo.tabooproject.org/repository/releases/")
+        }
         maven("https://repo1.maven.org/maven2")
         maven("https://jitpack.io")
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -62,9 +67,6 @@ allprojects {
         // Paper 相关
         maven("https://repo.papermc.io/repository/maven-public/")
 
-        // TabooLib
-        maven("https://repo.tabooproject.org/repository/releases/")
-
         // 插件依赖仓库
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
@@ -76,7 +78,7 @@ allprojects {
         // 其他仓库
         maven("https://jitpack.io")
         maven("https://repo.gtemc.net/releases/")
-//        maven("https://repo.gtemc.net/releases/")
+        maven("https://repo.gtemc.net/releases/")
         maven {
             url = uri("https://nexus.maplex.top/repository/maven-public/")
             isAllowInsecureProtocol = true
@@ -87,8 +89,9 @@ allprojects {
 
     dependencies {
         // TabooLib 依赖
-        // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")
+        // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")   .
         taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
+
         taboo("com.github.zzzyyylllty:EmbianComponent:1.0.5")
         taboo("cn.gtemc:itembridge:1.0.17")
 

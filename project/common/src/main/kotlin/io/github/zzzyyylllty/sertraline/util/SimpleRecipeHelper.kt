@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.data.*
+import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 
@@ -266,25 +267,63 @@ object RecipeManager {
     }
 
     /**
+     * 规范化标签Key，支持多种格式
+     * - minecraft:planks -> minecraft:planks
+     * - tag:planks -> minecraft:planks
+     * - #minecraft:planks -> minecraft:planks
+     * - planks -> minecraft:planks
+     */
+    private fun normalizeTagKey(tagKey: String): String {
+        var normalized = tagKey.trim()
+
+        // 去除#前缀
+        if (normalized.startsWith("#")) {
+            normalized = normalized.substring(1)
+        }
+
+        // 转换tag:前缀为minecraft:
+        if (normalized.startsWith("tag:")) {
+            normalized = "minecraft:" + normalized.substring(4)
+        }
+
+        // 如果没有命名空间，添加minecraft:
+        if (!normalized.contains(":")) {
+            normalized = "minecraft:$normalized"
+        }
+
+        return normalized
+    }
+
+    /**
      * 解析配方原料为 Bukkit ItemStack 列表
      */
     private fun resolveIngredientItems(ingredient: RecipeIngredient): List<ItemStack> {
         return when (ingredient) {
             is RecipeIngredient.Item -> {
-                // 具体物品
+                // 具体物品（支持数量）
                 val material = org.bukkit.Material.matchMaterial(ingredient.itemId.uppercase())
                     ?: throw IllegalArgumentException("Unknown item: ${ingredient.itemId}")
-                listOf(org.bukkit.inventory.ItemStack(material))
+                listOf(org.bukkit.inventory.ItemStack(material, ingredient.amount))
             }
             is RecipeIngredient.Tag -> {
-                // 标签 - 获取标签下的所有物品
-                val tag = mapOf<String, ItemStack>()
-//                val tag = org.bukkit.Registry<Tag>.getTag(
-//                    org.bukkit.NamespacedKey.fromString(ingredient.tagId)
-//                        ?: throw IllegalArgumentException("Invalid tag: ${ingredient.tagId}")
-//                ) ?: throw IllegalArgumentException("Unknown tag: ${ingredient.tagId}")
+                // 标签 - 获取标签下的所有物品（支持数量）
+                val tagKey = normalizeTagKey(ingredient.tagId)
+                val itemIds = ItemTagManager.getItemsByTag(tagKey)
 
-                tag.values.map { ItemStack(it) }
+                if (itemIds.isEmpty()) {
+                    throw IllegalArgumentException("Unknown or empty tag: ${ingredient.tagId} (normalized: $tagKey)")
+                }
+
+                itemIds.mapNotNull { itemId ->
+                    val material = org.bukkit.Material.matchMaterial(itemId.uppercase())
+                    if (material != null) {
+                        org.bukkit.inventory.ItemStack(material, ingredient.amount)
+                    } else {
+                        // 记录警告但继续处理其他物品
+                        println("[Sertraline] Warning: Cannot find material for item ID: $itemId in tag: $tagKey")
+                        null
+                    }
+                }
             }
             is RecipeIngredient.Choice -> {
                 // 多个选项
