@@ -1,0 +1,16 @@
+test_choten_sword:
+  choten:
+    attack_damage: 30
+    max_health: "10%"
+    movement_speed: "5%"
+    # If allowed is null or left an empty list, Sertraline will auto-detect from material suffix (e.g. diamond_boots -> boots)
+    allowed: ["mainhand"]
+  sertraline:
+    tier: S
+  xbuilder:
+    name: "<!i>&9Choten Test Sword"
+    lore: |
+      <!i><aqua>+30 Attack Damage.
+      <!i><aqua>+10% Max Health.
+      <!i><aqua>+5% Movement Speed.
+    material: DIAMOND_SWORD

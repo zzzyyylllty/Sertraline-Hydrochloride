@@ -1,0 +1,28 @@
+# Types Example
+WEAPON:
+  name: "Weapons"
+  description: "Combating"
+SWORD:
+  name: "Sword"
+  parent: WEAPON
+DAGGER:
+  name: "Dagger"
+  parent: SWORD
+AXE:
+  name: "Axe"
+  parent: WEAPON
+BOW:
+  name: "Bow"
+  parent: WEAPON
+TOOL:
+  name: "Tool"
+  description: "Gathering and building"
+PICKAXE:
+  name: "Pickaxe"
+  parent: TOOL
+ARMOR:
+  name: "Armor"
+  description: "Protect your body"
+HELMET:
+  name: "Helmet"
+  parent: ARMOR

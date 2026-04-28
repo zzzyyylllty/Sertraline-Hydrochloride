@@ -1,0 +1,28 @@
+# Tier Example
+
+C:
+  name: "<gray>C</gray>"
+  description: "<gray>C</gray>"
+  color: "<gray>"
+  weight: 100 # Not yet completed weight
+
+
+B:
+  name: "<green>B</green>"
+  description: "<green>B</green>"
+  color: "<gray>"
+  weight: 100 # Not yet completed weight
+
+
+A:
+  name: "<aqua>A</aqua>"
+  description: "<aqua>A</aqua>"
+  color: "<aqua>"
+  weight: 100 # Not yet completed weight
+
+
+S:
+  name: "<gold>S</gold>"
+  description: "<gold>S</gold>"
+  color: "<gold>"
+  weight: 100 # Not yet completed weight

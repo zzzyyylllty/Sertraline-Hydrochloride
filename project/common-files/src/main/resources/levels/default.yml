@@ -1,0 +1,19 @@
+
+
+normal:
+  name: "<gray>Normal</gray>"
+  description: "<gray>Normal Item</gray>"
+  color: "<gray>"
+  weight: 100
+
+advanced:
+  name: "<gray>Advanced</gray>"
+  description: "<gray>Advanced Item</gray>"
+  color: "<gray>"
+  weight: 100
+
+super:
+  name: "<gray>Super</gray>"
+  description: "<gray>Super Item</gray>"
+  color: "<gray>"
+  weight: 100
