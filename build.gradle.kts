@@ -51,6 +51,7 @@ allprojects {
         mavenCentral()
 
 
+        maven("https://repo-momi.gtemc.cn/")
         // TabooLib
         maven {
             url = uri("https://repo.tabooproject.org/repository/releases/")
