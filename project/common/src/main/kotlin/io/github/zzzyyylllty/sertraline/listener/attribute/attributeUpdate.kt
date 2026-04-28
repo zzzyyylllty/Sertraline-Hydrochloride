@@ -2,7 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.attribute
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import io.github.zzzyyylllty.sertraline.Sertraline.config
-import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil
+import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -13,7 +13,7 @@ import taboolib.common.platform.function.submitAsync
 
 
 val debounceRefreshStat = debounce<Player>(config.getLong("attribute.debounce-time",1000)) { player ->
-    AttributeUtil.refreshAttributes(player)
+    AttributeManager.refreshAttributes(player)
 }
 
 @SubscribeEvent
@@ -34,6 +34,6 @@ fun armorEquipEvent(e: PlayerArmorChangeEvent) {
 @SubscribeEvent(EventPriority.MONITOR)
 fun onLoginUpdate(e: PlayerLoginEvent) {
     submitAsync {
-        AttributeUtil.refreshAttributes(e.player)
+        AttributeManager.refreshAttributes(e.player)
     }
 }

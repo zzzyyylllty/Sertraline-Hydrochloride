@@ -26,7 +26,7 @@ allprojects {
         env {
             debug = false
             forceDownloadInDev = false
-            repoCentral = "https://maven.aliyun.com/repository/central"
+            // repoCentral = "https://maven.aliyun.com/repository/central" — removed, use default
             repoTabooLib = "https://repo.tabooproject.org/repository/releases"
             fileLibs = "libraries"
             fileAssets = "assets"
@@ -47,8 +47,8 @@ allprojects {
     }
 
     repositories {
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
 
 
         // TabooLib
@@ -59,10 +59,6 @@ allprojects {
         maven("https://jitpack.io")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-
-        // 阿里云镜像（优先级高）
-        maven("https://maven.aliyun.com/repository/public")
-        maven("https://maven.aliyun.com/repository/google")
 
         // Paper 相关
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -77,7 +73,6 @@ allprojects {
 
         // 其他仓库
         maven("https://jitpack.io")
-        maven("https://repo.gtemc.net/releases/")
         maven("https://repo.gtemc.net/releases/")
         maven {
             url = uri("https://nexus.maplex.top/repository/maven-public/")
@@ -95,7 +90,6 @@ allprojects {
         taboo("com.github.zzzyyylllty:EmbianComponent:1.0.5")
         taboo("cn.gtemc:itembridge:1.0.17")
 
-        taboo("ink.ptms:um:1.2.1")
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         taboo(rootProject.libs.kotlin.stdlib)
@@ -109,6 +103,8 @@ allprojects {
         compileOnly("ink.ptms:nms-all:1.0.0")
         compileOnly("com.willfp:eco:6.77.2")
         compileOnly("com.github.SkriptLang:Skript:2.14.3")
+
+        taboo("ink.ptms:um:1.2.1")
         compileOnly(rootProject.libs.mythiclibdist)
         compileOnly(rootProject.libs.placeholderapi)
         compileOnly(rootProject.libs.packeteventsspigot)
@@ -123,7 +119,7 @@ allprojects {
         compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
         // 本地依赖
-        compileOnly(fileTree("libs"))
+        compileOnly(files("$rootDir/libs/ChoTenAttribute-0.0.3.2-common-api.jar"))
 
         // 运行时依赖
         implementation(rootProject.libs.bundles.reflex)

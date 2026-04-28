@@ -17,7 +17,7 @@ import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
 import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
-import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil.refreshAttributes
+import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
@@ -204,7 +204,7 @@ object DebugCommand {
     @CommandBody
     val refreshAttributes = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            refreshAttributes(sender as Player)
+            AttributeManager.refreshAttributes(sender as Player)
         }
     }
 

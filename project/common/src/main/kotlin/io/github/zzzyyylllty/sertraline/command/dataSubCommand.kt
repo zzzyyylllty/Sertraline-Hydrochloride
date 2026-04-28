@@ -17,7 +17,6 @@ import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
-import io.github.zzzyyylllty.sertraline.util.dependencies.AttributeUtil.refreshAttributes
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.Material
 import org.bukkit.command.CommandSender

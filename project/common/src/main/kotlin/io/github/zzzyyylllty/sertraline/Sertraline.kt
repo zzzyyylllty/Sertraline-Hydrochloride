@@ -19,6 +19,9 @@ import io.github.zzzyyylllty.sertraline.data.Type
 import io.github.zzzyyylllty.sertraline.data.Level
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
+import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
+import io.github.zzzyyylllty.sertraline.attribute.ChotenAttributeProvider
+import io.github.zzzyyylllty.sertraline.attribute.MythicLibAttributeProvider
 import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
@@ -261,8 +264,10 @@ object Sertraline : Plugin() {
 
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()
+            AttributeManager.unregisterAll()
             registerNativeAdapter()
             registerNativeTagAdapter()
+            registerNativeAttributeProviders()
 
             loadMappingFiles()
             loadItemFiles()
@@ -340,4 +345,9 @@ object Sertraline : Plugin() {
         }
     }
 
+}
+
+fun registerNativeAttributeProviders() {
+    AttributeManager.register(MythicLibAttributeProvider())
+    AttributeManager.register(ChotenAttributeProvider())
 }
