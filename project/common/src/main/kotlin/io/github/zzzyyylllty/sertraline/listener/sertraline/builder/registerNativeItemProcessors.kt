@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline.builder
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.item.adapter.chotenComplexAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.customDataAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.minecraftAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.mmoAdapter
@@ -19,9 +20,13 @@ fun registerNativeAdapter() {
         devLog("Adapting sertraline")
         sertralineAdapter(item, sItem, player)
     }
-    itemManager.registerProcessor("custom_data") { sItem, item, player ->
-        devLog("Adapting CUSTOMDATA")
+    itemManager.registerProcessor("chotenatb") { sItem, item, player ->
+        devLog("Adapting chotenatb")
         customDataAdapter(item, sItem, player)
+    }
+    itemManager.registerProcessor("chotenatb_complex") { sItem, item, player ->
+        devLog("Adapting chotenatb complex")
+        chotenComplexAdapter(item, sItem, player)
     }
     itemManager.registerProcessor("mmo") { sItem, item, player ->
         devLog("Adapting MMO")

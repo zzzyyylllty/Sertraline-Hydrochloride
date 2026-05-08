@@ -89,7 +89,7 @@ allprojects {
         taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
 
         taboo("com.github.zzzyyylllty:EmbianComponent:1.0.5")
-        taboo("cn.gtemc:itembridge:1.0.17")
+        taboo("cn.gtemc:itembridge:1.0.25")
 
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)

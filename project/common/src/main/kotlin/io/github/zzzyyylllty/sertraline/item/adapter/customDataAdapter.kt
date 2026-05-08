@@ -1,34 +1,22 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
-import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
-import java.util.LinkedHashMap
 
 fun customDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack {
-
-    val tag = item.getItemTag(true)
-    var map = (sItem.getDeepData("custom_data") as Map<String, Any?>?)
-    if (map == null || map.isEmpty()) {
-        devLog("custom_data is null or empty, skipping adapting.")
+    val rawData = sItem.getDeepData("chotenatb") as? Map<String, Any?> ?: run {
+        devLog("chotenatb data is null or not a map, skipping adapting.")
         return item
     }
-    if (map.keys.firstOrNull() == "custom_data") {
-        map = map["custom_data"] as Map<String, Any?>?
-    }
-    (transferBooleanToByte(map) as Map<String, Any?>).forEach {
-        tag.put(it.key, it.value)
-    }
-    val item = item.setItemTag(tag, true)
 
-    return item
+    devLog("Adapting chotenatb data: $rawData")
 
+    val tag = item.getItemTag(true)
+    tag["chotenatb"] = listOf(transferBooleanToByte(rawData))
+
+    return item.setItemTag(tag, true)
 }
-
-
-
