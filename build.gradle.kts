@@ -109,7 +109,7 @@ allprojects {
         compileOnly(rootProject.libs.mythiclibdist)
         compileOnly(rootProject.libs.placeholderapi)
         compileOnly(rootProject.libs.packeteventsspigot)
-        compileOnly(rootProject.libs.datafixerupper)
+//        compileOnly(rootProject.libs.datafixerupper)
         compileOnly(rootProject.libs.fluxoncore)
         compileOnly(rootProject.libs.netty.all)
         compileOnly(rootProject.libs.caffeine)

@@ -37,6 +37,7 @@ import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
+import io.github.zzzyyylllty.sertraline.util.ScriptHelper
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
 import com.github.benmanes.caffeine.cache.Caffeine
@@ -277,6 +278,7 @@ object Sertraline : Plugin() {
             loadTypeFiles()
             loadLevelFiles()
             loadRecipeFiles()
+            ScriptHelper.loadScriptFiles()
 
             SertralineReloadEvent().call()
         }

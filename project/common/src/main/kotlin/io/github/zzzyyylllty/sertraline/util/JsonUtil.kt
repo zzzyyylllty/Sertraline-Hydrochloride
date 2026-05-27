@@ -22,7 +22,6 @@ val jsonUtils: Gson by lazy {
         .disableHtmlEscaping()
         .disableInnerClassSerialization()
         // .setPrettyPrinting()
-        .excludeFieldsWithModifiers()
         .serializeNulls()
         .setLenient()
 

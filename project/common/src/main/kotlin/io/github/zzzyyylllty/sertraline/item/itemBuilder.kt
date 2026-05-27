@@ -23,7 +23,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import com.cryptomorin.xseries.XMaterial
-import io.github.zzzyyylllty.sertraline.data.deserializeSItem
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
@@ -92,7 +91,7 @@ fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack?
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null): ItemStack? {
-    val pTemplate = itemMap[template]?.serialize()?.let { deserializeSItem(it) } ?: return null
+    val pTemplate = itemMap[template]?.deepCopy() ?: return null
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
@@ -131,7 +130,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
-    val pTemplate = template.serialize()?.let { deserializeSItem(it) } ?: return null
+    val pTemplate = template.deepCopy()
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
@@ -186,6 +185,16 @@ fun ItemStack.rebuildBypassKeepData(player: Player?): ItemStack {
 
     val tag = this.clone().getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return this
+
+    // 快速路径：如果没有 dynamics 且无 NBT 实例数据，重建是冗余的
+    val template = itemMap[sID]
+    if (template != null && template.getDeepData("sertraline:dynamics") == null) {
+        val nbtData = tag["sertraline_data"]?.parseMapNBT()
+        if (nbtData == null) {
+            return this // 首次构建，无动态内容 → 重建不会改变结果
+        }
+    }
+
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, amount = this.amount, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")

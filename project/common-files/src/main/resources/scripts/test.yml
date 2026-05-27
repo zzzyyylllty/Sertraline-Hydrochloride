@@ -1,0 +1,45 @@
+# Sertraline Script Configuration
+# 脚本类型: graaljs, javascript, kether, fluxon, jexl
+#
+# 参数通过 arg1, arg2, ... 或命名变量传入
+# 上下文通过 ScriptHelper.pushContext/popContext 或 withContext 管理
+#
+# 所有脚本自动注入 defaultData 中的全局对象:
+#   mmUtil, mmJsonUtil, Bukkit, PlayerUtil, ItemStackUtil, Math, 等
+
+# GraalVM Polyglot JavaScript (高性能, ES2023+)
+sample:
+  type: graaljs
+  script: |-
+    player.sendMessage("Hello world! arg1 is " + arg1)
+
+# 标准 JSR 223 JavaScript (javax.script 接口)
+js-sample:
+  type: javascript
+  script: |-
+    player.sendMessage("[JS] Hello world! arg1 is " + arg1)
+
+# 使用 defaultData 中的 Bukkit 对象
+bukkit-sample:
+  type: graaljs
+  script: |-
+    player.sendMessage("Online players: " + Bukkit.getOnlinePlayers().size());
+    player.sendMessage("Server version: " + Bukkit.getVersion());
+
+# Kether 脚本
+# kether-sample:
+#   type: kether
+#   script: |-
+#     tell player "Hello from kether, arg1 is {arg1}"
+
+# Fluxon 脚本
+# fluxon-sample:
+#   type: fluxon
+#   script: |-
+#     tell "Hello from fluxon"
+
+# JEXL 表达式
+# jexl-sample:
+#   type: jexl
+#   script: |-
+#     arg1 + " world"

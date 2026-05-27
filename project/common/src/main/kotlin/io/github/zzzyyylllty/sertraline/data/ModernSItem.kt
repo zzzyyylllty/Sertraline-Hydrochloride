@@ -93,6 +93,42 @@ data class ModernSItem(
         return jsonUtils.toJson(this)
     }
 
+    /**
+     * 深拷贝，不使用 JSON 序列化/反序列化，性能远优于 serialize+deserialize
+     */
+    fun deepCopy(): ModernSItem = ModernSItem(
+        key = key,
+        data = deepCopyMap(data),
+        config = deepCopyMap(config)
+    )
+
+    /**
+     * 配置中是否包含 ${...}$ 占位符
+     * 在 item 加载时延迟计算一次并缓存
+     */
+    @Transient
+    private var _hasPlaceholders: Boolean? = null
+    val hasPlaceholders: Boolean
+        get() {
+            if (_hasPlaceholders == null) {
+                _hasPlaceholders = configContainsPlaceholders(config) || configContainsPlaceholders(data)
+            }
+            return _hasPlaceholders!!
+        }
+
+    /**
+     * 配置中是否包含 sertraline:dynamics 动态数据
+     */
+    @Transient
+    private var _hasDynamics: Boolean? = null
+    val hasDynamics: Boolean
+        get() {
+            if (_hasDynamics == null) {
+                _hasDynamics = getDeepData("sertraline:dynamics") != null
+            }
+            return _hasDynamics!!
+        }
+
 
     fun getDeepData(location: String): Any? {
         val colonIndex = location.indexOf(':')
@@ -138,6 +174,57 @@ data class ModernSItem(
 
 fun deserializeSItem(string: String): ModernSItem {
     return jsonUtils.fromJson(string, ModernSItem::class.java)
+}
+
+/**
+ * 深拷贝 LinkedHashMap
+ */
+@Suppress("UNCHECKED_CAST")
+fun deepCopyMap(original: LinkedHashMap<String, Any?>): LinkedHashMap<String, Any?> {
+    val copy = LinkedHashMap<String, Any?>(original.size)
+    for ((key, value) in original) {
+        copy[key] = deepCopyValue(value)
+    }
+    return copy
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun deepCopyValue(value: Any?): Any? {
+    return when (value) {
+        is LinkedHashMap<*, *> -> deepCopyMap(value as LinkedHashMap<String, Any?>)
+        is Map<*, *> -> LinkedHashMap(value as Map<String, Any?>)
+        is ArrayList<*> -> ArrayList(value.map { deepCopyValue(it) })
+        is List<*> -> value.map { deepCopyValue(it) }
+        is MutableList<*> -> value.map { deepCopyValue(it) }.toMutableList()
+        else -> value // String, Number, Boolean, null are immutable
+    }
+}
+
+/**
+ * 递归检查配置中是否包含 ${...}$ 占位符
+ */
+fun configContainsPlaceholders(config: Map<String, Any?>): Boolean {
+    for ((_, value) in config) {
+        when (value) {
+            is String -> {
+                if (value.contains("\${")) return true
+            }
+            is Map<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                if (configContainsPlaceholders(value as Map<String, Any?>)) return true
+            }
+            is List<*> -> {
+                for (element in value) {
+                    if (element is String && element.contains("\${")) return true
+                    if (element is Map<*, *>) {
+                        @Suppress("UNCHECKED_CAST")
+                        if (configContainsPlaceholders(element as Map<String, Any?>)) return true
+                    }
+                }
+            }
+        }
+    }
+    return false
 }
 
 data class Action(
