@@ -15,7 +15,6 @@ import taboolib.module.kether.combinationParser
 import taboolib.module.kether.run
 import taboolib.module.kether.str
 
-// 由于动态加载依赖，combinationParser不能使用
 //@KetherParser(["minitell", "mtell"], shared = true)
 //fun actionMiniTell() = combinationParser {
 //    val mm = MiniMessage.miniMessage()

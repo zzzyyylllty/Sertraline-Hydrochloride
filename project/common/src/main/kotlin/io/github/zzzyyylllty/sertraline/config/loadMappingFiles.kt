@@ -40,7 +40,8 @@ fun loadMappingFile(file: File) {
         devLog("${file.name} not match regex, skipping...")
         return
     }
-    val entries = map?.entries ?: emptyList()
+    if (map == null) return
+    val entries = map.entries
     for (it in entries) {
         val key = it.key
         val value = map?.get(key) as List<String>

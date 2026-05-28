@@ -27,6 +27,7 @@ import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcesso
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
 import io.github.zzzyyylllty.sertraline.item.process.tag.TagProcessorManager
 import io.github.zzzyyylllty.sertraline.item.process.tag.registerNativeTagAdapter
+import io.github.zzzyyylllty.sertraline.logger.ReloadCollector
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.infoLSync
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
@@ -62,6 +63,7 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.database.getHost
 import taboolib.module.kether.KetherShell
 import taboolib.module.lang.Language
+import taboolib.module.lang.asLangText
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
 import java.io.File
@@ -248,11 +250,12 @@ object Sertraline : Plugin() {
         }
     }*/
 
-    fun reloadCustomConfig(async: Boolean = true) {
+    fun reloadCustomConfig(async: Boolean = true, sender: CommandSender? = null) {
         submit(async) {
+            ReloadCollector.begin()
 
             config.reload()
-            devMode = config.getBoolean("debug",false)
+            devMode = config.getBoolean("debug", false)
             allowAsyncLog = config.getBoolean("async-logging", true)
 
             itemMap.clear()
@@ -270,17 +273,52 @@ object Sertraline : Plugin() {
             registerNativeTagAdapter()
             registerNativeAttributeProviders()
 
-            loadMappingFiles()
-            loadItemFiles()
-            loadLoreFormatFiles()
-            loadCraftingStationFiles()
-            loadTierFiles()
-            loadTypeFiles()
-            loadLevelFiles()
-            loadRecipeFiles()
-            ScriptHelper.loadScriptFiles()
+            try { loadMappingFiles() } catch (e: Exception) {
+                severeL("Mapping_Load_Error_Parse", "mappings", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Mappings", mappings.size))
+
+            try { loadItemFiles() } catch (e: Exception) {
+                severeL("Config_Load_Error_Parse", "items", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Items", itemMap.size))
+
+            try { loadLoreFormatFiles() } catch (e: Exception) {
+                severeL("LoreFormat_Load_Error_Parse", "lore-formats", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_LoreFormats", loreFormats.size))
+
+            try { loadCraftingStationFiles() } catch (e: Exception) {
+                severeL("CraftingStation_Load_Error_Parse", "crafting-stations", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_CraftingStations", craftingStations.size))
+
+            try { loadTierFiles() } catch (e: Exception) {
+                severeL("Tier_Load_Error_Parse", "tiers", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Tiers", tiers.size))
+
+            try { loadTypeFiles() } catch (e: Exception) {
+                severeL("Type_Load_Error_Parse", "types", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Types", types.size))
+
+            try { loadLevelFiles() } catch (e: Exception) {
+                severeL("Level_Load_Error_Parse", "levels", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Levels", levels.size))
+
+            try { loadRecipeFiles() } catch (e: Exception) {
+                severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+            }
+
+            try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
+                severeS("Failed to load scripts: ${e.message}")
+            }
 
             SertralineReloadEvent().call()
+
+            ReloadCollector.printSummary(sender)
         }
     }
 //

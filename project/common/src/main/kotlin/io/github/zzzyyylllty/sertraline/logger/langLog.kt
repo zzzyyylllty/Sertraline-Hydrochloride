@@ -21,17 +21,24 @@ import taboolib.module.lang.asLangText
 val prefix = "[<gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient>]"
 
 
-fun infoL(node: String,vararg args: Any) {
-    consoleSender.infoS(console.asLangText(node,*args))
+fun infoL(node: String, vararg args: Any) {
+    consoleSender.infoS(console.asLangText(node, *args))
 }
-fun infoLSync(node: String,vararg args: Any) {
-    consoleSender.infoSSync(console.asLangText(node,*args))
+
+fun infoLSync(node: String, vararg args: Any) {
+    consoleSender.infoSSync(console.asLangText(node, *args))
 }
-fun severeL(node: String,vararg args: Any) {
-    consoleSender.severeS(console.asLangText(node,*args))
+
+fun severeL(node: String, vararg args: Any) {
+    val message = console.asLangText(node, *args)
+    ReloadCollector.addError(message)
+    consoleSender.severeS(message)
 }
-fun warningL(node: String,vararg args: Any) {
-    consoleSender.warningS(console.asLangText(node,*args))
+
+fun warningL(node: String, vararg args: Any) {
+    val message = console.asLangText(node, *args)
+    ReloadCollector.addWarning(message)
+    consoleSender.warningS(message)
 }
 
 fun CommandSender?.fineS(message: String, bothSendConsole: Boolean = false) {

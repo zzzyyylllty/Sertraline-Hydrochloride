@@ -32,7 +32,7 @@ taboolib {
     relocate("kotlinx.serialization", "kotlinx.serialization181")
     relocate("io.github.projectunified.uniitem", "io.github.zzzyyylllty.sertraline.dep.uniitem")
     relocate("com.fasterxml.jackson", "io.github.zzzyyylllty.sertraline.dep.jackson")
-    relocate("com.mojang.datafixers", "io.github.zzzyyylllty.sertraline.dep.datafixers")
+//    relocate("com.mojang.datafixers", "io.github.zzzyyylllty.sertraline.dep.datafixers")
     relocate("io.netty.handler.codec.http", "io.github.zzzyyylllty.sertraline.dep.http")
     relocate("io.netty.handler.codec.rtsp", "io.github.zzzyyylllty.sertraline.dep.rtsp")
     relocate("io.netty.handler.codec.spdy", "io.github.zzzyyylllty.sertraline.dep.spdy")

@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
+import io.github.zzzyyylllty.sertraline.logger.severeS
 import taboolib.common.platform.command.component.CommandComponentDynamic
 import taboolib.common.platform.command.component.CommandComponentLiteral
 import taboolib.module.lang.asLangText
@@ -100,11 +101,10 @@ object SertralineMainCommand {
         execute<CommandSender> { sender, context, argument ->
             sender.sendStringAsComponent("<yellow>Reloading...")
             try {
-                reloadCustomConfig(true)
-                sender.sendStringAsComponent("<green>Reloaded.")
-            }
-            catch (e: Exception) {
-
+                reloadCustomConfig(true, sender)
+            } catch (e: Exception) {
+                sender.sendStringAsComponent("<red>Reload failed: ${e.message}</red>")
+                severeS("Reload failed: ${e.message}")
             }
         }
     }

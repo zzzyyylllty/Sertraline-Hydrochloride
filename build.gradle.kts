@@ -22,6 +22,13 @@ allprojects {
     group = "io.github.zzzyyylllty.sertraline"
     version = rootProject.version
 
+
+    configurations {
+        all {
+            exclude(group = "com.mojang.datafixers")
+        }
+    }
+
     taboolib {
         env {
             debug = false

@@ -14,21 +14,20 @@ fun multiExtensionLoader(file: File): Map<String, Any?>? {
             else -> extension
         }
 
-        // 检查是否支持的格式
         if (!isSupportedFormat(format)) {
-            severeL("Item_Load_Error_Extension", file.extension)
+            severeL("Config_Load_Error_Extension", file.extension)
             return null
         }
 
         val content = file.readText()
         if (content.isBlank()) {
-            severeL("Item_Load_Error_Empty", file.name)
+            severeL("Config_Load_Error_Empty", file.name)
             return null
         }
 
         parseToMap(content, format)
     } catch (e: Exception) {
-        severeL("Item_Load_Error_Parse", file.name, e.message ?: "Unknown error")
+        severeL("Config_Load_Error_Parse", file.name, e.message ?: "Unknown error")
         null
     }
 }

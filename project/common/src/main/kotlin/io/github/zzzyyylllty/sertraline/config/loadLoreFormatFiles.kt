@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.data.LoreSetting
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
 // import org.yaml.snakeyaml.Yaml
@@ -46,12 +47,16 @@ fun loadLoreFormatFile(file: File) {
             return
         }
         val map = multiExtensionLoader(file)
-        if (map != null) for (it in map.entries) {
-            val key = it.key
-            val value = map[key]
-            loadLoreFormat(key, value as Map<String, Any?>? ?: linkedMapOf())
-        } else {
-            devLog("Map is null, skipping.")
+        if (map != null) {
+            if (map.isEmpty()) {
+                severeL("Config_Load_Error_Empty", file.name)
+                return
+            }
+            for (it in map.entries) {
+                val key = it.key
+                val value = map[key]
+                loadLoreFormat(key, value as Map<String, Any?>? ?: linkedMapOf())
+            }
         }
     }
 }
