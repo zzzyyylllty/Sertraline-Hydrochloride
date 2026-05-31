@@ -127,7 +127,7 @@ allprojects {
         compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
         // 本地依赖
-        compileOnly(files("$rootDir/libs/ChoTenAttribute-0.0.3.2-common-api.jar"))
+        compileOnly(files("$rootDir/libs/ChoTenTech-1.0.0-api.jar"))
 
         // 运行时依赖
         implementation(rootProject.libs.bundles.reflex)

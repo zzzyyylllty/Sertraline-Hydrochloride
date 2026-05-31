@@ -1,10 +1,10 @@
 package io.github.zzzyyylllty.sertraline.attribute
 
-import io.github.zzzyyylllty.attribute.api.ChoTenAttributeAPI
-import io.github.zzzyyylllty.attribute.data.AttributeModifier
-import io.github.zzzyyylllty.attribute.data.AttributeSlot
-import io.github.zzzyyylllty.attribute.data.ModifierSource
-import io.github.zzzyyylllty.attribute.data.ModifierType
+import io.github.zzzyyylllty.chotentech.attribute.api.ChoTenAttributeAPI
+import io.github.zzzyyylllty.chotentech.attribute.data.AttributeModifier
+import io.github.zzzyyylllty.chotentech.attribute.data.AttributeSlot
+import io.github.zzzyyylllty.chotentech.attribute.data.ModifierSource
+import io.github.zzzyyylllty.chotentech.attribute.data.ModifierType
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.serialize.generateUUID
@@ -21,7 +21,7 @@ class ChotenAttributeProvider : AttributeProvider {
 
     companion object {
         val available: Boolean by lazy {
-            Bukkit.getPluginManager().getPlugin("ChoTenAttributes") != null
+            Bukkit.getPluginManager().getPlugin("ChoTenTech") != null
         }
 
         private val chotenFilter = setOf("id", "source", "slot", "allowed")
