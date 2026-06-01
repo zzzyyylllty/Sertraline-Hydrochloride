@@ -75,11 +75,23 @@ Click here to donate via [Afdian](https://afdian.com/a/liminalskyline).
 
 ```Gradle kotlin
 repositories {
+    // DEPRECATED
     maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
+    // DEPRECATED, 
     implementation("com.github.zzzyyylllty:Sertraline-Hydrochloride:VERSION")
+}
+```
+
+```Gradle kotlin
+repositories {
+    // CENTRAL
+}
+
+dependencies {
+    implementation("io.github.zzzyyylllty.sertraline:common:VERSION")
 }
 ```
 

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.taboolib)
     kotlin("plugin.serialization") version "2.0.0"
     // paperweight id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("com.vanniktech.maven.publish") version "0.34.0"
     id("maven-publish")
     signing
 }
@@ -19,6 +20,7 @@ allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     // paperweight apply(plugin = "io.papermc.paperweight.userdev")
     apply(plugin = "maven-publish")
+    apply(plugin = "com.vanniktech.maven.publish")
 
     group = "io.github.zzzyyylllty.sertraline"
     version = rootProject.version
@@ -166,21 +168,6 @@ allprojects {
         archiveClassifier.set("javadoc")
     }
 
-    publishing {
-        publications {
-            create<MavenPublication>("Sertraline") {
-                from(components["java"])
-
-                artifact(sourcesJar.get()) {
-                    classifier = "sources"
-                }
-
-                artifact(javadocJar.get()) {
-                    classifier = "javadoc"
-                }
-            }
-        }
-    }
 }
 
 // common-files 项目特殊配置
@@ -206,51 +193,50 @@ project(":project:common-files") {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
+//publishing {
+//    publications {
+//        create<MavenPublication>("mavenJava") {
+//            from(components["java"])
+//
+//            // 配置 POM 文件信息，这是 Maven 仓库必须的
+//            pom {
+//                name.set("Sertraline")
+//                description.set("A concise description.")
+//                url.set("https://github.com/zzzyyylllty/Sertraline-Hydrochloride")
+//                licenses {
+//                    license {
+//                        name.set("MIT License")
+//                        url.set("https://mit-license.org/")
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id.set("zzzyyylllty")
+//                        name.set("AkaCandyKAngel")
+//                        email.set("3631901756@qq.com")
+//                    }
+//                }
+//                scm {
+//                    url.set("https://github.com/zzzyyylllty/Sertraline-Hydrochloride")
+//                }
+//            }
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            name = "OSSRH"
+//            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+//            credentials {
+//                username = System.getenv("CENTRAL_TOKEN_USERNAME")
+//                password = System.getenv("CENTRAL_TOKEN_PASSWORD")
+//            }
+//        }
+//    }
+//
+//}
 
-            // 配置 POM 文件信息，这是 Maven 仓库必须的
-            pom {
-                name.set("Sertraline")
-                description.set("A concise description.")
-                url.set("https://github.com/zzzyyylllty/Sertraline-Hydrochloride")
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://mit-license.org/")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("zzzyyylllty")
-                        name.set("AkaCandyKAngel")
-                        email.set("3631901756@qq.com")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/zzzyyylllty/Sertraline-Hydrochloride")
-                }
-            }
-        }
-    }
-
-    repositories {
-         maven {
-             name = "CentralPortal"
-             url = uri("https://central.sonatype.com/api/v1/publisher")
-             credentials {
-                 username = System.getenv("CENTRAL_TOKEN_USERNAME") // 通常是 token
-                 password = System.getenv("CENTRAL_TOKEN_PASSWORD") // 通常是 token
-             }
-         }
-
-    }
-
-}
-
-
-signing {
-    sign(publishing.publications["mavenJava"])
-}
+//
+//signing {
+//    sign(publishing.publications["maven"])
+//}
