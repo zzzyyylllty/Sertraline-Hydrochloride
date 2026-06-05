@@ -22,6 +22,7 @@ import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
+import io.github.zzzyyylllty.sertraline.util.UUIDUtil
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
@@ -41,6 +42,7 @@ import taboolib.common.platform.Awake
 import taboolib.common.platform.function.submit
 import taboolib.common5.compileJS
 import taboolib.platform.util.bukkitPlugin
+import java.util.UUID
 import javax.script.SimpleBindings
 
 var defaultData = LinkedHashMap<String, Any?>()
@@ -69,6 +71,7 @@ fun registerExternalData() {
             "scheduler" to Bukkit.getScheduler(),
             "SertralineObj" to Sertraline,
             "FluxonShell" to FluxonShell,
+            "UUIDUtil" to UUIDUtil,
         ))
     val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()

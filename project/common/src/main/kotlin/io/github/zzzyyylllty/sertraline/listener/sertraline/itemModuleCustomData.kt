@@ -7,7 +7,7 @@ import taboolib.platform.BukkitListener.BukkitListener
 
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleCustomData(e: ItemLoadEvent) {
-    ((e.arguments["custom_data"]) as Map<String, Any?>?)?.let { e.itemData["custom_data:custom_data"] = it }
+    ((e.arguments["custom_data"]) as Map<String, Any?>?)?.let { e.itemData["custom_data"] = it }
     (e.arguments["chotenatb"] as? Map<String, Any?>)?.let { e.itemData["chotenatb"] = it }
     (e.arguments["chotenatb_complex"] as? List<Map<String, Any?>>)?.let { e.itemData["chotenatb_complex"] = it }
 }
