@@ -80,8 +80,21 @@ object ItemTagManager {
     }
 
 
-    private val resourceLocationConstructor by lazy {
-        resourceLocationClass.getDeclaredConstructor(String::class.java, String::class.java)
+    private val resourceLocationGetNamespace by lazy {
+        resourceLocationClass.getDeclaredMethod("getNamespace")
+    }
+    private val resourceLocationGetPath by lazy {
+        resourceLocationClass.getDeclaredMethod("getPath")
+    }
+
+    private val tagKeyLocationClass by lazy {
+        getClazz("net.minecraft.resources.ResourceLocation")
+    }
+    private val tagKeyLocationGetNamespace by lazy {
+        tagKeyLocationClass.getDeclaredMethod("getNamespace")
+    }
+    private val tagKeyLocationGetPath by lazy {
+        tagKeyLocationClass.getDeclaredMethod("getPath")
     }
 
     private val holderReferenceTagsField by lazy {
@@ -146,7 +159,7 @@ object ItemTagManager {
             for (item in items) {
                 // 获取物品的 ResourceLocation
                 val resourceLocation = registryGetKeyMethod.invoke(itemIRegistry, item) as Any
-                val itemKey = "${resourceLocation.javaClass.getDeclaredMethod("getNamespace").invoke(resourceLocation)}:${resourceLocation.javaClass.getDeclaredMethod("getPath").invoke(resourceLocation)}"
+                val itemKey = "${resourceLocationGetNamespace.invoke(resourceLocation)}:${resourceLocationGetPath.invoke(resourceLocation)}"
 
                 // 获取物品的 Holder
                 val resourceKey = resourceKeyCreateMethod.invoke(null, itemRegistryKey, resourceLocation)
@@ -160,7 +173,7 @@ object ItemTagManager {
                     for (tag in tags) {
                         // 获取标签的 ResourceLocation
                         val tagLocation = tagKeyLocationField.get(tag)
-                        val tagKey = "${tagLocation.javaClass.getDeclaredMethod("getNamespace").invoke(tagLocation)}:${tagLocation.javaClass.getDeclaredMethod("getPath").invoke(tagLocation)}"
+                        val tagKey = "${tagKeyLocationGetNamespace.invoke(tagLocation)}:${tagKeyLocationGetPath.invoke(tagLocation)}"
 
                         // 将物品添加到对应的标签列表中
                         vanillaItemTags.computeIfAbsent(tagKey) { mutableListOf() }.add(itemKey)

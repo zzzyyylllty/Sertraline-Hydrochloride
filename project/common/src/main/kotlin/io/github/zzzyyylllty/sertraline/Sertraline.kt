@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.api.SertralineAPIImpl
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.loadCraftingStationFiles
+import io.github.zzzyyylllty.sertraline.gui.CraftingStationManager
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
 import io.github.zzzyyylllty.sertraline.config.loadLoreFormatFiles
 import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
@@ -39,8 +40,10 @@ import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
+import java.util.concurrent.Callable
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.Cache
 import java.util.concurrent.TimeUnit
@@ -241,6 +244,8 @@ object Sertraline : Plugin() {
     }
 
     override fun onDisable() {
+        // 取消所有合成任务（保留持久化数据，玩家下次加入时可恢复）
+        CraftingStationManager.shutdownAll()
         infoLSync("Disable")
     }
     /*
@@ -261,6 +266,7 @@ object Sertraline : Plugin() {
             itemMap.clear()
             mappings.clear()
             loreFormats.clear()
+            CraftingStationManager.cancelAll()
             craftingStations.clear()
             tiers.clear()
             types.clear()
@@ -308,18 +314,32 @@ object Sertraline : Plugin() {
             }
             ReloadCollector.addStat(console.asLangText("Reload_Stat_Levels", levels.size))
 
-            try { loadRecipeFiles() } catch (e: Exception) {
-                severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+            // 配方注册 + 事件触发等 Bukkit API 操作必须在主线程执行
+            if (Bukkit.isPrimaryThread()) {
+                runRecipeSyncTasks(sender)
+            } else {
+                val plugin = Bukkit.getPluginManager().getPlugin("Sertraline")
+                if (plugin != null) {
+                    Bukkit.getScheduler().callSyncMethod(plugin, Callable {
+                        runRecipeSyncTasks(sender)
+                        null
+                    }).get()
+                } else {
+                    severeL("Config_Load_Error_Parse", "recipes", "Sertraline plugin instance not found for sync task")
+                }
             }
-
-            try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
-                severeS("Failed to load scripts: ${e.message}")
-            }
-
-            SertralineReloadEvent().call()
-
-            ReloadCollector.printSummary(sender)
         }
+    }
+
+    private fun runRecipeSyncTasks(sender: CommandSender?) {
+        try { loadRecipeFiles() } catch (e: Exception) {
+            severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+        }
+        try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
+            severeS("Failed to load scripts: ${e.message}")
+        }
+        SertralineReloadEvent().call()
+        ReloadCollector.printSummary(sender)
     }
 //
 //

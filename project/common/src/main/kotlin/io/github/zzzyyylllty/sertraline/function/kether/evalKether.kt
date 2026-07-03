@@ -153,9 +153,7 @@ fun String?.evalKetherString(
     cacheId: String? = null
 ): String? {
     if (this.isNullOrBlank()) {
-        val future = CompletableFuture<Any?>()
-        future.complete(null)
-        return future.toString()
+        return def.toString()
     }
     return KetherShell.eval(this, ScriptOptions.builder().apply {
         sender(player ?: console)

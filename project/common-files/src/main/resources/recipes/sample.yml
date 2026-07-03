@@ -1,29 +1,288 @@
-doe_card:
-  provider: SIMPLE # Simple(Bukkit) or Complex(NMS). Complex currently not available.
-  format: SHAPED # Shaped / Shapeless
+# ============================================================
+# Sertraline Recipe Config
+# ============================================================
+# All examples use workspace-defined Sertraline custom items.
+# 所有示例均使用 workspace 中定义的 Sertraline 自定义物品。
+#
+# Supported recipe types (type):
+# 支持的配方类型:
+#   CRAFTING          Crafting table (requires format: SHAPED / SHAPELESS)
+#                     合成台 (需指定 format)
+#   FURNACE           Furnace / 熔炉
+#   BLASTING          Blast furnace / 高炉
+#   SMOKING           Smoker / 烟熏炉
+#   CAMPFIRE          Campfire / 营火
+#   STONECUTTING      Stonecutter / 切石机
+#   SMITHING_TRANSFORM Smithing table transform / 锻造台-转换
+#   SMITHING_TRIM     Smithing table trim / 锻造台-装饰
+#
+# Ingredient formats / 原料格式:
+#   "sertraline:item_id"         — Sertraline custom item / 自定义物品
+#   "minecraft:diamond"          — Vanilla item / 原版物品
+#   "#minecraft:planks"          — Bukkit tag / 标签
+#   { options: [...] }           — Multi-choice (any match) / 多选一
+#   { itemId: "...", amount: 2 } — Item + amount object / 物品+数量对象
+#
+# Result function (result.function):
+# Post-craft execution, supports kether / javascript / command
+# 合成后执行，支持 kether / javascript / command
+# ============================================================
+
+# -----------------------------------------------------------
+# Example 1: Shaped — 9 doe_card → star_of_recall
+# 示例 1: 有序合成 — 9 张卡牌合成一颗回忆之星
+# -----------------------------------------------------------
+star_from_cards:
+  provider: SIMPLE
+  format: SHAPED
   type: CRAFTING
 
-  input-options:
-    # filter input's Sertraline data
-    data-filter:
-      - "xbuilder"
-      - "minecraft"
-    components:
-      mode: REMOVE # REMOVE OR KEEP
-      elements:
-        - minecraft:custom_data
+  pattern:
+    - "DDD"
+    - "DDD"
+    - "DDD"
+  ingredients:
+    D: "sertraline:doe_card"
+  result:
+    id: sertraline:star_of_recall
+    count: 1
+
+# -----------------------------------------------------------
+# Example 2: Shaped — Upgrade sword_of_skyline to sword_of_eternal_frozen
+# 示例 2: 有序合成 — 天际之剑升级为永恒冰霜之剑
+# -----------------------------------------------------------
+eternal_frozen_sword_craft:
+  provider: SIMPLE
+  format: SHAPED
+  type: CRAFTING
 
   pattern:
-    - "AAA"
-    - "CCB"
-    - "AAA"
+    - "SSS"
+    - "SWS"
+    - "SSS"
   ingredients:
-    A: "sertraline:doe_card"
-    B: "minecraft:stick"
-    C: "minecraft:diamond"
+    S: "sertraline:star_of_recall"
+    W: "sertraline:sword_of_skyline"
   result:
-    id: sertraline:doe_card
+    id: sertraline:sword_of_eternal_frozen
+    count: 1
+
+# -----------------------------------------------------------
+# Example 3: Shapeless — Mix two types of sugar
+# 示例 3: 无序合成 — 两种糖混合
+# -----------------------------------------------------------
+mixed_sugar:
+  provider: SIMPLE
+  format: SHAPELESS
+  type: CRAFTING
+
+  ingredients:
+    - "sertraline:bagged_zero_calorie_sugar"
+    - "sertraline:bagged_crystal_sugar"
+  result:
+    id: sertraline:bagged_crystal_sugar
+    count: 2
+
+# -----------------------------------------------------------
+# Example 4: Furnace — Bake speed cookie into pills
+# 示例 4: 熔炉配方 — 速度饼干烤成药丸
+# -----------------------------------------------------------
+smelt_pills_from_cookie:
+  provider: SIMPLE
+  type: FURNACE
+
+  ingredient: "sertraline:speed_potion_cookie"
+  result:
+    id: sertraline:sertraline_pills_14
+    count: 1
+  experience: 0.5
+  cookingTime: 200
+
+# -----------------------------------------------------------
+# Example 5: Blasting — Smelt card into 42-pack pills (faster)
+# 示例 5: 高炉配方 — 卡牌快速烧炼成 42 粒装药丸
+# -----------------------------------------------------------
+blast_pills_from_card:
+  provider: SIMPLE
+  type: BLASTING
+
+  ingredient: "sertraline:doe_card"
+  result:
+    id: sertraline:sertraline_pills_42
+    count: 1
+  experience: 0.5
+  cookingTime: 100
+
+# -----------------------------------------------------------
+# Example 6: Smoking — Smoke pills into speed cookie
+# 示例 6: 烟熏炉配方 — 药丸熏制成速度饼干
+# -----------------------------------------------------------
+smoke_cookie_from_pills:
+  provider: SIMPLE
+  type: SMOKING
+
+  ingredient: "sertraline:sertraline_pills_14"
+  result:
+    id: sertraline:speed_potion_cookie
+    count: 1
+  experience: 0.1
+  cookingTime: 100
+
+# -----------------------------------------------------------
+# Example 7: Stonecutting — Cut ultimate pickaxe into block wands
+# 示例 7: 切石机配方 — 终极镐子切割成两块建筑魔杖
+# -----------------------------------------------------------
+cut_pickaxe_to_wands:
+  provider: SIMPLE
+  type: STONECUTTING
+
+  ingredient: "sertraline:ultimate_pickaxe"
+  result:
+    id: sertraline:block_wand
+    count: 2
+
+# -----------------------------------------------------------
+# Example 8: Smithing — Upgrade to Choten test sword
+# 示例 8: 锻造台配方 — 升级为 Choten 测试剑
+# -----------------------------------------------------------
+mythic_sword_upgrade:
+  provider: SIMPLE
+  type: SMITHING_TRANSFORM
+
+  template: "sertraline:star_of_recall"
+  base: "sertraline:sword_of_skyline"
+  addition: "sertraline:blade_of_mythic"
+  result:
+    id: sertraline:test_choten_sword
+    count: 1
+
+# -----------------------------------------------------------
+# Example 9: Multi-choice ingredient (OR logic) — Any Sertraline sword → star
+# 示例 9: 多选原料 (或逻辑) — 任意 Sertraline 剑 → 回忆之星
+# -----------------------------------------------------------
+any_sword_to_star:
+  provider: SIMPLE
+  format: SHAPELESS
+  type: CRAFTING
+
+  ingredients:
+    - options:
+        - "sertraline:sword_of_skyline"
+        - "sertraline:sword_of_counter"
+        - "sertraline:sword_of_soulbound"
+  result:
+    id: sertraline:star_of_recall
+    count: 1
+    function:
+      - type: command
+        command: "say %player% 回收了一把剑！"
+
+# -----------------------------------------------------------
+# Example 10: Item object format with amount
+# 示例 10: 物品对象格式 + 数量
+# -----------------------------------------------------------
+cards_to_star_object:
+  provider: SIMPLE
+  format: SHAPED
+  type: CRAFTING
+
+  pattern:
+    - "XXX"
+    - "XXX"
+    - "XXX"
+  ingredients:
+    X: { itemId: "sertraline:doe_card", amount: 1 }
+  result:
+    id: sertraline:star_of_recall
+    count: 1
+
+# -----------------------------------------------------------
+# Example 11: Shaped crafting with post-craft Kether script
+# 示例 11: 有序合成 — 合成后执行 Kether 脚本
+# -----------------------------------------------------------
+craft_eternal_with_kether:
+  provider: SIMPLE
+  format: SHAPED
+  type: CRAFTING
+
+  pattern:
+    - "SSS"
+    - "SWS"
+    - "SSS"
+  ingredients:
+    S: "sertraline:star_of_recall"
+    W: "sertraline:sword_of_skyline"
+  result:
+    id: sertraline:sword_of_eternal_frozen
+    count: 1
     function:
       - type: kether
-        kether: tell "Hello!"
-    count: 1
+        kether: tell "&a合成成功！获得了永恒冰霜之剑！"
+
+# -----------------------------------------------------------
+# Example 12: NMS (COMPLEX) mode — injects directly into NMS RecipeManager
+# 示例 12: NMS (COMPLEX) 模式 — 直接注入 NMS RecipeManager
+# -----------------------------------------------------------
+# NOT YET SUPPORT PROCESS OWN RISK
+# -----------------------------------------------------------
+# Differences from SIMPLE mode / 与 SIMPLE 模式的区别:
+#   - Bypasses Bukkit, operates directly on Minecraft's native RecipeManager
+#     绕过 Bukkit，直接操作 Minecraft 原生的 RecipeManager
+#   - Ingredients use native Ingredient.of(ItemStack...)
+#   - More precise NBT/component matching for Sertraline custom items
+#     对 Sertraline 自定义物品的 NBT/components 匹配更精确
+#   - Registration uses NMS RecipeManager.recipes Map directly
+#     注册/注销直接操作 NMS RecipeManager.recipes Map
+# Use cases / 适用场景:
+#   - High matching precision required for Sertraline item ingredients
+#     Sertraline 物品作为材料时匹配精度要求高
+#   - Need to bypass other plugins' Bukkit recipe interception
+#     需要绕过其他插件对 Bukkit 配方的拦截
+#nms_star_from_cards:
+#  provider: COMPLEX
+#  format: SHAPED
+#  type: CRAFTING
+#
+#  pattern:
+#    - "DDD"
+#    - "DDD"
+#    - "DDD"
+#  ingredients:
+#    D: "sertraline:doe_card"
+#  result:
+#    id: sertraline:star_of_recall
+#    count: 1
+#    function:
+#      - type: kether
+#        kether: tell "&bNMS 配方合成成功！"
+
+# -----------------------------------------------------------
+# Example 13: NMS shapeless crafting
+# 示例 13: NMS 无序合成
+# -----------------------------------------------------------
+#nms_sugar_mix:
+#  provider: COMPLEX
+#  format: SHAPELESS
+#  type: CRAFTING
+#
+#  ingredients:
+#    - "sertraline:bagged_zero_calorie_sugar"
+#    - "sertraline:bagged_crystal_sugar"
+#  result:
+#    id: sertraline:bagged_crystal_sugar
+#    count: 3
+
+# -----------------------------------------------------------
+# Example 14: NMS furnace recipe
+# 示例 14: NMS 熔炉配方
+# -----------------------------------------------------------
+#nms_cookie_to_pills:
+#  provider: COMPLEX
+#  type: FURNACE
+#
+#  ingredient: "sertraline:speed_potion_cookie"
+#  result:
+#    id: sertraline:sertraline_pills_42
+#    count: 2
+#  experience: 2.0
+#  cookingTime: 200

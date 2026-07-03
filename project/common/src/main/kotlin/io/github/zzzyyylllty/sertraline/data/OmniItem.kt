@@ -1,7 +1,9 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.embiancomponent.EmbianComponent
+import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
@@ -16,6 +18,7 @@ import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import kotlin.math.roundToInt
 
 private val specialItemNamespace = listOf("minecraft", "mc", "vanilla")
+private val sertralineNamespace = listOf("sertraline", "depazitems", "depaz")
 val componentHelper by lazy { if (VersionHelper().isOrAbove12005()) EmbianComponent.SafetyComponentSetter else null }
 
 data class OmniItem(
@@ -29,32 +32,33 @@ data class OmniItem(
 
         val amount = overrideAmount ?: (amount ?: "1").toDoubleOrNull()?.roundToInt()
 
-//        val split = (if (namespaceID.contains("{")) namespaceID.parseKether(player, defaultData).split(":") else listOf("mc", "grass_block")).toMutableList()
-//        val source = if (split.size >= 2) split.first().lowercase() else "mc"
-//        split.removeFirst()
-//        val item = split.joinToString(":")
         var itemStack: ItemStack?
 
         try {
-            val providedItem = if (specialItemNamespace.contains(source)) {
-
-                when (source) {
-                    "mc", "minecraft", "vanilla" -> {
-                        val parameters = (parameters ?: mapOf<String, Any?>()).toMutableMap()
-                        parameters["material"] = item
-                        XItemStack.deserialize(parameters)
-                    }
-
-                    else -> null
+            val providedItem = when {
+                // 原版物品（mc / minecraft / vanilla）
+                specialItemNamespace.contains(source) -> {
+                    val params = (parameters ?: mapOf<String, Any?>()).toMutableMap()
+                    params["material"] = item
+                    XItemStack.deserialize(params)
                 }
-
-            } else {
-                if (player != null) {
-                    ExternalItemHelper.itemBridge?.build(source, player, item)?.get()
-                } else {
-                    ExternalItemHelper.itemBridge?.build(source, item)?.get()
+                // Sertraline 自有物品
+                sertralineNamespace.contains(source) -> {
+                    if (player != null) sertralineItemBuilder(item, player)
+                    else sertralineItemBuilder(item, null)
+                }
+                // 外部插件物品（ItemsAdder, Oraxen, Nexo, CraftEngine 等）
+                else -> {
+                    if (player != null) {
+                        ExternalItemHelper.itemBridge?.build(source, item, player)?.get()
+                            ?: ExternalItemHelper.itemBridgeAll?.build(source, item, player)?.get()
+                    } else {
+                        ExternalItemHelper.itemBridge?.build(source, item)?.get()
+                            ?: ExternalItemHelper.itemBridgeAll?.build(source, item)?.get()
+                    }
                 }
             }
+
             if (providedItem == null) {
                 severeL("ErrorItemGenerationFailedNull", source, item)
                 return ItemStack(Material.GRASS_BLOCK)

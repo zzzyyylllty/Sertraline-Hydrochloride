@@ -69,7 +69,7 @@ fun loadLoreFormat(key: String, arg: Map<String, Any?>) {
         elements.add(
             if (it is String) LoreElement(it, null)
             else if (it is Map<*,*>) LoreElement(
-                it["content"].toString(),
+                it["content"].asListedStringEnhanced() ?: "",
                 it["key"] as? String,
                 (it["lineMode"] as? String)?.let { value -> LineMode.valueOf(value) },
                 it["lineRequire"] as? List<String>

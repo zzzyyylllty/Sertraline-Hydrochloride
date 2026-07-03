@@ -1,120 +1,153 @@
 package io.github.zzzyyylllty.sertraline.data
 
-import org.bukkit.inventory.ItemStack
-
 /**
  * 配方类型枚举
  */
 enum class RecipeType {
-    SHAPED,           // 有序合成
-    SHAPELESS,        // 无序合成
-    SMELTING,         // 熔炉
-    BLASTING,         // 高炉
-    SMOKING,          // 烟熏
-    CAMPFIRE_COOKING, // 营火烹饪
-    STONECUTTING,     // 切石
-    SMITHING_TRANSFORM, // 锻造台-转换
-    SMITHING_TRIM     // 锻造台-装饰
+    CRAFTING,
+    FURNACE,
+    BLASTING,
+    SMOKING,
+    CAMPFIRE,
+    STONECUTTING,
+    SMITHING_TRANSFORM,
+    SMITHING_TRIM
 }
 
 /**
+ * 配方格式：有序/无序（仅对 CRAFTING 有效）
+ */
+enum class RecipeFormat {
+    SHAPED, SHAPELESS
+}
+
+/**
+ * 配方提供方式
+ */
+enum class RecipeProvider {
+    SIMPLE,  // Bukkit API
+    COMPLEX  // NMS 注入（通过 NMSRecipeFactory 反射操作 RecipeManager）
+}
+
+/**
+ * 输入组件过滤模式
+ */
+enum class ComponentsMode {
+    REMOVE, KEEP
+}
+
+/**
+ * 输入选项：控制合成时对输入物品的数据处理
+ */
+data class InputOptions(
+    val dataFilter: List<String> = emptyList(),
+    val components: ComponentFilter? = null
+)
+
+data class ComponentFilter(
+    val mode: ComponentsMode = ComponentsMode.REMOVE,
+    val elements: List<String> = emptyList()
+)
+
+/**
  * 配方原料
- * 支持具体物品ID或标签
  */
 sealed class RecipeIngredient {
-    /**
-     * 具体物品
-     * @param itemId 物品ID，如 "minecraft:oak_planks"
-     * @param amount 数量，默认为1
-     */
+    /** 具体物品，如 sertraline:doe_card / minecraft:stone / itemsadder:some_item */
     data class Item(val itemId: String, val amount: Int = 1) : RecipeIngredient()
 
-    /**
-     * 标签
-     * @param tagId 标签ID，如 "minecraft:planks"（不需要#前缀）
-     * @param amount 数量，默认为1
-     */
+    /** 标签，如 minecraft:planks / #minecraft:planks */
     data class Tag(val tagId: String, val amount: Int = 1) : RecipeIngredient()
 
-    /**
-     * 多个选项（或关系）
-     * @param options 多个原料选项
-     */
+    /** 多选一 */
     data class Choice(val options: List<RecipeIngredient>) : RecipeIngredient()
 }
 
 /**
- * 配方数据类
+ * 配方结果物品
  */
-sealed class RecipeData {
-    abstract val id: String  // 配方ID，如 "myplugin:custom_recipe"
-    abstract val result: RecipeResult
+data class RecipeResult(
+    val itemId: String,
+    val count: Int = 1,
+    val functions: List<RecipeFunction> = emptyList()
+)
 
-    /**
-     * 有序合成配方
-     * @param pattern 3x3 合成表图案，使用字符表示，如 listOf("AAA", "ABA", "AAA")
-     * @param key 字符到原料的映射，如 mapOf('A' to ..., 'B' to ...)
-     */
-    data class Shaped(
-        override val id: String,
-        override val result: RecipeResult,
-        val pattern: List<String>,  // 最多3行，每行最多3个字符
-        val key: Map<Char, RecipeIngredient>,
-        val showNotification: Boolean = true
-    ) : RecipeData()
-
-    /**
-     * 无序合成配方
-     * @param ingredients 原料列表
-     */
-    data class Shapeless(
-        override val id: String,
-        override val result: RecipeResult,
-        val ingredients: List<RecipeIngredient>,
-        val showNotification: Boolean = true
-    ) : RecipeData()
-
-    /**
-     * 熔炉类配方
-     * @param ingredient 输入原料
-     * @param experience 经验值
-     * @param cookingTime 烹饪时间（tick）
-     */
-    data class Cooking(
-        override val id: String,
-        override val result: RecipeResult,
-        val type: RecipeType, // SMELTING, BLASTING, SMOKING, CAMPFIRE_COOKING
-        val ingredient: RecipeIngredient,
-        val experience: Float = 0.1f,
-        val cookingTime: Int = 200
-    ) : RecipeData()
-
-    /**
-     * 切石配方
-     */
-    data class Stonecutting(
-        override val id: String,
-        override val result: RecipeResult,
-        val ingredient: RecipeIngredient
-    ) : RecipeData()
-
-    /**
-     * 锻造台配方
-     */
-    data class Smithing(
-        override val id: String,
-        override val result: RecipeResult,
-        val type: RecipeType, // SMITHING_TRANSFORM, SMITHING_TRIM
-        val template: RecipeIngredient,
-        val base: RecipeIngredient,
-        val addition: RecipeIngredient
-    ) : RecipeData()
+/**
+ * 结果函数（合成后执行）
+ */
+sealed class RecipeFunction {
+    data class Kether(val script: String) : RecipeFunction()
+    data class JavaScript(val script: String) : RecipeFunction()
+    data class Command(val command: String) : RecipeFunction()
 }
 
 /**
- * 配方结果
+ * 配方数据
  */
-data class RecipeResult(
-    val itemId: String,  // 物品ID
-    val count: Int = 1   // 数量
-)
+sealed class RecipeData {
+    abstract val id: String
+    abstract val type: RecipeType
+    abstract val provider: RecipeProvider
+    abstract val result: RecipeResult
+    abstract val inputOptions: InputOptions
+
+    data class Shaped(
+        override val id: String,
+        override val result: RecipeResult,
+        override val inputOptions: InputOptions,
+        override val provider: RecipeProvider = RecipeProvider.SIMPLE,
+        val pattern: List<String>,
+        val key: Map<Char, RecipeIngredient>,
+        val showNotification: Boolean = true,
+        val group: String? = null
+    ) : RecipeData() {
+        override val type: RecipeType = RecipeType.CRAFTING
+    }
+
+    data class Shapeless(
+        override val id: String,
+        override val result: RecipeResult,
+        override val inputOptions: InputOptions,
+        override val provider: RecipeProvider = RecipeProvider.SIMPLE,
+        val ingredients: List<RecipeIngredient>,
+        val showNotification: Boolean = true,
+        val group: String? = null
+    ) : RecipeData() {
+        override val type: RecipeType = RecipeType.CRAFTING
+    }
+
+    data class Cooking(
+        override val id: String,
+        override val result: RecipeResult,
+        override val inputOptions: InputOptions,
+        override val type: RecipeType,
+        override val provider: RecipeProvider = RecipeProvider.SIMPLE,
+        val ingredient: RecipeIngredient,
+        val experience: Float = 0.1f,
+        val cookingTime: Int = 200,
+        val group: String? = null
+    ) : RecipeData()
+
+    data class Stonecutting(
+        override val id: String,
+        override val result: RecipeResult,
+        override val inputOptions: InputOptions,
+        override val provider: RecipeProvider = RecipeProvider.SIMPLE,
+        val ingredient: RecipeIngredient,
+        val group: String? = null
+    ) : RecipeData() {
+        override val type: RecipeType = RecipeType.STONECUTTING
+    }
+
+    data class Smithing(
+        override val id: String,
+        override val result: RecipeResult,
+        override val inputOptions: InputOptions,
+        override val type: RecipeType,
+        override val provider: RecipeProvider = RecipeProvider.SIMPLE,
+        val template: RecipeIngredient,
+        val base: RecipeIngredient,
+        val addition: RecipeIngredient,
+        val group: String? = null
+    ) : RecipeData()
+}

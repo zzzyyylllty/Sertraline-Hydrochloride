@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.data.*
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
+import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.releaseResourceFolder
 import java.io.File
@@ -25,14 +26,9 @@ fun loadCraftingStationFiles() {
         return
     }
 
+    // loadCraftingStationFile 已递归处理目录
     for (file in files) {
-        if (file.isDirectory) {
-            file.listFiles()?.forEach {
-                loadCraftingStationFile(it)
-            }
-        } else {
-            loadCraftingStationFile(file)
-        }
+        loadCraftingStationFile(file)
     }
 
     infoL("CraftingStation_Load_Complete", craftingStations.size)
@@ -62,9 +58,8 @@ fun loadCraftingStationFile(file: File): Boolean {
 
         for (entry in map.entries) {
             val stationId = entry.key
-            val value = map[stationId]
             try {
-                val station = parseCraftingStation(stationId, value as? Map<String, Any?>? ?: linkedMapOf())
+                val station = parseCraftingStation(stationId, entry.value as? Map<String, Any?>? ?: linkedMapOf())
                 craftingStations[stationId] = station
             } catch (e: Exception) {
                 severeL("CraftingStation_Load_Error_Station", file.name, stationId, e.message ?: "Unknown error")
@@ -120,7 +115,8 @@ private fun parseCraftingStation(id: String, map: Map<String, Any?>): CraftingSt
     val recipes = recipesMap.mapValues { (recipeId, recipeMap) ->
         parseStationRecipe(recipeId, recipeMap as? Map<String, Any?> ?: emptyMap())
     }
-    return CraftingStation(option, display, recipes)
+    val agents = map.getMap("agents")?.toStringMap()
+    return CraftingStation(option, display, recipes, agents)
 }
 
 private fun parseDisplayConfig(map: Map<String, Any?>): DisplayConfig {
@@ -147,6 +143,7 @@ private fun parseElementConfig(id: String, map: Map<String, Any?>): ElementConfi
 
 private fun parseStationRecipe(id: String, map: Map<String, Any?>): StationRecipe {
     val displayName = map.getString("displayName") ?: id
+    val plural = map.getString("plural")
     val displayTime = map.getString("displayTime")
     val time = map.getString("time") ?: "0"
     val options = map.getMap("options") ?: emptyMap()
@@ -160,8 +157,10 @@ private fun parseStationRecipe(id: String, map: Map<String, Any?>): StationRecip
     val inputs = inputsList.filterIsInstance<Map<String, Any?>>().map { parseStationRecipeInput(it) }
     val outputsList = map.getList("outputs") ?: emptyList()
     val outputs = outputsList.filterIsInstance<Map<String, Any?>>().map { parseOmniItem(it) }
+    if (inputs.isEmpty()) warningS("Recipe '$id' has no inputs — nothing will be consumed")
+    if (outputs.isEmpty()) warningS("Recipe '$id' has no outputs — nothing will be produced")
     val agents = map.getMap("agents")?.toStringMap()
-    return StationRecipe(displayName, displayTime, time, options, conditions, messages, display, inputs, outputs, agents)
+    return StationRecipe(displayName, plural, displayTime, time, options, conditions, messages, display, inputs, outputs, agents)
 }
 
 private fun parseConditionConfig(map: Map<String, Any?>): ConditionConfig {

@@ -44,7 +44,7 @@ fun itemSource(str: String,player: Player?): ItemStack {
 //            val provider = AllItemProvider()
 //            if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
             if (player != null) {
-                ExternalItemHelper.itemBridge?.build(key, player, split.joinToString(":"))?.get()
+                ExternalItemHelper.itemBridge?.build(key, split.joinToString(":"), player)?.get()
             } else {
                 ExternalItemHelper.itemBridge?.build(key, split.joinToString(":"))?.get()
             }
@@ -250,10 +250,10 @@ fun ItemStack.rebuildName(player: Player?) {
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
     if (VersionHelper().isOrAbove12005()) {
-        this.setData(DataComponentTypes.CUSTOM_NAME, regen.displayName())
+        this.setData(DataComponentTypes.CUSTOM_NAME, regen.effectiveName())
     } else {
         val meta = this.itemMeta
-        meta.displayName(regen.displayName())
+        meta.displayName(regen.effectiveName())
         this.setItemMeta(meta)
     }
 }
@@ -266,5 +266,13 @@ fun ItemStack.rebuildDisplay(player: Player?) {
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
     this.lore(regen.lore())
+    if (VersionHelper().isOrAbove12005()) {
+        regen.effectiveName().let { this.setData(DataComponentTypes.CUSTOM_NAME, it) }
+    } else {
+        val meta = this.itemMeta
+        meta.displayName(regen.effectiveName())
+        meta.lore(regen.lore())
+        this.setItemMeta(meta)
+    }
 
 }

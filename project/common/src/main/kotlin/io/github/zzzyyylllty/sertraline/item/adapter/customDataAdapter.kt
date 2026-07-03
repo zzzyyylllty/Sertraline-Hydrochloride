@@ -32,8 +32,20 @@ fun chotenDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     devLog("Adapting chotenatb data: $rawData")
 
+    // 如果 chotenatb 不为空且没有指定 allowed，则根据物品材质自动推断
+    val processedData = if (rawData.isNotEmpty() && !rawData.containsKey("allowed")) {
+        val autoState = when (item.type.name.lowercase().substringAfterLast("_")) {
+            "boots", "chestplate", "leggings", "helmet" -> item.type.name.lowercase().substringAfterLast("_")
+            else -> "mainhand"
+        }
+        devLog("chotenatb allowed not specified, auto-inferred as: $autoState")
+        rawData.toMutableMap().also { it["allowed"] = listOf(autoState) }
+    } else {
+        rawData
+    }
+
     val tag = item.getItemTag(true)
-    tag["chotenatb"] = listOf(transferBooleanToByte(rawData))
+    tag["chotenatb"] = listOf(transferBooleanToByte(processedData))
 
     return item.setItemTag(tag, true)
 }

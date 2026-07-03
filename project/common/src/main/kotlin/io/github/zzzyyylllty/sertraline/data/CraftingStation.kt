@@ -3,7 +3,8 @@ package io.github.zzzyyylllty.sertraline.data
 data class CraftingStation(
     val option: Map<String, Any?>,
     val display: DisplayConfig,
-    val recipes: Map<String, StationRecipe>
+    val recipes: Map<String, StationRecipe>,
+    val agents: Map<String, String>? = null
 )
 
 data class DisplayConfig(
@@ -25,6 +26,7 @@ data class ElementConfig(
 
 data class StationRecipe(
     val displayName: String,
+    val plural: String? = null,
     val displayTime: String? = null,
     val time: String,
     val options: Map<String, Any?>,

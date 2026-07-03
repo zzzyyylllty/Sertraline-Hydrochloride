@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.item.process.tag
 
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.item.process.nbtTagProcessor
 import io.github.zzzyyylllty.sertraline.item.process.papiTagProcessor
 import io.github.zzzyyylllty.sertraline.item.process.sertralineTagProcessor
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
@@ -16,6 +17,10 @@ fun registerNativeTagAdapter() {
     tagManager.registerProcessor("sertraline", listOf("val","var","dynamic","kether")) { data, player, repl, target ->
         devLog("Tag adapting sertraline")
         sertralineTagProcessor(data, player, repl, target)
+    }
+    tagManager.registerProcessor("nbt", listOf("nbt")) { data, player, repl, target ->
+        devLog("Tag adapting nbt")
+        nbtTagProcessor(data, player, repl, target)
     }
 
 }

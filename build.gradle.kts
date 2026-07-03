@@ -46,6 +46,8 @@ allprojects {
                 CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI,
                 BukkitUtil, Jexl, Metrics, DatabasePlayer, BukkitNMS
             )
+            disableOnUnsupportedVersion = false
+            disableOnSkippedVersion = false
         }
         version {
             taboolib = rootProject.libs.versions.taboolib.get()
@@ -53,6 +55,7 @@ allprojects {
             skipKotlin = false
             skipKotlinRelocate = false
             skipTabooLibRelocate = false
+
         }
     }
 
@@ -98,8 +101,8 @@ allprojects {
         // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")   .
         taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
 
-        taboo("com.github.zzzyyylllty:EmbianComponent:1.0.5")
-        taboo("cn.gtemc:itembridge:1.0.25")
+        taboo("com.github.zzzyyylllty:EmbianComponent:1.1.0")
+        taboo("cn.gtemc:itembridge:1.0.31")
 
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)

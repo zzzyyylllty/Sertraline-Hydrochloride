@@ -32,11 +32,10 @@ object FluxonShell {
      * @param env         脚本执行环境
      */
     fun invoke(script: String, useCache: Boolean = true, env: Environment.() -> Unit = {}): Any? {
-        // 构建脚本环境
         val environment = FluxonRuntime.getInstance().newEnvironment().also(env)
-        // 解析脚本（如果有缓存则跳过解析过程）
         val parsed = if (useCache) {
-            parse(script, environment)?.let { parse -> scriptCache.get(script) { parse } }
+            val cached = scriptCache.getIfPresent(script)
+            if (cached != null) cached else parse(script, environment)?.also { scriptCache.put(script, it) }
         } else {
             parse(script, environment)
         }

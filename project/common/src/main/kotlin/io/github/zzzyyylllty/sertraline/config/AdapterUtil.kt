@@ -29,14 +29,13 @@ public class AdapterUtil(val input: Map<String, Any?>?) {
         return input?.get(location)?.toString()?.toLong()
     }
     fun getDeep(location: String): Any? {
-        val list = location.split(".").toMutableList()
-        val current = input?.get(list[0])
-        return if (current is Map<*, *> && list.size > 1) {
-            list.removeFirst()
-            getDeep(list.joinToString("."))
-        } else {
-            current
+        val keys = location.split(".")
+        var current: Any? = input
+        for (key in keys) {
+            if (current !is Map<*, *>) return null
+            current = current[key]
         }
+        return current
     }
 }
 

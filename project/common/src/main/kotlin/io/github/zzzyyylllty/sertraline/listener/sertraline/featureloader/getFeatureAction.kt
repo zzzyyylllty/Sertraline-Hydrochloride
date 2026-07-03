@@ -63,7 +63,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
             if (config.getBoolean("preload.script.javascript",true)) (map["javascript"] as? String)?.let { script ->
                 try {
                     val compiled = script.compileJS()
-                    jsScriptCache[script.generateHash()] = compiled
+                    compiled?.let { jsScriptCache[script.generateHash()] = it }
                 } catch (ex: Exception) {
                     severeS("An error was occurred in trying to pre-compile js script.")
                     severeS("Item: ${e.sItemKey}")
@@ -74,7 +74,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
             if (config.getBoolean("preload.script.graaljs",true)) (map["graaljs"] as? String)?.let { script ->
                 try {
                     val compiled = GraalJsUtil.compile(script)
-                    gjsScriptCache[script.generateHash()] = compiled
+                    compiled?.let { gjsScriptCache[script.generateHash()] = it }
                 } catch (ex: Exception) {
                     severeS("An error was occurred in trying to pre-compile Graal-js script.")
                     severeS("Item: ${e.sItemKey}")
@@ -91,7 +91,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
         actions[it.key as String] = list
     }
 
-    val cache = itemCache[e.sItemKey]?.toMutableMap() ?: mutableMapOf()
+    val cache = e.sItemKey?.let { itemCache[it] }?.toMutableMap() ?: mutableMapOf()
 
     cache["preloadActions"] = ComplexTypeHelper(actions).getAsActions()
     cache["actions"] = triggers

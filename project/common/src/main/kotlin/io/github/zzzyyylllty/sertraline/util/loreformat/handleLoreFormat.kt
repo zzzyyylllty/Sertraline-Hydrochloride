@@ -83,6 +83,12 @@ fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: Modern
             entry == "value" -> string
             entry == "auto" -> string.removeSuffix(".0")
             entry.startsWith("round:") -> "%${entry.removePrefix("round:")}.2f".format(string.toDoubleOrNull() ?: 0.0)
+            entry.startsWith("data:") -> {
+                sItem.getDeepData(entry.removePrefix("data:"))?.toString() ?: ""
+            }
+            entry.startsWith("config:") -> {
+                ConfigUtil.getDeep(sItem.config, entry.removePrefix("config:"))?.toString() ?: ""
+            }
             else -> continue
         }
         content = content.replace("{$entry}", if (skipGeneralPlaceholders) new else new.performPlaceholders(sItem, player)!!
@@ -156,6 +162,20 @@ fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
         level?.let { content = content.replaceLevelPlaceholders(it) }
     }
 
+    if (content.contains("val:")) {
+        val vals = sItem.getDeepData("sertraline:vals") as? Map<*, *>
+        content = content.replace(Regex("\\{val:([^}]+)}")) { match ->
+            vals?.get(match.groupValues[1])?.toString() ?: match.value
+        }
+    }
+
+    if (content.contains("var:")) {
+        val vars = sItem.getDeepData("sertraline:vars") as? Map<*, *>
+        content = content.replace(Regex("\\{var:([^}]+)}")) { match ->
+            vars?.get(match.groupValues[1])?.toString() ?: match.value
+        }
+    }
+
     player?.let { content = content.replacePlaceholder(it) }
 
     // inline kether
@@ -193,9 +213,15 @@ fun handleLoreExists(element: LoreElement,item: ModernSItem): Boolean {
     }
 }
 
+private val LORE_LINE_SPLIT = Regex("\\\\n|\\n")
+
+private fun String.splitLoreLines(): List<String> {
+    return split(LORE_LINE_SPLIT)
+}
+
 fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<String> {
     val key = element.key
-    return if (key != null) {
+    val raw = if (key != null) {
         val keyValueList = if (key.startsWith("*")) {
             ConfigUtil.getDeep(item.config, key.removePrefix("*")).asListEnhanced()
         } else {
@@ -225,6 +251,7 @@ fun handleKeyLore(item: ModernSItem,element: LoreElement,player: Player?): List<
     } else {
         element.content.performPlaceholders(item, player)?.let { listOf(it) } ?: emptyList()
     }
+    return raw.flatMap { it.splitLoreLines() }
 }
 
 fun handleExistLore(key: String,item: ModernSItem): Boolean {

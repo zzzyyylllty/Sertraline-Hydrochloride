@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import org.bukkit.entity.Player
 import taboolib.common.platform.command.component.CommandComponentDynamic
 import taboolib.common.platform.command.component.CommandComponentLiteral
 import taboolib.module.lang.asLangText
@@ -95,6 +96,19 @@ object SertralineMainCommand {
 
     @CommandBody
     val item = ItemCommand
+
+    @CommandBody
+    val station = subCommand {
+        dynamic("stationId") {
+            suggestion<CommandSender> { _, _ ->
+                io.github.zzzyyylllty.sertraline.Sertraline.craftingStations.keys.map { "sertraline:$it" }
+            }
+            execute<Player> { sender, context, _ ->
+                val stationId = context["stationId"].removePrefix("sertraline:")
+                io.github.zzzyyylllty.sertraline.gui.CraftingStationManager.openStation(sender, stationId)
+            }
+        }
+    }
 
     @CommandBody
     val reload = subCommand {

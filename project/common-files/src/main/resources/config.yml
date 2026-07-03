@@ -25,6 +25,8 @@ file-load:
   item: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
   lore-format: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
   mapping: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
+  crafting-station: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
+  recipe: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
 
 
 
@@ -142,6 +144,20 @@ database:
   password: angelkawaii2
   database: sertraline
   table: sertraline_data
+
+# 消息设置
+# Messages
+messages:
+  # 合成条件不满足时显示
+  condition-not-met: "<red>Condition not met: {condition_name}</red>"
+  # 已有合成进行中
+  crafting-already-active: "<yellow>You already have an active crafting process!</yellow>"
+  # 缺少材料
+  missing-ingredients: "<red>Missing ingredients: {display_name}</red>"
+  # 合成开始
+  crafting-started: "<yellow>Crafting started... ({time} s)</yellow>"
+  # 合成完成
+  crafting-complete: "<green>Crafting complete!</green>"
 
 performance:
   # 增量加载配置，只加载修改过的文件

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.config
 
 import io.github.zzzyyylllty.sertraline.logger.severeL
+import io.github.zzzyyylllty.sertraline.util.serialize.isSupportedFormat
 import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
 import java.io.File
 import io.github.zzzyyylllty.sertraline.util.toLowerCase
@@ -30,9 +31,4 @@ fun multiExtensionLoader(file: File): Map<String, Any?>? {
         severeL("Config_Load_Error_Parse", file.name, e.message ?: "Unknown error")
         null
     }
-}
-
-// 辅助方法：检查是否支持的格式
-private fun isSupportedFormat(format: String): Boolean {
-    return format in listOf("yaml", "toml", "json") // 根据你的实际支持格式修改
 }

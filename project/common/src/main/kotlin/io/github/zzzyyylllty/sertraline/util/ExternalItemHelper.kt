@@ -12,22 +12,26 @@ import org.bukkit.inventory.ItemStack
 object ExternalItemHelper {
     var itemBridge: ItemBridge<ItemStack?, Player?>? =
         BukkitItemBridge.builder()
-            .onHookSuccess({ p -> infoS("Hooked External item source: $p") })
-            .onHookFailure({ p, e -> severeS("Failed to hook External item " + p + ", because " + e.message) })
-            .detectSupportedPlugins()
+            .detectSupportedPlugins(
+                { p: String -> infoS("Hooked External item source: $p") },
+                { p: String, e: Throwable -> severeS("Failed to hook External item " + p + ", because " + e.message) },
+                { true }
+            )
             .removeById("sertraline")
             .build()
 
     var itemBridgeAll: ItemBridge<ItemStack?, Player?>? =
         BukkitItemBridge.builder()
-            .onHookSuccess({ p -> infoS("Hooked External item source: $p") })
-            .onHookFailure({ p, e -> severeS("Failed to hook External item " + p + ", because " + e.message) })
-            .detectSupportedPlugins()
+            .detectSupportedPlugins(
+                { p: String -> infoS("Hooked External item source: $p") },
+                { p: String, e: Throwable -> severeS("Failed to hook External item " + p + ", because " + e.message) },
+                { true }
+            )
 //            .removeById("sertraline")
             .build()
     fun build(player: Player, plugin: String, name: String): ItemStack? {
         return try {
-            itemBridgeAll?.build(plugin, player, name)?.get()
+            itemBridgeAll?.build(plugin, name, player)?.get()
         } catch (e: NoSuchElementException) {
             null
         }

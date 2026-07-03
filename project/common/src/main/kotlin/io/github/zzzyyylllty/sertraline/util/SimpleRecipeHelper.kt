@@ -1,509 +1,239 @@
 package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.data.*
-import io.github.zzzyyylllty.sertraline.util.ItemTagManager
-import org.bukkit.Tag
-import org.bukkit.inventory.ItemStack
-
-
-val temporarySItemCache = mutableMapOf<SertralineRecipeFilter, ModernSItem>()
-
-data class SertralineRecipeFilter(
-    val filter: List<String>,
-    val sItem: ModernSItem,
-)
+import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
+import io.github.zzzyyylllty.sertraline.logger.infoS
+import io.github.zzzyyylllty.sertraline.Sertraline
+import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.logger.warningS
+import io.github.zzzyyylllty.sertraline.recipe.ItemResolver
+import io.github.zzzyyylllty.sertraline.recipe.NMSRecipeFactory
+import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.inventory.*
+import org.bukkit.inventory.recipe.CraftingBookCategory
+import java.util.concurrent.Callable
+import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 配方管理器
- * 负责注册和注销配方
+ * Sertraline 配方管理器。
+ * 使用 Bukkit API 注册/注销配方，取代原有的 NMS 反射方案。
  */
-object RecipeManager {
+object SertralineRecipeManager {
 
-    // ===== 反射缓存 =====
+    private val NAMESPACE = "sertraline"
 
-    // 核心类
-    private val resourceLocationClass by lazy {
-        getClazz(assembleMCClass("resources.ResourceLocation"))!!
-    }
-    private val resourceKeyClass by lazy {
-        getClazz(assembleMCClass("resources.ResourceKey"))!!
-    }
-    private val recipeManagerClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.RecipeManager"))!!
-    }
-    private val recipeHolderClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.RecipeHolder"))!!
-    }
-    private val recipeMapClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.RecipeMap"))!!
-    }
-    private val ingredientClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.Ingredient"))!!
-    }
-    private val itemStackClass by lazy {
-        getClazz(assembleMCClass("world.item.ItemStack"))!!
-    }
-    private val shapedRecipeClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.ShapedRecipe"))!!
-    }
-    private val shapelessRecipeClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.ShapelessRecipe"))!!
-    }
-    private val minecraftServerClass by lazy {
-        getClazz(assembleMCClass("server.MinecraftServer"))!!
-    }
-    private val registriesClass by lazy {
-        getClazz(assembleMCClass("core.registries.Registries"))!!
-    }
-    private val tagKeyClass by lazy {
-        getClazz(assembleMCClass("tags.TagKey"))!!
-    }
-    private val craftingBookCategoryClass by lazy {
-        getClazz(assembleMCClass("world.item.crafting.CraftingBookCategory"))!!
+    /** 已注册的 Sertraline 配方 key → RecipeData */
+    private val registeredRecipes = ConcurrentHashMap<NamespacedKey, RecipeData>()
+
+    /** Bukkit 插件实例，用于主线程调度 */
+    private val bukkitPlugin: org.bukkit.plugin.Plugin by lazy {
+        Bukkit.getPluginManager().getPlugin("Sertraline")
+            ?: error("Sertraline Bukkit plugin not found")
     }
 
-    // CraftBukkit 类
-    private val craftServerClass by lazy {
-        getClazz(assembleCBClass("CraftServer"))!!
-    }
-    private val craftItemStackClass by lazy {
-        getClazz(assembleCBClass("inventory.CraftItemStack"))!!
+    /** 将操作切换到主线程执行（阻塞调用线程直到完成） */
+    private fun <T> sync(callable: () -> T): T {
+        if (Bukkit.isPrimaryThread()) return callable()
+        return Bukkit.getScheduler().callSyncMethod(bukkitPlugin, Callable(callable)).get()
     }
 
-    // 方法缓存
-    private val resourceLocationFromNamespaceAndPath by lazy {
-        getStaticMethod(
-            resourceLocationClass,
-            resourceLocationClass,
-            String::class.java,
-            String::class.java
-        )!!
-    }
+    // ==================== 生命周期 ====================
 
-    private val resourceKeyCreate by lazy {
-        getStaticMethod(
-            resourceKeyClass,
-            resourceKeyClass,
-            resourceKeyClass,
-            resourceLocationClass
-        )!!
+    fun reload() {
+        infoS("<green>Loaded recipes successfully.")
     }
-
-    private val minecraftServerGetServer by lazy {
-        getStaticMethod(
-            minecraftServerClass,
-            minecraftServerClass
-        )!!
-    }
-
-    private val minecraftServerGetRecipeManager by lazy {
-        getMethod(
-            minecraftServerClass,
-            recipeManagerClass,
-            0
-        )!!
-    }
-
-    private val recipeManagerAddRecipe by lazy {
-        getMethod(
-            recipeManagerClass,
-            Void.TYPE,
-            0,
-            recipeHolderClass
-        )!!
-    }
-
-    private val recipeMapRemoveRecipe by lazy {
-        getMethod(
-            recipeMapClass,
-            Boolean::class.javaPrimitiveType!!,
-            0,
-            resourceKeyClass
-        )!!
-    }
-
-    private val recipeHolderConstructor by lazy {
-        recipeHolderClass.getDeclaredConstructor(
-            resourceKeyClass,
-            Any::class.java  // Recipe
-        ).apply { isAccessible = true }
-    }
-
-    private val craftItemStackAsNMSCopy by lazy {
-        getStaticMethod(
-            craftItemStackClass,
-            itemStackClass,
-            org.bukkit.inventory.ItemStack::class.java
-        )!!
-    }
-
-    private val craftItemStackAsBukkitCopy by lazy {
-        getStaticMethod(
-            craftItemStackClass,
-            org.bukkit.inventory.ItemStack::class.java,
-            itemStackClass
-        )!!
-    }
-
-    // 字段缓存
-    private val recipeManagerRecipesField by lazy {
-        getDeclaredField(recipeManagerClass, recipeMapClass, 0)!!
-    }
-
-    private val ingredientItemStacksField by lazy {
-        // 1.21.4+ 使用 Set<ItemStack>
-        getDeclaredField(ingredientClass, Set::class.java, 0)!!
-    }
-
-    private val registriesRecipeField by lazy {
-        getDeclaredField(registriesClass, "RECIPE")!!.apply {
-            isAccessible = true
-        }
-    }
-
-    private val craftingBookCategoryMisc by lazy {
-        craftingBookCategoryClass.enumConstants.first {
-            it.toString() == "MISC"
-        }
-    }
-
-    // ===== 已注册配方跟踪 =====
-    private val registeredRecipes = mutableSetOf<String>()
 
     /**
-     * 注册配方（必须在主线程调用）
+     * 注销所有 Sertraline 配方。
+     */
+    fun unregisterAll() {
+        registeredRecipes.forEach { (key, recipeData) ->
+            runCatching {
+                sync {
+                    when (recipeData.provider) {
+                        RecipeProvider.SIMPLE -> Bukkit.removeRecipe(key)
+                        RecipeProvider.COMPLEX -> NMSRecipeFactory.unregister(key.namespace, key.key)
+                    }
+                }
+            }.onFailure { e ->
+                warningS("Failed to unregister recipe $key: ${e.message}")
+            }
+        }
+        registeredRecipes.clear()
+    }
+
+    // ==================== 注册 ====================
+
+    /**
+     * 注册一个配方到 Bukkit（SIMPLE）或 NMS RecipeManager（COMPLEX）。
+     * @return true 如果注册成功
      */
     fun registerRecipe(recipe: RecipeData): Boolean {
         return runCatching {
-            if (recipe.id in registeredRecipes) {
-                unregisterRecipe(recipe.id)
-            }
+            val rawPath = recipe.id.removePrefix("$NAMESPACE:")
+            val path = rawPath.lowercase().replace(Regex("[^a-z0-9/._-]"), "_")
+            val key = NamespacedKey(NAMESPACE, path)
 
-            val nmsRecipe = createNMSRecipe(recipe)
-            val recipeKey = createRecipeResourceKey(recipe.id)
-            val recipeHolder = recipeHolderConstructor.newInstance(recipeKey, nmsRecipe)
+            when (recipe.provider) {
+                RecipeProvider.SIMPLE -> {
+                    val bukkitRecipe = when (recipe) {
+                        is RecipeData.Shaped -> buildShaped(key, recipe)
+                        is RecipeData.Shapeless -> buildShapeless(key, recipe)
+                        is RecipeData.Cooking -> buildCooking(key, recipe)
+                        is RecipeData.Stonecutting -> buildStonecutting(key, recipe)
+                        is RecipeData.Smithing -> buildSmithing(key, recipe)
+                    } ?: return false
 
-            val recipeManager = getRecipeManager()
-            recipeManagerAddRecipe.invoke(recipeManager, recipeHolder)
-
-            registeredRecipes.add(recipe.id)
-            true
-        }.getOrElse { e ->
-            e.printStackTrace()
-            false
-        }
-    }
-
-    /**
-     * 注销配方（必须在主线程调用）
-     */
-    fun unregisterRecipe(recipeId: String): Boolean {
-        return runCatching {
-            val recipeKey = createRecipeResourceKey(recipeId)
-            val recipeManager = getRecipeManager()
-            val recipeMap = recipeManagerRecipesField.get(recipeManager)
-
-            val removed = recipeMapRemoveRecipe.invoke(recipeMap, recipeKey) as Boolean
-
-            if (removed) {
-                registeredRecipes.remove(recipeId)
-            }
-            removed
-        }.getOrElse { e ->
-            e.printStackTrace()
-            false
-        }
-    }
-
-    /**
-     * 获取所有已注册的配方ID
-     */
-    fun getRegisteredRecipes(): Set<String> = registeredRecipes.toSet()
-
-    // ===== 内部辅助方法 =====
-
-    private fun getRecipeManager(): Any {
-        val server = minecraftServerGetServer.invoke(null)
-        return minecraftServerGetRecipeManager.invoke(server)
-    }
-
-    private fun createResourceLocation(id: String): Any {
-        val parts = id.split(":", limit = 2)
-        val namespace = if (parts.size == 2) parts[0] else "minecraft"
-        val path = if (parts.size == 2) parts[1] else parts[0]
-        return resourceLocationFromNamespaceAndPath.invoke(null, namespace, path)
-    }
-
-    private fun createRecipeResourceKey(recipeId: String): Any {
-        val recipeRegistry = registriesRecipeField.get(null)
-        val resourceLocation = createResourceLocation(recipeId)
-        return resourceKeyCreate.invoke(null, recipeRegistry, resourceLocation)
-    }
-
-    /**
-     * 创建 NMS Ingredient
-     */
-    private fun createIngredient(ingredient: RecipeIngredient): Any {
-        // 获取所有匹配的物品堆
-        val itemStacks = resolveIngredientItems(ingredient)
-
-        // 创建空的 Ingredient（通过反射调用静态方法或构造函数）
-        val nmsItemStacks = itemStacks.map {
-            craftItemStackAsNMSCopy.invoke(null, it)
-        }.toSet()
-
-        // 使用反射创建 Ingredient 并设置物品列表
-        val ingredientInstance = createEmptyIngredient()
-        ingredientItemStacksField.set(ingredientInstance, nmsItemStacks)
-
-        return ingredientInstance
-    }
-
-    private fun createEmptyIngredient(): Any {
-        // 1.21.4+ 可以使用 Ingredient.of() 或构造函数
-        val ofMethod = ingredientClass.getDeclaredMethod("of")
-        ofMethod.isAccessible = true
-        return ofMethod.invoke(null)
-    }
-
-    /**
-     * 规范化标签Key，支持多种格式
-     * - minecraft:planks -> minecraft:planks
-     * - tag:planks -> minecraft:planks
-     * - #minecraft:planks -> minecraft:planks
-     * - planks -> minecraft:planks
-     */
-    private fun normalizeTagKey(tagKey: String): String {
-        var normalized = tagKey.trim()
-
-        // 去除#前缀
-        if (normalized.startsWith("#")) {
-            normalized = normalized.substring(1)
-        }
-
-        // 转换tag:前缀为minecraft:
-        if (normalized.startsWith("tag:")) {
-            normalized = "minecraft:" + normalized.substring(4)
-        }
-
-        // 如果没有命名空间，添加minecraft:
-        if (!normalized.contains(":")) {
-            normalized = "minecraft:$normalized"
-        }
-
-        return normalized
-    }
-
-    /**
-     * 解析配方原料为 Bukkit ItemStack 列表
-     */
-    private fun resolveIngredientItems(ingredient: RecipeIngredient): List<ItemStack> {
-        return when (ingredient) {
-            is RecipeIngredient.Item -> {
-                // 具体物品（支持数量）
-                val material = org.bukkit.Material.matchMaterial(ingredient.itemId.uppercase())
-                    ?: throw IllegalArgumentException("Unknown item: ${ingredient.itemId}")
-                listOf(org.bukkit.inventory.ItemStack(material, ingredient.amount))
-            }
-            is RecipeIngredient.Tag -> {
-                // 标签 - 获取标签下的所有物品（支持数量）
-                val tagKey = normalizeTagKey(ingredient.tagId)
-                val itemIds = ItemTagManager.getItemsByTag(tagKey)
-
-                if (itemIds.isEmpty()) {
-                    throw IllegalArgumentException("Unknown or empty tag: ${ingredient.tagId} (normalized: $tagKey)")
+                    val added = sync { Bukkit.addRecipe(bukkitRecipe) }
+                    if (added) registeredRecipes[key] = recipe
+                    added
                 }
-
-                itemIds.mapNotNull { itemId ->
-                    val material = org.bukkit.Material.matchMaterial(itemId.uppercase())
-                    if (material != null) {
-                        org.bukkit.inventory.ItemStack(material, ingredient.amount)
-                    } else {
-                        // 记录警告但继续处理其他物品
-                        println("[Sertraline] Warning: Cannot find material for item ID: $itemId in tag: $tagKey")
-                        null
-                    }
+                RecipeProvider.COMPLEX -> {
+                    val added = sync { NMSRecipeFactory.register(recipe) }
+                    if (added) registeredRecipes[key] = recipe
+                    added
                 }
             }
-            is RecipeIngredient.Choice -> {
-                // 多个选项
-                ingredient.options.flatMap { resolveIngredientItems(it) }
+        }.onFailure { e ->
+            severeS("Failed to register recipe ${recipe.id}: ${e.message}")
+        }.getOrDefault(false)
+    }
+
+    /**
+     * 根据 NamespacedKey 获取 RecipeData。
+     */
+    fun getRecipeData(key: NamespacedKey): RecipeData? = registeredRecipes[key]
+
+    /**
+     * 获取所有已注册的配方数据。
+     */
+    fun getAllRecipeData(): Collection<RecipeData> = registeredRecipes.values
+
+    // ==================== Builder: Shaped ====================
+
+    private fun buildShaped(key: NamespacedKey, recipe: RecipeData.Shaped): ShapedRecipe? {
+        val result = buildResultStack(recipe.result) ?: return null
+        val bukkit = ShapedRecipe(key, result)
+        bukkit.shape(*recipe.pattern.toTypedArray())
+
+        recipe.key.forEach { (char, ingredient) ->
+            val choice = ItemResolver.resolve(ingredient)
+            bukkit.setIngredient(char, choice)
+        }
+
+        recipe.group?.let { bukkit.setGroup(it) }
+        bukkit.setCategory(CraftingBookCategory.MISC)
+        trySetShowNotification(bukkit, recipe.showNotification)
+        return bukkit
+    }
+
+    // ==================== Builder: Shapeless ====================
+
+    private fun buildShapeless(key: NamespacedKey, recipe: RecipeData.Shapeless): ShapelessRecipe? {
+        val result = buildResultStack(recipe.result) ?: return null
+        val bukkit = ShapelessRecipe(key, result)
+
+        recipe.ingredients.forEach { ingredient ->
+            val choice = ItemResolver.resolve(ingredient)
+            bukkit.addIngredient(choice)
+        }
+
+        recipe.group?.let { bukkit.setGroup(it) }
+        bukkit.setCategory(CraftingBookCategory.MISC)
+        trySetShowNotification(bukkit, recipe.showNotification)
+        return bukkit
+    }
+
+    // ==================== Builder: Cooking ====================
+
+    @Suppress("SpellCheckingInspection")
+    private fun buildCooking(key: NamespacedKey, recipe: RecipeData.Cooking): CookingRecipe<*>? {
+        val result = buildResultStack(recipe.result) ?: return null
+        val choice = ItemResolver.resolve(recipe.ingredient)
+
+        val bukkit: CookingRecipe<*> = when (recipe.type) {
+            RecipeType.FURNACE -> FurnaceRecipe(key, result, choice, recipe.experience, recipe.cookingTime)
+            RecipeType.BLASTING -> BlastingRecipe(key, result, choice, recipe.experience, recipe.cookingTime)
+            RecipeType.SMOKING -> SmokingRecipe(key, result, choice, recipe.experience, recipe.cookingTime)
+            RecipeType.CAMPFIRE -> CampfireRecipe(key, result, choice, recipe.experience, recipe.cookingTime)
+            else -> return null
+        }
+        recipe.group?.let { bukkit.setGroup(it) }
+        return bukkit
+    }
+
+    // ==================== Builder: Stonecutting ====================
+
+    private fun buildStonecutting(key: NamespacedKey, recipe: RecipeData.Stonecutting): StonecuttingRecipe? {
+        val result = buildResultStack(recipe.result) ?: return null
+        val choice = ItemResolver.resolve(recipe.ingredient)
+        val bukkit = StonecuttingRecipe(key, result, choice)
+        recipe.group?.let { bukkit.setGroup(it) }
+        return bukkit
+    }
+
+    // ==================== Builder: Smithing ====================
+
+    private fun buildSmithing(key: NamespacedKey, recipe: RecipeData.Smithing): SmithingRecipe? {
+        val result = buildResultStack(recipe.result) ?: return null
+        val template = ItemResolver.resolve(recipe.template)
+        val base = ItemResolver.resolve(recipe.base)
+        val addition = ItemResolver.resolve(recipe.addition)
+
+        val bukkit = when (recipe.type) {
+            RecipeType.SMITHING_TRANSFORM -> SmithingTransformRecipe(key, result, template, base, addition)
+            RecipeType.SMITHING_TRIM -> SmithingTrimRecipe(key, template, base, addition)
+            else -> return null
+        }
+        return bukkit
+    }
+
+    // ==================== Result Builder ====================
+
+    private fun buildResultStack(result: RecipeResult): ItemStack? {
+        val (namespace, key) = parseId(result.itemId)
+        return when {
+            namespace == "sertraline" -> {
+                val item = Sertraline.itemMap[key]
+                if (item == null) {
+                    warningS("Recipe result item 'sertraline:$key' not found in itemMap (missing item definition?)")
+                    return null
+                }
+                sertralineItemBuilder(key, null)?.apply { amount = result.count }
+            }
+            namespace == "minecraft" || namespace == "vanilla" -> {
+                val mat = Material.matchMaterial(key)
+                if (mat == null) {
+                    warningS("Recipe result material '$key' is not a valid Minecraft material")
+                    return null
+                }
+                ItemStack(mat, result.count)
+            }
+            else -> {
+                val stack = ExternalItemHelper.buildNoPlayer(namespace, key)
+                if (stack == null) {
+                    warningS("Recipe result external item '$namespace:$key' not found via ExternalItemHelper")
+                    return null
+                }
+                stack.apply { amount = result.count }
             }
         }
     }
 
+    private fun parseId(id: String): Pair<String, String> {
+        val idx = id.indexOf(':')
+        return if (idx == -1) "minecraft" to id.lowercase()
+        else id.substring(0, idx).lowercase() to id.substring(idx + 1)
+    }
+
     /**
-     * 创建 NMS 配方对象
+     * Try to call setShowNotification via reflection (Paper API may not have it in some builds).
      */
-    private fun createNMSRecipe(recipe: RecipeData): Any {
-        return when (recipe) {
-            is RecipeData.Shaped -> createShapedRecipe(recipe)
-            is RecipeData.Shapeless -> createShapelessRecipe(recipe)
-            is RecipeData.Cooking -> createCookingRecipe(recipe)
-            is RecipeData.Stonecutting -> createStonecuttingRecipe(recipe)
-            is RecipeData.Smithing -> createSmithingRecipe(recipe)
+    private fun trySetShowNotification(recipe: Any, show: Boolean) {
+        runCatching {
+            recipe::class.java.getMethod("setShowNotification", Boolean::class.javaPrimitiveType).invoke(recipe, show)
         }
     }
-
-    private fun createShapedRecipe(recipe: RecipeData.Shaped): Any {
-        // 这里需要根据实际的 ShapedRecipe 构造函数来实现
-        // 1.21.4+ 的构造函数签名需要查看具体版本
-        // 通常包括：分组、图案、原料映射、结果等
-
-        val result = createResultItemStack(recipe.result)
-        val ingredients = recipe.key.mapValues { createIngredient(it.value) }
-
-        // 根据实际构造函数参数调整
-        val constructor = shapedRecipeClass.constructors.first()
-        constructor.isAccessible = true
-
-        // 这里需要根据实际参数构造
-        // 示例（需要根据实际情况调整）：
-        return constructor.newInstance(
-            craftingBookCategoryMisc,
-            // ... 其他参数
-        )
-    }
-
-    private fun createShapelessRecipe(recipe: RecipeData.Shapeless): Any {
-        val result = createResultItemStack(recipe.result)
-        val ingredients = recipe.ingredients.map { createIngredient(it) }
-
-        val constructor = shapelessRecipeClass.constructors.first()
-        constructor.isAccessible = true
-
-        return constructor.newInstance(
-            craftingBookCategoryMisc,
-            // ... 其他参数
-        )
-    }
-
-    private fun createCookingRecipe(recipe: RecipeData.Cooking): Any {
-        // 根据 type 选择对应的配方类
-        val recipeClass = when (recipe.type) {
-            RecipeType.SMELTING -> getClazz(assembleMCClass("world.item.crafting.SmeltingRecipe"))
-            RecipeType.BLASTING -> getClazz(assembleMCClass("world.item.crafting.BlastingRecipe"))
-            RecipeType.SMOKING -> getClazz(assembleMCClass("world.item.crafting.SmokingRecipe"))
-            RecipeType.CAMPFIRE_COOKING -> getClazz(assembleMCClass("world.item.crafting.CampfireCookingRecipe"))
-            else -> throw IllegalArgumentException("Invalid cooking recipe type: ${recipe.type}")
-        }!!
-
-        val ingredient = createIngredient(recipe.ingredient)
-        val result = createResultItemStack(recipe.result)
-
-        val constructor = recipeClass.constructors.first()
-        constructor.isAccessible = true
-
-        return constructor.newInstance(
-            // ... 参数
-        )
-    }
-
-    private fun createStonecuttingRecipe(recipe: RecipeData.Stonecutting): Any {
-        val stonecuttingRecipeClass = getClazz(assembleMCClass("world.item.crafting.StonecutterRecipe"))!!
-        val ingredient = createIngredient(recipe.ingredient)
-        val result = createResultItemStack(recipe.result)
-
-        val constructor = stonecuttingRecipeClass.constructors.first()
-        constructor.isAccessible = true
-
-        return constructor.newInstance(
-            // ... 参数
-        )
-    }
-
-    private fun createSmithingRecipe(recipe: RecipeData.Smithing): Any {
-        val recipeClass = when (recipe.type) {
-            RecipeType.SMITHING_TRANSFORM -> getClazz(assembleMCClass("world.item.crafting.SmithingTransformRecipe"))
-            RecipeType.SMITHING_TRIM -> getClazz(assembleMCClass("world.item.crafting.SmithingTrimRecipe"))
-            else -> throw IllegalArgumentException("Invalid smithing recipe type: ${recipe.type}")
-        }!!
-
-        val template = createIngredient(recipe.template)
-        val base = createIngredient(recipe.base)
-        val addition = createIngredient(recipe.addition)
-        val result = createResultItemStack(recipe.result)
-
-        val constructor = recipeClass.constructors.first()
-        constructor.isAccessible = true
-
-        return constructor.newInstance(
-            // ... 参数
-        )
-    }
-
-    private fun createResultItemStack(result: RecipeResult): Any {
-        val material = org.bukkit.Material.matchMaterial(result.itemId.uppercase())
-            ?: throw IllegalArgumentException("Unknown item: ${result.itemId}")
-        val bukkitStack = org.bukkit.inventory.ItemStack(material, result.count)
-        return craftItemStackAsNMSCopy.invoke(null, bukkitStack)
-    }
-//
-//
-//    fun <T> toIngredient(items: MutableList<String>): Ingredient<T>? {
-//        val itemIds: MutableSet<UniqueKey> = HashSet<UniqueKey>()
-//        val minecraftItemIds: MutableSet<UniqueKey?> = HashSet<UniqueKey?>()
-//        val itemManager: ItemManager<T?> = CraftEngine.instance().itemManager()
-//        val elements: MutableList<IngredientElement?> = ArrayList<IngredientElement?>()
-//        for (item in items) {
-//            if (item.get(0) == '#') {
-//                val tag: Key? = Key.of(item.substring(1))
-//                elements.add(Tag(tag))
-//                val uniqueKeys: MutableList<UniqueKey> = itemManager.itemIdsByTag(tag)
-//                if (uniqueKeys.isEmpty()) {
-//                    throw LocalizedResourceConfigException("warning.config.recipe.invalid_ingredient", item)
-//                }
-//                itemIds.addAll(uniqueKeys)
-//                for (uniqueKey in uniqueKeys) {
-//                    val ingredientSubstitutes: MutableList<UniqueKey> =
-//                        itemManager.getIngredientSubstitutes(uniqueKey.key())
-//                    if (!ingredientSubstitutes.isEmpty()) {
-//                        itemIds.addAll(ingredientSubstitutes)
-//                    }
-//                }
-//            } else {
-//                val itemId: Key? = Key.of(item)
-//                elements.add(Item(itemId))
-//                if (itemManager.getBuildableItem(itemId).isEmpty()) {
-//                    throw LocalizedResourceConfigException("warning.config.recipe.invalid_ingredient", item)
-//                }
-//                itemIds.add(UniqueKey.create(itemId))
-//                val ingredientSubstitutes: MutableList<UniqueKey> = itemManager.getIngredientSubstitutes(itemId)
-//                if (!ingredientSubstitutes.isEmpty()) {
-//                    itemIds.addAll(ingredientSubstitutes)
-//                }
-//            }
-//        }
-//        var hasCustomItem = false
-//        for (holder in itemIds) {
-//            val optionalCustomItem: Optional<CustomItem<T?>?> = itemManager.getCustomItem(holder.key())
-//            val vanillaItem: UniqueKey?
-//            if (optionalCustomItem.isPresent()) {
-//                val customItem: CustomItem<T?> = optionalCustomItem.get()
-//                if (customItem.isVanillaItem()) {
-//                    vanillaItem = holder
-//                } else {
-//                    vanillaItem = UniqueKey.create(customItem.material())
-//                    hasCustomItem = true
-//                }
-//            } else {
-//                if (itemManager.isVanillaItem(holder.key())) {
-//                    vanillaItem = holder
-//                } else {
-//                    throw LocalizedResourceConfigException(
-//                        "warning.config.recipe.invalid_ingredient",
-//                        holder.key().asString()
-//                    )
-//                }
-//            }
-//            if (vanillaItem === UniqueKey.AIR) {
-//                throw LocalizedResourceConfigException(
-//                    "warning.config.recipe.invalid_ingredient",
-//                    holder.key().asString()
-//                )
-//            }
-//            minecraftItemIds.add(vanillaItem)
-//        }
-//        return if (itemIds.isEmpty()) null else Ingredient.of(elements, itemIds, minecraftItemIds, hasCustomItem)
-//    }
 }
