@@ -18,16 +18,17 @@ import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
+import io.github.zzzyyylllty.sertraline.function.update.getExpectedRevision
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import com.cryptomorin.xseries.XMaterial
 import taboolib.module.lang.asLangText
+import taboolib.module.nms.ItemTag
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import taboolib.module.nms.getItemTag
-import taboolib.module.nms.setItemTag
 import taboolib.platform.util.buildItem
 
 
@@ -121,7 +122,11 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
             }
             tag["sertraline_type"] = typeId
         }
-        return item.setItemTag(tag)
+        // 写入修订版本
+        val revision = getExpectedRevision(processedTemplate.key)
+        if (revision > 0) tag["sertraline_revision"] = revision
+        tag.saveTo(item)
+        return item
     }
 }
 
@@ -152,7 +157,11 @@ fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, sourc
         }
         tag["sertraline_type"] = typeId
     }
-    return item.setItemTag(tag)
+    // 写入修订版本
+    val revision = getExpectedRevision(processedTemplate.key)
+    if (revision > 0) tag["sertraline_revision"] = revision
+    tag.saveTo(item)
+    return item
 }
 
 fun ItemStack.rebuild(player: Player?): ItemStack {
@@ -167,7 +176,8 @@ fun ItemStack.rebuild(player: Player?): ItemStack {
     keep.forEach {
         newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())
     }
-    var rewrited = regen.setItemTag(newTag)
+    newTag.saveTo(regen)
+    var rewrited = regen
     var rewritedNMS = asNMSCopy(rewrited)
 
     val keepComp = config["rebuild.keep-component"].asListEnhanced() ?: listOf()
@@ -239,8 +249,8 @@ fun ItemStack.rebuildUnsafe(player: Player?) {
     keep.forEach {
         newTag[it] = transferBooleanToByte(tag[it]?.parseNBT())
     }
-    val rewrited = regen.setItemTag(newTag)
-    this.setItemMeta(rewrited.itemMeta)
+    newTag.saveTo(regen)
+    this.setItemMeta(regen.itemMeta)
 }
 
 fun ItemStack.rebuildName(player: Player?) {

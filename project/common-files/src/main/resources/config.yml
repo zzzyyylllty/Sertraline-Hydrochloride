@@ -15,9 +15,27 @@ debug: false
 # 语言 language
 lang: en_US
 
-# 物品修订器 用于实现物品更新 尚未实现
-# Item Revision for Item updating
-item-revision: {}
+# 物品更新系统
+# Item Update System — automatically rebuilds items when their definition changes
+# Uses sertraline_revision NBT tag to compare expected vs actual revision.
+# On mismatch, the item is fully rebuilt via itemSerializer and atomically replaced.
+item-update:
+  enabled: true
+  # 自动追踪物品文件变更（基于文件内容哈希）
+  # Auto-track item file changes based on content hash
+  auto-track: true
+  # 自动追踪数据存储目录 (相对于插件目录)
+  # Auto-track data directory (relative to plugin folder)
+  auto-track-dir: "revision"
+  # 触发器：何时检查并更新物品
+  # Triggers: when to check and update items
+  triggers:
+    on-login: true       # 玩家登录时检查全部背包
+    on-hold: true        # 玩家切换手持物品时检查
+    on-interact: true    # 玩家交互时检查手持物品
+    async-interval: 0    # 定时检查 (单位: tick, 0=禁用)
+  # 更新时是否通知玩家
+  notify: true
 
 file-load:
 

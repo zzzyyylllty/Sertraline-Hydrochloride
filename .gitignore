@@ -3,3 +3,4 @@
 build
 .claude
 gradle.properties
+libs

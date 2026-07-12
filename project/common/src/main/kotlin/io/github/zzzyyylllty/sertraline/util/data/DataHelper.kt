@@ -28,16 +28,16 @@ object DataHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onQuit(event: PlayerQuitEvent) {
-        val player = event.player
-
-        // 释放数据容器
-        submitAsync {
-            DataUtil.cleanupCooldown(player)
-            player.releaseDataContainer()
-        }
-    }
+//    @SubscribeEvent
+//    fun onQuit(event: PlayerQuitEvent) {
+//        val player = event.player
+//
+//        // 释放数据容器
+//        submitAsync {
+//            DataUtil.cleanupCooldown(player)
+//            player.releaseDataContainer()
+//        }
+//    }
 }
 
 @Suppress("UNUSED")

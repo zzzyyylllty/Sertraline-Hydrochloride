@@ -12,6 +12,7 @@ import io.github.zzzyyylllty.sertraline.config.loadTierFiles
 import io.github.zzzyyylllty.sertraline.config.loadTypeFiles
 import io.github.zzzyyylllty.sertraline.config.loadLevelFiles
 import io.github.zzzyyylllty.sertraline.config.loadRecipeFiles
+import io.github.zzzyyylllty.sertraline.function.update.initRevisionAutoTracker
 import io.github.zzzyyylllty.sertraline.data.CraftingStation
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
@@ -222,6 +223,7 @@ object Sertraline : Plugin() {
     val gjsScriptCache: HashMap<String, Source?> = hashMapOf()
     val jexlScriptCache: HashMap<String, JexlCompiledScript?> = hashMapOf()
     val itemCache: HashMap<String, Map<String, Any?>?> = hashMapOf()
+    val itemExpectedRevision: MutableMap<String, Int> = mutableMapOf()
 
     fun api() : SertralineAPI {
         return _api ?: throw IllegalStateException("Sertraline API not present,or failed to load")
@@ -271,6 +273,7 @@ object Sertraline : Plugin() {
             tiers.clear()
             types.clear()
             levels.clear()
+            itemExpectedRevision.clear()
 
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()
@@ -283,6 +286,22 @@ object Sertraline : Plugin() {
                 severeL("Mapping_Load_Error_Parse", "mappings", e.message ?: "Unknown error")
             }
             ReloadCollector.addStat(console.asLangText("Reload_Stat_Mappings", mappings.size))
+
+            // tier/type/level 必须在物品之前加载，否则物品的 FeatureLoadEvent 查不到对应数据
+            try { loadTierFiles() } catch (e: Exception) {
+                severeL("Tier_Load_Error_Parse", "tiers", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Tiers", tiers.size))
+
+            try { loadTypeFiles() } catch (e: Exception) {
+                severeL("Type_Load_Error_Parse", "types", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Types", types.size))
+
+            try { loadLevelFiles() } catch (e: Exception) {
+                severeL("Level_Load_Error_Parse", "levels", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Levels", levels.size))
 
             try { loadItemFiles() } catch (e: Exception) {
                 severeL("Config_Load_Error_Parse", "items", e.message ?: "Unknown error")
@@ -299,20 +318,9 @@ object Sertraline : Plugin() {
             }
             ReloadCollector.addStat(console.asLangText("Reload_Stat_CraftingStations", craftingStations.size))
 
-            try { loadTierFiles() } catch (e: Exception) {
-                severeL("Tier_Load_Error_Parse", "tiers", e.message ?: "Unknown error")
+            try { initRevisionAutoTracker() } catch (e: Exception) {
+                severeL("Config_Load_Error_Parse", "revision-auto-tracker", e.message ?: "Unknown error")
             }
-            ReloadCollector.addStat(console.asLangText("Reload_Stat_Tiers", tiers.size))
-
-            try { loadTypeFiles() } catch (e: Exception) {
-                severeL("Type_Load_Error_Parse", "types", e.message ?: "Unknown error")
-            }
-            ReloadCollector.addStat(console.asLangText("Reload_Stat_Types", types.size))
-
-            try { loadLevelFiles() } catch (e: Exception) {
-                severeL("Level_Load_Error_Parse", "levels", e.message ?: "Unknown error")
-            }
-            ReloadCollector.addStat(console.asLangText("Reload_Stat_Levels", levels.size))
 
             // 配方注册 + 事件触发等 Bukkit API 操作必须在主线程执行
             if (Bukkit.isPrimaryThread()) {
