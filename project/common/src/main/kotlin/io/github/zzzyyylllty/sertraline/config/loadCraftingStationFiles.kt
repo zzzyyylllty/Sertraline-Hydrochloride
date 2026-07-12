@@ -48,9 +48,9 @@ fun loadCraftingStationFile(file: File): Boolean {
     }
 
     return try {
-        val map = multiExtensionLoader(file)
+        val raw = multiExtensionLoader(file) ?: return false
+        val map = TemplateManager.resolveInMap(raw)
 
-        if (map == null) return false
         if (map.isEmpty()) {
             severeL("CraftingStation_Load_Error_Empty", file.name)
             return false

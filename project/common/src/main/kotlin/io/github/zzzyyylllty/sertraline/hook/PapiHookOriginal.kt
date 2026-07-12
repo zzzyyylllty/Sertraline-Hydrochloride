@@ -19,7 +19,6 @@ import taboolib.common.platform.Awake
 import taboolib.common.platform.function.pluginVersion
 import taboolib.common.util.random
 import taboolib.common5.compileJS
-import taboolib.expansion.getDataContainer
 import taboolib.platform.BukkitPlugin
 import java.math.BigDecimal
 import java.math.RoundingMode

@@ -44,7 +44,8 @@ allprojects {
             install(
                 Basic, Bukkit, BukkitHook, BukkitNMSUtil, Database, Kether,
                 CommandHelper, BukkitNMSItemTag, JavaScript, BukkitUI,
-                BukkitUtil, Jexl, Metrics, DatabasePlayer, BukkitNMS
+                BukkitUtil, Jexl, Metrics, DatabasePlayer, BukkitNMS,
+                PtcObject
             )
             disableOnUnsupportedVersion = false
             disableOnSkippedVersion = false

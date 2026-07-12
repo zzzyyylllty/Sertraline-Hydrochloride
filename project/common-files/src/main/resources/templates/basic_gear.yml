@@ -1,0 +1,95 @@
+basic_melee_weapon:
+  xbuilder:
+    material: IRON_SWORD
+    name: "%{name?:Unnamed Weapon}"
+    lore:
+      - "%{lore_line1?:<gray>A simple weapon.}"
+      - "%{lore_line2?:}"
+    unbreakable: true
+    attributes:
+      ATTACK_DAMAGE:
+        amount: "%{damage?:10}"
+        operation: ADD_NUMBER
+        slot: HAND
+      ATTACK_SPEED:
+        amount: "%{speed?:1.6}"
+        operation: ADD_NUMBER
+        slot: HAND
+
+basic_armor_chestplate:
+  xbuilder:
+    material: "%{material?:IRON_CHESTPLATE}"
+    name: "%{name?:Unnamed Chestplate}"
+    lore:
+      - "%{lore_line?:}"
+    unbreakable: true
+    attributes:
+      ARMOR:
+        amount: "%{armor?:6}"
+        operation: ADD_NUMBER
+        slot: CHEST
+      ARMOR_TOUGHNESS:
+        amount: "%{toughness?:2}"
+        operation: ADD_NUMBER
+        slot: CHEST
+
+basic_helmet:
+  xbuilder:
+    material: "%{material?:IRON_HELMET}"
+    name: "%{name?:Unnamed Helmet}"
+    lore:
+      - "%{lore_line?:}"
+    unbreakable: true
+    attributes:
+      ARMOR:
+        amount: "%{armor?:3}"
+        operation: ADD_NUMBER
+        slot: HEAD
+
+basic_leggings:
+  xbuilder:
+    material: "%{material?:IRON_LEGGINGS}"
+    name: "%{name?:Unnamed Leggings}"
+    lore:
+      - "%{lore_line?:}"
+    unbreakable: true
+    attributes:
+      ARMOR:
+        amount: "%{armor?:5}"
+        operation: ADD_NUMBER
+        slot: LEGS
+
+basic_boots:
+  xbuilder:
+    material: "%{material?:IRON_BOOTS}"
+    name: "%{name?:Unnamed Boots}"
+    lore:
+      - "%{lore_line?:}"
+    unbreakable: true
+    attributes:
+      ARMOR:
+        amount: "%{armor?:2}"
+        operation: ADD_NUMBER
+        slot: FEET
+
+consumable_item:
+  sertraline:
+    tier: "%{tier?:D}"
+    actions:
+      onConsume:
+        - kether: |
+            tell inline "%{consume_message?:\"<green>You consumed the item.\"}"
+  xbuilder:
+    material: "%{material?:MUSHROOM_STEW}"
+    name: "%{name?:Unnamed Consumable}"
+    lore:
+      - "%{lore_line?:}"
+
+basic_consumable:
+  sertraline:
+    tier: "%{tier?:D}"
+  xbuilder:
+    material: "%{material?:PAPER}"
+    name: "%{name?:Unnamed Item}"
+    lore:
+      - "%{lore_line?:}"

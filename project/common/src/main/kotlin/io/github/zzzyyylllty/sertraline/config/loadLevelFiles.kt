@@ -44,7 +44,8 @@ fun loadLevelFile(file: File) {
             devLog("${file.name} not match regex, skipping...")
             return
         }
-        val map = multiExtensionLoader(file)
+        val raw = multiExtensionLoader(file) ?: return
+        val map = TemplateManager.resolveInMap(raw)
         if (map != null) {
             if (map.isEmpty()) {
                 severeL("Config_Load_Error_Empty", file.name)

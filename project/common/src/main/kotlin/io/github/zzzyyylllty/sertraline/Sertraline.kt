@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.api.SertralineAPIImpl
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
+import io.github.zzzyyylllty.sertraline.config.TemplateManager
 import io.github.zzzyyylllty.sertraline.config.loadCraftingStationFiles
 import io.github.zzzyyylllty.sertraline.gui.CraftingStationManager
 import io.github.zzzyyylllty.sertraline.config.loadItemFiles
@@ -37,6 +38,7 @@ import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.severeSSync
 import io.github.zzzyyylllty.sertraline.logger.warningL
+import io.github.zzzyyylllty.sertraline.database.DatabaseManager
 import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
@@ -61,16 +63,13 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.expansion.JexlCompiledScript
-import taboolib.expansion.setupPlayerDatabase
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
-import taboolib.module.database.getHost
 import taboolib.module.kether.KetherShell
 import taboolib.module.lang.Language
 import taboolib.module.lang.asLangText
 import taboolib.module.lang.event.PlayerSelectLocaleEvent
 import taboolib.module.lang.event.SystemSelectLocaleEvent
-import java.io.File
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
 import javax.script.CompiledScript
@@ -200,8 +199,6 @@ object Sertraline : Plugin() {
     val dataFolder by lazy { nativeDataFolder() }
     val console by lazy { console() }
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
-    val host by lazy { config.getHost("database") }
-    val dataSource by lazy { host.createDataSource() }
     var fluxonInst: FluxonRuntime? = null
 
     var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
@@ -213,6 +210,7 @@ object Sertraline : Plugin() {
     var levels = LinkedHashMap<String, Level>()
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
+    val manager = io.github.zzzyyylllty.sertraline.manager.ItemManager()
     val tagManager by lazy { TagProcessorManager() }
     var devMode = true
     var allowAsyncLog = true
@@ -231,11 +229,7 @@ object Sertraline : Plugin() {
 
     override fun onLoad() {
         fluxonInst = FluxonRuntime.getInstance()
-        if (config.getBoolean("database.enable", false)) {
-            setupPlayerDatabase(config.getConfigurationSection("database")!!)
-        } else {
-            setupPlayerDatabase(File("${config.getString("database.filename") ?: "data"}.db"))
-        }
+        DatabaseManager.init()
     }
 
     override fun onEnable() {
@@ -248,6 +242,8 @@ object Sertraline : Plugin() {
     override fun onDisable() {
         // 取消所有合成任务（保留持久化数据，玩家下次加入时可恢复）
         CraftingStationManager.shutdownAll()
+        // 清理临时物品（私有临时物品在服务器关闭后销毁）
+        manager.shutdown()
         infoLSync("Disable")
     }
     /*
@@ -265,6 +261,9 @@ object Sertraline : Plugin() {
             devMode = config.getBoolean("debug", false)
             allowAsyncLog = config.getBoolean("async-logging", true)
 
+            // save public-temporary items, restore after reload
+            manager.preReload()
+
             itemMap.clear()
             mappings.clear()
             loreFormats.clear()
@@ -281,6 +280,12 @@ object Sertraline : Plugin() {
             registerNativeAdapter()
             registerNativeTagAdapter()
             registerNativeAttributeProviders()
+
+            // 模板优先加载，后续所有配置均可引用
+            try { TemplateManager.loadTemplates() } catch (e: Exception) {
+                severeL("Config_Load_Error_Parse", "templates", e.message ?: "Unknown error")
+            }
+            ReloadCollector.addStat(console.asLangText("Reload_Stat_Templates", TemplateManager.templateCount()))
 
             try { loadMappingFiles() } catch (e: Exception) {
                 severeL("Mapping_Load_Error_Parse", "mappings", e.message ?: "Unknown error")
@@ -306,6 +311,8 @@ object Sertraline : Plugin() {
             try { loadItemFiles() } catch (e: Exception) {
                 severeL("Config_Load_Error_Parse", "items", e.message ?: "Unknown error")
             }
+            // restore public-temporary items that were saved before reload
+            manager.postReload()
             ReloadCollector.addStat(console.asLangText("Reload_Stat_Items", itemMap.size))
 
             try { loadLoreFormatFiles() } catch (e: Exception) {

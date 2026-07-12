@@ -1,7 +1,8 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.Sertraline
-import io.github.zzzyyylllty.sertraline.data.CraftingStation
+import io.github.zzzyyylllty.sertraline.database.CraftingSession
+import io.github.zzzyyylllty.sertraline.database.DatabaseManager
 import io.github.zzzyyylllty.sertraline.gui.CraftingStationManager
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.severeS
@@ -10,7 +11,6 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
-import taboolib.expansion.getDataContainer
 import taboolib.platform.util.deserializeToItemStack
 import taboolib.platform.util.giveItem
 import taboolib.platform.util.serializeToByteArray
@@ -18,35 +18,27 @@ import java.util.Base64
 
 /**
  * 合成站数据管理器。
- * 使用 TabooLib DataContainer 持久化玩家进行中的合成会话，
+ * 使用 PTC Object ORM（CraftingSession 表）持久化玩家进行中的合成会话，
  * 防止服务器关闭/玩家退出时材料丢失。
  */
 object CraftingStationDataManager {
 
-    private const val KEY_SESSION = "crafting.session"
-    private const val KEY_ITEMS_PREFIX = "crafting.items."
-    private const val KEY_SEPARATOR = "|"
-    private val base64 = Base64.getEncoder()
-    private val base64Decode = Base64.getDecoder()
+    private val base64Encoder = Base64.getEncoder()
+    private val base64Decoder = Base64.getDecoder()
 
     /**
      * 保存玩家进行中的合成会话。
      */
     fun saveSession(player: Player, stationId: String, recipeId: String, startTime: Long, totalSeconds: Double, consumedItems: List<ItemStack>) {
         try {
-            val container = player.getDataContainer()
-            // 清除旧的会话数据
-            clearSession(player)
-
-            // 保存会话元数据: stationId|recipeId|startTime|totalSeconds
-            container[KEY_SESSION] = listOf(stationId, recipeId, startTime.toString(), totalSeconds.toString()).joinToString(KEY_SEPARATOR)
-
-            // 保存消耗的物品
-            consumedItems.forEachIndexed { index, item ->
-                val bytes = item.serializeToByteArray()
-                val encoded = base64.encodeToString(bytes)
-                container["$KEY_ITEMS_PREFIX$index"] = encoded
+            val uuid = player.uniqueId.toString()
+            val itemsBlob = consumedItems.joinToString(";") { item ->
+                base64Encoder.encodeToString(item.serializeToByteArray())
             }
+
+            DatabaseManager.sessionMapper.insertOrUpdate(
+                CraftingSession(uuid, stationId, recipeId, startTime, totalSeconds, itemsBlob)
+            ) { "uuid" eq uuid }
         } catch (e: Exception) {
             severeS("Failed to save crafting session for ${player.name}: ${e.message}")
         }
@@ -58,37 +50,22 @@ object CraftingStationDataManager {
      */
     fun loadSession(player: Player): PendingSession? {
         try {
-            val container = player.getDataContainer()
-            val raw = container[KEY_SESSION] ?: return null
+            val uuid = player.uniqueId.toString()
+            val session = DatabaseManager.sessionMapper.findById(uuid) ?: return null
 
-            val parts = raw.split(KEY_SEPARATOR)
-            if (parts.size < 4) {
-                warningS("Corrupted crafting session data for ${player.name}: $raw")
-                clearSession(player)
-                return null
-            }
-
-            val stationId = parts[0]
-            val recipeId = parts[1]
-            val startTime = parts[2].toLongOrNull() ?: return null
-            val totalSeconds = parts[3].toDoubleOrNull() ?: return null
-
-            // 读取消耗的物品
-            val items = mutableListOf<ItemStack>()
-            var index = 0
-            while (true) {
-                val encoded = container["$KEY_ITEMS_PREFIX$index"] ?: break
-                try {
-                    val bytes = base64Decode.decode(encoded)
-                    val item = bytes.deserializeToItemStack()
-                    if (item != null) items.add(item)
-                } catch (e: Exception) {
-                    warningS("Failed to deserialize consumed item #$index for ${player.name}: ${e.message}")
+            val items = if (session.consumedItemsBlob.isNotBlank()) {
+                session.consumedItemsBlob.split(";").mapNotNull { encoded ->
+                    try {
+                        val bytes = base64Decoder.decode(encoded)
+                        bytes.deserializeToItemStack()
+                    } catch (e: Exception) {
+                        warningS("Failed to deserialize consumed item for ${player.name}: ${e.message}")
+                        null
+                    }
                 }
-                index++
-            }
+            } else emptyList()
 
-            return PendingSession(stationId, recipeId, startTime, totalSeconds, items)
+            return PendingSession(session.stationId, session.recipeId, session.startTime, session.totalSeconds, items)
         } catch (e: Exception) {
             severeS("Failed to load crafting session for ${player.name}: ${e.message}")
             return null
@@ -100,13 +77,7 @@ object CraftingStationDataManager {
      */
     fun clearSession(player: Player) {
         try {
-            val container = player.getDataContainer()
-            container.delete(KEY_SESSION)
-            var index = 0
-            while (container["$KEY_ITEMS_PREFIX$index"] != null) {
-                container.delete("$KEY_ITEMS_PREFIX$index")
-                index++
-            }
+            DatabaseManager.sessionMapper.deleteById(player.uniqueId.toString())
         } catch (e: Exception) {
             warningS("Failed to clear crafting session for ${player.name}: ${e.message}")
         }
@@ -136,7 +107,6 @@ object CraftingStationDataManager {
                         val stack = output.build(player)
                         player.giveItem(stack)
                     }
-                    // 触发 onClaim agents（异步执行）
                     CraftingStationManager.fireLifecycleAgents(station!!, recipe, "onClaim", player)
                     player.sendMessage((Sertraline.config
                         .getString("messages.crafting-complete", "<green>Crafting complete!</green>")
@@ -151,7 +121,6 @@ object CraftingStationDataManager {
                         }
                     }
                     if (recipe != null) {
-                        // 触发 onCancel agents（异步执行）
                         CraftingStationManager.fireLifecycleAgents(station!!, recipe, "onCancel", player)
                         player.sendMessage("<yellow>Your crafting was interrupted. Materials returned.</yellow>".toComponent())
                     } else {

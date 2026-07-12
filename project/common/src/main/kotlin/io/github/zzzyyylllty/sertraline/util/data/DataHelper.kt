@@ -1,214 +1,214 @@
 package io.github.zzzyyylllty.sertraline.util.data
 
-import io.github.zzzyyylllty.sertraline.util.serialize.CastHelper
+import io.github.zzzyyylllty.sertraline.database.DatabaseManager
+import io.github.zzzyyylllty.sertraline.database.PlayerCooldown
+import io.github.zzzyyylllty.sertraline.database.PlayerProperty
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
+import io.github.zzzyyylllty.sertraline.util.serialize.CastHelper
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
-import taboolib.common.platform.ProxyPlayer
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.submitAsync
-import taboolib.expansion.getDataContainer
-import taboolib.expansion.releaseDataContainer
-import taboolib.expansion.setupDataContainer
 import java.time.Instant
 import java.util.Date
 import kotlin.math.round
 
 object DataHelper {
+
     @SubscribeEvent
     fun onJoin(event: PlayerJoinEvent) {
-        val player = event.player
-
-        // 初始化缓存优先容器
-        submitAsync {
-            player.setupDataContainer()
-        }
+        // PTC Object mappers handle database connections automatically.
+        // No per-player DataContainer setup needed.
     }
-
-//    @SubscribeEvent
-//    fun onQuit(event: PlayerQuitEvent) {
-//        val player = event.player
-//
-//        // 释放数据容器
-//        submitAsync {
-//            DataUtil.cleanupCooldown(player)
-//            player.releaseDataContainer()
-//        }
-//    }
 }
 
 @Suppress("UNUSED")
 object DataUtil {
 
+    // ──────────────────────────────────────────────
+    //  Generic key-value player data
+    // ──────────────────────────────────────────────
 
     fun savePlayerData(player: Player) {
         player.saveData()
     }
 
     fun resetAllData(player: Player) {
-        val container = player.getDataContainer()
-        container.source.clear()
+        val uuid = player.uniqueId.toString()
+        DatabaseManager.propertyMapper.deleteWhere { "uuid" eq uuid }
     }
 
     fun getDataRaw(player: Player, dataID: String): String? {
-        val container = player.getDataContainer()
-        return container[dataID]
+        return DatabaseManager.propertyMapper.findOneByKey(
+            PlayerProperty(player.uniqueId.toString(), dataID, "")
+        )?.propValue
     }
 
     fun getDataSmart(player: Player, dataID: String): Any? {
-        val container = player.getDataContainer()
-        return container[dataID]?.let { CastHelper.smartCast(it) }
+        return getDataRaw(player, dataID)?.let { CastHelper.smartCast(it) }
     }
 
     fun getDataAsInt(player: Player, dataID: String): Int? {
-        val container = player.getDataContainer()
-        return container[dataID]?.toIntOrNull()
+        return getDataRaw(player, dataID)?.toIntOrNull()
     }
 
     fun getDataAsBoolean(player: Player, dataID: String): Boolean? {
-        val container = player.getDataContainer()
-        return container[dataID]?.toBooleanTolerance()
+        return getDataRaw(player, dataID)?.toBooleanTolerance()
     }
 
     fun getDataAsDouble(player: Player, dataID: String): Double? {
-        val container = player.getDataContainer()
-        return container[dataID]?.toDoubleOrNull()
+        return getDataRaw(player, dataID)?.toDoubleOrNull()
     }
 
     fun getDataAsLong(player: Player, dataID: String): Long? {
-        val container = player.getDataContainer()
-        return container[dataID]?.toLongOrNull()
+        return getDataRaw(player, dataID)?.toLongOrNull()
     }
 
     fun removeData(player: Player, dataID: String) {
-        val container = player.getDataContainer()
-        container.delete(dataID)
+        DatabaseManager.propertyMapper.deleteByKey(
+            PlayerProperty(player.uniqueId.toString(), dataID, "")
+        )
     }
 
     fun setData(player: Player, dataID: String, dataValue: Any) {
-        val container = player.getDataContainer()
-        container[dataID] = dataValue
+        val uuid = player.uniqueId.toString()
+        val value = dataValue.toString()
+        DatabaseManager.propertyMapper.insertOrUpdate(
+            PlayerProperty(uuid, dataID, value)
+        ) { "uuid" eq uuid; "propKey" eq dataID }
     }
 
     fun setDataIfNotExist(player: Player, dataID: String, dataValue: Any) {
-        val container = player.getDataContainer()
-        if (container[dataID] == null) container[dataID] = dataValue
+        if (getDataRaw(player, dataID) == null) {
+            setData(player, dataID, dataValue)
+        }
     }
 
+    fun getAllDataRaw(player: Player): Map<String, String> {
+        return DatabaseManager.propertyMapper.findAll(player.uniqueId.toString())
+            .associate { it.propKey to it.propValue }
+    }
+
+    // ──────────────────────────────────────────────
+    //  Cooldown management
+    // ──────────────────────────────────────────────
+
     fun resetAllCooldown(player: Player) {
-        val container = player.getDataContainer()
-        for (key in container.keys().filter { key -> key.startsWith("cooldown.") }) {
-            container.delete(key)
-        }
+        DatabaseManager.cooldownMapper.deleteWhere { "uuid" eq player.uniqueId.toString() }
     }
 
     fun getAllCooldownRaw(player: Player): Map<String, String> {
-        val container = player.getDataContainer()
-        return container.source.filter { (key, value) -> key.startsWith("cooldown.") }
-    }
-    
-    fun getAllDataRaw(player: Player): Map<String, String> {
-        val container = player.getDataContainer()
-        return container.source
+        return DatabaseManager.cooldownMapper.findAll(player.uniqueId.toString())
+            .associate { it.cooldownId to it.expiry.toString() }
     }
 
     fun getAllCooldownLong(player: Player): Map<String, Long> {
-        val container = player.getDataContainer()
-        val map = mutableMapOf<String, Long>()
-        for (element in container.source.filter { (key, value) -> key.startsWith("cooldown.") }) {
-            element.value.toLongOrNull()?.let { map.put(element.key, it) }
-        }
-        return map
+        return DatabaseManager.cooldownMapper.findAll(player.uniqueId.toString())
+            .associate { it.cooldownId to it.expiry }
     }
 
     fun getAllCooldownDate(player: Player): Map<String, Date> {
-        val container = player.getDataContainer()
-        val map = mutableMapOf<String, Date>()
-        for (element in container.source.filter { (key, value) -> key.startsWith("cooldown.") }) {
-            element.value.toLongOrNull()?.let { map.put(element.key, Date.from(Instant.ofEpochMilli(it))) }
-        }
-        return map
+        return DatabaseManager.cooldownMapper.findAll(player.uniqueId.toString())
+            .associate { it.cooldownId to Date.from(Instant.ofEpochMilli(it.expiry)) }
     }
 
     fun getCooldownRaw(player: Player, cooldownID: String): String? {
-        val container = player.getDataContainer()
-        return container["cooldown.$cooldownID"]
+        return DatabaseManager.cooldownMapper.findOneByKey(
+            PlayerCooldown(player.uniqueId.toString(), cooldownID, 0)
+        )?.expiry?.toString()
     }
 
     fun getCooldownLong(player: Player, cooldownID: String): Long? {
-        val container = player.getDataContainer()
-        return container["cooldown.$cooldownID"]?.toLongOrNull()
+        return DatabaseManager.cooldownMapper.findOneByKey(
+            PlayerCooldown(player.uniqueId.toString(), cooldownID, 0)
+        )?.expiry
     }
 
     fun getCooldownDate(player: Player, cooldownID: String): Date? {
-        val container = player.getDataContainer()
-        return container["cooldown.$cooldownID"]?.toLongOrNull()?.let { Date.from(Instant.ofEpochMilli(it)) }
-    }
-
-    fun getCooldownLeftLong(player: Player, cooldownID: String): Long? {
-        val container = player.getDataContainer()
-        return container["cooldown.$cooldownID"]?.toLongOrNull()?.let { it - Instant.now().toEpochMilli() }
-    }
-
-    fun getCooldownLeftDate(player: Player, cooldownID: String): Date? {
-        val container = player.getDataContainer()
-        return container["cooldown.$cooldownID"]?.toLongOrNull()?.let { Date.from(Instant.ofEpochMilli(it - Instant.now().toEpochMilli())) }
-    }
-
-    fun setCooldown(player: Player, cooldownID: String, second: Double) {
-        val container = player.getDataContainer()
-        val current = Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = round(current + second * 1000).toLong()
-    }
-
-    fun setCooldownMill(player: Player, cooldownID: String, tick: Int) {
-        val container = player.getDataContainer()
-        val current = Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = current + tick
-    }
-
-    fun extendCooldown(player: Player, cooldownID: String, second: Double) {
-        val container = player.getDataContainer()
-        val current = container["cooldown.$cooldownID"]?.toLongOrNull() ?: Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = round(current + second * 1000).toLong()
-    }
-
-    fun extendCooldownMill(player: Player, cooldownID: String, tick: Int) {
-        val container = player.getDataContainer()
-        val current = container["cooldown.$cooldownID"]?.toLongOrNull() ?: Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = current + tick
-    }
-
-    fun reduceCooldown(player: Player, cooldownID: String, second: Double) {
-        val container = player.getDataContainer()
-        val current = container["cooldown.$cooldownID"]?.toLongOrNull() ?: Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = round(current - second * 1000).toLong()
-    }
-
-    fun reduceCooldownTick(player: Player, cooldownID: String, tick: Int) {
-        val container = player.getDataContainer()
-        val current = container["cooldown.$cooldownID"]?.toLongOrNull() ?: Instant.now().toEpochMilli()
-        container["cooldown.$cooldownID"] = current - tick
-    }
-
-    fun resetCooldown(player: Player, cooldownID: String) {
-        val container = player.getDataContainer()
-        container.delete("cooldown.$cooldownID")
-    }
-
-    fun isInCooldown(player: Player, cooldownID: String): Boolean {
-        val container = player.getDataContainer()
-        return (container["cooldown.$cooldownID"]?.toLongOrNull() ?: 0L) >= Instant.now().toEpochMilli()
-    }
-
-    fun cleanupCooldown(player: Player) {
-        val container = player.getDataContainer()
-        container.source.filter { (key, value) -> key.startsWith("cooldown.") }.forEach {
-            if ((container["cooldown.${it.key}"]?.toLongOrNull() ?: 0L) <= Instant.now().toEpochMilli()) container.delete(it.key)
+        return getCooldownLong(player, cooldownID)?.let {
+            Date.from(Instant.ofEpochMilli(it))
         }
     }
 
+    fun getCooldownLeftLong(player: Player, cooldownID: String): Long? {
+        val expiry = getCooldownLong(player, cooldownID) ?: return null
+        return expiry - Instant.now().toEpochMilli()
+    }
+
+    fun getCooldownLeftDate(player: Player, cooldownID: String): Date? {
+        return getCooldownLeftLong(player, cooldownID)?.let {
+            Date.from(Instant.ofEpochMilli(it))
+        }
+    }
+
+    fun setCooldown(player: Player, cooldownID: String, second: Double) {
+        val uuid = player.uniqueId.toString()
+        val expiry = round(Instant.now().toEpochMilli() + second * 1000).toLong()
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun setCooldownMill(player: Player, cooldownID: String, tick: Int) {
+        val uuid = player.uniqueId.toString()
+        val expiry = Instant.now().toEpochMilli() + tick
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun extendCooldown(player: Player, cooldownID: String, second: Double) {
+        val uuid = player.uniqueId.toString()
+        val current = getCooldownLong(player, cooldownID) ?: Instant.now().toEpochMilli()
+        val expiry = round(current + second * 1000).toLong()
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun extendCooldownMill(player: Player, cooldownID: String, tick: Int) {
+        val uuid = player.uniqueId.toString()
+        val current = getCooldownLong(player, cooldownID) ?: Instant.now().toEpochMilli()
+        val expiry = current + tick
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun reduceCooldown(player: Player, cooldownID: String, second: Double) {
+        val uuid = player.uniqueId.toString()
+        val current = getCooldownLong(player, cooldownID) ?: Instant.now().toEpochMilli()
+        val expiry = round(current - second * 1000).toLong()
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun reduceCooldownTick(player: Player, cooldownID: String, tick: Int) {
+        val uuid = player.uniqueId.toString()
+        val current = getCooldownLong(player, cooldownID) ?: Instant.now().toEpochMilli()
+        val expiry = current - tick
+        DatabaseManager.cooldownMapper.insertOrUpdate(
+            PlayerCooldown(uuid, cooldownID, expiry)
+        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+    }
+
+    fun resetCooldown(player: Player, cooldownID: String) {
+        DatabaseManager.cooldownMapper.deleteByKey(
+            PlayerCooldown(player.uniqueId.toString(), cooldownID, 0)
+        )
+    }
+
+    fun isInCooldown(player: Player, cooldownID: String): Boolean {
+        val expiry = getCooldownLong(player, cooldownID) ?: return false
+        return expiry >= Instant.now().toEpochMilli()
+    }
+
+    fun cleanupCooldown(player: Player) {
+        val uuid = player.uniqueId.toString()
+        val now = Instant.now().toEpochMilli()
+        DatabaseManager.cooldownMapper.deleteWhere {
+            "uuid" eq uuid
+            "expiry" lte now
+        }
+    }
 }

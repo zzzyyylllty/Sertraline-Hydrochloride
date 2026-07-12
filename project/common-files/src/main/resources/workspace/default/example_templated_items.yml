@@ -1,0 +1,208 @@
+# ==============================
+# Template Usage Examples
+# ==============================
+
+# Basic usage: inherit a template, override name only
+apprentice_sword:
+  $template:
+    use: iron_melee
+    arguments:
+      name: Apprentice Sword
+  sertraline:
+    tier: C
+
+# Multiple argument overrides
+knight_longsword:
+  $template:
+    use: diamond_melee
+    arguments:
+      damage: 14
+      speed: 1.4
+      name: Knight Longsword
+  sertraline:
+    tier: B
+
+# Using _ID auto-parameter
+flame_sword:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: NETHERITE_SWORD
+      damage: 16
+      name: "Flame Sword of %{_ID}"
+  sertraline:
+    tier: A
+
+# ==============================
+# Type ($t) Transformer Examples
+# ==============================
+
+# $t: when - value mapping based on _ID
+wild_guardian_sword:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: STONE_SWORD
+      damage: 10
+      speed: 1.6
+      name:
+        $t:
+          type: when
+          source: "%{_ID}"
+          when:
+            wild_guardian_sword: "&2Wild Guardian"
+            forest_guardian_sword: "&aForest Guardian"
+          fallback: "Unknown Guardian"
+  sertraline:
+    tier: A
+
+forest_guardian_sword:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: WOODEN_SWORD
+      damage: 10
+      speed: 1.6
+      name: "&aForest Guardian"
+  sertraline:
+    tier: A
+
+# $t: upper/lower case
+titan_sword:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: DIAMOND_SWORD
+      damage: 25
+      speed: 1.2
+      name:
+        $t:
+          type: upper
+          value: "titan sword"
+  sertraline:
+    tier: S
+
+hunter_knife:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: IRON_SWORD
+      damage: 7
+      speed: 2.2
+      name:
+        $t:
+          type: lower
+          value: "HUNTER KNIFE"
+  sertraline:
+    tier: B
+
+# $t: condition
+magic_staff:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: STICK
+      damage:
+        $t:
+          type: condition
+          condition: "true"
+          true: "12"
+          false: "6"
+      speed: 1.0
+      name:
+        $t:
+          type: condition
+          condition: "%{enchanted?:false}"
+          true: "&dEnchanted Magic Staff"
+          false: "&5Magic Staff"
+  sertraline:
+    tier: A
+
+# ==============================
+# Cast ($c) Type Converter Examples
+# ==============================
+
+# $c: int with rounding
+precision_blade:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: IRON_SWORD
+      damage:
+        $c:
+          type: int
+          round: ceil
+      speed: 1.6
+      name: Precision Blade
+  sertraline:
+    tier: B
+
+# $c: double
+light_dagger:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: IRON_SWORD
+      damage: 5
+      speed:
+        $c: double
+      name: Light Dagger
+  sertraline:
+    tier: C
+
+# $c: string with case conversion
+echo_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: IRON_HELMET
+      armor: 3
+      name:
+        $c:
+          type: string
+          case: uppercase
+  sertraline:
+    tier: B
+
+# $t + $c combined (transform then cast)
+shadow_blade:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: NETHERITE_SWORD
+      damage:
+        $t:
+          type: when
+          source: "%{_ID}"
+          when:
+            shadow_blade: "15.7"
+          fallback: "10"
+        $c:
+          type: int
+          round: ceil
+      speed: 1.8
+      name:
+        $t:
+          type: upper
+          value: "shadow blade"
+        $c:
+          type: string
+          case: upper
+  sertraline:
+    tier: S
+
+# $t: self_increase (increments every time the template is resolved)
+# Use with $template to ensure the transformer is processed
+numbered_token:
+  $template:
+    use: basic_consumable
+    arguments:
+      material: PAPER
+      name: "Token #%{number}"
+      number:
+        $t:
+          type: self_increase
+          from: 1
+          to: 999
+          step: 1
+          step_interval: 1

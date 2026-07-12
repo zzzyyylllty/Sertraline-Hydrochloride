@@ -1,0 +1,29 @@
+# ============================================
+# Sertraline Item Manager Configuration
+# 物品管理器配置文件
+# ============================================
+
+# 默认管理器类型和子类型
+# Default manager type and sub type
+defaults:
+  # 默认管理器类型 (public / private)
+  # Default manager type (public / private)
+  scope: "public"
+  # 默认子类型 (persistent / temporary)
+  # Default sub type (persistent / temporary)
+  sub: "persistent"
+
+# 允许删除公有持久化物品（从内存和配置文件中移除）
+# Allow deleting public-persistent items (remove from memory and config files)
+allow-delete-public-persistent: false
+
+# 是否在删除公有持久化物品时也移除对应的文件
+# Whether to also remove the corresponding file when deleting public-persistent items
+delete-file: false
+
+# 私有管理器设置
+# Private manager settings
+private:
+  # 自动UUID，当未通过 switch 指定且无玩家上下文时使用。留空则抛出错误
+  # Auto UUID, used when no switch UUID and no player context is available. Leave empty to throw error
+  auto-uuid: ""

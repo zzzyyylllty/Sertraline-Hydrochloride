@@ -74,7 +74,8 @@ fun loadRecipeFile(file: File): Pair<Int, Int> {
     }
 
     return try {
-        val map = multiExtensionLoader(file) ?: return Pair(0, 1)
+        val raw = multiExtensionLoader(file) ?: return Pair(0, 1)
+        val map = TemplateManager.resolveInMap(raw)
 
         var loaded = 0
         var errors = 0

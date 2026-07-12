@@ -33,7 +33,6 @@ import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.getDataFolder
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
-import taboolib.expansion.setupDataContainer
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Type
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
@@ -269,13 +268,6 @@ object DebugCommand {
             val inv = (sender as Player).inventory
             val item = inv.itemInMainHand
             sender.sendMessage("GetTag - NOT OnlyCustom: ${item.getItemTag(false)}")
-        }
-    }
-
-    @CommandBody
-    val setupDataContainer = subCommand {
-        execute<CommandSender> { sender, context, argument ->
-            (sender as Player).setupDataContainer()
         }
     }
 

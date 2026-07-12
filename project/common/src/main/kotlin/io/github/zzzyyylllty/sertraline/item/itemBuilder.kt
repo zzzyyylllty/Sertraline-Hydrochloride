@@ -2,11 +2,14 @@ package io.github.zzzyyylllty.sertraline.item
 
 //import io.github.projectunified.uniitem.all.AllItemProvider
 //import io.github.projectunified.uniitem.api.ItemKey
+import io.github.zzzyyylllty.sertraline.Sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.Sertraline.manager
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.manager.SubManagerType
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
@@ -92,7 +95,17 @@ fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack?
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null): ItemStack? {
-    val pTemplate = itemMap[template]?.deepCopy() ?: return null
+    val pTemplate: ModernSItem
+    if (template.startsWith("__")) {
+        val uuid = player?.uniqueId?.toString() ?: run {
+            try { manager.resolvePrivateUuid(null, null) } catch (_: Exception) { return null }
+        }
+        pTemplate = (manager.privateManager.getItem(uuid, template, SubManagerType.TEMPORARY)
+            ?: manager.privateManager.getItem(uuid, template, SubManagerType.PERSISTENT)
+            ?: return null).deepCopy()
+    } else {
+        pTemplate = itemMap[template]?.deepCopy() ?: return null
+    }
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)

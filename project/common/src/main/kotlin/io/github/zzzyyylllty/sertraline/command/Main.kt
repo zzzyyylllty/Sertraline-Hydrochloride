@@ -98,6 +98,9 @@ object SertralineMainCommand {
     val item = ItemCommand
 
     @CommandBody
+    val manager = ManagerCommand
+
+    @CommandBody
     val station = subCommand {
         dynamic("stationId") {
             suggestion<CommandSender> { _, _ ->

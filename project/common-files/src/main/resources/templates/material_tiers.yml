@@ -1,0 +1,102 @@
+wooden_melee:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: WOODEN_SWORD
+      damage: 4
+      speed: 1.6
+      name: Wooden Sword
+
+stone_melee:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: STONE_SWORD
+      damage: 6
+      speed: 1.6
+      name: Stone Sword
+
+iron_melee:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: IRON_SWORD
+      damage: 8
+      speed: 1.6
+      name: Iron Sword
+
+diamond_melee:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: DIAMOND_SWORD
+      damage: 10
+      speed: 1.6
+      name: Diamond Sword
+
+netherite_melee:
+  $template:
+    use: basic_melee_weapon
+    arguments:
+      material: NETHERITE_SWORD
+      damage: 12
+      speed: 1.6
+      name: Netherite Sword
+
+leather_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: LEATHER_HELMET
+      armor: 1
+      name: Leather Helmet
+
+chainmail_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: CHAINMAIL_HELMET
+      armor: 2
+      name: Chainmail Helmet
+
+iron_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: IRON_HELMET
+      armor: 3
+      name: Iron Helmet
+
+diamond_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: DIAMOND_HELMET
+      armor: 4
+      name: Diamond Helmet
+
+netherite_helmet:
+  $template:
+    use: basic_helmet
+    arguments:
+      material: NETHERITE_HELMET
+      armor: 4
+      name: Netherite Helmet
+
+iron_chestplate:
+  $template:
+    use: basic_armor_chestplate
+    arguments:
+      material: IRON_CHESTPLATE
+      armor: 6
+      toughness: 2
+      name: Iron Chestplate
+
+diamond_chestplate:
+  $template:
+    use: basic_armor_chestplate
+    arguments:
+      material: DIAMOND_CHESTPLATE
+      armor: 8
+      toughness: 4
+      name: Diamond Chestplate

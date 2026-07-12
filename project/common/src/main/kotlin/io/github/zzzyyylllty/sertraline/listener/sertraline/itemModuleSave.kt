@@ -8,6 +8,9 @@ import taboolib.common.platform.event.SubscribeEvent
 
 @SubscribeEvent(priority = EventPriority.MONITOR)
 fun itemModuleSave(e: ItemLoadEvent) {
+    // __-prefixed items are handled by the private manager, skip loading into itemMap
+    if (e.itemKey?.startsWith("__") == true) return
+
     val data = mutableMapOf<String, Any?>()
     for (entry in e.itemData) {
         val location = entry.key

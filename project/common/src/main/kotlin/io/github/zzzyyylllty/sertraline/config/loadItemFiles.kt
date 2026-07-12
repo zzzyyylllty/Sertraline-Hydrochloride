@@ -93,9 +93,9 @@ fun loadItemFile(file: File): Boolean {
     }
 
     return try {
-        val map = multiExtensionLoader(file)
+        val raw = multiExtensionLoader(file) ?: return false
+        val map = TemplateManager.resolveInMap(raw)
 
-        if (map == null) return false
         if (map.isEmpty()) {
             severeL("Item_Load_Error_Empty", file.name)
             return false
@@ -103,6 +103,11 @@ fun loadItemFile(file: File): Boolean {
 
         for (entry in map.entries) {
             val key = entry.key
+            // skip __-prefixed items (reserved for private manager)
+            if (key.startsWith("__")) {
+                warningL("Manager_Item_Load_Skip_Private", key)
+                continue
+            }
             val value = map[key]
             ItemLoadEvent(key, value as? Map<String, Any?>? ?: linkedMapOf(), linkedMapOf()).call()
         }
