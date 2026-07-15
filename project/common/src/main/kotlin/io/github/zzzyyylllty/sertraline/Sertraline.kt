@@ -216,11 +216,11 @@ object Sertraline : Plugin() {
     var allowAsyncLog = true
     var isEnabled = false
     val fileLastModified: MutableMap<String, Long> = mutableMapOf()
-    val ketherScriptCache: HashMap<String, KetherShell.Cache?> = hashMapOf()
-    val jsScriptCache: HashMap<String, CompiledScript?> = hashMapOf()
-    val gjsScriptCache: HashMap<String, Source?> = hashMapOf()
-    val jexlScriptCache: HashMap<String, JexlCompiledScript?> = hashMapOf()
-    val itemCache: HashMap<String, Map<String, Any?>?> = hashMapOf()
+    val ketherScriptCache = ConcurrentHashMap<String, KetherShell.Cache?>()
+    val jsScriptCache = ConcurrentHashMap<String, CompiledScript?>()
+    val gjsScriptCache = ConcurrentHashMap<String, Source?>()
+    val jexlScriptCache = ConcurrentHashMap<String, JexlCompiledScript?>()
+    val itemCache = ConcurrentHashMap<String, Map<String, Any?>?>()
     val itemExpectedRevision: MutableMap<String, Int> = mutableMapOf()
 
     fun api() : SertralineAPI {
@@ -236,7 +236,12 @@ object Sertraline : Plugin() {
         isEnabled = true
         infoL("Enable")
         Language.enableSimpleComponent = true
-        reloadCustomConfig()
+//        try {
+//            reloadCustomConfig()
+//        } catch (e: Exception) {
+//            severeL("Failed to load configurations during startup: ${e.message}")
+//            e.printStackTrace()
+//        }
     }
 
     override fun onDisable() {
@@ -253,8 +258,18 @@ object Sertraline : Plugin() {
         }
     }*/
 
+    @Awake(LifeCycle.ENABLE)
+    fun onEnableLoad() {
+        try {
+        reloadCustomConfig(true)
+        } catch (e: Exception) {
+            severeL("Failed to load configurations during startup: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
     fun reloadCustomConfig(async: Boolean = true, sender: CommandSender? = null) {
-        submit(async) {
+        submit(async = async) {
             ReloadCollector.begin()
 
             config.reload()
@@ -273,6 +288,11 @@ object Sertraline : Plugin() {
             types.clear()
             levels.clear()
             itemExpectedRevision.clear()
+            ketherScriptCache.clear()
+            jsScriptCache.clear()
+            gjsScriptCache.clear()
+            jexlScriptCache.clear()
+            itemCache.clear()
 
             itemManager.unregisterAllProcessor()
             tagManager.unregisterAllProcessor()

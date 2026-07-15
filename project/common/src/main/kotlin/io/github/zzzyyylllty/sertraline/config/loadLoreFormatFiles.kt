@@ -28,21 +28,22 @@ fun loadLoreFormatFiles() {
         releaseResourceFile("lore-formats/loreGenerator.yml")
     }
     val files = File(getDataFolder(), "lore-formats").listFiles()
+    val regex = (config["file-load.lore-format"] ?: ".*").toString()
     for (file in files) {
         // If directory load file in it...
         if (file.isDirectory) file.listFiles()?.forEach {
-            loadLoreFormatFile(it)
+            loadLoreFormatFile(it, regex)
         }
-        else loadLoreFormatFile(file)
+        else loadLoreFormatFile(file, regex)
     }
 }
-fun loadLoreFormatFile(file: File) {
+fun loadLoreFormatFile(file: File, regex: String) {
     devLog("Loading file ${file.name}")
 
     if (file.isDirectory) file.listFiles()?.forEach {
-        loadLoreFormatFile(it)
+        loadLoreFormatFile(it, regex)
     } else {
-        if (!checkRegexMatch(file.name, (config["file-load.lore-format"] ?: ".*").toString())) {
+        if (!checkRegexMatch(file.name, regex)) {
             devLog("${file.name} not match regex, skipping...")
             return
         }

@@ -5,9 +5,9 @@ import taboolib.expansion.Length
 
 data class CraftingSession(
     @Id val uuid: String,
-    @Length(64) var stationId: String = "",
-    @Length(64) var recipeId: String = "",
-    var startTime: Long = 0,
-    var totalSeconds: Double = 0.0,
-    @Length(-1) var consumedItemsBlob: String = ""
+    @Length(64) var stationId: String,
+    @Length(64) var recipeId: String,
+    var startTime: Long,
+    var totalSeconds: Double,
+    @Length(-1) var consumedItemsBlob: String
 )

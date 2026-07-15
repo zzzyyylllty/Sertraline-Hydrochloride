@@ -26,23 +26,23 @@ fun loadCraftingStationFiles() {
         return
     }
 
+    val regex = (config["file-load.crafting-station"] ?: ".*").toString()
     // loadCraftingStationFile 已递归处理目录
     for (file in files) {
-        loadCraftingStationFile(file)
+        loadCraftingStationFile(file, regex)
     }
 
     infoL("CraftingStation_Load_Complete", craftingStations.size)
 }
 
-fun loadCraftingStationFile(file: File): Boolean {
+fun loadCraftingStationFile(file: File, regex: String): Boolean {
     if (file.isDirectory) {
         file.listFiles()?.forEach {
-            loadCraftingStationFile(it)
+            loadCraftingStationFile(it, regex)
         }
         return false
     }
 
-    val regex = (config["file-load.crafting-station"] ?: ".*").toString()
     if (!checkRegexMatch(file.name, regex)) {
         return false
     }

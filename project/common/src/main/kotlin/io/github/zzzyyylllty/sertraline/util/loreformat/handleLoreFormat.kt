@@ -52,6 +52,8 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
     return compList
 }
 
+private val NORMAL_PLACEHOLDER_REGEX = "\\{(.*?)}".toRegex()
+
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem, skipGeneralPlaceholders: Boolean = false): String {
     val numeral = this.toString().toDoubleOrNull() ?: 0.0
     val string = this.toString()
@@ -65,10 +67,9 @@ fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: Modern
 //        .replace("{round}", string).performPlaceholders(sItem, player)?.toDouble()?.roundToInt().toString()
 //        .replace("{auto}", string).performPlaceholders(sItem, player)?.toDouble()?.round
 
-    val regex = "\\{(.*?)}".toRegex() // 匹配 ${xxx} 的正则表达式
     val parse = mutableListOf<String>() // 创建一个Map来存储结果
 
-    regex.findAll(content).forEach { matchResult ->
+    NORMAL_PLACEHOLDER_REGEX.findAll(content).forEach { matchResult ->
         val key = matchResult.groupValues[1]
         parse.add(key)
     }

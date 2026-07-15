@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 object FluxonShell {
 
     val scriptCache = Caffeine.newBuilder()
+        .maximumSize(500)
         .expireAfterAccess(1, TimeUnit.HOURS)
         .build<String, ParsedScript>()
 

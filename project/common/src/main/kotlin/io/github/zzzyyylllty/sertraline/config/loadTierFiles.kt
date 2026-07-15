@@ -25,23 +25,24 @@ fun loadTierFiles() {
     }
     val files = File(getDataFolder(), "tiers").listFiles()
     if (files != null) {
+        val regex = (config["file-load.tier"] ?: ".*").toString()
         for (file in files) {
             // If directory load file in it...
             if (file.isDirectory) file.listFiles()?.forEach {
-                loadTierFile(it)
+                loadTierFile(it, regex)
             }
-            else loadTierFile(file)
+            else loadTierFile(file, regex)
         }
     }
 }
 
-fun loadTierFile(file: File) {
+fun loadTierFile(file: File, regex: String) {
     devLog("Loading tier file ${file.name}")
 
     if (file.isDirectory) file.listFiles()?.forEach {
-        loadTierFile(it)
+        loadTierFile(it, regex)
     } else {
-        if (!checkRegexMatch(file.name, (config["file-load.tier"] ?: ".*").toString())) {
+        if (!checkRegexMatch(file.name, regex)) {
             devLog("${file.name} not match regex, skipping...")
             return
         }

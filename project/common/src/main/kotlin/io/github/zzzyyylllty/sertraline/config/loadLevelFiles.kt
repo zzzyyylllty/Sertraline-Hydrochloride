@@ -24,23 +24,24 @@ fun loadLevelFiles() {
     }
     val files = File(getDataFolder(), "levels").listFiles()
     if (files != null) {
+        val regex = (config["file-load.level"] ?: ".*").toString()
         for (file in files) {
             // If directory load file in it...
             if (file.isDirectory) file.listFiles()?.forEach {
-                loadLevelFile(it)
+                loadLevelFile(it, regex)
             }
-            else loadLevelFile(file)
+            else loadLevelFile(file, regex)
         }
     }
 }
 
-fun loadLevelFile(file: File) {
+fun loadLevelFile(file: File, regex: String) {
     devLog("Loading level file ${file.name}")
 
     if (file.isDirectory) file.listFiles()?.forEach {
-        loadLevelFile(it)
+        loadLevelFile(it, regex)
     } else {
-        if (!checkRegexMatch(file.name, (config["file-load.level"] ?: ".*").toString())) {
+        if (!checkRegexMatch(file.name, regex)) {
             devLog("${file.name} not match regex, skipping...")
             return
         }

@@ -25,23 +25,24 @@ fun loadTypeFiles() {
     }
     val files = File(getDataFolder(), "types").listFiles()
     if (files != null) {
+        val regex = (config["file-load.type"] ?: ".*").toString()
         for (file in files) {
             // If directory load file in it...
             if (file.isDirectory) file.listFiles()?.forEach {
-                loadTypeFile(it)
+                loadTypeFile(it, regex)
             }
-            else loadTypeFile(file)
+            else loadTypeFile(file, regex)
         }
     }
 }
 
-fun loadTypeFile(file: File) {
+fun loadTypeFile(file: File, regex: String) {
     devLog("Loading type file ${file.name}")
 
     if (file.isDirectory) file.listFiles()?.forEach {
-        loadTypeFile(it)
+        loadTypeFile(it, regex)
     } else {
-        if (!checkRegexMatch(file.name, (config["file-load.type"] ?: ".*").toString())) {
+        if (!checkRegexMatch(file.name, regex)) {
             devLog("${file.name} not match regex, skipping...")
             return
         }

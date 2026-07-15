@@ -7,5 +7,5 @@ import taboolib.expansion.Length
 data class PlayerCooldown(
     @Id val uuid: String,
     @Key @Length(64) val cooldownId: String,
-    var expiry: Long = 0
+    var expiry: Long
 )

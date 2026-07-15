@@ -65,11 +65,11 @@ object GraalJsUtil {
     fun newGraalContext(): Context {
 
         return Context.newBuilder(GJS_LANG_ID)
-            .allowAllAccess(true)
+//            .allowAllAccess(true) // 过于宽松，由下方细粒度配置替代
 //            .allowHostAccess(hostAccess)
             .engine(globalGJSEngine)
-            .allowHostAccess(HostAccess.ALL) // 允许访问所有主机类
-            .allowHostClassLookup { true } // 允许查找所有类
+            .allowHostAccess(hostAccess ?: HostAccess.ALL) // 使用细粒度配置
+            .allowHostClassLookup { name -> name.startsWith("io.github.zzzyyylllty.sertraline") } // 仅允许访问插件自身类
             .build()
     }
 

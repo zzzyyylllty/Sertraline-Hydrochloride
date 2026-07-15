@@ -100,6 +100,11 @@ fun getFeatureDefault(input: Map<*, *>?, feature: String): Any? {
 private val regexCache = ConcurrentHashMap<String, Regex>()
 
 fun checkRegexMatch(input: String, regex: String): Boolean {
-    val compiledRegex = regexCache.computeIfAbsent(regex) { it.toRegex() }
+    val compiledRegex = regexCache.computeIfAbsent(regex) {
+        if (regexCache.size >= 256) {
+            regexCache.clear()
+        }
+        it.toRegex()
+    }
     return input.matches(compiledRegex)
 }

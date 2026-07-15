@@ -34,16 +34,17 @@ fun loadRecipeFiles() {
 
     var loadedCount = 0
     var errorCount = 0
+    val regex = (config["file-load.recipe"] ?: ".*").toString()
 
     for (file in files) {
         if (file.isDirectory) {
             file.listFiles()?.forEach {
-                val (loaded, errors) = loadRecipeFile(it)
+                val (loaded, errors) = loadRecipeFile(it, regex)
                 loadedCount += loaded
                 errorCount += errors
             }
         } else {
-            val (loaded, errors) = loadRecipeFile(file)
+            val (loaded, errors) = loadRecipeFile(file, regex)
             loadedCount += loaded
             errorCount += errors
         }
@@ -56,19 +57,18 @@ fun loadRecipeFiles() {
  * 加载单个配方文件。
  * @return Pair(成功加载的配方数量, 错误数量)
  */
-fun loadRecipeFile(file: File): Pair<Int, Int> {
+fun loadRecipeFile(file: File, regex: String): Pair<Int, Int> {
     if (file.isDirectory) {
         var totalLoaded = 0
         var totalErrors = 0
         file.listFiles()?.forEach {
-            val (loaded, errors) = loadRecipeFile(it)
+            val (loaded, errors) = loadRecipeFile(it, regex)
             totalLoaded += loaded
             totalErrors += errors
         }
         return Pair(totalLoaded, totalErrors)
     }
 
-    val regex = (config["file-load.recipe"] ?: ".*").toString()
     if (!checkRegexMatch(file.name, regex)) {
         return Pair(0, 0)
     }
@@ -323,11 +323,13 @@ private fun parseIngredient(value: Any?): RecipeIngredient {
     }
 }
 
+private val INGREDIENT_SPLIT_REGEX = "\\s+".toRegex()
+
 private fun parseIngredientFromString(str: String): RecipeIngredient {
     val trimmed = str.trim()
     if (trimmed.isEmpty()) throw IllegalArgumentException("Ingredient string cannot be empty")
 
-    val parts = trimmed.split("\\s+".toRegex())
+    val parts = trimmed.split(INGREDIENT_SPLIT_REGEX)
     val base = parts[0]
     val amount = if (parts.size > 1) (parts[1].toIntOrNull() ?: 1) else 1
 

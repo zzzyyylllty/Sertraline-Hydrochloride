@@ -20,22 +20,23 @@ fun loadMappingFiles() {
         warningL("Mapping_Load_Not_Found")
         return
     }
+    val regex = (config["file-load.mapping"] ?: ".*").toString()
     for (file in files) {
         // If directory load file in it...
         if (file.isDirectory) file.listFiles()?.forEach {
-            loadMappingFile(it)
+            loadMappingFile(it, regex)
         }
-        else loadMappingFile(file)
+        else loadMappingFile(file, regex)
     }
 }
-fun loadMappingFile(file: File) {
+fun loadMappingFile(file: File, regex: String) {
     devLog("Loading file ${file.name}")
 
     if (file.isDirectory) file.listFiles()?.forEach {
-        loadMappingFile(it)
+        loadMappingFile(it, regex)
     } else {
 
-    if (!checkRegexMatch(file.name, (config["file-load.mapping"] ?:".*").toString())) {
+    if (!checkRegexMatch(file.name, regex)) {
         devLog("${file.name} not match regex, skipping...")
         return
     }

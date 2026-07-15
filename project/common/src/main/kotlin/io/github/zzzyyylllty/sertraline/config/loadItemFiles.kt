@@ -45,17 +45,18 @@ private fun loadItemFilesFull(workspaceDir: File) {
         return
     }
 
+    val regex = (config["file-load.item"] ?: ".*").toString()
     workspaceDir.walk()
         .filter { it.isFile }
         .forEach { file ->
-            loadItemFile(file)
+            loadItemFile(file, regex)
         }
 }
 
 private fun loadItemFilesIncremental(workspaceDir: File) {
-    val filePattern = config["file-load.item"]?.toString() ?: ".*"
+    val regex = (config["file-load.item"] ?: ".*").toString()
     val files = workspaceDir.walk()
-        .filter { it.isFile && checkRegexMatch(it.name, filePattern) }
+        .filter { it.isFile && checkRegexMatch(it.name, regex) }
         .toList()
 
     var loadedCount = 0
@@ -67,7 +68,7 @@ private fun loadItemFilesIncremental(workspaceDir: File) {
 
         // 只加载新文件或修改过的文件
         if (lastModified == null || lastModified < currentModified) {
-            if (loadItemFile(file)) {
+            if (loadItemFile(file, regex)) {
                 Sertraline.fileLastModified[file.absolutePath] = currentModified
                 loadedCount++
             }
@@ -79,15 +80,14 @@ private fun loadItemFilesIncremental(workspaceDir: File) {
     infoL("Item_Load_Incremental_Stats", loadedCount, skippedCount, files.size)
 }
 
-fun loadItemFile(file: File): Boolean {
+fun loadItemFile(file: File, regex: String): Boolean {
     if (file.isDirectory) {
         file.listFiles()?.forEach {
-            loadItemFile(it)
+            loadItemFile(it, regex)
         }
         return false
     }
 
-    val regex = (config["file-load.item"] ?: ".*").toString()
     if (!checkRegexMatch(file.name, regex)) {
         return false
     }

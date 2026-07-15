@@ -808,7 +808,7 @@ object TemplateManager {
         dynamicValues: Map<String, () -> String>
     ): String {
         // 快速路径
-        if (!input.contains('%') && !input.contains('\\')) return input
+        if (input.none { it == '%' || it == '\\' }) return input
 
         // Step 1: 保护转义序列
         val result = StringBuilder(input.length + 16)

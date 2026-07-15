@@ -7,5 +7,5 @@ import taboolib.expansion.Length
 data class PlayerProperty(
     @Id val uuid: String,
     @Key @Length(64) val propKey: String,
-    @Length(-1) var propValue: String = ""
+    @Length(-1) var propValue: String
 )

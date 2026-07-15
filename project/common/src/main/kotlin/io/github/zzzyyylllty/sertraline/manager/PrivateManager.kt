@@ -78,7 +78,7 @@ class PrivateManager {
 
     private fun loadFromDB(uuid: String, id: String): ModernSItem? {
         return try {
-            val probe = PrivateItem(uuid = uuid, itemId = id, itemData = "")
+            val probe = PrivateItem(uuid = uuid, itemId = id, itemData = "", subPath = "", createdAt = 0L)
             val result = DatabaseManager.privateItemMapper.findOneByKey(probe) ?: return null
             deserializeSItem(result.itemData)
         } catch (_: Exception) {
@@ -117,7 +117,7 @@ class PrivateManager {
 
     private fun deleteFromDB(uuid: String, id: String) {
         try {
-            val probe = PrivateItem(uuid = uuid, itemId = id, itemData = "")
+            val probe = PrivateItem(uuid = uuid, itemId = id, itemData = "", subPath = "", createdAt = 0L)
             DatabaseManager.privateItemMapper.deleteByKey(probe)
         } catch (_: Exception) { }
     }
