@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.config
 
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.util.serialize.isSupportedFormat
 import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
@@ -23,6 +24,14 @@ fun multiExtensionLoader(file: File): Map<String, Any?>? {
         val content = file.readText()
         if (content.isBlank()) {
             severeL("Config_Load_Error_Empty", file.name)
+            return null
+        }
+        // Skip files with only comments — not real YAML content
+        if (content.lineSequence().none { line ->
+                val trimmed = line.trimStart { it == ' ' || it == '\t' }
+                trimmed.isNotEmpty() && !trimmed.startsWith("#")
+            }) {
+            devLog("Skipping ${file.name}: no YAML content (comments only)")
             return null
         }
 

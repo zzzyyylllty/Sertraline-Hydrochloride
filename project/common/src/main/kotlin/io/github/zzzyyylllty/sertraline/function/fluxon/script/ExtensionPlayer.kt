@@ -26,7 +26,7 @@ import taboolib.common.platform.Awake
 
 @Awake(LifeCycle.ENABLE)
 fun registerExtensionPlayer() {
-    ExtensionPlayer.init(fluxonInst!!)
+    fluxonInst?.let { ExtensionPlayer.init(it) }
 }
 
 object ExtensionPlayer {

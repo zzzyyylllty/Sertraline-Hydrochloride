@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 
 
 object ExternalItemHelper {
-    var itemBridge: ItemBridge<ItemStack?, Player?>? =
+    var itemBridge: BukkitItemBridge? =
         BukkitItemBridge.builder()
             .detectSupportedPlugins(
                 { p: String -> infoS("Hooked External item source: $p") },
@@ -23,7 +23,7 @@ object ExternalItemHelper {
             .removeById("sertraline")
             .build()
 
-    var itemBridgeAll: ItemBridge<ItemStack?, Player?>? =
+    var itemBridgeAll: BukkitItemBridge? =
         BukkitItemBridge.builder()
             .detectSupportedPlugins(
                 { p: String -> infoS("Hooked External item source: $p") },

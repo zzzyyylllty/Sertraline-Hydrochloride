@@ -50,10 +50,10 @@ data class OmniItem(
                 // 外部插件物品（ItemsAdder, Oraxen, Nexo, CraftEngine 等）
                 else -> {
                     if (player != null) {
-                        ExternalItemHelper.itemBridge?.build(source, item, player)?.get()
+                        ExternalItemHelper.build(player, source, item)
                             ?: ExternalItemHelper.itemBridgeAll?.build(source, item, player)?.get()
                     } else {
-                        ExternalItemHelper.itemBridge?.build(source, item)?.get()
+                        ExternalItemHelper.buildNoPlayer(source, item)
                             ?: ExternalItemHelper.itemBridgeAll?.build(source, item)?.get()
                     }
                 }

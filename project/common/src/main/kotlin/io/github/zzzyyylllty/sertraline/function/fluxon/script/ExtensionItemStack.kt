@@ -33,7 +33,7 @@ import com.cryptomorin.xseries.XMaterial
 
 @Awake(LifeCycle.ENABLE)
 fun registerExtensionItemStack() {
-    ExtensionItemStack.init(fluxonInst!!)
+    fluxonInst?.let { ExtensionItemStack.init(it) }
 }
 
 object ExtensionItemStack {

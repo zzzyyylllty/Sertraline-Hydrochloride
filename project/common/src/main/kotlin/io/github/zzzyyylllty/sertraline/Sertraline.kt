@@ -261,7 +261,7 @@ object Sertraline : Plugin() {
     @Awake(LifeCycle.ENABLE)
     fun onEnableLoad() {
         try {
-        reloadCustomConfig(true)
+            reloadCustomConfig(false)
         } catch (e: Exception) {
             severeL("Failed to load configurations during startup: ${e.message}")
             e.printStackTrace()

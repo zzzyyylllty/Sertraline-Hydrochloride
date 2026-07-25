@@ -16,7 +16,7 @@ import java.util.*
 
 @Awake(LifeCycle.ENABLE)
 fun registerExtensionComponent() {
-    ExtensionComponent.init(fluxonInst!!)
+    fluxonInst?.let { ExtensionComponent.init(it) }
 }
 
 

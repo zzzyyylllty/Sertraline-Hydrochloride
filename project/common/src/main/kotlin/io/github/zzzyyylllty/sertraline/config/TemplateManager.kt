@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.config
 
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import taboolib.common.platform.function.getDataFolder
+import taboolib.common.platform.function.releaseResourceFolder
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
@@ -163,7 +164,7 @@ object TemplateManager {
         val templateDir = File(getDataFolder(), "templates")
         if (!templateDir.exists()) {
             templateDir.mkdirs()
-            return
+            releaseResourceFolder("templates")
         }
 
         var count = 0

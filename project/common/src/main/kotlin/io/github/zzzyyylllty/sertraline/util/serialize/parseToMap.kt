@@ -25,8 +25,7 @@ fun parseToMap(data: String, format: String): Map<String, Any?>? {
             ObjectMapper(factory).registerKotlinModule()
         }
         mapper.readValue(data, object : TypeReference<Map<String, Any?>>() {})
-    } catch (e: Exception) {
-        println("Error parsing $format: ${e.message}")
+    } catch (_: Exception) {
         null
     }
 }

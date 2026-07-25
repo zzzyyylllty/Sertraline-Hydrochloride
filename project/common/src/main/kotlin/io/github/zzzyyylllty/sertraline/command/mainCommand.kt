@@ -1,9 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command
 
 import io.github.zzzyyylllty.sertraline.Sertraline.reloadCustomConfig
-import io.github.zzzyyylllty.sertraline.logger.fineS
 import io.github.zzzyyylllty.sertraline.logger.infoS
-import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import org.bukkit.entity.Player

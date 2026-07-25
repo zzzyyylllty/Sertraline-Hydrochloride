@@ -15,7 +15,7 @@ import taboolib.common.platform.Awake
 import org.tabooproject.fluxon.runtime.java.Export
 @Awake(LifeCycle.ENABLE)
 fun registerFunctionComponent() {
-    FunctionComponent.init(fluxonInst!!)
+    fluxonInst?.let { FunctionComponent.init(it) }
 }
 
 

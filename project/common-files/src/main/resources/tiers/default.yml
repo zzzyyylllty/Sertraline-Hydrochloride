@@ -1,5 +1,20 @@
 # Tier Example
 
+E:
+  name: "<dark_gray>E</dark_gray>"
+  description: "<dark_gray>E</dark_gray>"
+  color: "<dark_gray>"
+  weight: 100 # Not yet completed weight
+
+
+
+D:
+  name: "<dark_gray>D</dark_gray>"
+  description: "<dark_gray>D</dark_gray>"
+  color: "<dark_gray>"
+  weight: 100 # Not yet completed weight
+
+
 C:
   name: "<gray>C</gray>"
   description: "<gray>C</gray>"

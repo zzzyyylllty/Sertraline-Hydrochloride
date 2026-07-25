@@ -167,6 +167,21 @@ object DebugCommand {
             sender.sendMessage("saved all item names to itemoutputnames.yml")
         }
     }
+
+
+    @CommandBody
+    val generateItemTierFile = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            val nameConf = Configuration.empty(Type.YAML)
+            itemMap.forEach {
+                val name = it.value.getDeepData("sertraline:tier")
+                    ?: "No tier provided."
+                nameConf[it.key] = name
+            }
+            nameConf.saveToFile(File(getDataFolder(), "itemoutputtiers.yml"))
+            sender.sendMessage("saved all item names to itemoutputtiers.yml")
+        }
+    }
     @CommandBody
     val processors = subCommand {
         execute<CommandSender> { sender, context, argument ->

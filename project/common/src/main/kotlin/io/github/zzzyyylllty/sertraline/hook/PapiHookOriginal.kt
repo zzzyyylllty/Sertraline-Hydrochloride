@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.jsScriptCache
 import io.github.zzzyyylllty.sertraline.data.defaultData
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
+import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
@@ -30,7 +31,7 @@ import kotlin.math.roundToInt
 
 @Awake(LifeCycle.ENABLE)
 fun registerPapi() {
-    PapiHookOriginal(BukkitPlugin.getInstance()).register()
+    if (DependencyHelper.papi) PapiHookOriginal(BukkitPlugin.getInstance()).register()
 }
 
 

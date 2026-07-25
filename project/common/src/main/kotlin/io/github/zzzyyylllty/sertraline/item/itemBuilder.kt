@@ -48,9 +48,9 @@ fun itemSource(str: String,player: Player?): ItemStack {
 //            val provider = AllItemProvider()
 //            if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
             if (player != null) {
-                ExternalItemHelper.itemBridge?.build(key, split.joinToString(":"), player)?.get()
+                ExternalItemHelper.build(player, key, split.joinToString(":"))
             } else {
-                ExternalItemHelper.itemBridge?.build(key, split.joinToString(":"))?.get()
+                ExternalItemHelper.buildNoPlayer(key, split.joinToString(":"))
             }
         }
     } catch (e: Exception) {

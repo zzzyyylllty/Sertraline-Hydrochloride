@@ -20,5 +20,5 @@ blade_of_mythic:
       <!i><red>You need install MMOItems or MMOCore to let attributes work.
 
       <dark_gray><i>Using MMO as the attribute system may cause noticeable lag in attack speed.
-      <dark_gray><i>Siece 3.8.2 you can add fix-attack-speed to fix this.
+      <dark_gray><i>Since 3.8.2 you can add fix-attack-speed to fix this.
     material: BLAZE_ROD
