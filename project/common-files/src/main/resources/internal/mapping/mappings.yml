@@ -781,3 +781,20 @@ mmo:max-stamina:
   - mmo:max-stamina
 mmo:stamina-regeneration:
   - mmo:stamina-regeneration
+
+common:disable-crafting:
+  - common:disable-crafting
+common:disable-smelting:
+  - common:disable-smelting
+common:disable-smithing:
+  - common:disable-smithing
+common:disable-enchanting:
+  - common:disable-enchanting
+common:disable-anvil:
+  - common:disable-anvil
+common:disable-brewing:
+  - common:disable-brewing
+common:disable-stonecutting:
+  - common:disable-stonecutting
+common:disable-village-trade:
+  - common:disable-village-trade

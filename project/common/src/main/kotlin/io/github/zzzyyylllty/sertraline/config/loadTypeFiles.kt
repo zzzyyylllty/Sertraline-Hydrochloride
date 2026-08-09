@@ -69,7 +69,8 @@ fun loadType(key: String, arg: Map<String, Any?>) {
         name = c.getDeep(arg, "name") as? String ?: key,
         parent = c.getDeep(arg, "parent") as? String,
         description = c.getDeep(arg, "description") as? String ?: "",
-        extra = c.getDeep(arg, "extra") as? Map<String, Any?> ?: mapOf()
+        extra = c.getDeep(arg, "extra") as? Map<String, Any?> ?: mapOf(),
+        meta = c.getDeep(arg, "meta") as? Map<String, Any?> ?: mapOf()
     )
     types[key] = type
     devLog("Loaded type: $key")

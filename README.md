@@ -39,7 +39,7 @@ ChoTen Item management system service (Liminal Skyline v4.0 Service)
 
 </p>
 
-**SERTRALINE Supports 1.21.4-1.21.11**
+**SERTRALINE Supports 1.21.4-26.2**
 
 </div>
 

@@ -70,7 +70,8 @@ fun loadTier(key: String, arg: Map<String, Any?>) {
         description = c.getDeep(arg, "description") as? String ?: "",
         color = c.getDeep(arg, "color") as? String ?: "<white>",
         weight = (c.getDeep(arg, "weight") as? Number)?.toInt() ?: 1,
-        extra = c.getDeep(arg, "extra") as? Map<String, Any?> ?: mapOf()
+        extra = c.getDeep(arg, "extra") as? Map<String, Any?> ?: mapOf(),
+        meta = c.getDeep(arg, "meta") as? Map<String, Any?> ?: mapOf()
     )
     tiers[key] = tier
     devLog("Loaded tier: $key")

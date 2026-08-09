@@ -25,6 +25,7 @@ import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.UUIDUtil
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
+import io.github.zzzyyylllty.sertraline.util.loreformat.LoreFormatUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
@@ -72,6 +73,9 @@ fun registerExternalData() {
             "SertralineObj" to Sertraline,
             "FluxonShell" to FluxonShell,
             "UUIDUtil" to UUIDUtil,
+            "LoreFormatUtil" to LoreFormatUtil,
+            "TierUtil" to TierUtil,
+            "TypeUtil" to TypeUtil,
         ))
     val event = SertralineCustomScriptDataLoadEvent(defaultData)
     event.call()

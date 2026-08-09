@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.LineMode.*
 import io.github.zzzyyylllty.sertraline.data.LoreElement
+import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
@@ -23,17 +24,25 @@ import io.github.zzzyyylllty.sertraline.util.jsonUtils
 
 
 fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
-
-    // 获取loreformat
     val loreFormat = loreFormats[item.getDeepData("sertraline:lore-format")] ?: return null
+    return applyLoreFormat(item, player, orgLore, loreFormat, isVisual)
+}
 
-    // 如果模式不匹配
+/**
+ * 应用指定的 [LoreFormat] 生成 lore，[handleLoreFormat] 和 [LoreFormatUtil] 共用此函数。
+ */
+internal fun applyLoreFormat(
+    item: ModernSItem,
+    player: Player?,
+    orgLore: List<Component>?,
+    loreFormat: LoreFormat,
+    isVisual: Boolean = true,
+): List<Component>? {
     if (loreFormat.settings.visual != isVisual) return null
 
     val lore = mutableListOf<String>()
 
     loreFormat.elements.forEach { element ->
-        // 开始显示lore
         if (handleLoreExists(element, item)) {
             lore.addAll(handleKeyLore(item, element, player))
         }
@@ -41,15 +50,13 @@ fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>
 
     val nLore = if (loreFormat.settings.skipBlank) mergeConsecutiveEmptyStrings(lore) else lore
 
-    val compList = if (loreFormat.settings.overwrite) {
+    return if (loreFormat.settings.overwrite) {
         nLore.toComponent()
     } else {
         val orgList = orgLore?.toMutableList() ?: mutableListOf()
         orgList.addAll(nLore.toComponent())
         orgList
     }
-
-    return compList
 }
 
 private val NORMAL_PLACEHOLDER_REGEX = "\\{(.*?)}".toRegex()

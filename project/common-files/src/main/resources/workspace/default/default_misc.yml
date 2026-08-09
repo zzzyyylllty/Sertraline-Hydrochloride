@@ -26,7 +26,7 @@ book_of_multi_language:
         - gjs: |
             player.sendMessage(mmUtil.deserialize("<gradient:yellow:#aaaa66>A welcome from GraalJS!"));
           kether: |
-            minitell inline "<gradient:white:gray>Hello, kether with val {{ &val }} !"
+            minitell inline "<gradient:white:gray>Hello, kether with val {{ &testvariable }} !"
           js: |
             var days = 1;
             var base = 100;

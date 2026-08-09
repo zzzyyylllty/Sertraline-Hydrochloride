@@ -60,6 +60,9 @@ preload:
 # 模块
 # Modules
 modules:
+  common:
+    feature: true
+    editor: false
   sertraline:
     feature: true
     editor: true
@@ -176,6 +179,17 @@ messages:
   crafting-started: "<yellow>Crafting started... ({time} s)</yellow>"
   # 合成完成
   crafting-complete: "<green>Crafting complete!</green>"
+
+  # 通用限制模块消息
+  # Common restriction module messages
+  common:
+    # 合成被阻止时显示（留空或移除以禁用消息）
+    # Message displayed when crafting is blocked (set empty to disable)
+    crafting-blocked: "<red>This item cannot be used in crafting!</red>"
+    # 锻造被阻止时显示
+    smithing-blocked: "<red>This item cannot be used in smithing!</red>"
+    # 与村民交易被阻止时显示
+    village-trade-blocked: "<red>This item cannot be traded!</red>"
 
 performance:
   # 增量加载配置，只加载修改过的文件

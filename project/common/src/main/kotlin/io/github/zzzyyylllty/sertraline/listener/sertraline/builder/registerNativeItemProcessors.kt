@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.adapter.chotenComplexAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.chotenDataAdapter
+import io.github.zzzyyylllty.sertraline.item.adapter.commonAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.customDataAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.minecraftAdapter
 import io.github.zzzyyylllty.sertraline.item.adapter.mmoAdapter
@@ -42,6 +43,11 @@ fun registerNativeAdapter() {
         minecraftAdapter(item, sItem, player)
     } else {
         devLog("Version < 12005, skipping minecraft registering")
+    }
+
+    itemManager.registerProcessor("common") { sItem, item, player ->
+        devLog("Adapting common")
+        commonAdapter(item, sItem, player)
     }
 
 }

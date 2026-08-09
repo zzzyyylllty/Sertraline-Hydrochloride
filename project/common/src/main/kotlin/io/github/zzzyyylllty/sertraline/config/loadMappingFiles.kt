@@ -40,7 +40,8 @@ fun loadMappingFile(file: File, regex: String) {
         devLog("${file.name} not match regex, skipping...")
         return
     }
-    val map = multiExtensionLoader(file) ?: return
+    val raw = multiExtensionLoader(file) ?: return
+    val map = TemplateManager.resolveInMap(raw)
     for ((key, value) in map) {
         val listValue = value as? List<*> ?: continue
         val mapped = listValue.filterIsInstance<String>()
