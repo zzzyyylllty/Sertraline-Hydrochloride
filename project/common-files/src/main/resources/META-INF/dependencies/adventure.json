@@ -41,7 +41,9 @@
       "net.kyori",
       "io.github.zzzyyylllty.sertraline.dep.kyori"
     ],
-    "test": [],
+    "test": [
+      "net.kyori.adventure.text.Component"
+    ],
     "transitive": false,
     "ignoreOptional": false,
     "ignoreException": false,

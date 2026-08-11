@@ -1,6 +1,5 @@
 package io.github.zzzyyylllty.sertraline.listener.attribute
 
-import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
 import org.bukkit.entity.Player
@@ -23,13 +22,8 @@ fun hotBarChangeEvent(e: PlayerItemHeldEvent) {
     }
 }
 
-@SubscribeEvent
-fun armorEquipEvent(e: PlayerArmorChangeEvent) {
-    submitAsync {
-        debounceRefreshStat(e.player)
-    }
-}
-
+// Paper 专属 PlayerArmorChangeEvent 已移至 PaperEventBridge（hooks），
+// Spigot 上通过 attribute.armor-change-polling 轮询模拟。
 
 @SubscribeEvent(EventPriority.MONITOR)
 fun onLoginUpdate(e: PlayerLoginEvent) {

@@ -102,16 +102,20 @@ allprojects {
         // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")   .
         taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
 
-        taboo("com.github.zzzyyylllty:EmbianComponent:1.1.0")
         taboo("cn.gtemc:itembridge:1.0.31")
 
         taboo(platform(rootProject.libs.kotlincrypto.bom))
         taboo(rootProject.libs.kotlincrypto.sha2)
         taboo(rootProject.libs.kotlin.stdlib)
 
-        // Paper 开发包
-        // paperweight paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
-        compileOnly(rootProject.libs.paperapi)
+        // 平台 API：ink.ptms.core 的 universal = Spigot 完整 API（org.bukkit+org.spigotmc），
+        // mapped = Mojang 映射的 NMS 类。与 org.spigotmc:spigot-api 完全等价。
+        // Paper 专属 API（io.papermc.paper.*）只在 :project:spigot 的 paper 源集内声明。
+        compileOnly("ink.ptms.core:v12104:12104:universal")
+        compileOnly("ink.ptms.core:v12104:12104:mapped")
+
+        // 原 API jar 的传递依赖（paper-api/spigot-api 均依赖 guava），现显式声明
+        compileOnly("com.google.guava:guava:33.3.1-jre")
 
         // 编译时依赖
         compileOnly("ink.ptms.chemdah:api:1.1.17")
@@ -133,8 +137,14 @@ allprojects {
         taboo("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
         compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
-        // 本地依赖
+        // private dependency
+        // not affect use
         compileOnly(files("$rootDir/libs/ChoTenTech-1.0.0-api.jar"))
+
+
+        taboo(files("$rootDir/libs-public/EmbianComponent-1.2.1.jar"))
+//        taboo("com.github.zzzyyylllty:EmbianComponent:1.2.0")
+
 
         // 运行时依赖
         implementation(rootProject.libs.bundles.reflex)
@@ -244,3 +254,13 @@ project(":project:common-files") {
 //signing {
 //    sign(publishing.publications["maven"])
 //}
+
+// 默认 `./gradlew build` 同时产出 Paper 与 Spigot 两套 jar。
+// platform 是配置期属性，一次构建进程只能取一个值，Spigot 侧由 :plugin:buildSpigot 嵌套构建完成；
+// 嵌套构建自身 platform=spigot，此依赖不成立，天然无递归。
+val platform: String = (findProperty("platform") ?: "paper") as String
+tasks.named("build") {
+    if (platform == "paper") {
+        dependsOn(":plugin:buildSpigot")
+    }
+}

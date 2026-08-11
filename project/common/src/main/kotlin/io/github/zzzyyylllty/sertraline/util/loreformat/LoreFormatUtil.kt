@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.util.loreformat
 
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import net.kyori.adventure.text.Component
@@ -42,12 +43,12 @@ object LoreFormatUtil {
             val originVars = sItem.getDeepData("sertraline:vars")
             sItem.setDeepData("sertraline:vars", defaultVars)
             try {
-                return applyLoreFormat(sItem, player, item.lore(), loreFormat)
+                return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat)
             } finally {
                 sItem.setDeepData("sertraline:vars", originVars)
             }
         }
-        return applyLoreFormat(sItem, player, item.lore(), loreFormat)
+        return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat)
     }
 
     /**
@@ -69,7 +70,7 @@ object LoreFormatUtil {
         defaultVars: Map<String, Any?>? = null,
     ): ItemStack {
         val lore = generateLore(item, sItem, format, player, defaultVars) ?: return item
-        item.lore(lore)
+        PlatformCompat.setLore(item, lore)
         return item
     }
 

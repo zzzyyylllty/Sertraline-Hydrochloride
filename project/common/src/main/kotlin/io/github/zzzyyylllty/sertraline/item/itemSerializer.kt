@@ -10,7 +10,7 @@ import taboolib.module.nms.getItemTag
 import taboolib.platform.util.isAir
 
 fun itemSerializer(itemStack: ItemStack,player: Player?): ModernSItem? {
-    if (itemStack.isEmpty || itemStack.isAir) return null
+    if (itemStack.type.isAir || itemStack.isAir) return null
     val item = itemMap[itemStack.getItemTag(true)["sertraline_id"]?.asString() ?: return null] ?: return null
     // 快速路径：无占位符且无动态内容时跳过序列化→处理→反序列化
     if (!item.hasPlaceholders && !item.hasDynamics) return item

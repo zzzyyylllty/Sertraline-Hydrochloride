@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.command
 
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
 import io.github.zzzyyylllty.sertraline.gui.ItemExplorer
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
@@ -60,7 +61,7 @@ object ItemCommand {
                         }
                         item?.let {
                             sender?.giveItem(it)
-                            sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                            sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(PlatformCompat.getDisplayName(it))))
                         }
                     }}
             }
@@ -84,7 +85,7 @@ object ItemCommand {
                         }
                         item?.let {
                             bukkitPlayer?.giveItem(it)
-                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(it.displayName())))
+                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(PlatformCompat.getDisplayName(it))))
                         }}
                 }
 
@@ -110,7 +111,7 @@ object ItemCommand {
                                     bukkitPlayer.asLangText(
                                         "Item_Give",
                                         amount,
-                                        mmUtil.serialize(it.displayName())
+                                        mmUtil.serialize(PlatformCompat.getDisplayName(it))
                                     )
                                 )
                             }
@@ -141,7 +142,7 @@ object ItemCommand {
                                         bukkitPlayer.asLangText(
                                             "Item_Give",
                                             amount,
-                                            mmUtil.serialize(it.displayName())
+                                            mmUtil.serialize(PlatformCompat.getDisplayName(it))
                                         )
                                     )
                                 }

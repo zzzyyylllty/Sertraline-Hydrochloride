@@ -38,7 +38,7 @@ class PacketEventsReceiveListener : PacketListener {
 
                 packet.carriedItemStack = packet.carriedItemStack.let {
                     val bItem = SpigotConversionUtil.toBukkitItemStack(it ?: return)
-                    if (bItem.isAir || bItem.isEmpty) return
+                    if (bItem.isAir) return
                     SpigotConversionUtil.fromBukkitItemStack(bItem.c2s())
                 }
 
@@ -51,7 +51,7 @@ class PacketEventsReceiveListener : PacketListener {
 
                 packet.itemStack = packet.itemStack.let {
                     val bItem = SpigotConversionUtil.toBukkitItemStack(it ?: return)
-                    if (bItem.isAir || bItem.isEmpty) return
+                    if (bItem.isAir) return
                     SpigotConversionUtil.fromBukkitItemStack(bItem.c2s())
                 }
 

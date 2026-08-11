@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.kether.script
 
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
-import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.ComponentLike
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.actionNow
@@ -31,6 +31,6 @@ fun actionMiniTell() = scriptParser {
     val message = it.nextParsedAction()
     actionTake {
         val sender = script().sender?.castSafely<CommandSender>()
-        run(message).str { s -> (sender as Audience).sendMessage(mmUtil.deserialize(s)) }
+        run(message).str { s -> sender?.let { PlatformCompat.sendComponent(it, mmUtil.deserialize(s)) } }
     }
 }

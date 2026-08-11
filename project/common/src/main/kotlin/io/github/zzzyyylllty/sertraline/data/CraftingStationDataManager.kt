@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.sertraline.Sertraline
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.database.CraftingSession
 import io.github.zzzyyylllty.sertraline.database.DatabaseManager
 import io.github.zzzyyylllty.sertraline.gui.CraftingStationManager
@@ -108,7 +109,7 @@ object CraftingStationDataManager {
                         player.giveItem(stack)
                     }
                     CraftingStationManager.fireLifecycleAgents(station!!, recipe, "onClaim", player)
-                    player.sendMessage((Sertraline.config
+                    PlatformCompat.sendComponent(player, (Sertraline.config
                         .getString("messages.crafting-complete", "<green>Crafting complete!</green>")
                         ?: "<green>Crafting complete!</green>").toComponent()
                     )
@@ -122,9 +123,9 @@ object CraftingStationDataManager {
                     }
                     if (recipe != null) {
                         CraftingStationManager.fireLifecycleAgents(station!!, recipe, "onCancel", player)
-                        player.sendMessage("<yellow>Your crafting was interrupted. Materials returned.</yellow>".toComponent())
+                        PlatformCompat.sendComponent(player, "<yellow>Your crafting was interrupted. Materials returned.</yellow>".toComponent())
                     } else {
-                        player.sendMessage("<yellow>Your crafting station/recipe no longer exists. Materials returned.</yellow>".toComponent())
+                        PlatformCompat.sendComponent(player, "<yellow>Your crafting station/recipe no longer exists. Materials returned.</yellow>".toComponent())
                     }
                     infoS("Returned materials to ${player.name} for interrupted craft: ${pending.recipeId}")
                 }

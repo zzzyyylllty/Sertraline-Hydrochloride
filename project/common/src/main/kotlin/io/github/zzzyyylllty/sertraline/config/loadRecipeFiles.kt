@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.config
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.data.*
+import io.github.zzzyyylllty.sertraline.listener.unlockOnlinePlayers
 import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
@@ -51,6 +52,10 @@ fun loadRecipeFiles() {
     }
 
     infoL("Recipe_Load_Complete", loadedCount, errorCount)
+
+    // 配方书：玩家配方书默认只含已解锁配方（进度解锁），Sertraline 配方无进度来源，
+    // 需要在玩家 join 时主动解锁才能显示。reload 后同样刷新在线玩家。
+    unlockOnlinePlayers()
 }
 
 /**
@@ -307,7 +312,8 @@ private fun parseIngredient(value: Any?): RecipeIngredient {
                 map.containsKey("itemId") -> {
                     RecipeIngredient.Item(
                         map.getString("itemId") ?: error("Ingredient missing itemId"),
-                        map.getInt("amount") ?: 1
+                        map.getInt("amount") ?: 1,
+                        map.getBoolean("exact") ?: false
                     )
                 }
                 map.containsKey("tagId") -> {

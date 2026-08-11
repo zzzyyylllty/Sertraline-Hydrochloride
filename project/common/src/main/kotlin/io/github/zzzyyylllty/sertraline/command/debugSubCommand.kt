@@ -9,6 +9,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.Sertraline.tagManager
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.item.rebuild
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
@@ -227,27 +228,27 @@ object DebugCommand {
         execute<CommandSender> { sender, context, argument ->
             val inv = (sender as Player).inventory
             val item = inv.itemInMainHand
-            if (item.isAir || item.isEmpty || item.amount <= 0) {
+            if (item.isAir || item.type.isAir || item.amount <= 0) {
                 sender.sendMessage("item cannot be null")
                 return@execute
             }
             val components = asNMSCopy(item).getComponentsNMSFiltered()
-            sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+            PlatformCompat.sendComponent(sender, ComponentFormatter.formatComponentMap(components))
         }
         bool("full") {
             execute<CommandSender> { sender, context, argument ->
                 val inv = (sender as Player).inventory
                 val item = inv.itemInMainHand
-                if (item.isAir || item.isEmpty || item.amount <= 0) {
+                if (item.isAir || item.type.isAir || item.amount <= 0) {
                     sender.sendMessage("item cannot be null")
                     return@execute
                 }
                 if (context.bool("full")) {
                     val components = asNMSCopy(item).getComponentsNMS()
-                    sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+                    PlatformCompat.sendComponent(sender, ComponentFormatter.formatComponentMap(components))
                 } else {
                     val components = asNMSCopy(item).getComponentsNMSFiltered()
-                    sender.sendMessage(ComponentFormatter.formatComponentMap(components))
+                    PlatformCompat.sendComponent(sender, ComponentFormatter.formatComponentMap(components))
                 }
             }
             suggestion<CommandSender>(uncheck = true) { sender, context ->
@@ -296,7 +297,7 @@ object DebugCommand {
                         id,
                         sender
                     )?.let {
-                        sender.sendMessage(it.displayName())
+                        PlatformCompat.sendComponent(sender, PlatformCompat.getDisplayName(it))
                     } ?: sender.sendStringAsComponent("Item not exist.")
                 } else {
                     sender.sendStringAsComponent("Must a player.")
@@ -315,7 +316,7 @@ object DebugCommand {
                         id,
                         bukkitPlayer
                     )?.let {
-                        sender.sendMessage(it.displayName())
+                        PlatformCompat.sendComponent(sender, PlatformCompat.getDisplayName(it))
                     } ?: sender.sendStringAsComponent("Item not exist.")
                 }
             }

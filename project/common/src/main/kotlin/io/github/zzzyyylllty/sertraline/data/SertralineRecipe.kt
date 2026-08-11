@@ -53,8 +53,12 @@ data class ComponentFilter(
  * 配方原料
  */
 sealed class RecipeIngredient {
-    /** 具体物品，如 sertraline:doe_card / minecraft:stone / itemsadder:some_item */
-    data class Item(val itemId: String, val amount: Int = 1) : RecipeIngredient()
+    /**
+     * 具体物品，如 sertraline:doe_card / minecraft:stone / itemsadder:some_item
+     * @param exact true = 精确原料（NMS ofStacks）：配方书显示完整组件，但合成测试要求组件完全一致。
+     *   仅对确定性构建的物品使用（无 placeholder 的静态物品），placeholder 物品会因玩家差异 mismatch。
+     */
+    data class Item(val itemId: String, val amount: Int = 1, val exact: Boolean = false) : RecipeIngredient()
 
     /** 标签，如 minecraft:planks / #minecraft:planks */
     data class Tag(val tagId: String, val amount: Int = 1) : RecipeIngredient()

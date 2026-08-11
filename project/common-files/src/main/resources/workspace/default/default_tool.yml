@@ -29,18 +29,20 @@ block_wand:
                   block.setType(org.bukkit.Material.valueOf(block_type), false);
                   success = true
                 } catch (e) {
-                  player.sendActionBar(mmUtil.deserialize("<red>Invalid block type: " + block_type));
+                                      PlayerUtil.sendActionBar(player, mmUtil.deserialize("<red>Invalid block type: " + block_type));
                 }
-                if (success) player.sendActionBar(mmUtil.deserialize("<green>Block placed!"));
+                if (success) {
+                                      PlayerUtil.sendActionBar(player, mmUtil.deserialize("<green>Block placed!"));
+                }
               } else {
-                player.sendActionBar(mmUtil.deserialize("<red>Too far away! (>16 blocks)"));
+                                  PlayerUtil.sendActionBar(player, mmUtil.deserialize("<red>Too far away! (>16 blocks)"));
               }
             } else {
 
               var tag = ItemStackUtil.getItemTag(bItem);
               var target = block.type
 
-              player.sendActionBar(mmUtil.deserialize("<dark_aqua>Logged blocks: " + target + " successfully."));
+                              PlayerUtil.sendActionBar(player, mmUtil.deserialize("<dark_aqua>Logged blocks: " + target + " successfully."));
 
               // Modify item stored data.
               tag.putDeep("sertraline_data.block_type", target.toString());
@@ -57,7 +59,7 @@ ultimate_pickaxe:
       onMine:
         - async: false # If cancel event or modify event content, async must be false (default to true).
           js: |
-            player.sendMessage(mmUtil.deserialize("<aqua>Not yet implement."));
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<aqua>Not yet implement."));
   xbuilder:
     name: "<!i><#cc99cc>Dr. XingChen's Ultimate Pickaxe"
     lore: |

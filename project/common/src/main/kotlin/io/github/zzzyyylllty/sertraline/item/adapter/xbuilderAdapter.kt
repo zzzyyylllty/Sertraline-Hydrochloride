@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
@@ -32,9 +33,6 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
     // 从反序列化结果拿到ItemMeta
     val deserializedMeta = xDeserialized.deserialize().itemMeta
 
-    // 合并反序列化meta的书名与附加属性
-    val originalMeta = item.itemMeta
-
     val prefix = "xbuilder"
     val name = sItem.getDeepData("$prefix:name")?.toString()?.toComponent()
     val model = sItem.getDeepData("$prefix:item-model")?.toString()
@@ -49,21 +47,23 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
     // 优先用反序列化meta的内容，但保留原始meta的自定义内容
     if (deserializedMeta != null) {
         if (name != null) {
-            deserializedMeta.displayName(name)
+            PlatformCompat.setDisplayName(deserializedMeta, name)
         }
         if (lore != null) {
-            deserializedMeta.lore(lore)
+            PlatformCompat.setLore(deserializedMeta, lore)
         }
         if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) {
-            deserializedMeta.itemModel = NamespacedKey.fromString(model)
+            PlatformCompat.setItemModel(deserializedMeta, NamespacedKey.fromString(model))
         }
         item.itemMeta = deserializedMeta
     } else {
         // 如果没有反序列化meta，尽量保留原始item的Meta并更新显示名和lore
-        if (name != null) originalMeta.displayName(name)
-        if (lore != null) originalMeta.lore(lore)
-        if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) originalMeta.itemModel = NamespacedKey.fromString(model)
-        item.itemMeta = originalMeta
+        item.itemMeta?.let { meta ->
+            if (name != null) PlatformCompat.setDisplayName(meta, name)
+            if (lore != null) PlatformCompat.setLore(meta, lore)
+            if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) PlatformCompat.setItemModel(meta, NamespacedKey.fromString(model))
+            item.itemMeta = meta
+        }
     }
     // 保持原始item的Material类型
     item.type = orgItemType

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.sertraline
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Keyed
@@ -13,7 +14,6 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.inventory.SmithItemEvent
 import org.bukkit.event.inventory.TradeSelectEvent
 import org.bukkit.inventory.ItemStack
-import io.papermc.paper.event.player.PlayerTradeEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.module.nms.getItemTag
@@ -74,7 +74,7 @@ private fun shouldBlock(mode: RestrictMode, isVanilla: Boolean): Boolean {
 private fun sendBlockMessage(player: Player, key: String) {
     val msg = config.getString("messages.common.$key", "")
     if (!msg.isNullOrEmpty()) {
-        player.sendMessage(MiniMessage.miniMessage().deserialize(msg))
+        PlatformCompat.sendComponent(player, MiniMessage.miniMessage().deserialize(msg))
     }
 }
 
@@ -91,7 +91,7 @@ private fun checkItemsForBlock(
     return false
 }
 
-private fun checkItemForBlock(
+internal fun checkItemForBlock(
     item: ItemStack?,
     checkKey: String,
     isVanilla: Boolean,
@@ -159,17 +159,6 @@ fun onTradeSelect(event: TradeSelectEvent) {
     }
 }
 
-@SubscribeEvent(priority = EventPriority.HIGHEST)
-fun onPlayerTrade(event: PlayerTradeEvent) {
-    // 安全网：交易完成瞬间再次拦截（选择已被阻止，正常情况下不会触发）
-    if (event.trade.ingredients.any {
-            checkItemForBlock(it, "disable-village-trade", isVanilla = true)
-        }
-    ) {
-        event.isCancelled = true
-    }
-}
-
 // ── smithing table ───────────────────────────────────────────────────
 
 @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -179,9 +168,7 @@ fun onSmithItem(event: SmithItemEvent) {
     val inv = event.inventory
     // SmithItemEvent recipe API varies across versions; we conservatively
     // pass isVanilla=true so TRUE and VANILLA both block.
-    if (checkItemForBlock(inv.inputEquipment, "disable-smithing", isVanilla = true) ||
-        checkItemForBlock(inv.inputMineral, "disable-smithing", isVanilla = true)
-    ) {
+    if (PlatformCompat.getSmithingInputs(inv).any { checkItemForBlock(it, "disable-smithing", isVanilla = true) }) {
         event.isCancelled = true
         sendBlockMessage(player, "smithing-blocked")
     }

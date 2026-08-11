@@ -1,8 +1,8 @@
 package io.github.zzzyyylllty.sertraline.function.fluxon.script
 
 import io.github.zzzyyylllty.sertraline.Sertraline.fluxonInst
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
-import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.tabooproject.fluxon.runtime.FluxonRuntime
@@ -56,8 +56,8 @@ object FunctionBukkit {
         @Export
         fun broadcast(arg: Any) {
             when (arg) {
-                is String -> Bukkit.broadcast(mmUtil.deserialize(arg))
-                is net.kyori.adventure.text.Component -> Bukkit.broadcast(arg)
+                is String -> PlatformCompat.broadcast(mmUtil.deserialize(arg))
+                is net.kyori.adventure.text.Component -> PlatformCompat.broadcast(arg)
                 else -> throw IllegalArgumentException("Argument for broadcast must be a String or Component.")
             }
         }
@@ -71,7 +71,7 @@ object FunctionBukkit {
         fun getServer(): Server = Bukkit.getServer()
 
         @Export
-        fun getPluginsFolder(): File = Bukkit.getPluginsFolder()
+        fun getPluginsFolder(): File = PlatformCompat.getPluginsFolder() ?: File("")
 
         @Export
         fun getName(): String = Bukkit.getName()
@@ -83,10 +83,10 @@ object FunctionBukkit {
         fun getBukkitVersion(): String = Bukkit.getBukkitVersion()
 
         @Export
-        fun getMinecraftVersion(): String = Bukkit.getMinecraftVersion() // Paper API
+        fun getMinecraftVersion(): String = PlatformCompat.getMinecraftVersion() ?: ""
 
         @Export
-        fun getVersionMessage(): String = Bukkit.getVersionMessage()
+        fun getVersionMessage(): String = PlatformCompat.getVersionMessage() ?: ""
 
         // --- Player Management ---
 
@@ -129,7 +129,7 @@ object FunctionBukkit {
         fun matchPlayer(name: String): List<Player> = Bukkit.matchPlayer(name)
 
         @Export
-        fun getPlayerUniqueId(name: String): UUID? = Bukkit.getPlayerUniqueId(name) // Paper API
+        fun getPlayerUniqueId(name: String): UUID? = PlatformCompat.getPlayerUniqueId(name)
 
         // --- Server Configuration ---
 
@@ -179,7 +179,7 @@ object FunctionBukkit {
 
         @Export
         fun restart() {
-            Bukkit.restart() // Spigot API
+            PlatformCompat.restart()
         }
 
         // --- Broadcasting ---
@@ -192,7 +192,7 @@ object FunctionBukkit {
                 is net.kyori.adventure.text.Component -> message
                 else -> null
             }
-            componentMessage?.let { Bukkit.broadcast(it, permission) }
+            componentMessage?.let { PlatformCompat.broadcast(it, permission) }
         }
 
         @Export
@@ -249,7 +249,7 @@ object FunctionBukkit {
         fun getWorlds(): List<World> = Bukkit.getWorlds()
 
         @Export
-        fun isTickingWorlds(): Boolean = Bukkit.isTickingWorlds() // Paper API
+        fun isTickingWorlds(): Boolean = PlatformCompat.isTickingWorlds() ?: false
 
         @Export
         fun createWorld(creator: WorldCreator): World? = Bukkit.createWorld(creator)
@@ -268,8 +268,8 @@ object FunctionBukkit {
             return when (identifier) {
                 is String -> Bukkit.getWorld(identifier)
                 is UUID -> Bukkit.getWorld(identifier)
-                is NamespacedKey -> Bukkit.getWorld(identifier) // Paper API
-                is net.kyori.adventure.key.Key -> Bukkit.getWorld(identifier) // Paper API
+                is NamespacedKey -> PlatformCompat.getWorldByKey(identifier)
+                is net.kyori.adventure.key.Key -> PlatformCompat.getWorldByKey(NamespacedKey(identifier.namespace(), identifier.value()))
                 else -> throw IllegalArgumentException("Argument for getWorld must be a String, UUID, NamespacedKey, or Key.")
             }
         }
@@ -297,7 +297,7 @@ object FunctionBukkit {
         fun getConsoleSender() = Bukkit.getConsoleSender()
 
         @Export
-        fun getCommandMap() = Bukkit.getCommandMap() // Paper API
+        fun getCommandMap() = PlatformCompat.getCommandMap()
 
         // --- Recipes ---
 
@@ -382,7 +382,7 @@ object FunctionBukkit {
         }
 
         @Export
-        fun getOfflinePlayerIfCached(name: String): OfflinePlayer? = Bukkit.getOfflinePlayerIfCached(name) // Paper API
+        fun getOfflinePlayerIfCached(name: String): OfflinePlayer? = PlatformCompat.getOfflinePlayerIfCached(name)
 
         @Export
         fun getOfflinePlayers(): Array<OfflinePlayer> = Bukkit.getOfflinePlayers()
@@ -409,8 +409,8 @@ object FunctionBukkit {
                         else -> throw IllegalArgumentException("Title must be a String or Component.")
                     }
                     when (typeOrSize) {
-                        is InventoryType -> Bukkit.createInventory(owner, typeOrSize, componentTitle)
-                        is Int -> Bukkit.createInventory(owner, typeOrSize, componentTitle)
+                        is InventoryType -> PlatformCompat.createInventory(owner, typeOrSize, componentTitle)
+                        is Int -> PlatformCompat.createInventory(owner, typeOrSize, componentTitle)
                         else -> throw IllegalArgumentException("Second argument must be InventoryType or Integer size.")
                     }
                 }
@@ -432,7 +432,7 @@ object FunctionBukkit {
                 null -> null
                 else -> throw IllegalArgumentException("Title must be a String or Component.")
             }
-            return Bukkit.createMerchant(componentTitle)
+            return PlatformCompat.createMerchant(componentTitle)
         }
 
         @Export
@@ -452,7 +452,7 @@ object FunctionBukkit {
 
         @Export
         fun updateResources() {
-            Bukkit.updateResources() // Paper API
+            PlatformCompat.updateResources()
         }
 
         @Export
@@ -464,7 +464,7 @@ object FunctionBukkit {
         fun isPrimaryThread(): Boolean = Bukkit.isPrimaryThread()
 
         @Export
-        fun isStopping(): Boolean = Bukkit.isStopping() // Paper API
+        fun isStopping(): Boolean = PlatformCompat.isStopping() ?: false
 
         // --- MOTD and Server Icon ---
 
@@ -479,14 +479,14 @@ object FunctionBukkit {
         @Export
         fun motd(@Optional motd: Any? = null): net.kyori.adventure.text.Component? {
             return if (motd == null) {
-                Bukkit.motd()
+                PlatformCompat.getMotdComponent()
             } else {
                 val componentMotd = when (motd) {
                     is String -> mmUtil.deserialize(motd)
                     is Component -> motd
                     else -> throw IllegalArgumentException("MOTD must be a String or Component.")
                 }
-                Bukkit.motd(componentMotd)
+                PlatformCompat.setMotdComponent(componentMotd)
                 null
             }
         }
@@ -495,7 +495,7 @@ object FunctionBukkit {
         fun getShutdownMessageLegacy(): String? = Bukkit.getShutdownMessage()
 
         @Export
-        fun getShutdownMessage(): Component? = Bukkit.shutdownMessage() // Paper API
+        fun getShutdownMessage(): Component? = PlatformCompat.getShutdownMessage()
 
         @Export
         fun getServerIcon() = Bukkit.getServerIcon()
@@ -572,13 +572,13 @@ object FunctionBukkit {
         // --- TPS and Ticks ---
 
         @Export
-        fun getTPS(): DoubleArray = Bukkit.getTPS() // Paper API
+        fun getTPS(): DoubleArray = PlatformCompat.getTPS() ?: doubleArrayOf()
 
         @Export
-        fun getAverageTickTime(): Double = Bukkit.getAverageTickTime() // Paper API
+        fun getAverageTickTime(): Double = PlatformCompat.getAverageTickTime() ?: -1.0
 
         @Export
-        fun getCurrentTick(): Int = Bukkit.getCurrentTick() // Paper API
+        fun getCurrentTick(): Int = PlatformCompat.getCurrentTick() ?: -1
 
         // --- Miscellaneous ---
 
@@ -603,7 +603,7 @@ object FunctionBukkit {
         // --- Deprecated or Unsafe Methods ---
 
         @Export
-        fun getUnsafe() = Bukkit.getUnsafe()
+        fun getUnsafe() = PlatformCompat.getUnsafe()
 
         @Export
         fun getTicksPerAnimalSpawns(): Int = Bukkit.getTicksPerAnimalSpawns()
@@ -641,7 +641,7 @@ object FunctionBukkit {
         fun getRegistry(clazz: Class<out Keyed>): Registry<out Keyed>? = Bukkit.getRegistry(clazz)
 
         @Export
-        fun getPermissionMessage(): String = Bukkit.getPermissionMessage()
+        fun getPermissionMessage(): String? = PlatformCompat.getPermissionMessage()
 
         // --- Tags ---
 
@@ -658,41 +658,41 @@ object FunctionBukkit {
         // --- Paper-specific Profile Creation ---
 
         @Export
-        fun createProfile(uuid: UUID, @Optional name: String? = null): com.destroystokyo.paper.profile.PlayerProfile {
-            return if (name == null) Bukkit.createProfile(uuid) else Bukkit.createProfile(uuid, name)
+        fun createProfile(uuid: UUID, @Optional name: String? = null): Any? {
+            return PlatformCompat.createProfile(uuid, name)
         }
 
         @Export
-        fun createProfileExact(uuid: UUID, name: String?): com.destroystokyo.paper.profile.PlayerProfile {
-            return Bukkit.createProfileExact(uuid, name)
+        fun createProfileExact(uuid: UUID, name: String?): Any? {
+            return PlatformCompat.createProfileExact(uuid, name)
         }
 
         // --- Remaining Paper API functions ---
 
         @Export
         fun reloadPermissions() {
-            Bukkit.reloadPermissions()
+            PlatformCompat.reloadPermissions()
         }
 
         @Export
         fun reloadCommandAliases() {
-            Bukkit.reloadCommandAliases()
+            PlatformCompat.reloadCommandAliases()
         }
 
         @Export
-        fun suggestPlayerNamesWhenNullTabCompletions(): Boolean = Bukkit.suggestPlayerNamesWhenNullTabCompletions()
+        fun suggestPlayerNamesWhenNullTabCompletions(): Boolean? = PlatformCompat.suggestPlayerNamesWhenNullTabCompletions()
 
         @Export
-        fun permissionMessage(): Component = Bukkit.permissionMessage()
+        fun permissionMessage(): Component? = PlatformCompat.getPermissionMessageComponent()
 
         @Export
-        fun getMobGoals() = Bukkit.getMobGoals()
+        fun getMobGoals() = PlatformCompat.getMobGoals()
 
         @Export
-        fun getDatapackManager() = Bukkit.getDatapackManager()
+        fun getDatapackManager() = PlatformCompat.getDatapackManager()
 
         @Export
-        fun getPotionBrewer() = Bukkit.getPotionBrewer()
+        fun getPotionBrewer() = PlatformCompat.getPotionBrewer()
     }
 
 }

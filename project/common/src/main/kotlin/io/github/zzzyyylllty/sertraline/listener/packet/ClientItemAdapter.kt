@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.listener.packet
 
 import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.console
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -52,15 +53,15 @@ fun ItemStack.s2c(player: Player?): ItemStack {
     val tag = this.getItemTag(true)
     val id = tag["sertraline_id"]?.asString() ?: return oItem
     val sItem = itemSerializer(id, player) ?: return oItem
-    if (packetLore) handleLoreFormat(sItem, player, this.lore(), true)?.let {
-        this.lore(it)
+    if (packetLore) handleLoreFormat(sItem, player, PlatformCompat.getLore(this), true)?.let {
+        PlatformCompat.setLore(this, it)
     }
     val nmsItem = asNMSCopy(this)
     val modifiedItem = visualComponentSetterNMS(nmsItem, sItem, oItem.serializeToByteArray())
-    if (tag["sertraline_browse_item"] != null && oItem.lore() != modifiedItem.lore()) { // 如果是展示物品且lore被修改过
-        val lore = modifiedItem.lore()?.toMutableList() ?: mutableListOf()
+    if (tag["sertraline_browse_item"] != null && PlatformCompat.getLore(oItem) != PlatformCompat.getLore(modifiedItem)) { // 如果是展示物品且lore被修改过
+        val lore = PlatformCompat.getLore(modifiedItem)?.toMutableList() ?: mutableListOf()
         lore.addAll(suffix)
-        modifiedItem.lore(lore)
+        PlatformCompat.setLore(modifiedItem, lore)
     }
     return modifiedItem
 }
@@ -96,17 +97,16 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
     var resultBItem = asBukkitCopy(resultItem)
     devLog("autoComponents: $autoComponents")
     if (autoComponents.isNotEmpty()) {
-        val meta = resultBItem.itemMeta
-        autoComponents.forEach { (key, value) ->
-            when (key) {
-                "autoName" -> meta.displayName(value.toString().toComponent())
-                "autoLore" -> ((value.asListEnhanced())?.toComponent() ?: listOf(value.toString().toComponent())).let {
-                    meta.lore(it)
+        resultBItem.itemMeta?.let { meta ->
+            autoComponents.forEach { (key, value) ->
+                when (key) {
+                    "autoName" -> PlatformCompat.setDisplayName(meta, value.toString().toComponent())
+                    "autoLore" -> PlatformCompat.setLore(meta, (value.asListEnhanced())?.toComponent() ?: listOf(value.toString().toComponent()))
+                    "autoCMD" -> meta.setCustomModelData(value.toString().toDouble().roundToInt())
+                    "autoModel" -> PlatformCompat.setItemModel(meta, NamespacedKey.fromString(value.toString()))
                 }
-                "autoCMD" -> meta.setCustomModelData(value.toString().toDouble().roundToInt())
-                "autoModel" -> meta.itemModel = NamespacedKey.fromString(value.toString())
+                resultBItem.setItemMeta(meta)
             }
-            resultBItem.setItemMeta(meta)
         }
     }
     val tag = resultBItem.getItemTag()

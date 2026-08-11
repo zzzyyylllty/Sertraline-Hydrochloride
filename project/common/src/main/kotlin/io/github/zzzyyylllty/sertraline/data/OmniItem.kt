@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.data
 
 import io.github.zzzyyylllty.embiancomponent.EmbianComponent
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.severeL
@@ -73,14 +74,15 @@ data class OmniItem(
 
         if (parameters?.isNotEmpty() ?: false) {
 
-            val meta = itemStack.itemMeta
-            parameters["name"]?.toString()?.toComponent()?.let { meta.displayName(it) }
-            parameters["display-name"]?.toString()?.toComponent()?.let { meta.displayName(it) }
-            parameters["custom-name"]?.toString()?.toComponent()?.let { meta.customName(it) }
-            parameters["item-name"]?.toString()?.toComponent()?.let { meta.itemName(it) }
-            (parameters["item-model"] ?: parameters["model"])?.toString()?.let { meta.itemModel = NamespacedKey.fromString(it) }
-            itemStack.setItemMeta(meta)
-            parameters["lore"].asListEnhanced()?.toComponent()?.let { itemStack.lore(it) }
+            itemStack.itemMeta?.let { meta ->
+                parameters["name"]?.toString()?.toComponent()?.let { PlatformCompat.setDisplayName(meta, it) }
+                parameters["display-name"]?.toString()?.toComponent()?.let { PlatformCompat.setDisplayName(meta, it) }
+                parameters["custom-name"]?.toString()?.toComponent()?.let { PlatformCompat.setCustomName(meta, it) }
+                parameters["item-name"]?.toString()?.toComponent()?.let { PlatformCompat.setItemName(meta, it) }
+                (parameters["item-model"] ?: parameters["model"])?.toString()?.let { PlatformCompat.setItemModel(meta, NamespacedKey.fromString(it)) }
+                itemStack.setItemMeta(meta)
+            }
+            parameters["lore"].asListEnhanced()?.toComponent()?.let { PlatformCompat.setLore(itemStack, it) }
 
         }
         if (!components.isNullOrEmpty()) {

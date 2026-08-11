@@ -7,11 +7,9 @@ import io.github.zzzyyylllty.sertraline.Sertraline.isEnabled
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.util.minimessage.legacyToMiniMessage
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import taboolib.common.platform.function.submit
@@ -146,6 +144,5 @@ fun severeSSync(message: String) {
 }
 
 fun CommandSender.sendStringAsComponent(message: String) {
-    val sender = this
-        (sender as Audience).sendMessage(mmUtil.deserialize(message.legacyToMiniMessage()))
+    PlatformCompat.sendComponent(this, mmUtil.deserialize(message.legacyToMiniMessage()))
 }

@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.fluxon.script
 
 import io.github.zzzyyylllty.sertraline.Sertraline.fluxonInst
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.function.fluxon.script.FunctionBukkit.FluxonBukkitObject
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmJsonUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
@@ -37,8 +38,8 @@ object ExtensionPlayer {
             .function("sendMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val p: Player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
-                    is String -> p.sendMessage(mmUtil.deserialize(arg))
-                    is Component -> p.sendMessage(arg)
+                    is String -> PlatformCompat.sendComponent(p, mmUtil.deserialize(arg))
+                    is Component -> PlatformCompat.sendComponent(p, arg)
                     else -> throw IllegalArgumentException("Argument for sendMessage must be a String or Component.")
                 }
             })
@@ -47,8 +48,8 @@ object ExtensionPlayer {
             .function("sendComponentMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val p: Player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
-                    is String -> p.sendMessage(mmUtil.deserialize(arg))
-                    is Component -> p.sendMessage(arg)
+                    is String -> PlatformCompat.sendComponent(p, mmUtil.deserialize(arg))
+                    is Component -> PlatformCompat.sendComponent(p, arg)
                     else -> throw IllegalArgumentException("Argument for sendComponentMessage must be a String or Component.")
                 }
             })
@@ -82,9 +83,9 @@ object ExtensionPlayer {
             .function("setDisplayName", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
-                    is String -> player.displayName(mmUtil.deserialize(arg))
-                    is Component -> player.displayName(arg)
-                    null -> player.displayName(null) // 允许设置为 null 来重置
+                    is String -> PlatformCompat.setPlayerDisplayName(player, mmUtil.deserialize(arg))
+                    is Component -> PlatformCompat.setPlayerDisplayName(player, arg)
+                    null -> PlatformCompat.setPlayerDisplayName(player, null) // 允许设置为 null 来重置
                     else -> throw IllegalArgumentException("Argument for setDisplayName must be a String, Component, or null.")
                 }
             })
@@ -93,9 +94,9 @@ object ExtensionPlayer {
             .function("setPlayerListName", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
-                    is String -> player.playerListName(mmUtil.deserialize(arg))
-                    is Component -> player.playerListName(arg)
-                    null -> player.playerListName(null) // 允许设置为 null 来重置
+                    is String -> PlatformCompat.setPlayerListName(player, mmUtil.deserialize(arg))
+                    is Component -> PlatformCompat.setPlayerListName(player, arg)
+                    null -> PlatformCompat.setPlayerListName(player, null) // 允许设置为 null 来重置
                     else -> throw IllegalArgumentException("Argument for setPlayerListName must be a String, Component, or null.")
                 }
             })
@@ -103,7 +104,7 @@ object ExtensionPlayer {
             // playerListName() -> Component
             .function("getPlayerListName", 0, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
-                player.playerListName()
+                PlatformCompat.getPlayerListName(player)
             })
 
             // kickPlayer(String) -> void (Legacy)
@@ -117,9 +118,9 @@ object ExtensionPlayer {
             .function("kickPlayer", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
-                    is String -> player.kick(mmUtil.deserialize(arg))
-                    is Component -> player.kick(arg)
-                    null -> player.kick() // 如果为 null，调用无参 kick
+                    is String -> PlatformCompat.kick(player, mmUtil.deserialize(arg))
+                    is Component -> PlatformCompat.kick(player, arg)
+                    null -> PlatformCompat.kick(player, null) // 如果为 null，调用默认踢出
                     else -> throw IllegalArgumentException("Argument for kickPlayer must be a String, Component, or null.")
                 }
             })

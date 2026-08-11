@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.javascript
 
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
@@ -9,8 +10,6 @@ import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
 import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.title.Title
-import net.kyori.adventure.title.Title.Times.times
 import org.bukkit.Bukkit
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -24,7 +23,6 @@ import taboolib.module.kether.KetherShell
 import taboolib.module.nms.ItemTag
 import taboolib.module.nms.getItemTag
 import taboolib.module.nms.setItemTag
-import java.time.Duration
 
 object PlayerUtil {
     fun addPotionEffect(player: Player, type: String, duration: Int = 30, amplifier: Int = 0, ambient: Boolean = true, particles: Boolean = true, icon: Boolean = true) {
@@ -72,10 +70,19 @@ object PlayerUtil {
             )
         }
     }
+
+    // 统一消息接口：Paper 的 CraftPlayer 有 sendMessage(Component) 重载，
+    // Spigot 只有 String 重载，脚本直接 player.sendMessage(mmUtil.deserialize(...)) 会 NoSuchMethod。
+    // 一律经 PlatformCompat，双平台行为一致。
+    fun sendMessage(player: Player, component: Component) {
+        PlatformCompat.sendComponent(player, component)
+    }
+
+    fun sendActionBar(player: Player, component: Component) {
+        PlatformCompat.sendActionBar(player, component)
+    }
+
     fun showTitle(player: Player, title: Component, subTitle: Component, durationIn: Int = 30, duration: Int = 30, durationOut: Int = 30) {
-        val fadeIn = Duration.ofMillis(durationIn.toLong() * 50) // Convert ticks to milliseconds
-        val stay = Duration.ofMillis(duration.toLong() * 50)
-        val fadeOut = Duration.ofMillis(durationOut.toLong() * 50)
-        player.showTitle(Title.title(title, subTitle, times(fadeIn, stay, fadeOut)))
+        PlatformCompat.sendTitle(player, title, subTitle, durationIn, duration, durationOut)
     }
 }

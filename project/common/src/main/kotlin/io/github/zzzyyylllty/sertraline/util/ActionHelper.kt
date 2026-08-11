@@ -56,5 +56,5 @@ object ActionHelper {
 }
 
 fun ItemStack?.isNotExist(): Boolean {
-    return this == null || this.isEmpty || this.amount <= 0
+    return this == null || this.type.isAir || this.amount <= 0
 }

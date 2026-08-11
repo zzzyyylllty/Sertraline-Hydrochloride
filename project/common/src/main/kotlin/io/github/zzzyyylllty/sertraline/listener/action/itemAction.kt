@@ -1,10 +1,11 @@
 package io.github.zzzyyylllty.sertraline.listener.action
 
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.impl.getComponent
 import io.github.zzzyyylllty.sertraline.impl.getComponentJava
 import io.github.zzzyyylllty.sertraline.util.ActionHelper.throttleAction
-import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.kyori.adventure.title.Title
+import org.bukkit.event.block.Action
 import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -48,9 +49,9 @@ fun onInteract(e: PlayerInteractEvent) {
     val param = ThrottleActionParam(e.player, e, e, e.item)
 
     throttleAction(ThrottleActionLink(uuid, "onClick"), param)
-    if (e.action.isRightClick) {
+    if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK) {
         throttleAction(ThrottleActionLink(uuid, "onRightClick"), param)
-    } else if (e.action.isLeftClick) {
+    } else if (e.action == Action.LEFT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK) {
         throttleAction(ThrottleActionLink(uuid, "onLeftClick"), param)
     }
 }
@@ -106,7 +107,7 @@ fun onAttack(e: EntityDamageByEntityEvent) {
 @SubscribeEvent(priority = taboolib.common.platform.event.EventPriority.MONITOR)
 fun onConsume(e: PlayerItemConsumeEvent) {
     val uuid = e.player.uniqueId.toString()
-    throttleAction(ThrottleActionLink(uuid, "onConsume"), ThrottleActionParam(e.player, e, e, e.item, e.replacement))
+    throttleAction(ThrottleActionLink(uuid, "onConsume"), ThrottleActionParam(e.player, e, e, e.item, PlatformCompat.getConsumeReplacement(e)))
 }
 
 @SubscribeEvent

@@ -6,9 +6,13 @@ import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
+import io.github.zzzyyylllty.sertraline.util.assembleCBClassCompat
 import io.github.zzzyyylllty.sertraline.util.assembleMCClass
 import io.github.zzzyyylllty.sertraline.util.getClazz
-import io.github.zzzyyylllty.sertraline.util.getDeclaredField
+import io.github.zzzyyylllty.sertraline.util.getClazzCompat
+import io.github.zzzyyylllty.sertraline.util.getDeclaredFieldCompat
+import io.github.zzzyyylllty.sertraline.util.getDeclaredMethodCompat
+import io.github.zzzyyylllty.sertraline.util.getMethod
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
@@ -40,12 +44,21 @@ object NMSRecipeFactory {
 
     private val clazzResourceLocation: Class<*> by lazy {
         when (minecraftVersion) {
-            MinecraftVersion.v1_21_4 -> getClazz("net.minecraft.resources.ResourceLocation")
+            MinecraftVersion.v1_21_4 -> getClazzCompat(
+                "net.minecraft.resources.ResourceLocation",
+                "net.minecraft.resources.MinecraftKey"
+            )
             MinecraftVersion.v26_1_2 -> getClazz("net.minecraft.resources.Identifier")
         }
     }
     private val methodRLFromNamespaceAndPath by lazy {
-        clazzResourceLocation.getMethod("fromNamespaceAndPath", String::class.java, String::class.java)
+        getDeclaredMethodCompat(
+            clazzResourceLocation,
+            listOf("fromNamespaceAndPath", "a"),
+            null,
+            String::class.java,
+            String::class.java
+        )
     }
 
     private fun createResourceLocation(namespace: String, path: String): Any {
@@ -56,12 +69,18 @@ object NMSRecipeFactory {
 
     private val clazzResourceKey by lazy { getClazz(assembleMCClass("resources.ResourceKey")) }
     private val methodResourceKeyCreate by lazy {
-        clazzResourceKey.getDeclaredMethod("create", clazzResourceKey, clazzResourceLocation)
+        getDeclaredMethodCompat(
+            clazzResourceKey,
+            listOf("create", "a"),
+            null,
+            clazzResourceKey,
+            clazzResourceLocation
+        )
     }
 
     // RECIPE 注册表 key — 1.21.4: Registries.RECIPE; 26.1.2: 同
     private val recipeRegistryKey: Any by lazy {
-        clazzRegistries.getDeclaredField("RECIPE").apply { isAccessible = true }.get(null)
+        getDeclaredFieldCompat(clazzRegistries, "RECIPE", "bk").get(null)
     }
 
     private fun createRecipeResourceKey(namespace: String, path: String): Any {
@@ -71,7 +90,12 @@ object NMSRecipeFactory {
 
     // ==================== 反射缓存: ItemStack (NMS) ====================
 
-    private val clazzCraftItemStack by lazy { getClazz("org.bukkit.craftbukkit.inventory.CraftItemStack") }
+    private val clazzCraftItemStack by lazy {
+        getClazzCompat(
+            "org.bukkit.craftbukkit.inventory.CraftItemStack",
+            assembleCBClassCompat("inventory.CraftItemStack")
+        )
+    }
     private val methodAsNMSCopy by lazy {
         clazzCraftItemStack.getDeclaredMethod("asNMSCopy", org.bukkit.inventory.ItemStack::class.java)
     }
@@ -85,25 +109,56 @@ object NMSRecipeFactory {
 
     // ==================== 反射缓存: Ingredient ====================
 
-    private val clazzIngredient by lazy { getClazz(assembleMCClass("world.item.crafting.Ingredient")) }
+    private val clazzIngredient by lazy {
+        getClazzCompat(
+            assembleMCClass("world.item.crafting.Ingredient"),
+            assembleMCClass("world.item.crafting.RecipeItemStack")
+        )
+    }
     private val clazzNMSItemStack by lazy { getClazz(assembleMCClass("world.item.ItemStack")) }
     private val clazzNMSItem by lazy { getClazz(assembleMCClass("world.item.Item")) }
-    private val clazzItemLike by lazy { getClazz(assembleMCClass("world.level.ItemLike")) }
+    private val clazzItemLike by lazy {
+        getClazzCompat(
+            assembleMCClass("world.level.ItemLike"),
+            assembleMCClass("world.level.IMaterial")
+        )
+    }
     private val methodGetItem by lazy {
-        clazzNMSItemStack.getDeclaredMethod("getItem")
+        getDeclaredMethodCompat(clazzNMSItemStack, listOf("getItem", "h"))
     }
 
     // Ingredient.of(ItemLike...) — varargs（1.21.4 和 26.1.2 均如此）
     private val methodIngredientOfStacks by lazy {
         val arrayClass = java.lang.reflect.Array.newInstance(clazzItemLike, 0).javaClass
-        clazzIngredient.getDeclaredMethod("of", arrayClass)
+        getDeclaredMethodCompat(clazzIngredient, listOf("of", "a"), null, arrayClass)
     }
 
-    // Ingredient.of(TagKey<Item>)
+    // RecipeItemStack.ofStacks(List<ItemStack>) — 精确原料：保留完整组件，配方书按组件显示；
+    // 合成测试要求组件完全一致（对 placeholder 物品有 mismatch 风险，仅显式 exact 时使用）
+    private val methodIngredientOfStacksExact by lazy {
+        getDeclaredMethodCompat(clazzIngredient, listOf("ofStacks", "a"), null, List::class.java)
+    }
+
+    // Ingredient.of(TagKey<Item>) — 1.21.4 双平台均无此方法，
+    // 改走 Registry.getTagOrEmpty(TagKey) → HolderSet.direct(List) → of(HolderSet)
     private val clazzTagKey by lazy { getClazz("net.minecraft.tags.TagKey") }
     private val clazzRegistries by lazy { getClazz("net.minecraft.core.registries.Registries") }
-    private val methodIngredientOfTag by lazy {
-        clazzIngredient.getDeclaredMethod("of", clazzTagKey)
+    private val builtInRegistriesClass by lazy { getClazz("net.minecraft.core.registries.BuiltInRegistries") }
+    private val clazzHolderSet by lazy { getClazz("net.minecraft.core.HolderSet") }
+    private val clazzModernRegistry by lazy {
+        getClazzCompat("net.minecraft.core.IRegistry", "net.minecraft.core.Registry")
+    }
+    private val itemRegistry by lazy {
+        getDeclaredFieldCompat(builtInRegistriesClass, "ITEM", "g").get(null)
+    }
+    private val methodGetTagOrEmpty by lazy {
+        getDeclaredMethodCompat(clazzModernRegistry, listOf("getTagOrEmpty", "c"), null, clazzTagKey)
+    }
+    private val methodHolderSetDirect by lazy {
+        getDeclaredMethodCompat(clazzHolderSet, listOf("direct", "a"), null, List::class.java)
+    }
+    private val methodIngredientOfHolderSet by lazy {
+        getDeclaredMethodCompat(clazzIngredient, listOf("of", "a"), null, clazzHolderSet)
     }
 
     private fun toNMSItems(nmsStacks: List<Any>): List<Any> {
@@ -127,12 +182,22 @@ object NMSRecipeFactory {
                 val stacks = resolveItemStacks(ingredient.itemId, ingredient.amount)
                 if (stacks.isEmpty()) throw IllegalArgumentException("No items resolved for: ${ingredient.itemId}")
                 val nmsStacks = stacks.map { toNMSStack(it) }
+                if (ingredient.exact) {
+                    // 精确原料：完整组件（含 lore 等）会显示在配方书与合成界面
+                    return methodIngredientOfStacksExact.invoke(null, nmsStacks)
+                }
                 val items = toNMSItems(nmsStacks)
                 methodIngredientOfStacks.invoke(null, createItemLikeArray(items))
             }
             is RecipeIngredient.Tag -> {
                 val tagKey = resolveTagKey(ingredient.tagId)
-                methodIngredientOfTag.invoke(null, tagKey)
+                @Suppress("UNCHECKED_CAST")
+                val holders = methodGetTagOrEmpty.invoke(itemRegistry, tagKey) as Iterable<Any>
+                val holderList = ArrayList<Any>()
+                for (holder in holders) holderList.add(holder)
+                if (holderList.isEmpty()) throw IllegalArgumentException("Tag has no items: ${ingredient.tagId}")
+                val holderSet = methodHolderSetDirect.invoke(null, holderList)
+                methodIngredientOfHolderSet.invoke(null, holderSet)
             }
             is RecipeIngredient.Choice -> {
                 val stacks = ingredient.options.flatMap { resolveIngredientStacks(it) }
@@ -173,16 +238,20 @@ object NMSRecipeFactory {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun resolveTagKey(tagId: String): Any {
         val normalized = normalizeTagKey(tagId)
         val (namespace, path) = normalized.split(":", limit = 2)
         val location = createResourceLocation(namespace, path)
         // TagKey.create(Registries.ITEM, location/identifier)
-        val methodTagKeyCreate = clazzTagKey.getDeclaredMethod("create", clazzResourceKey, clazzResourceLocation)
-        methodTagKeyCreate.isAccessible = true
+        val methodTagKeyCreate = getDeclaredMethodCompat(
+            clazzTagKey,
+            listOf("create", "a"),
+            null,
+            clazzResourceKey,
+            clazzResourceLocation
+        )
 
-        val itemRegistryKey = clazzRegistries.getDeclaredField("ITEM").apply { isAccessible = true }.get(null)
+        val itemRegistryKey = getDeclaredFieldCompat(clazzRegistries, "ITEM", "K").get(null)
 
         return methodTagKeyCreate.invoke(null, itemRegistryKey, location)
     }
@@ -225,33 +294,107 @@ object NMSRecipeFactory {
     }
 
     private val methodHolderId by lazy {
-        clazzRecipeHolder.getDeclaredMethod("id")
+        getDeclaredMethodCompat(clazzRecipeHolder, listOf("id", "a"))
     }
 
     // ==================== 反射缓存: RecipeManager / RecipeMap ====================
 
-    private val clazzRecipeManager by lazy { getClazz(assembleMCClass("world.item.crafting.RecipeManager")) }
+    private val clazzRecipeManager by lazy {
+        getClazzCompat(
+            assembleMCClass("world.item.crafting.RecipeManager"),
+            assembleMCClass("world.item.crafting.CraftingManager")
+        )
+    }
     private val clazzMinecraftServer by lazy { getClazz("net.minecraft.server.MinecraftServer") }
     private val methodGetServer by lazy {
         clazzMinecraftServer.getDeclaredMethod("getServer")
     }
     private val methodGetRecipeManager by lazy {
-        clazzMinecraftServer.getDeclaredMethod("getRecipeManager")
+        getDeclaredMethodCompat(clazzMinecraftServer, listOf("getRecipeManager", "aI"))
     }
 
     // RecipeManager.recipes 字段 — 1.21.4+ 均为 RecipeMap 类型
     private val fieldRecipes: Field by lazy {
-        getDeclaredField(clazzRecipeManager, "recipes")
-            ?: throw IllegalStateException("Cannot find RecipeManager.recipes field")
+        getDeclaredFieldCompat(clazzRecipeManager, "recipes", "e", type = clazzRecipeMap)
     }
 
     // RecipeMap — 不可变，需通过 create() 重建
     private val clazzRecipeMap by lazy { getClazz(assembleMCClass("world.item.crafting.RecipeMap")) }
     private val methodRecipeMapCreate by lazy {
-        clazzRecipeMap.getDeclaredMethod("create", Iterable::class.java)
+        getDeclaredMethodCompat(clazzRecipeMap, listOf("create", "a"), null, Iterable::class.java)
     }
     private val methodRecipeMapValues by lazy {
-        clazzRecipeMap.getDeclaredMethod("values")
+        getDeclaredMethodCompat(clazzRecipeMap, listOf("values", "a"))
+    }
+
+    // CraftingManager.finalizeRecipeLoading() — 从 RecipeMap 重建 display/listener 映射
+    // (f/g/h/i) 并触发 PlayerList.reloadRecipes() 刷新在线玩家配方书。
+    // 只重建 field e 时配方已注册（/recipe give 可用）但配方书 display 查询
+    // (displaysForRecipe) 在 listeners 中找不到该配方，导致配方书不显示。
+    private val methodFinalizeRecipeLoading by lazy {
+        getDeclaredMethodCompat(clazzRecipeManager, listOf("finalizeRecipeLoading", "a"))
+    }
+
+    // ==================== 反射缓存: 玩家配方书 (RecipeBookServer) ====================
+    // Bukkit 的 Player.discoverRecipe 在 spigot-api 1.21.4 已移除，只能走 NMS 解锁路径：
+    // EntityPlayer.getRecipeBookServer() → RecipeBookServer.add(Collection<RecipeHolder<?>>, EntityPlayer)
+    // （obf: a — 同名 b 为 remove，勿用；add 内部会触发 craft 事件、进度触发、发送 Add 包）
+
+    private val clazzCraftPlayer by lazy {
+        getClazzCompat("org.bukkit.craftbukkit.entity.CraftPlayer", assembleCBClassCompat("entity.CraftPlayer"))
+    }
+    private val clazzEntityPlayer by lazy {
+        getClazzCompat("net.minecraft.server.level.EntityPlayer", "net.minecraft.server.level.ServerPlayer")
+    }
+    private val clazzRecipeBookServer by lazy {
+        getClazzCompat("net.minecraft.stats.RecipeBookServer", "net.minecraft.stats.ServerRecipeBook")
+    }
+    private val methodGetHandle by lazy {
+        // getHandle 声明在 CraftEntity 父类上，getDeclaredMethodCompat 找不到，须查继承方法
+        getMethod(clazzCraftPlayer, clazzEntityPlayer, 0)
+            ?: throw IllegalStateException("Cannot find CraftPlayer.getHandle()")
+    }
+    private val methodGetRecipeBookServer by lazy {
+        getDeclaredMethodCompat(clazzEntityPlayer, listOf("getRecipeBookServer", "J"))
+    }
+    private val methodRecipeManagerByKey by lazy {
+        getDeclaredMethodCompat(clazzRecipeManager, listOf("byKey", "b"), null, clazzResourceKey)
+    }
+    private val methodRecipeBookAdd by lazy {
+        getDeclaredMethodCompat(
+            clazzRecipeBookServer,
+            listOf("add", "a"),
+            null,
+            Collection::class.java,
+            clazzEntityPlayer
+        )
+    }
+
+    /**
+     * 为玩家解锁配方书中的指定配方（与进度解锁同一路径）。
+     * 使配方在玩家 join 时即可显示，无需先合成一次。
+     * @return 成功解锁并发送的配方数量
+     */
+    fun unlockForPlayer(player: org.bukkit.entity.Player, recipeIds: Collection<String>): Int {
+        if (recipeIds.isEmpty()) return 0
+        return try {
+            val entityPlayer = methodGetHandle.invoke(player)
+            val recipeBook = methodGetRecipeBookServer.invoke(entityPlayer)
+            val manager = methodGetRecipeManager.invoke(methodGetServer.invoke(null))
+            val holders = ArrayList<Any>(recipeIds.size)
+            for (id in recipeIds) {
+                val (namespace, path) = parseId(id)
+                val key = createRecipeResourceKey(namespace, path)
+                @Suppress("UNCHECKED_CAST")
+                val optional = methodRecipeManagerByKey.invoke(manager, key) as java.util.Optional<*>
+                if (optional.isPresent) holders.add(optional.get())
+            }
+            if (holders.isEmpty()) return 0
+            methodRecipeBookAdd.invoke(recipeBook, holders, entityPlayer) as Int
+        } catch (e: Exception) {
+            warningS("Failed to unlock recipe book for ${player.name}: ${e.message}")
+            0
+        }
     }
 
     // ==================== 26.1.2 专用: CommonInfo / BookInfo / ItemStackTemplate ====================
@@ -342,6 +485,7 @@ object NMSRecipeFactory {
 
             val newRecipeMap = methodRecipeMapCreate.invoke(null, filtered)
             fieldRecipes.set(manager, newRecipeMap)
+            methodFinalizeRecipeLoading.invoke(manager)
             true
         } catch (e: Exception) {
             warningS("NMS recipe unregister failed for $namespace:$path: ${e.message}")
@@ -369,6 +513,8 @@ object NMSRecipeFactory {
 
         val newRecipeMap = methodRecipeMapCreate.invoke(null, allValues as Collection<Any>)
         fieldRecipes.set(manager, newRecipeMap)
+        // 重建 display/listener maps 并刷新玩家配方书，否则配方书不显示注入的配方
+        methodFinalizeRecipeLoading.invoke(manager)
     }
 
     // ==================== 构建调度 ====================
@@ -385,10 +531,15 @@ object NMSRecipeFactory {
 
     // ---- Shaped ----
 
-    private val clazzShapedRecipe by lazy { getClazz(assembleMCClass("world.item.crafting.ShapedRecipe")) }
+    private val clazzShapedRecipe by lazy {
+        getClazzCompat(
+            assembleMCClass("world.item.crafting.ShapedRecipe"),
+            assembleMCClass("world.item.crafting.ShapedRecipes")
+        )
+    }
     private val clazzShapedRecipePattern by lazy { getClazz(assembleMCClass("world.item.crafting.ShapedRecipePattern")) }
     private val methodShapedPatternOf by lazy {
-        clazzShapedRecipePattern.getDeclaredMethod("of", Map::class.java, List::class.java)
+        getDeclaredMethodCompat(clazzShapedRecipePattern, listOf("of", "a"), null, Map::class.java, List::class.java)
     }
 
     private fun createShapedPattern(ingredientMap: Any?, pattern: List<String>): Any {
@@ -430,7 +581,12 @@ object NMSRecipeFactory {
 
     // ---- Shapeless ----
 
-    private val clazzShapelessRecipe by lazy { getClazz(assembleMCClass("world.item.crafting.ShapelessRecipe")) }
+    private val clazzShapelessRecipe by lazy {
+        getClazzCompat(
+            assembleMCClass("world.item.crafting.ShapelessRecipe"),
+            assembleMCClass("world.item.crafting.ShapelessRecipes")
+        )
+    }
     private val constructorShapeless by lazy { clazzShapelessRecipe.constructors.first() }
 
     private fun buildShapeless(recipe: RecipeData.Shapeless): Any? {
@@ -460,10 +616,22 @@ object NMSRecipeFactory {
         val ingredient = createIngredient(recipe.ingredient)
 
         val recipeClass = when (recipe.type) {
-            RecipeType.FURNACE -> getClazz(assembleMCClass("world.item.crafting.SmeltingRecipe"))
-            RecipeType.BLASTING -> getClazz(assembleMCClass("world.item.crafting.BlastingRecipe"))
-            RecipeType.SMOKING -> getClazz(assembleMCClass("world.item.crafting.SmokingRecipe"))
-            RecipeType.CAMPFIRE -> getClazz(assembleMCClass("world.item.crafting.CampfireCookingRecipe"))
+            RecipeType.FURNACE -> getClazzCompat(
+                assembleMCClass("world.item.crafting.SmeltingRecipe"),
+                assembleMCClass("world.item.crafting.FurnaceRecipe")
+            )
+            RecipeType.BLASTING -> getClazzCompat(
+                assembleMCClass("world.item.crafting.BlastingRecipe"),
+                assembleMCClass("world.item.crafting.RecipeBlasting")
+            )
+            RecipeType.SMOKING -> getClazzCompat(
+                assembleMCClass("world.item.crafting.SmokingRecipe"),
+                assembleMCClass("world.item.crafting.RecipeSmoking")
+            )
+            RecipeType.CAMPFIRE -> getClazzCompat(
+                assembleMCClass("world.item.crafting.CampfireCookingRecipe"),
+                assembleMCClass("world.item.crafting.RecipeCampfire")
+            )
             else -> return null
         }
 
@@ -490,7 +658,12 @@ object NMSRecipeFactory {
 
     // ---- Stonecutting ----
 
-    private val clazzStonecutterRecipe by lazy { getClazz(assembleMCClass("world.item.crafting.StonecutterRecipe")) }
+    private val clazzStonecutterRecipe by lazy {
+        getClazzCompat(
+            assembleMCClass("world.item.crafting.StonecutterRecipe"),
+            assembleMCClass("world.item.crafting.RecipeStonecutting")
+        )
+    }
     private val constructorStonecutter by lazy { clazzStonecutterRecipe.constructors.first() }
 
     private fun buildStonecutting(recipe: RecipeData.Stonecutting): Any? {

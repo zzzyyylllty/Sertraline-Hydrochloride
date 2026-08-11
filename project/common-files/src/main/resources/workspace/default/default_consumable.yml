@@ -12,7 +12,7 @@ sertraline_pills_14:
             PlayerUtil.addPotionEffect(player, "SLOWNESS", 300, 2, true, true, true)
             PlayerUtil.addPotionEffect(player, "BLINDNESS", 30, 0, true, true, true)
             var modified = pills - 1;
-            player.sendMessage(mmUtil.deserialize("<#CCC600>" + modified + " left."))
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<#CCC600>" + modified + " left."))
             tag.putDeep("sertraline_data.pills", modified);
 
             if (bItem.amount > 1) {
@@ -54,7 +54,7 @@ sertraline_pills_42:
             PlayerUtil.addPotionEffect(player, "SLOWNESS", 300, 2, true, true, true)
             PlayerUtil.addPotionEffect(player, "BLINDNESS", 30, 0, true, true, true)
             var modified = pills - 1;
-            player.sendMessage(mmUtil.deserialize("<#CCC600>" + modified + " left."))
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<#CCC600>" + modified + " left."))
             tag.putDeep("sertraline_data.pills", modified);
 
             if (bItem.amount > 1) {
@@ -97,7 +97,7 @@ speed_potion_cookie:
             // Apply a speed potion effect.
             // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 200, 1)); // 200 ticks (10 seconds), amplifier 1(Level 2).
-            player.sendMessage(mmUtil.deserialize("<green>Speed boost applied!"));
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<green>Speed boost applied!"));
 
             // Remove one item from the stack.
             bItem.amount--;
@@ -123,7 +123,7 @@ bagged_zero_calorie_sugar:
             // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 1200, 1));
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 12000, 1));
-            player.sendMessage(mmUtil.deserialize("<#66ff66>Tastes good."));
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<#66ff66>Tastes good."));
 
             // Remove one item from the stack.
             bItem.amount--;
@@ -149,7 +149,7 @@ bagged_crystal_sugar:
             // You may also use PlayerUtil.addPotionEffect(player, "SPEED", 200, 1, true, true, true)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NAUSEA, 120, 1));
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 12000, 1));
-            player.sendMessage(mmUtil.deserialize("<#66ff66>Better than Zero-Calorie."));
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("<#66ff66>Better than Zero-Calorie."));
 
             // Remove one item from the stack.
             bItem.amount--;

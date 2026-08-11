@@ -4,7 +4,6 @@ import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.Player
@@ -20,16 +19,17 @@ fun mmoAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack 
         devLog("mmo build setting is null or empty, skipping adapting.")
         return item
     }
-    val meta = item.itemMeta
-    meta.addAttributeModifier(
-        Attribute.ATTACK_SPEED,
-        AttributeModifier(
-            NamespacedKey.fromString("mmoitems:decoy")!!,
-            0.0,
-            AttributeModifier.Operation.ADD_NUMBER
+    item.itemMeta?.let { meta ->
+        meta.addAttributeModifier(
+            Attribute.ATTACK_SPEED,
+            AttributeModifier(
+                "mmoitems:decoy",
+                0.0,
+                AttributeModifier.Operation.ADD_NUMBER
+            )
         )
-    )
-    item.setItemMeta(meta)
+        item.setItemMeta(meta)
+    }
 
     return item
 

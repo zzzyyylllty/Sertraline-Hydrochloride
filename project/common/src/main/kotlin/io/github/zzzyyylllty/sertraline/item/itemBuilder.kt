@@ -11,6 +11,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.manager
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.manager.SubManagerType
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.getComponentsFilteredNMS
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
@@ -22,7 +23,6 @@ import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import io.github.zzzyyylllty.sertraline.function.update.getExpectedRevision
-import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -232,7 +232,7 @@ fun ItemStack.rebuildLore(player: Player?) {
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
-    this.lore(regen.lore())
+    PlatformCompat.setLore(this, PlatformCompat.getLore(regen))
 }
 
 
@@ -273,11 +273,12 @@ fun ItemStack.rebuildName(player: Player?) {
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
     if (VersionHelper().isOrAbove12005()) {
-        this.setData(DataComponentTypes.CUSTOM_NAME, regen.effectiveName())
+        PlatformCompat.setDataComponent(this, "CUSTOM_NAME", PlatformCompat.getDisplayName(regen))
     } else {
-        val meta = this.itemMeta
-        meta.displayName(regen.effectiveName())
-        this.setItemMeta(meta)
+        this.itemMeta?.let { meta ->
+            PlatformCompat.setDisplayName(meta, PlatformCompat.getDisplayName(regen))
+            this.setItemMeta(meta)
+        }
     }
 }
 
@@ -288,14 +289,15 @@ fun ItemStack.rebuildDisplay(player: Player?) {
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
-    this.lore(regen.lore())
+    PlatformCompat.setLore(this, PlatformCompat.getLore(regen))
     if (VersionHelper().isOrAbove12005()) {
-        regen.effectiveName().let { this.setData(DataComponentTypes.CUSTOM_NAME, it) }
+        PlatformCompat.setDataComponent(this, "CUSTOM_NAME", PlatformCompat.getDisplayName(regen))
     } else {
-        val meta = this.itemMeta
-        meta.displayName(regen.effectiveName())
-        meta.lore(regen.lore())
-        this.setItemMeta(meta)
+        this.itemMeta?.let { meta ->
+            PlatformCompat.setDisplayName(meta, PlatformCompat.getDisplayName(regen))
+            PlatformCompat.setLore(meta, PlatformCompat.getLore(regen))
+            this.setItemMeta(meta)
+        }
     }
 
 }

@@ -111,6 +111,16 @@ object SertralineRecipeManager {
      */
     fun getAllRecipeData(): Collection<RecipeData> = registeredRecipes.values
 
+    /**
+     * 为玩家解锁所有已注册的 Sertraline 配方（配方书显示需要）。
+     * Bukkit 的 Player.discoverRecipe 在 1.21.4 已移除，改走 NMS RecipeBookServer 解锁路径。
+     */
+    fun unlockAllForPlayer(player: org.bukkit.entity.Player): Int {
+        if (registeredRecipes.isEmpty()) return 0
+        val ids = registeredRecipes.keys.map { "${it.namespace}:${it.key}" }
+        return sync { NMSRecipeFactory.unlockForPlayer(player, ids) }
+    }
+
     // ==================== Builder: Shaped ====================
 
     private fun buildShaped(key: NamespacedKey, recipe: RecipeData.Shaped): ShapedRecipe? {

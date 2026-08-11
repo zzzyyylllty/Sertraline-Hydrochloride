@@ -1,5 +1,6 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
@@ -39,8 +40,8 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
     val item = item.setItemTag(tag, true)
 
     // lore format
-    handleLoreFormat(sItem, player, item.lore(), false)?.let {
-        item.lore(it)
+    handleLoreFormat(sItem, player, PlatformCompat.getLore(item), false)?.let {
+        PlatformCompat.setLore(item, it)
     }
 
     return item

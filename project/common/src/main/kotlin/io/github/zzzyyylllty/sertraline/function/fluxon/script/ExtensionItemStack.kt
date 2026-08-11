@@ -7,8 +7,8 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmStrictUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
-import io.papermc.paper.registry.RegistryKey
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -132,9 +132,8 @@ object ExtensionItemStack {
             .function("getLore", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
                 if (!item.hasItemMeta()) return@NativeCallable null
-                val meta = item.itemMeta!!
-                if (!meta.hasLore()) return@NativeCallable null
-                meta.lore()
+                if (!item.itemMeta!!.hasLore()) return@NativeCallable null
+                PlatformCompat.getLore(item)
             })
 
             // setLegacyLore (List<String>?)
@@ -162,12 +161,12 @@ object ExtensionItemStack {
                 val lore = ctx.getArgument(0)
                 val meta = item.itemMeta ?: throw IllegalStateException("Cannot set lore: ItemMeta is null")
                 when (lore) {
-                    null -> meta.lore(null)
+                    null -> PlatformCompat.setLore(meta, emptyList())
                     is List<*> -> {
                         if (!lore.all { it is Component })
                             throw IllegalArgumentException("setLore: all elements must be Component")
                         @Suppress("UNCHECKED_CAST")
-                        meta.lore(lore as List<Component>)
+                        PlatformCompat.setLore(meta, lore as List<Component>)
                     }
                     else -> throw IllegalArgumentException("setLore: argument must be List<Component>?")
                 }
@@ -255,7 +254,7 @@ object ExtensionItemStack {
             // isEmpty
             .function("isEmpty", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
-                item.isEmpty
+                item.type.isAir
             })
 
             // toString
@@ -361,27 +360,27 @@ object ExtensionItemStack {
             // add without argument
             .function("add", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
-                item.add()
+                item.amount = (item.amount + 1).coerceAtMost(item.maxStackSize)
             })
 
             // add with argument
             .function("add", 1, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
                 val qty = ctx.getNumber(0).toInt()
-                item.add(qty)
+                item.amount = (item.amount + qty).coerceAtMost(item.maxStackSize)
             })
 
             // subtract without argument
             .function("subtract", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
-                item.subtract()
+                item.amount = (item.amount - 1).coerceAtLeast(0)
             })
 
             // subtract with argument
             .function("subtract", 1, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
                 val qty = ctx.getNumber(0).toInt()
-                item.subtract(qty)
+                item.amount = (item.amount - qty).coerceAtLeast(0)
             })
 
             // withType(Material)
@@ -389,7 +388,7 @@ object ExtensionItemStack {
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
                 val mat = ctx.getArgument(0) ?: throw IllegalArgumentException("withType: parameter 0 cannot be null")
                 if (mat !is Material) throw IllegalArgumentException("withType: parameter 0 must be Material")
-                item.withType(mat)
+                item.type = mat
             })
 
             // getMaxStackSize

@@ -136,6 +136,10 @@ attribute:
   # // after 250 ms
   # // updateAttribute execute.
   debounce-time: 1000
+
+  # Spigot 专用：模拟 Paper 的装备更换事件（属性刷新）。Paper 上自动忽略。
+  # Spigot-only: simulate Paper's armor change event (attribute refresh). Ignored on Paper.
+  armor-change-polling: false
 action:
 
   # 默认节流时间

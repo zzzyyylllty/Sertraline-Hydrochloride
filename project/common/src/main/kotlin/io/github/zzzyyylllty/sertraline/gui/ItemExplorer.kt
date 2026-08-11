@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.gui
 
 import io.github.zzzyyylllty.sertraline.Sertraline.console
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
@@ -50,10 +51,9 @@ class ItemExplorer {
             // 生成每个元素对应的物品
             onGenerate(async = true) { player, element, index, slot ->
                 val item = sertralineItemBuilder(element.key, player) ?: GuiItem("error", "ARROW").build()
-                val meta = item.itemMeta
-                val lore = meta.lore()?.toMutableList() ?: mutableListOf()
+                val lore = PlatformCompat.getLore(item)?.toMutableList() ?: mutableListOf()
                 lore.addAll(suffix)
-                item.lore(lore)
+                PlatformCompat.setLore(item, lore)
                 val tag = item.getItemTag(true)
                 tag["sertraline_browse_item"] = "yes"
                 item.setItemTag(tag)

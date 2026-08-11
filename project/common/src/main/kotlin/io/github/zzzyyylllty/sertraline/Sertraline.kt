@@ -20,6 +20,9 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
 import io.github.zzzyyylllty.sertraline.data.Level
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
+import io.github.zzzyyylllty.sertraline.listener.PaperEventBridge
+import io.github.zzzyyylllty.sertraline.listener.attribute.debounceRefreshStat
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
 import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
@@ -60,8 +63,10 @@ import taboolib.common.env.RuntimeEnvDependency
 import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.platform.BukkitPlugin
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
+import taboolib.common.platform.function.submitAsync
 import taboolib.expansion.JexlCompiledScript
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
@@ -265,6 +270,15 @@ object Sertraline : Plugin() {
         } catch (e: Exception) {
             severeL("Failed to load configurations during startup: ${e.message}")
             e.printStackTrace()
+        }
+        try {
+            PlatformCompat.registerPaperEvents(BukkitPlugin.getInstance(), PaperEventBridge.hooks)
+            PlatformCompat.registerArmorPolling(
+                BukkitPlugin.getInstance(),
+                config.getBoolean("attribute.armor-change-polling", false)
+            ) { submitAsync { debounceRefreshStat(it) } }
+        } catch (e: Exception) {
+            severeL("Failed to register platform event hooks: ${e.message}")
         }
     }
 

@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.gui
 
 import io.github.zzzyyylllty.sertraline.Sertraline
 import io.github.zzzyyylllty.sertraline.Sertraline.craftingStations
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.data.*
 import io.github.zzzyyylllty.sertraline.function.kether.evalKetherBoolean
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
@@ -41,7 +42,7 @@ object CraftingStationManager {
     fun openStation(player: Player, stationId: String) {
         val station = craftingStations[stationId]
         if (station == null) {
-            player.sendMessage("<red>Station '$stationId' not found.</red>".toComponent())
+            PlatformCompat.sendComponent(player, "<red>Station '$stationId' not found.</red>".toComponent())
             return
         }
         openStation(player, station, stationId, 0)
@@ -57,7 +58,7 @@ object CraftingStationManager {
             val oldRecipe = station.recipes.values.find { it.displayName == oldSession.recipeId }
             val cancellable = oldRecipe?.options?.get("cancellable") as? Boolean ?: true
             if (!cancellable) {
-                player.sendMessage("<yellow>Current craft cannot be cancelled!</yellow>".toComponent())
+                PlatformCompat.sendComponent(player, "<yellow>Current craft cannot be cancelled!</yellow>".toComponent())
                 return
             }
             // 取消旧的合成会话并返还已消耗的材料
@@ -174,7 +175,7 @@ object CraftingStationManager {
             .replace("{next_page}", (currentPage + 2).coerceAtMost(totalPages).toString())
             .replace("{previous_page}", currentPage.toString())
             .toComponent()
-        meta.displayName(resolvedName)
+        PlatformCompat.setDisplayName(meta, resolvedName)
 
         if (config.lore != null) {
             val resolvedLore = config.lore
@@ -184,7 +185,7 @@ object CraftingStationManager {
                 .replace("{previous_page}", currentPage.toString())
             // 支持多行 lore（用 \n 分隔）
             val loreLines = resolvedLore.split("\n").map { it.toComponent() }
-            meta.lore(loreLines)
+            PlatformCompat.setLore(meta, loreLines)
         }
 
         item.itemMeta = meta
@@ -255,7 +256,7 @@ object CraftingStationManager {
         val existing = activeSessions[sessionKey]
         if (existing != null) {
             val msg = Sertraline.config.getString("messages.crafting-already-active", "<yellow>You already have an active crafting process!</yellow>") ?: "<yellow>You already have an active crafting process!</yellow>"
-            player.sendMessage(msg.toComponent())
+            PlatformCompat.sendComponent(player, msg.toComponent())
             return
         }
 
@@ -273,7 +274,7 @@ object CraftingStationManager {
                             ?: msgs["ConditionNotMet${conditionType}"]
                     } ?: Sertraline.config.getString("messages.condition-not-met")
                         ?: "<red>Condition not met: {condition_name}</red>"
-                    player.sendMessage(message
+                    PlatformCompat.sendComponent(player, message
                         .replace("{condition_name}", fail.condition.name)
                         .replace("{condition_amount}", fail.condition.amount)
                         .replace("{condition_required}", fail.condition.required)
@@ -306,7 +307,7 @@ object CraftingStationManager {
         if (consumed == null) {
             val missingName = recipe.inputs.firstOrNull()?.displayName?.ifEmpty { recipe.inputs.firstOrNull()?.input?.item } ?: "unknown"
             val msg = Sertraline.config.getString("messages.missing-ingredients", "<red>Missing ingredients: {display_name}</red>") ?: "<red>Missing ingredients: {display_name}</red>"
-            player.sendMessage(msg.replace("{display_name}", missingName).toComponent())
+            PlatformCompat.sendComponent(player, msg.replace("{display_name}", missingName).toComponent())
             return
         }
 
@@ -349,7 +350,7 @@ object CraftingStationManager {
                     fireStationAgents(station, recipe, "onClaim", player)
 
                     val msg = Sertraline.config.getString("messages.crafting-complete", "<green>Crafting complete!</green>") ?: "<green>Crafting complete!</green>"
-                    player.sendMessage(msg.toComponent())
+                    PlatformCompat.sendComponent(player, msg.toComponent())
                 } finally {
                     CraftingStationDataManager.clearSession(player)
                 }
@@ -379,7 +380,7 @@ object CraftingStationManager {
         )
 
         val msg = Sertraline.config.getString("messages.crafting-started", "<yellow>Crafting started... ({time} s)</yellow>") ?: "<yellow>Crafting started... ({time} s)</yellow>"
-        player.sendMessage(msg.replace("{time}", "%.1f".format(timeSeconds)).toComponent())
+        PlatformCompat.sendComponent(player, msg.replace("{time}", "%.1f".format(timeSeconds)).toComponent())
     }
 
     // ==================== 条件检查 ====================

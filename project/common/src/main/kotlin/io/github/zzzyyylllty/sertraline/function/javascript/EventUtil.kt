@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.function.javascript
 
 import com.github.retrooper.packetevents.protocol.dialog.input.Input
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.logger.severeS
@@ -23,7 +24,7 @@ object EventUtil {
     }
     fun call(event: Event) {
         try {
-            event.callEvent()
+            PlatformCompat.callEvent(event)
         } catch (e: Exception) {
             severeS("An error occurred while trying to calling event $event")
             e.printStackTrace()

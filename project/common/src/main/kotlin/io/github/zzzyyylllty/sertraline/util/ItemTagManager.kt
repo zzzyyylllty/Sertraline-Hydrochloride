@@ -12,31 +12,39 @@ object ItemTagManager {
 //        registryClass.getDeclaredMethod("getValue", getClazz("net.minecraft.resources.ResourceLocation"))
 //    }
 
+    // 位置类：Paper = ResourceLocation，Spigot = MinecraftKey
     val `clazz$ResourceLocation` by lazy {
-            getClazz(
-                assembleMCClass("resources.ResourceLocation")
-            )
+        getClazzCompat(
+            "net.minecraft.resources.ResourceLocation",
+            "net.minecraft.resources.MinecraftKey"
+        )
     }
 
-
-    // 1. 获取核心接口 IRegistry (注意：源代码显示是 IRegistry 而非 Registry)
+    // 1. 现代注册表接口：Paper = Registry，Spigot = IRegistry
+    // 注意：Spigot 上 net.minecraft.core.Registry 是旧的 getId/byId 接口，必须先试 IRegistry
     val `clazz$IRegistry` by lazy {
-        getClazz("net.minecraft.core.IRegistry")
+        getClazzCompat(
+            "net.minecraft.core.IRegistry",
+            "net.minecraft.core.Registry"
+        )
     }
 
-    // 2. 获取 MinecraftKey 类 (注意：源代码显示是 MinecraftKey 而非 ResourceLocation)
+    // 2. 位置类（与 clazz$ResourceLocation 相同解析，保留原名）
     val `clazz$MinecraftKey` by lazy {
-        getClazz("net.minecraft.resources.MinecraftKey")
+        getClazzCompat(
+            "net.minecraft.resources.ResourceLocation",
+            "net.minecraft.resources.MinecraftKey"
+        )
     }
 
-    // 3. 获取 BuiltInRegistries 类
+    // 3. 获取 BuiltInRegistries 类（双平台同名）
     private val builtInRegistriesClass by lazy {
         getClazz("net.minecraft.core.registries.BuiltInRegistries")
     }
 
-    // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM)
+    // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM / Spigot 混淆字段名: g)
     private val itemIRegistryField by lazy {
-        getDeclaredField(builtInRegistriesClass, "ITEM") ?: throw NullPointerException("ITEM Registries is null!")
+        getDeclaredFieldCompat(builtInRegistriesClass, "ITEM", "g")
     }
 
     // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM)
@@ -46,80 +54,77 @@ object ItemTagManager {
 
     // 5. 获取 getValue 方法: T getValue(@Nullable MinecraftKey var1)
     val registryGetValueMethod by lazy {
-        `clazz$IRegistry`.getDeclaredMethod("getValue", `clazz$MinecraftKey`)
+        getDeclaredMethodCompat(`clazz$IRegistry`, listOf("getValue", "a"), null, `clazz$MinecraftKey`)
     }
 
     // 6. 获取 getKey 方法: @Nullable MinecraftKey getKey(T var1)
     // 关键修正：在 Java 反射中，泛型 T 被擦除为 Object，所以参数必须是 Object (Any)
     private val registryGetKeyMethod by lazy {
-        `clazz$IRegistry`.getDeclaredMethod("getKey", Any::class.java)
+        getDeclaredMethodCompat(`clazz$IRegistry`, "getKey", `clazz$MinecraftKey`, Any::class.java)
     }
 
     // 7. (可选) 获取 get 方法 (替代 getHolder)
     // 源代码显示: Optional<Holder.c<T>> get(MinecraftKey var1)
     // 如果你需要通过 Key 获取 Holder，应该使用这个方法
     private val registryGetOptionalMethod by lazy {
-        `clazz$IRegistry`.getDeclaredMethod("get", `clazz$MinecraftKey`)
+        getDeclaredMethodCompat(`clazz$IRegistry`, listOf("get", "c"), null, `clazz$MinecraftKey`)
     }
 
-    private val registryGetHolderMethod by lazy {
-        val registryClass = getClazz("net.minecraft.core.Registry")
-        registryClass.getDeclaredMethod("getHolder", getClazz("net.minecraft.resources.ResourceKey"))
+    // 8. 获取 wrapAsHolder 方法: Holder<T> wrapAsHolder(T var1)
+    // 1.21.4 双平台 Registry 接口均无 getHolder(ResourceKey)（旧实现必然 NoSuchMethodException），
+    // 改用 wrapAsHolder：返回已注册的 Holder（自带标签集），无注册才兜底 Direct。
+    // Paper: Registry.wrapAsHolder(Object)；Spigot: IRegistry.e(T)
+    private val registryWrapAsHolderMethod by lazy {
+        val holderClass = getClazz("net.minecraft.core.Holder")
+        getDeclaredMethodCompat(`clazz$IRegistry`, listOf("wrapAsHolder", "e"), holderClass, Any::class.java)
     }
 
     private val resourceKeyCreateMethod by lazy {
         val resourceKeyClass = getClazz("net.minecraft.resources.ResourceKey")
-        resourceKeyClass.getDeclaredMethod("create", getClazz("net.minecraft.resources.ResourceLocation"), getClazz("net.minecraft.resources.ResourceLocation"))
+        getDeclaredMethodCompat(resourceKeyClass, listOf("create", "a"), null, `clazz$ResourceLocation`, `clazz$ResourceLocation`)
     }
 
     private val resourceLocationClass by lazy {
-        getClazz("net.minecraft.resources.ResourceLocation")
+        getClazzCompat(
+            "net.minecraft.resources.ResourceLocation",
+            "net.minecraft.resources.MinecraftKey"
+        )
     }
     private val resourceKeyClass by lazy {
         getClazz("net.minecraft.resources.ResourceKey")
     }
 
-
-    private val resourceLocationGetNamespace by lazy {
-        resourceLocationClass.getDeclaredMethod("getNamespace")
-    }
-    private val resourceLocationGetPath by lazy {
-        resourceLocationClass.getDeclaredMethod("getPath")
-    }
-
     private val tagKeyLocationClass by lazy {
-        getClazz("net.minecraft.resources.ResourceLocation")
-    }
-    private val tagKeyLocationGetNamespace by lazy {
-        tagKeyLocationClass.getDeclaredMethod("getNamespace")
-    }
-    private val tagKeyLocationGetPath by lazy {
-        tagKeyLocationClass.getDeclaredMethod("getPath")
+        getClazzCompat(
+            "net.minecraft.resources.ResourceLocation",
+            "net.minecraft.resources.MinecraftKey"
+        )
     }
 
     private val holderReferenceTagsField by lazy {
-        val holderReferenceClass = getClazz("net.minecraft.core.Holder\$Reference")
-        val tagsField = holderReferenceClass.getDeclaredField("tags")
-        tagsField.isAccessible = true
-        tagsField
+        val holderReferenceClass = getClazzCompat(
+            "net.minecraft.core.Holder\$Reference",
+            "net.minecraft.core.Holder\$c"
+        )
+        // Spigot 混淆字段名: b（类型 Set<TagKey>）
+        getDeclaredFieldCompat(holderReferenceClass, "tags", "b", type = java.util.Set::class.java)
     }
 
     private val tagKeyLocationField by lazy {
         val tagKeyClass = getClazz("net.minecraft.tags.TagKey")
-        val locationField = tagKeyClass.getDeclaredField("location")
-        locationField.isAccessible = true
-        locationField
+        // Spigot 混淆字段名: b（类型 MinecraftKey）
+        getDeclaredFieldCompat(tagKeyClass, "location", "b", type = resourceLocationClass)
     }
 
     private val tagKeyCreateMethod by lazy {
         val tagKeyClass = getClazz("net.minecraft.tags.TagKey")
         val registryKeyClass = getClazz("net.minecraft.resources.ResourceKey")
-        tagKeyClass.getDeclaredMethod("create", registryKeyClass, resourceLocationClass)
+        getDeclaredMethodCompat(tagKeyClass, listOf("create", "a"), null, registryKeyClass, resourceLocationClass)
     }
 
-    // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM)
+    // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM / Spigot 混淆字段名: g)
     private val itemRegistryKeyField by lazy {
-        getDeclaredField(builtInRegistriesClass, "ITEM") ?: throw NullPointerException("ITEM Registries is null!")
+        getDeclaredFieldCompat(builtInRegistriesClass, "ITEM", "g")
     }
 
     // 4. 获取物品注册表实例 (BuiltInRegistries.ITEM)
@@ -159,25 +164,23 @@ object ItemTagManager {
             for (item in items) {
                 // 获取物品的 ResourceLocation
                 val resourceLocation = registryGetKeyMethod.invoke(itemIRegistry, item) as Any
-                val itemKey = "${resourceLocationGetNamespace.invoke(resourceLocation)}:${resourceLocationGetPath.invoke(resourceLocation)}"
+                // 直接用 toString()（"namespace:path"）：
+                // Spigot 上 getNamespace/getPath 为混淆名 b()/a()，与 Mojang 名错位且签名相同，无法可靠匹配
+                val itemKey = resourceLocation.toString()
 
-                // 获取物品的 Holder
-                val resourceKey = resourceKeyCreateMethod.invoke(null, itemRegistryKey, resourceLocation)
-                val holderOptional = registryGetHolderMethod.invoke(itemIRegistry, resourceKey) as java.util.Optional<*>
+                // 获取物品的 Holder（wrapAsHolder 返回注册的 Holder，自带标签集）
+                val holder = registryWrapAsHolderMethod.invoke(itemIRegistry, item)
 
-                if (holderOptional.isPresent) {
-                    val holder = holderOptional.get()
-                    // 获取 Holder 的标签集合
-                    val tags = holderReferenceTagsField.get(holder) as Set<*>
+                // 获取 Holder 的标签集合
+                val tags = holderReferenceTagsField.get(holder) as Set<*>
 
-                    for (tag in tags) {
-                        // 获取标签的 ResourceLocation
-                        val tagLocation = tagKeyLocationField.get(tag)
-                        val tagKey = "${tagKeyLocationGetNamespace.invoke(tagLocation)}:${tagKeyLocationGetPath.invoke(tagLocation)}"
+                for (tag in tags) {
+                    // 获取标签的 ResourceLocation
+                    val tagLocation = tagKeyLocationField.get(tag)
+                    val tagKey = tagLocation.toString()
 
-                        // 将物品添加到对应的标签列表中
-                        vanillaItemTags.computeIfAbsent(tagKey) { mutableListOf() }.add(itemKey)
-                    }
+                    // 将物品添加到对应的标签列表中
+                    vanillaItemTags.computeIfAbsent(tagKey) { mutableListOf() }.add(itemKey)
                 }
             }
 //        } catch (e: Exception) {

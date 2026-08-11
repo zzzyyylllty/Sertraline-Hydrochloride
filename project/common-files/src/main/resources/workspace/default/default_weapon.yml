@@ -37,7 +37,7 @@ sword_of_counter:
             var added = count + event.damage;
             tag.putDeep("sertraline_data.count", added);
             ItemStackUtil.setItemTagDirect(bItem, tag);
-            player.sendMessage(mmUtil.deserialize("This item's damage count: " + added))
+            PlayerUtil.sendMessage(player, mmUtil.deserialize("This item's damage count: " + added))
             ItemStackUtil.rebuildLore(bItem, player);
   xbuilder:
     name: "<!i>&7Sword Of &6Counter"
@@ -55,10 +55,10 @@ sword_of_soulbound:
         - async: false # If cancel event or modify event content, async must be false (default to true).
           js: |
             if (bound != player.name) {
-              player.sendMessage(mmUtil.deserialize("<red>This Item is soulbound by player: " + bound + ", you can't use it."));
+              PlayerUtil.sendMessage(player, mmUtil.deserialize("<red>This Item is soulbound by player: " + bound + ", you can't use it."));
               event.setCancelled(true)
             } else {
-              player.sendActionBar(mmUtil.deserialize("<green>You are using your soulbound item."));
+                              PlayerUtil.sendActionBar(player, mmUtil.deserialize("<green>You are using your soulbound item."));
             }
   xbuilder:
     name: "<!i>&7Sword Of <gradient:red:gold>SoulBound"
@@ -92,7 +92,7 @@ sword_of_glasnost:
             if (DataUtil.isInCooldown(player, "sword_of_glasnost")) {
 
               var sec = Math.ceil(DataUtil.getCooldownLeftLong(player, "sword_of_glasnost") / 100) / 10
-              player.sendActionBar(mmUtil.deserialize("<#999999><i>Extra Damage Skill is in cooldown, " + sec + "s left."))
+                              PlayerUtil.sendActionBar(player, mmUtil.deserialize("<#999999><i>Extra Damage Skill is in cooldown, " + sec + "s left."));
 
             } else {
 
@@ -103,7 +103,7 @@ sword_of_glasnost:
               DataUtil.setCooldown(player, "sword_of_glasnost", 10.0)
 
               event.damage += 19.91
-              player.sendActionBar(mmUtil.deserialize("<#FF4422>Extra Damage Skill Triggered, current damage is <yellow>" + (Math.ceil(event.damage) * 10) / 10 + "</yellow>."))
+                              PlayerUtil.sendActionBar(player, mmUtil.deserialize("<#FF4422>Extra Damage Skill Triggered, current damage is <yellow>" + (Math.ceil(event.damage) * 10) / 10 + "</yellow>."));
             }
   xbuilder:
     name: "<!i><#96efff>Sword O' <#ff6699>Glasnost"
@@ -132,7 +132,7 @@ sword_of_eternal_frozen:
               
               PlayerUtil.showTitle(player, mmUtil.deserialize(" "), mmUtil.deserialize("<#66ccff><bold>❄"), 5, 20, 5);
 
-              player.sendActionBar(mmUtil.deserialize("<#66ccff>Eternal Frozen Sword <white>Skill Activated!"));
+                              PlayerUtil.sendActionBar(player, mmUtil.deserialize("<#66ccff>Eternal Frozen Sword <white>Skill Activated!"));
               
               // Apply slowness effect (Slowness II, 5 seconds).
               target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 300, 1)); // 300 ticks (15 seconds), amplifier 1 (Level 2).
@@ -148,7 +148,7 @@ sword_of_eternal_frozen:
                 var added = Number(chance) + 1;
                 tag.putDeep("sertraline_data.chance", added);
                 ItemStackUtil.setItemTagDirect(bItem, tag);
-                player.sendMessage(mmUtil.deserialize("Increased <yellow>1%</yellow> skill chance."))
+                PlayerUtil.sendMessage(player, mmUtil.deserialize("Increased <yellow>1%</yellow> skill chance."))
                 ItemStackUtil.rebuildLore(bItem, player);
               }
             }
