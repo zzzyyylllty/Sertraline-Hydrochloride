@@ -142,7 +142,7 @@ allprojects {
         compileOnly(files("$rootDir/libs/ChoTenTech-1.0.0-api.jar"))
 
 
-        taboo(files("$rootDir/libs-public/EmbianComponent-1.2.1.jar"))
+        taboo(files("$rootDir/libs-public/EmbianComponent-1.2.2.jar"))
 //        taboo("com.github.zzzyyylllty:EmbianComponent:1.2.0")
 
 

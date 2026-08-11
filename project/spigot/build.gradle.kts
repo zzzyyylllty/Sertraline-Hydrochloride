@@ -28,7 +28,7 @@ dependencies {
     "spigotCompileOnly"(sourceSets["main"].output)
     "spigotCompileOnly"(rootProject.libs.bundles.adventure)
     // data component 由 EmbianComponent 负责（NMS 反射路径，Spigot 无 Paper API 可用）
-    "spigotCompileOnly"(files("$rootDir/libs-public/EmbianComponent-1.2.0.jar"))
+    "spigotCompileOnly"(files("$rootDir/libs-public/EmbianComponent-1.2.2.jar"))
 }
 
 configurations {
