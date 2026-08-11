@@ -3,8 +3,7 @@
 超天物品管理系统服务 (Liminal Skyline v4.0 服务)
 
 ChoTen Item management system service (Liminal Skyline v4.0 Service)
-
-<img width="1282" height="716" alt="85698242-aba7-4a74-90a1-6b8ad2f5be99" src="https://github.com/user-attachments/assets/74f242b2-ba09-42bf-9957-f3d9702e2065" />
+<img width="2003" height="1118" alt="图片1" src="https://github.com/user-attachments/assets/6a1832f3-a0e2-480b-a823-1876fffe21f8" />
 
 <img width="1344" height="768" alt="image" src="https://github.com/user-attachments/assets/c44b41ae-d110-4e9e-bf96-9cbc32a0d7d9" />
 
