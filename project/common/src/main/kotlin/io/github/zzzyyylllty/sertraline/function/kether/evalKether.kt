@@ -54,7 +54,7 @@ fun List<String>.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build())
 }
 
@@ -74,7 +74,7 @@ fun String?.parseKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build())
 }
 
@@ -98,7 +98,7 @@ fun List<String>.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build())
 }
 
@@ -119,7 +119,7 @@ fun String?.evalKether(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build())
 }
 
@@ -141,7 +141,7 @@ fun String?.evalKetherValue(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build()).getNow(def)
 }
 
@@ -161,7 +161,7 @@ fun String?.evalKetherString(
         sets.forEach {
             set(it.first, it.second)
         }
-        if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+        if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
     }.build()).getNow(def).toString()
 }
 
@@ -190,7 +190,7 @@ fun String?.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
-            if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+            if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()
@@ -237,7 +237,7 @@ fun List<String>.evalKetherBoolean(
             sets.forEach {
                 set(it.first, it.second)
             }
-            if (cacheId != null) ketherScriptCache[cacheId]?.let { cache(it) }
+            if (cacheId != null) ketherScriptCache.computeIfAbsent(cacheId) { KetherShell.Cache() }?.let { cache(it) }
         }.build()).thenApply {
             Coerce.toBoolean(it)
         }.get()

@@ -14,7 +14,7 @@ fun registerNativeTagAdapter() {
         devLog("Tag adapting papi")
         papiTagProcessor(data, player, repl, target)
     }
-    tagManager.registerProcessor("sertraline", listOf("val","var","dynamic","kether")) { data, player, repl, target ->
+    tagManager.registerProcessor("sertraline", listOf("val","var","dynamic","kether","context")) { data, player, repl, target ->
         devLog("Tag adapting sertraline")
         sertralineTagProcessor(data, player, repl, target)
     }

@@ -332,6 +332,7 @@ data class ItemData(
     val itemVal: Map<String, Any?>? = mapOf(),
     val itemVar: Map<String, Any?>? = mapOf(),
     val itemDynamic: Map<String, Any?>? = mapOf(),
+    val itemContext: Map<String, Any?>? = mapOf(),
     val itemId: String? = null,
 ) {
     fun collect(): Map<String, Any?> {
@@ -339,6 +340,7 @@ data class ItemData(
         itemVal?.let { map.putAll(it) }
         itemVar?.let { map.putAll(it) }
         itemDynamic?.let { map.putAll(it) }
+        itemContext?.let { map.putAll(it) }
         itemId?.let { map.put("_itemname", it) }
         return map
     }

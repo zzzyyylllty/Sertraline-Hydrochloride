@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
+import io.github.zzzyyylllty.sertraline.util.parseNamespacedKey
 import io.github.zzzyyylllty.sertraline.util.loreformat.performPlaceholders
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
@@ -14,7 +15,6 @@ import org.bukkit.Color
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.components.CustomModelDataComponent
 import com.cryptomorin.xseries.XItemStack
 import kotlin.math.roundToInt
 
@@ -53,7 +53,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
             PlatformCompat.setLore(deserializedMeta, lore)
         }
         if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) {
-            PlatformCompat.setItemModel(deserializedMeta, NamespacedKey.fromString(model))
+            PlatformCompat.setItemModel(deserializedMeta, model.parseNamespacedKey())
         }
         item.itemMeta = deserializedMeta
     } else {
@@ -61,7 +61,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         item.itemMeta?.let { meta ->
             if (name != null) PlatformCompat.setDisplayName(meta, name)
             if (lore != null) PlatformCompat.setLore(meta, lore)
-            if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) PlatformCompat.setItemModel(meta, NamespacedKey.fromString(model))
+            if (model != null && config.getBoolean("fixes.xbuilder.reapply-item-model", true)) PlatformCompat.setItemModel(meta, model.parseNamespacedKey())
             item.itemMeta = meta
         }
     }

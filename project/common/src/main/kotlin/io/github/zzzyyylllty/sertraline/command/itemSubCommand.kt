@@ -6,7 +6,7 @@ import io.github.zzzyyylllty.sertraline.function.kether.evalKetherString
 import io.github.zzzyyylllty.sertraline.gui.ItemExplorer
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
 import io.github.zzzyyylllty.sertraline.logger.sendStringAsComponent
-import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import io.github.zzzyyylllty.sertraline.util.minimessage.toMiniMessageString
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -61,7 +61,7 @@ object ItemCommand {
                         }
                         item?.let {
                             sender?.giveItem(it)
-                            sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, mmUtil.serialize(PlatformCompat.getDisplayName(it))))
+                            sender?.sendStringAsComponent(sender.asLangText("Item_Give", 1, PlatformCompat.getDisplayName(it).toMiniMessageString()))
                         }
                     }}
             }
@@ -85,7 +85,7 @@ object ItemCommand {
                         }
                         item?.let {
                             bukkitPlayer?.giveItem(it)
-                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, mmUtil.serialize(PlatformCompat.getDisplayName(it))))
+                            bukkitPlayer?.sendStringAsComponent(bukkitPlayer.asLangText("Item_Give", 1, PlatformCompat.getDisplayName(it).toMiniMessageString()))
                         }}
                 }
 
@@ -111,7 +111,7 @@ object ItemCommand {
                                     bukkitPlayer.asLangText(
                                         "Item_Give",
                                         amount,
-                                        mmUtil.serialize(PlatformCompat.getDisplayName(it))
+                                        PlatformCompat.getDisplayName(it).toMiniMessageString()
                                     )
                                 )
                             }
@@ -142,7 +142,7 @@ object ItemCommand {
                                         bukkitPlayer.asLangText(
                                             "Item_Give",
                                             amount,
-                                            mmUtil.serialize(PlatformCompat.getDisplayName(it))
+                                            PlatformCompat.getDisplayName(it).toMiniMessageString()
                                         )
                                     )
                                 }

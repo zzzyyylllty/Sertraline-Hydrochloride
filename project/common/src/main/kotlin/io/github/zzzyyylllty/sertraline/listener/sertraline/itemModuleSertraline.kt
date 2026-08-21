@@ -23,7 +23,9 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
         "$prefix:vals",
         "$prefix:vars",
         "$prefix:dynamics",
+        "$prefix:keep-context",
         "$prefix:actions",
+        "$prefix:revision-id",
         "$prefix:no-sertraline-id"
     )
 

@@ -52,7 +52,7 @@ object ComponentFormatter {
      * @param indentLevel Int 缩进级别
      */
     private fun formatEntry(key: String, value: Any, sb: StringBuilder, indentLevel: Int) {
-        val indent = "  ".repeat(indentLevel)
+        val indent = repeatString("  ", indentLevel)
         if (indentLevel == 1) {
             sb.append(indent).append("<").append(COMPONENT_COLOR).append(">").append(key).append("</").append(COMPONENT_COLOR).append(">: ")
         } else {
@@ -128,7 +128,7 @@ object ComponentFormatter {
      * @param indentLevel Int 缩进级别
      */
     private fun formatListItem(item: Any?, sb: StringBuilder, indentLevel: Int) {
-        val indent = "  ".repeat(indentLevel)
+        val indent = repeatString("  ", indentLevel)
         sb.append(indent).append("- ")
         val item = unwrapJson(item)
         when (item) {
@@ -191,6 +191,14 @@ object ComponentFormatter {
         }
     }
 
+}
+
+// Java 8 兼容：String.repeat 是 Java 11 成员方法（Kotlin 2.2 的 kotlin.text 已无 repeat 扩展），手写实现
+private fun repeatString(s: String, n: Int): String {
+    if (n <= 0) return ""
+    val sb = StringBuilder(s.length * n)
+    for (i in 1..n) sb.append(s)
+    return sb.toString()
 }
 
 fun handleStringComponent(input: String): String {

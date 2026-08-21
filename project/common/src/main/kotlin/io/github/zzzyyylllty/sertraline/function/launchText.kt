@@ -13,6 +13,13 @@ import taboolib.module.lang.asLangText
 import taboolib.module.nms.MinecraftVersion.versionId
 import taboolib.platform.util.asLangText
 
+// ⬛🟦🟥🟫🟧🟨🟩🟪⬜
+private val characterDrat = """
+    ⬜⬜⬜⬜
+    ⬜⬜⬜
+    ⬜⬜
+""".trimIndent()
+
 @Awake(LifeCycle.ENABLE)
 fun launchText() {
 

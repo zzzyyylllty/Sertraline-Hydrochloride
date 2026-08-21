@@ -19,6 +19,8 @@ import io.github.zzzyyylllty.sertraline.impl.getComponentsNMS
 import io.github.zzzyyylllty.sertraline.util.ComponentFormatter
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
+import io.github.zzzyyylllty.sertraline.item.rebuildDisplay
+import io.github.zzzyyylllty.sertraline.item.rebuildName
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
@@ -216,6 +218,28 @@ object DebugCommand {
         }
     }
 
+
+    @CommandBody
+    val rebuildName = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            submitAsync {
+                val inv = (sender as Player).inventory
+                inv.itemInMainHand.rebuildName(sender)
+            }
+        }
+    }
+
+
+    @CommandBody
+    val rebuildDisplay = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            submitAsync {
+                val inv = (sender as Player).inventory
+                inv.itemInMainHand.rebuildDisplay(sender)
+            }
+        }
+    }
+
     @CommandBody
     val refreshAttributes = subCommand {
         execute<CommandSender> { sender, context, argument ->
@@ -228,7 +252,7 @@ object DebugCommand {
         execute<CommandSender> { sender, context, argument ->
             val inv = (sender as Player).inventory
             val item = inv.itemInMainHand
-            if (item.isAir || item.type.isAir || item.amount <= 0) {
+            if (item.isAir || item.type == Material.AIR || item.amount <= 0) {
                 sender.sendMessage("item cannot be null")
                 return@execute
             }
@@ -239,7 +263,7 @@ object DebugCommand {
             execute<CommandSender> { sender, context, argument ->
                 val inv = (sender as Player).inventory
                 val item = inv.itemInMainHand
-                if (item.isAir || item.type.isAir || item.amount <= 0) {
+                if (item.isAir || item.type == Material.AIR || item.amount <= 0) {
                     sender.sendMessage("item cannot be null")
                     return@execute
                 }

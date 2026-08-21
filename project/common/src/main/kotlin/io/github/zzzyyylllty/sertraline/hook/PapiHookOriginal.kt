@@ -12,6 +12,7 @@ import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.data.DataUtil
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
+import io.github.zzzyyylllty.sertraline.util.textIsBlank
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
@@ -28,6 +29,9 @@ import kotlin.Boolean
 import kotlin.collections.set
 import kotlin.math.round
 import kotlin.math.roundToInt
+
+/** random:starttoend[:scale(mode)] 参数格式，热路径上避免每次请求都重建 Regex */
+private val RANDOM_PARAM_REGEX = Regex("""^(-?\d+(?:\.\d+)?)to(-?\d+(?:\.\d+)?)(?::(\d+)([ucdf])?)?$""", RegexOption.IGNORE_CASE)
 
 @Awake(LifeCycle.ENABLE)
 fun registerPapi() {
@@ -138,8 +142,7 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
         } else if (params.startsWith("random:") || params.startsWith("rand:")) {
             val param = params.removePrefix("random:").removePrefix("rand:")
 
-            val regex = Regex("""^(-?\d+(?:\.\d+)?)to(-?\d+(?:\.\d+)?)(?::(\d+)([ucdf])?)?$""", RegexOption.IGNORE_CASE)
-            val match = regex.matchEntire(param) ?: return def
+            val match = RANDOM_PARAM_REGEX.matchEntire(param) ?: return def
 
             val startStr = match.groupValues[1]
             val endStr = match.groupValues[2]
@@ -153,7 +156,8 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
 
             return run {
                 // 没有 :xx，保持原逻辑
-                if (scaleStr.isBlank()) {
+                // textIsBlank：Java 8 安全实现（见 StringUtil.kt）
+                if (scaleStr.textIsBlank()) {
                     if (startStr.contains(".") || endStr.contains(".")) value else value.toInt()
                 } else {
                     val scale = scaleStr.toInt()

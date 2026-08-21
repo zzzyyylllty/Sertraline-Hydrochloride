@@ -11,7 +11,6 @@ import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.infoSSync
 import io.github.zzzyyylllty.sertraline.util.DependencyHelper
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
-import io.lumine.mythic.lib.comp.mythicmobs.MythicMobsHook
 import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -26,6 +25,8 @@ import taboolib.module.kether.inferType
 import taboolib.module.nms.getItemTag
 import java.util.Locale
 import kotlin.random.Random
+
+private val WHITESPACE_REGEX = Regex("\\s+")
 
 @Ghost
 @SubscribeEvent
@@ -47,7 +48,7 @@ object MythicHook {
     fun onMobSpawn(e: MobSpawnEvent) {
         val mob = e.mob ?: return
         val config = mob.config
-        val equipmentSection = config.getConfigurationSection("Sertraline.equipments") ?: config.getConfigurationSection("Sertraline.equipments") ?: return
+        val equipmentSection = config.getConfigurationSection("Sertraline.equipments") ?: config.getConfigurationSection("Sertraline.Equipments") ?: return
         val entity = mob.entity as? LivingEntity ?: return
         submit(delay = 5L) {
             applyEquipments(equipmentSection, entity)
@@ -59,7 +60,9 @@ object MythicHook {
     fun onMobDeath(e: MobDeathEvent) {
         val mob = e.mob
         val config = mob.config
-        val dropLines = config.getStringList("Sertraline.drops")
+        val dropLines1 = config.getStringList("Sertraline.drops")
+
+        val dropLines = if (dropLines1.isEmpty()) config.getStringList("Sertraline.Drops") else dropLines1
         devLog("[Sertraline_MM_DEATH] mob=${mob.id} killer=${(e.killer as? Player)?.name} dropLines=$dropLines")
         if (dropLines.isEmpty()) {
             return
@@ -86,7 +89,8 @@ object MythicHook {
                 devLog("[Sertraline][DEBUG][MM_DROP] SKIP roll failed: item=${parsed.itemId} chance=${parsed.chance}")
                 return@forEach
             }
-            val item = Sertraline.api().buildDataItem(parsed.itemId, killer, vars = context)
+            // context 作为独立运行时上下文传入（{context:xxx} 标签可访问），不写入 vars/NBT
+            val item = Sertraline.api().buildDataItem(parsed.itemId, killer, context = context)
             if (item == null) {
                 devLog("[Sertraline][DEBUG][MM_DROP] SKIP item not found: '${parsed.itemId}' (generateItemStack returned null)")
                 return@forEach
@@ -160,7 +164,7 @@ object MythicHook {
     }
 
     private fun parseDrop(raw: String): ParsedDrop? {
-        val tokens = raw.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        val tokens = raw.trim().split(WHITESPACE_REGEX).filter { it.isNotEmpty() }
         if (tokens.isEmpty()) {
             return null
         }

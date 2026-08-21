@@ -5,7 +5,11 @@ import io.github.zzzyyylllty.sertraline.Sertraline.config
 import io.github.zzzyyylllty.sertraline.Sertraline.itemExpectedRevision
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
-import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
+import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilderInternal
+import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.manager.PRIVATE_OWNER_TAG
+import io.github.zzzyyylllty.sertraline.manager.SubManagerType
+import io.github.zzzyyylllty.sertraline.manager.isPrivateItemId
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
@@ -15,11 +19,22 @@ import taboolib.platform.util.isAir
  * 获取物品的预期修订版本号
  * 优先级: 显式指定 > 自动追踪
  */
-fun getExpectedRevision(itemId: String): Int {
-    val template = itemMap[itemId] ?: return 0
-    val explicit = template.getDeepData("sertraline:revision-id")
+fun getExpectedRevision(itemId: String, player: Player? = null, ownerUuid: String? = null): Int {
+    val normalizedId = if (isPrivateItemId(itemId)) {
+        io.github.zzzyyylllty.sertraline.manager.normalizePrivateItemId(itemId)
+    } else itemId
+    val template = if (isPrivateItemId(normalizedId)) {
+        val uuid = ownerUuid ?: player?.uniqueId?.toString()
+        if (uuid == null) null else {
+            Sertraline.manager.privateManager.getItem(uuid, normalizedId, SubManagerType.TEMPORARY)
+                ?: Sertraline.manager.privateManager.getItem(uuid, normalizedId, SubManagerType.PERSISTENT)
+        }
+    } else {
+        itemMap[normalizedId]
+    }
+    val explicit = template?.getDeepData("sertraline:revision-id")
     if (explicit is Number) return explicit.toInt()
-    return itemExpectedRevision[itemId] ?: 0
+    return itemExpectedRevision[itemId] ?: itemExpectedRevision[normalizedId] ?: 0
 }
 
 /**
@@ -36,7 +51,8 @@ fun checkAndUpdateItem(player: Player, itemStack: ItemStack?, slot: Int): Boolea
 
     val tag = itemStack.getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return false
-    val expectedRevision = getExpectedRevision(sID)
+    val ownerUuid = tag[PRIVATE_OWNER_TAG]?.asString()?.trim()?.takeIf { it.isNotEmpty() }
+    val expectedRevision = getExpectedRevision(sID, ownerUuid = ownerUuid)
     if (expectedRevision <= 0) return false
 
     val currentRevision = tag["sertraline_revision"]?.asInt() ?: 0
@@ -44,7 +60,13 @@ fun checkAndUpdateItem(player: Player, itemStack: ItemStack?, slot: Int): Boolea
 
     devLog("Updating item $sID (rev $currentRevision -> $expectedRevision) for ${player.name}")
 
-    val newItem = sertralineItemBuilder(sID, player, source = itemStack, amount = itemStack.amount) ?: return false
+    val newItem = try {
+        sertralineItemBuilderInternal(sID, player, source = itemStack, amount = itemStack.amount, rebuild = itemStack)
+    } catch (e: Exception) {
+        severeS("Failed to rebuild item $sID (rev $currentRevision -> $expectedRevision) for ${player.name} at slot $slot: ${e.message}")
+        e.printStackTrace()
+        return false
+    } ?: return false
     newItem.amount = itemStack.amount
 
     // 原子替换，禁止 addItem/removeItem 组合

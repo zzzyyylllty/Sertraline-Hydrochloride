@@ -14,6 +14,7 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
 import io.github.zzzyyylllty.sertraline.data.Level
+import io.github.zzzyyylllty.sertraline.function.data.contextValue
 import io.github.zzzyyylllty.sertraline.function.kether.parseKether
 import net.kyori.adventure.text.Component
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
@@ -60,6 +61,9 @@ internal fun applyLoreFormat(
 }
 
 private val NORMAL_PLACEHOLDER_REGEX = "\\{(.*?)}".toRegex()
+private val VAL_PLACEHOLDER_REGEX = Regex("\\{val:([^}]+)}")
+private val VAR_PLACEHOLDER_REGEX = Regex("\\{var:([^}]+)}")
+private val CONTEXT_PLACEHOLDER_REGEX = Regex("\\{context:([^}]+)}")
 
 fun Any?.performNormalPlaceholders(content: String,player: Player?,sItem: ModernSItem, skipGeneralPlaceholders: Boolean = false): String {
     val numeral = this.toString().toDoubleOrNull() ?: 0.0
@@ -172,15 +176,22 @@ fun String?.performPlaceholders(sItem: ModernSItem,player: Player?): String? {
 
     if (content.contains("val:")) {
         val vals = sItem.getDeepData("sertraline:vals") as? Map<*, *>
-        content = content.replace(Regex("\\{val:([^}]+)}")) { match ->
+        content = content.replace(VAL_PLACEHOLDER_REGEX) { match ->
             vals?.get(match.groupValues[1])?.toString() ?: match.value
         }
     }
 
     if (content.contains("var:")) {
         val vars = sItem.getDeepData("sertraline:vars") as? Map<*, *>
-        content = content.replace(Regex("\\{var:([^}]+)}")) { match ->
+        content = content.replace(VAR_PLACEHOLDER_REGEX) { match ->
             vars?.get(match.groupValues[1])?.toString() ?: match.value
+        }
+    }
+
+    if (content.contains("context:")) {
+        val context = sItem.getDeepData("sertraline:context") as? Map<*, *>
+        content = content.replace(CONTEXT_PLACEHOLDER_REGEX) { match ->
+            context?.get(match.groupValues[1])?.contextValue() ?: match.value
         }
     }
 

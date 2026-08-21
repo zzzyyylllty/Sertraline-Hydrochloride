@@ -26,17 +26,9 @@ import taboolib.module.nms.setItemTag
 
 object PlayerUtil {
     fun addPotionEffect(player: Player, type: String, duration: Int = 30, amplifier: Int = 0, ambient: Boolean = true, particles: Boolean = true, icon: Boolean = true) {
+        // 6 布尔参构造器是 1.13+，v11200 只有 (…, Color) 6 参版；统一走 PlatformCompat（低版本降级 5/4 参）
         submit {
-            player.addPotionEffect(
-                PotionEffect(
-                    PotionEffectType.getByName(type)!!,
-                    duration,
-                    amplifier,
-                    ambient,
-                    particles,
-                    icon
-                )
-            )
+            PlatformCompat.addPotionEffect(player, type, duration, amplifier, ambient, particles, icon)
         }
     }
     fun addPotionEffect(player: Player, type: String, duration: Int = 30, amplifier: Int = 0) {

@@ -1,12 +1,6 @@
 # Sertraline Configuration
 # 大部分设置需要重启以应用更改
 # MOST SETTINGS REQUIRED RESTART TO APPLY CHANGES
-# 大部分设置需要重启以应用更改
-# MOST SETTINGS REQUIRED RESTART TO APPLY CHANGES
-# 大部分设置需要重启以应用更改
-# MOST SETTINGS REQUIRED RESTART TO APPLY CHANGES
-# 大部分设置需要重启以应用更改
-# MOST SETTINGS REQUIRED RESTART TO APPLY CHANGES
 
 # 调试模式 debug
 # Debug mode
@@ -30,15 +24,16 @@ item-update:
   # 触发器：何时检查并更新物品
   # Triggers: when to check and update items
   triggers:
-    on-login: true       # 玩家登录时检查全部背包
-    on-hold: true        # 玩家切换手持物品时检查
-    on-interact: true    # 玩家交互时检查手持物品
-    async-interval: 0    # 定时检查 (单位: tick, 0=禁用)
+    on-login: true       # 玩家登录时检查全部背包 Check all inventories on player login
+    on-hold: true        # 玩家切换手持物品时检查 Check when the player switches held item
+    on-interact: true    # 玩家交互时检查手持物品 Check held item on player interaction
+    async-interval: 0    # 定时检查 (单位: tick, 0=禁用) Periodic check (in ticks, 0=disabled)
   # 更新时是否通知玩家
   notify: true
 
 file-load:
 
+  # 如果你想使用 \ 这样的转义字符（如 \.），必须改用 \\ 代替。
   # If you want to use \ like \. , You must use \\. instead.
   item: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
   lore-format: "^(?![#!]).*\\.(?i)(yaml|yml|toml|tml|json|conf)$"
@@ -161,8 +156,12 @@ action:
     onConsume: 0
 
 database:
-  enable: false  # true: MySQL; false: SQLite
-  filename: data # data.db for SQLite Database File.
+  # 数据库类型（true: MySQL；false: SQLite）
+  # Database type (true: MySQL; false: SQLite)
+  enable: false
+  # data.db，SQLite 数据库文件名
+  # data.db for SQLite Database File.
+  filename: data
   host: localhost
   port: 3306
   user: x_angelkawaii_x
@@ -218,5 +217,6 @@ performance:
 fixes:
   xbuilder:
 
-    # XItemStack相关模块未更新 ItemModel 部分，重新添加 ItemModel
+    # XItemStack 相关模块未更新 ItemModel 部分，重新添加 ItemModel
+    # Re-apply ItemModel since XItemStack-related modules do not update the ItemModel part
     reapply-item-model: true

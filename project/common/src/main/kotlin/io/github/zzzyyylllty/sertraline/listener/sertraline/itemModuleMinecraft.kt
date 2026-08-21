@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.mappings
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.event.ItemLoadEvent
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -95,6 +96,8 @@ fun mcFeatures(prefix: String): List<String> {
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleMinecraft(e: ItemLoadEvent) {
 
+    // minecraft 特性基于 1.20.5+ DataComponent，低版本（1.12.2 等）直接禁用该模块
+    if (!VersionHelper().isOrAbove12005()) return
     ((e.arguments["minecraft"]) as Map<String, Any?>?)?.let {
         for (component in it) {
             e.itemData["minecraft:${component.key.replace("-","_")}"] = component.value
@@ -105,6 +108,8 @@ fun itemModuleMinecraft(e: ItemLoadEvent) {
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleVisual(e: ItemLoadEvent) {
 
+    // visual 模块的写入依赖 DataComponent，低版本（1.12.2 等）直接禁用该模块
+    if (!VersionHelper().isOrAbove12005()) return
     ((e.arguments["visual"]) as Map<String, Any?>?)?.let {
         for (component in it) {
             e.itemData["visual:${component.key.replace("-","_")}"] = component.value

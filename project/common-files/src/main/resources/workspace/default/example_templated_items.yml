@@ -1,7 +1,8 @@
 # ==============================
-# Template Usage Examples
+# 模板使用示例 (Template Usage Examples)
 # ==============================
 
+# 基本用法：继承模板，仅覆盖 name
 # Basic usage: inherit a template, override name only
 apprentice_sword:
   $template:
@@ -11,6 +12,7 @@ apprentice_sword:
   sertraline:
     tier: C
 
+# 覆盖多个参数
 # Multiple argument overrides
 knight_longsword:
   $template:
@@ -22,6 +24,7 @@ knight_longsword:
   sertraline:
     tier: B
 
+# 使用 _ID 自动参数
 # Using _ID auto-parameter
 flame_sword:
   $template:
@@ -34,9 +37,10 @@ flame_sword:
     tier: A
 
 # ==============================
-# Type ($t) Transformer Examples
+# $t 类型转换器示例 (Type ($t) Transformer Examples)
 # ==============================
 
+# $t: when — 基于 _ID 的值映射
 # $t: when - value mapping based on _ID
 wild_guardian_sword:
   $template:
@@ -67,6 +71,7 @@ forest_guardian_sword:
   sertraline:
     tier: A
 
+# $t: 大小写转换
 # $t: upper/lower case
 titan_sword:
   $template:
@@ -96,6 +101,7 @@ hunter_knife:
   sertraline:
     tier: B
 
+# $t: 条件判断
 # $t: condition
 magic_staff:
   $template:
@@ -119,9 +125,10 @@ magic_staff:
     tier: A
 
 # ==============================
-# Cast ($c) Type Converter Examples
+# $c 类型转换示例 (Cast ($c) Type Converter Examples)
 # ==============================
 
+# $c: int 取整
 # $c: int with rounding
 precision_blade:
   $template:
@@ -137,6 +144,7 @@ precision_blade:
   sertraline:
     tier: B
 
+# $c: 双精度浮点数
 # $c: double
 light_dagger:
   $template:
@@ -150,6 +158,7 @@ light_dagger:
   sertraline:
     tier: C
 
+# $c: string 大小写转换
 # $c: string with case conversion
 echo_helmet:
   $template:
@@ -164,6 +173,7 @@ echo_helmet:
   sertraline:
     tier: B
 
+# $t + $c 组合（先转换后转类型）
 # $t + $c combined (transform then cast)
 shadow_blade:
   $template:
@@ -191,7 +201,9 @@ shadow_blade:
   sertraline:
     tier: S
 
+# $t: self_increase（每次解析模板时递增）
 # $t: self_increase (increments every time the template is resolved)
+# 与 $template 搭配使用，确保转换器被处理
 # Use with $template to ensure the transformer is processed
 numbered_token:
   $template:

@@ -27,6 +27,8 @@ asm = "9.2"
 jackson = "2.16.1"
 arim = "1.2.14"
 caffeine = "3.2.3"
+# legacy12（MC 1.12.2 / Java 8）用 caffeine 2.x
+caffeineLegacy = "2.9.3"
 gson = "2.10.1"
 kotlinCrypto = "0.7.0"
 graalvm = "25.0.1"
@@ -77,6 +79,7 @@ graalvm-js = { group = "org.graalvm.polyglot", name = "js", version.ref = "graal
 netty-all = { group = "io.netty", name = "netty-all", version.ref = "netty" }
 arim = { group = "top.maplex.arim", name = "Arim", version.ref = "arim" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+caffeineLegacy = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeineLegacy" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 kotlincrypto-bom = { group = "org.kotlincrypto.hash", name = "bom", version.ref = "kotlinCrypto" }
 kotlincrypto-sha2 = { group = "org.kotlincrypto.hash", name = "sha2", version.ref = "kotlinCrypto" }

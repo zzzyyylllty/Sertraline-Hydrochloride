@@ -554,8 +554,6 @@ object NMSRecipeFactory {
         }
     }
 
-    private val constructorShaped by lazy { clazzShapedRecipe.constructors.first() }
-
     private fun buildShaped(recipe: RecipeData.Shaped): Any? {
         val result = buildNMSResult(recipe.result) ?: return null
         val ingredientMap = java.util.LinkedHashMap<Char, Any>()
@@ -563,19 +561,25 @@ object NMSRecipeFactory {
         val pattern = createShapedPattern(ingredientMap, recipe.pattern)
 
         return when (minecraftVersion) {
-            MinecraftVersion.v1_21_4 -> constructorShaped.newInstance(
-                recipe.group ?: "",
-                enumCraftingMISC,
-                pattern,
-                result,
-                recipe.showNotification
-            )
-            MinecraftVersion.v26_1_2 -> constructorShaped.newInstance(
-                createCommonInfo(recipe.showNotification),
-                createCraftingBookInfo(recipe.group ?: ""),
-                pattern,
-                result  // result 在 26.1.2 已是 ItemStackTemplate
-            )
+            // ShapedRecipe 存在 5 参数(含 showNotification)与 4 参数两个构造器，
+            // constructors.first() 顺序不确定，须按参数数量精确选择
+            MinecraftVersion.v1_21_4 -> clazzShapedRecipe.constructors
+                .first { it.parameterCount == 5 }
+                .newInstance(
+                    recipe.group ?: "",
+                    enumCraftingMISC,
+                    pattern,
+                    result,
+                    recipe.showNotification
+                )
+            MinecraftVersion.v26_1_2 -> clazzShapedRecipe.constructors
+                .first { it.parameterCount == 4 }
+                .newInstance(
+                    createCommonInfo(recipe.showNotification),
+                    createCraftingBookInfo(recipe.group ?: ""),
+                    pattern,
+                    result  // result 在 26.1.2 已是 ItemStackTemplate
+                )
         }
     }
 
@@ -710,13 +714,14 @@ object NMSRecipeFactory {
         val addition = wrapOptional(createIngredient(recipe.addition))
 
         return when (recipe.type) {
+            // Smithing 配方类同样存在带/不带额外参数的多构造器，须按参数数量选择
             RecipeType.SMITHING_TRANSFORM -> {
                 val clazz = getClazz(assembleMCClass("world.item.crafting.SmithingTransformRecipe"))
-                clazz.constructors.first().newInstance(template, base, addition, result)
+                clazz.constructors.first { it.parameterCount == 4 }.newInstance(template, base, addition, result)
             }
             RecipeType.SMITHING_TRIM -> {
                 val clazz = getClazz(assembleMCClass("world.item.crafting.SmithingTrimRecipe"))
-                clazz.constructors.first().newInstance(template, base, addition)
+                clazz.constructors.first { it.parameterCount == 3 }.newInstance(template, base, addition)
             }
             else -> null
         }
@@ -732,7 +737,7 @@ object NMSRecipeFactory {
                 val base = createIngredient(recipe.base)  // 26.1.2: base 不是 Optional
                 val addition = wrapOptional(createIngredient(recipe.addition))
                 val clazz = getClazz(assembleMCClass("world.item.crafting.SmithingTransformRecipe"))
-                clazz.constructors.first().newInstance(
+                clazz.constructors.first { it.parameterCount == 5 }.newInstance(
                     createCommonInfo(true),
                     template,
                     base,

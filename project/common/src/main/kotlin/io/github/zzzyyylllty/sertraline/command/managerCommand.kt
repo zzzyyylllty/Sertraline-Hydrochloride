@@ -15,7 +15,7 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.subCommand
 import taboolib.common.platform.function.submitAsync
-import taboolib.common.platform.ProxyCommandSender
+import taboolib.common.platform.function.adaptCommandSender
 import taboolib.module.lang.asLangText
 import java.util.concurrent.ConcurrentHashMap
 
@@ -68,7 +68,7 @@ object ManagerCommand {
                 val type = context["type"]
                 val managerType = ManagerType.fromAlias(type)
                 if (managerType == null) {
-                    sender.sendMessage(sender.langText("Manager_Use_Invalid", type))
+                    sender.sendStringAsComponent(sender.langText("Manager_Use_Invalid", type))
                     return@execute
                 }
                 val sub = SubManagerType.PERSISTENT
@@ -76,7 +76,7 @@ object ManagerCommand {
                 playerManager[name] = managerType.name.lowercase()
                 playerSub[name] = sub.name.lowercase()
                 playerUuid.remove(name)
-                sender.sendMessage(sender.langText("Manager_Use_Set", managerType.name.lowercase(), sub.name.lowercase()))
+                sender.sendStringAsComponent(sender.langText("Manager_Use_Set", managerType.name.lowercase(), sub.name.lowercase()))
             }
         }
         dynamic("sub") {
@@ -86,19 +86,19 @@ object ManagerCommand {
                 val subStr = context["sub"]
                 val managerType = ManagerType.fromAlias(type)
                 if (managerType == null) {
-                    sender.sendMessage(sender.langText("Manager_Use_Invalid", type))
+                    sender.sendStringAsComponent(sender.langText("Manager_Use_Invalid", type))
                     return@execute
                 }
                 val subType = SubManagerType.fromAlias(subStr)
                 if (subType == null) {
-                    sender.sendMessage(sender.langText("Manager_Use_Invalid_Sub", subStr))
+                    sender.sendStringAsComponent(sender.langText("Manager_Use_Invalid_Sub", subStr))
                     return@execute
                 }
                 val name = sender.name
                 playerManager[name] = managerType.name.lowercase()
                 playerSub[name] = subType.name.lowercase()
                 playerUuid.remove(name)
-                sender.sendMessage(sender.langText("Manager_Use_Set", managerType.name.lowercase(), subType.name.lowercase()))
+                sender.sendStringAsComponent(sender.langText("Manager_Use_Set", managerType.name.lowercase(), subType.name.lowercase()))
             }
         }
     }
@@ -109,7 +109,7 @@ object ManagerCommand {
             execute<CommandSender> { sender, context, _ ->
                 val uuid = context["uuid"]
                 playerUuid[sender.name] = uuid
-                sender.sendMessage(sender.langText("Manager_Switch_UUID", uuid))
+                sender.sendStringAsComponent(sender.langText("Manager_Switch_UUID", uuid))
             }
         }
     }
@@ -119,7 +119,7 @@ object ManagerCommand {
         dynamic("itemId") {
             execute<CommandSender> { sender, context, _ ->
                 val itemId = context["itemId"]
-                sender.sendMessage(sender.langText("Manager_Create_Error_PublicPersistent"))
+                sender.sendStringAsComponent(sender.langText("Manager_Create_Error_PublicPersistent"))
             }
         }
         dynamic("jsonBody") {
@@ -142,13 +142,13 @@ object ManagerCommand {
                             resolveCommandUuid(sender, name)
                         } else null
                         Sertraline.manager.createItem(type, sub, itemId, data, uuid)
-                        sender.sendMessage(sender.langText("Manager_Create_Success", itemId))
+                        sender.sendStringAsComponent(sender.langText("Manager_Create_Success", itemId))
                     } catch (e: UnsupportedOperationException) {
-                        sender.sendMessage(sender.langText("Manager_Create_Error_PublicPersistent"))
+                        sender.sendStringAsComponent(sender.langText("Manager_Create_Error_PublicPersistent"))
                     } catch (e: IllegalStateException) {
-                        sender.sendMessage("<red>${e.message}</red>")
+                        sender.sendStringAsComponent("<red>${e.message}</red>")
                     } catch (e: Exception) {
-                        sender.sendMessage("<red>Failed to create item: ${e.message}</red>")
+                        sender.sendStringAsComponent("<red>Failed to create item: ${e.message}</red>")
                     }
                 }
             }
@@ -162,7 +162,7 @@ object ManagerCommand {
                 suggestItemIds(sender)
             }
             execute<CommandSender> { sender, context, _ ->
-                sender.sendMessage("<yellow>Usage: /manager clone <templateId> <newId></yellow>")
+                sender.sendStringAsComponent("<yellow>Usage: /manager clone <templateId> <newId></yellow>")
             }
         }
         dynamic("newId") {
@@ -178,18 +178,18 @@ object ManagerCommand {
                         val uuid = if (type == ManagerType.PRIVATE) resolveCommandUuid(sender, name) else null
                         val template = Sertraline.manager.getItem(type, sub, templateId, uuid)
                         if (template == null) {
-                            sender.sendMessage(sender.langText("Manager_Info_Not_Found", templateId))
+                            sender.sendStringAsComponent(sender.langText("Manager_Info_Not_Found", templateId))
                             return@submitAsync
                         }
                         val data = template.data.toMap()
                         Sertraline.manager.createItem(type, sub, newId, data, uuid)
-                        sender.sendMessage(sender.langText("Manager_Create_Success", newId))
+                        sender.sendStringAsComponent(sender.langText("Manager_Create_Success", newId))
                     } catch (e: UnsupportedOperationException) {
-                        sender.sendMessage(sender.langText("Manager_Create_Error_PublicPersistent"))
+                        sender.sendStringAsComponent(sender.langText("Manager_Create_Error_PublicPersistent"))
                     } catch (e: IllegalStateException) {
-                        sender.sendMessage("<red>${e.message}</red>")
+                        sender.sendStringAsComponent("<red>${e.message}</red>")
                     } catch (e: Exception) {
-                        sender.sendMessage("<red>Failed to clone item: ${e.message}</red>")
+                        sender.sendStringAsComponent("<red>Failed to clone item: ${e.message}</red>")
                     }
                 }
             }
@@ -210,9 +210,9 @@ object ManagerCommand {
                 try {
                     val uuid = if (type == ManagerType.PRIVATE) resolveCommandUuid(sender, name) else null
                     Sertraline.manager.deleteItem(type, sub, itemId, uuid)
-                    sender.sendMessage(sender.langText("Manager_Delete_Success", itemId))
+                    sender.sendStringAsComponent(sender.langText("Manager_Delete_Success", itemId))
                 } catch (e: Exception) {
-                    sender.sendMessage("<red>${e.message}</red>")
+                    sender.sendStringAsComponent("<red>${e.message}</red>")
                 }
             }
         }
@@ -230,18 +230,18 @@ object ManagerCommand {
                 ManagerType.PUBLIC -> Sertraline.manager.public.getAll(sub)
                 ManagerType.PRIVATE -> {
                     val u = uuid ?: run {
-                        sender.sendMessage(sender.langText("Manager_Error_No_UUID"))
+                        sender.sendStringAsComponent(sender.langText("Manager_Error_No_UUID"))
                         return@execute
                     }
                     Sertraline.manager.privateManager.getAll(u, sub)
                 }
             }
             val header = sender.langText("Manager_List_Header", type.name.lowercase(), sub.name.lowercase())
-            sender.sendMessage(header)
+            sender.sendStringAsComponent(header)
             if (items.isEmpty()) {
-                sender.sendMessage(sender.langText("Manager_List_Empty"))
+                sender.sendStringAsComponent(sender.langText("Manager_List_Empty"))
             } else {
-                items.keys.forEach { sender.sendMessage(sender.langText("Manager_List_Entry", it)) }
+                items.keys.forEach { sender.sendStringAsComponent(sender.langText("Manager_List_Entry", it)) }
             }
         }
     }
@@ -260,7 +260,7 @@ object ManagerCommand {
     }
 
     private fun CommandSender.langText(node: String, vararg args: Any): String {
-        return (this as ProxyCommandSender).asLangText(node, *args)
+        return adaptCommandSender(this).asLangText(node, *args)
     }
 
     private fun showInfo(sender: CommandSender, itemId: String) {
@@ -270,14 +270,14 @@ object ManagerCommand {
         val uuid = if (type == ManagerType.PRIVATE) resolveCommandUuid(sender, name) else null
         val item = Sertraline.manager.getItem(type, sub, itemId, uuid)
         if (item == null) {
-            sender.sendMessage(sender.langText("Manager_Info_Not_Found", itemId))
+            sender.sendStringAsComponent(sender.langText("Manager_Info_Not_Found", itemId))
             return
         }
-        sender.sendMessage(sender.langText("Manager_Info_Header", itemId))
-        sender.sendMessage("<gray>  Scope: <white>${type.name.lowercase()}/${sub.name.lowercase()}</white></gray>")
-        sender.sendMessage("<gray>  Key: <white>${item.key}</white></gray>")
-        sender.sendMessage("<gray>  Data keys: <white>${item.data.keys.joinToString(", ")}</white></gray>")
-        sender.sendMessage("<gray>  Config keys: <white>${item.config.keys.joinToString(", ")}</white></gray>")
+        sender.sendStringAsComponent(sender.langText("Manager_Info_Header", itemId))
+        sender.sendStringAsComponent("<gray>  Scope: <white>${type.name.lowercase()}/${sub.name.lowercase()}</white></gray>")
+        sender.sendStringAsComponent("<gray>  Key: <white>${item.key}</white></gray>")
+        sender.sendStringAsComponent("<gray>  Data keys: <white>${item.data.keys.joinToString(", ")}</white></gray>")
+        sender.sendStringAsComponent("<gray>  Config keys: <white>${item.config.keys.joinToString(", ")}</white></gray>")
     }
 
     /** Suggest item IDs in the current scope for tab completion. */

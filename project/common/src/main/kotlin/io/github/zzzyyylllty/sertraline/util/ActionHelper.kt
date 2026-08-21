@@ -8,6 +8,7 @@ import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.function.action.applyActions
 import io.github.zzzyyylllty.sertraline.listener.action.ThrottleActionLink
 import io.github.zzzyyylllty.sertraline.listener.action.ThrottleActionParam
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.common.function.ThrottleFunction
 import taboolib.common.function.throttle
@@ -56,5 +57,5 @@ object ActionHelper {
 }
 
 fun ItemStack?.isNotExist(): Boolean {
-    return this == null || this.type.isAir || this.amount <= 0
+    return this == null || this.type == Material.AIR || this.amount <= 0
 }

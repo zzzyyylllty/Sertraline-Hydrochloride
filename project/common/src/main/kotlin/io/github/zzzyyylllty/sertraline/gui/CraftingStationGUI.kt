@@ -12,6 +12,9 @@ import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
+import io.github.zzzyyylllty.sertraline.util.textLines
+import com.cryptomorin.xseries.XMaterial
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.service.PlatformExecutor.PlatformTask
@@ -164,7 +167,8 @@ object CraftingStationManager {
         val material = try {
             org.bukkit.Material.valueOf(config.material.uppercase())
         } catch (_: Exception) {
-            org.bukkit.Material.GRAY_STAINED_GLASS_PANE
+            // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → STAINED_GLASS_PANE）
+            XMaterial.GRAY_STAINED_GLASS_PANE.parseMaterial() ?: Material.STONE
         }
         val item = ItemStack(material)
         val meta = item.itemMeta ?: return item
@@ -201,7 +205,7 @@ object CraftingStationManager {
         if (recipe.outputs.isNotEmpty()) {
             return recipe.outputs.first().build(player)
         }
-        return ItemStack(org.bukkit.Material.GRASS_BLOCK)
+        return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
     }
 
     // ==================== 元素点击处理 ====================
@@ -554,7 +558,8 @@ object CraftingStationManager {
                     }
                     // Default: Kether (backward compatible)
                     else -> {
-                        script.lines().evalKether(player, vars)
+                        // textLines：Java 8 安全实现（String.lines 是 Java 11 成员方法，见 StringUtil.kt）
+                        script.textLines().evalKether(player, vars)
                     }
                 }
             } catch (e: Exception) {

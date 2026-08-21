@@ -1,6 +1,7 @@
 package io.github.zzzyyylllty.sertraline.item.process
 
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.function.data.contextValue
 import io.github.zzzyyylllty.sertraline.function.data.getSavedData
 import io.github.zzzyyylllty.sertraline.function.kether.evalKether
 import io.github.zzzyyylllty.sertraline.item.process.tag.ProcessItemTagData
@@ -13,6 +14,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?, repl: Map<S
     val itemVal = itemData.itemVal
     val itemVar = itemData.itemVar
     val itemDynamic = itemData.itemDynamic
+    val itemContext = itemData.itemContext
     val collect = itemData.collect()
     val name = data.item.key
 
@@ -35,6 +37,18 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?, repl: Map<S
             dataSourceEmptyCheck = { itemVar?.isEmpty() ?: true },
             getReplaceValue = { parseResult, section, default, cleanedSection ->
                 itemVar?.get(cleanedSection) ?: default
+            },
+            repl = it,
+            target = target
+        )
+    }
+
+    repl["context"]?.let {
+        processTagPrefix(
+            prefix = "context",
+            dataSourceEmptyCheck = { itemContext?.isEmpty() ?: true },
+            getReplaceValue = { parseResult, section, default, cleanedSection ->
+                itemContext?.get(cleanedSection)?.contextValue() ?: default
             },
             repl = it,
             target = target

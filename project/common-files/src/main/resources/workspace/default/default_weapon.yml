@@ -1,7 +1,7 @@
 sword_of_skyline:
   sertraline:
     tier: D
-    lore-format: defaultloreformat # Use defaultloreformat
+    lore-format: defaultloreformat # 使用默认 Lore 格式 Use defaultloreformat
   xbuilder:
     name: "<!i>&7Sword Of &eSkyline"
     lore: |
@@ -10,7 +10,7 @@ sword_of_skyline:
       <!i><gradient:#66ffff:#99ccff:#aa99cc>Sertraline</gradient> supports &x&6&9&c&f&a&cLegacy &#8899aaColor Codes&f. www
     material: DIAMOND_SWORD
     flags: [HIDE_ENCHANTS]
-    glow: true # This will auto add Unbreaking I Enchant.
+    glow: true # 自动添加耐久 I 附魔 This will auto add Unbreaking I Enchant.
     attributes:
       ATTACK_DAMAGE:
         amount: 2025
@@ -52,7 +52,7 @@ sword_of_soulbound:
       bound: "%player_name%"
     actions:
       onAttack:
-        - async: false # If cancel event or modify event content, async must be false (default to true).
+        - async: false # 如果取消事件或修改事件内容，async 必须为 false（默认为 true）If cancel event or modify event content, async must be false (default to true).
           js: |
             if (bound != player.name) {
               PlayerUtil.sendMessage(player, mmUtil.deserialize("<red>This Item is soulbound by player: " + bound + ", you can't use it."));
@@ -73,7 +73,7 @@ sword_of_ultimate_damage:
     tier: S
     actions:
       onAttack:
-        - async: false # If cancel event or modify event content, async must be false (default to true).
+        - async: false # 如果取消事件或修改事件内容，async 必须为 false（默认为 true）If cancel event or modify event content, async must be false (default to true).
           js: |
             event.damage = 100
   xbuilder:
@@ -87,7 +87,7 @@ sword_of_glasnost:
     tier: S
     actions:
       onAttack:
-        - async: false # If cancel event or modify event content, async must be false (default to true).
+        - async: false # 如果取消事件或修改事件内容，async 必须为 false（默认为 true）If cancel event or modify event content, async must be false (default to true).
           js: |
             if (DataUtil.isInCooldown(player, "sword_of_glasnost")) {
 
@@ -98,7 +98,7 @@ sword_of_glasnost:
 
               var location = player.getLocation();
               var world = location.getWorld();
-              world.spawnParticle(org.bukkit.Particle.SOUL, location, 20, 0.5, 0.5, 0.5, 0.05); // Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
+              world.spawnParticle(org.bukkit.Particle.SOUL, location, 20, 0.5, 0.5, 0.5, 0.05); // 粒子类型、位置、数量、偏移X/Y/Z、额外速度 Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
               world.playSound(location, org.bukkit.Sound.BLOCK_BELL_USE, org.bukkit.SoundCategory.MASTER, 0.5, 1.5);
               DataUtil.setCooldown(player, "sword_of_glasnost", 10.0)
 
@@ -124,9 +124,11 @@ sword_of_eternal_frozen:
       onAttack:
         - async: false
           js: |
+            // 获取被攻击的实体。
             // Get the entity being attacked.
             var target = event.entity;
 
+            // 检查目标是否为生物实体。这对避免目标无法拥有药水效果时报错至关重要。
             // Check if the target is a living entity. This is crucial to avoid errors if the target is not an entity that can have potion effects.
             if (target instanceof org.bukkit.entity.LivingEntity && Math.random() * 100 <= chance) {
               
@@ -134,13 +136,15 @@ sword_of_eternal_frozen:
 
                               PlayerUtil.sendActionBar(player, mmUtil.deserialize("<#66ccff>Eternal Frozen Sword <white>Skill Activated!"));
               
+              // 应用缓慢效果（缓慢 II，15 秒）。
               // Apply slowness effect (Slowness II, 5 seconds).
-              target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 300, 1)); // 300 ticks (15 seconds), amplifier 1 (Level 2).
+              target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 300, 1)); // 300 tick（15秒），放大器 1（2级）300 ticks (15 seconds), amplifier 1 (Level 2).
 
+              // 播放粒子效果（CLOUD 效果）。可按需调整粒子和数量。
               // Play particle effect (CLOUD effect).  Adjust the particle and count as desired.
               var location = target.getLocation();
               var world = location.getWorld();
-              world.spawnParticle(org.bukkit.Particle.CLOUD, location, 20, 0.5, 0.5, 0.5, 0.05); // Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
+              world.spawnParticle(org.bukkit.Particle.CLOUD, location, 20, 0.5, 0.5, 0.5, 0.05); // 粒子类型、位置、数量、偏移X/Y/Z、额外速度 Particle type, location, count, offsetX, offsetY, offsetZ, extra (speed)
               world.playSound(location, org.bukkit.Sound.ENTITY_ELDER_GUARDIAN_CURSE, org.bukkit.SoundCategory.MASTER, 0.5, 1.5);
 
               if (event.isCritical && Math.random() <= 0.2 && chance < 85) {
@@ -169,7 +173,7 @@ sword_of_eternal_frozen:
 
       <!i><#ffffaa>Current Trigger Skill Chance: <yellow>${var:chanceAsIn}$% ${kether: if check get chance >= 85 then *<red>[Maximum]!!}$
     material: DIAMOND_SWORD
-    glow: true # This will auto add Unbreaking I Enchant.
+    glow: true # 自动添加耐久 I 附魔 This will auto add Unbreaking I Enchant.
     unbreakable: true
     attributes:
       ATTACK_DAMAGE:

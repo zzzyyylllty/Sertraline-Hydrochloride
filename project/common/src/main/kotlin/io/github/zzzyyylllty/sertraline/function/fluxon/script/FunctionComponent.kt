@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacyAmpersandUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmLegacySectionUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmStrictUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
+import io.github.zzzyyylllty.sertraline.util.minimessage.toMiniMessageString
 import net.kyori.adventure.text.Component
 import org.tabooproject.fluxon.runtime.FluxonRuntime
 import org.tabooproject.fluxon.runtime.FunctionContext
@@ -37,12 +38,12 @@ object FunctionComponent {
 
         @Export
         fun serialize(arg: Component) {
-            mmUtil.serialize(arg)
+            arg.toMiniMessageString()
         }
 
         @Export
         fun serializeStrict(arg: Component) {
-            mmStrictUtil.serialize(arg)
+            arg.toMiniMessageString(strict = true)
         }
 
         @Export

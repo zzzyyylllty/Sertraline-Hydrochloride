@@ -11,6 +11,7 @@ import io.github.zzzyyylllty.sertraline.event.FeatureLoadEvent
 import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.util.ComplexTypeHelper
 import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.JexlUtil.prodJexlCompiler
 import io.github.zzzyyylllty.sertraline.util.serialize.generateHash
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
@@ -71,7 +72,8 @@ fun getFeatureAction(e: FeatureLoadEvent) {
                     severeS("exception: $ex")
                 }
             }
-            if (config.getBoolean("preload.script.graaljs",true)) (map["graaljs"] as? String)?.let { script ->
+            // legacy12 无 GraalJS 捆绑，跳过预编译（运行时由 GraalJsUtil 守卫映射到 Nashorn）
+            if (!VersionHelper().isLegacy() && config.getBoolean("preload.script.graaljs",true)) (map["graaljs"] as? String)?.let { script ->
                 try {
                     val compiled = GraalJsUtil.compile(script)
                     compiled?.let { gjsScriptCache[script.generateHash()] = it }

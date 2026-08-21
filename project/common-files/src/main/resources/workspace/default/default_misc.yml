@@ -1,7 +1,7 @@
 doe_card:
   sertraline:
     tier: D
-    lore-format: miscloreformat # Use miscloreformat
+    lore-format: miscloreformat # 使用 miscloreformat 格式 Use miscloreformat
     vals:
       hiddenlore: |
         Game is Dawn of the Evenstar.
@@ -51,22 +51,26 @@ star_of_recall:
     material: nether_star
   sertraline:
     tier: D
-    lore-format: miscloreformat # Use miscloreformat
+    lore-format: miscloreformat # 使用 miscloreformat 格式 Use miscloreformat
     vals:
       hiddenlore: |
         Right click to consume and back to Spawn.
     actions:
       onRightClick:
         - gjs: |
+            // Nashorn JavaScript 引擎仅支持 ECMAScript 5.1。
             // Nashorn JavaScript Engine only support ECMAScript 5.1.
+            // 因此若使用 async/await/const/lambda/Promise/模板变量，必须使用 GraalJS 引擎以获得 ECMAScript 6+ 特性。
             // So If use async/await/const/lambda/Promise/template-vars, must use GraalJS Engine For ECMAScript 6+ features.
 
+            // 使用异步函数
             // Use async function
             async function tpSpawn() {
               var spawnlocation = player.respawnLocation
               var location = player.location
               if (spawnlocation == null) spawnlocation = player.world.spawnLocation
 
+              // 5 秒引导时间
               // 5 Seconds warmup
               for (var i = 5; i > 0; i--) {
                 if (location.x != player.location.x || location.z != player.location.z) {
@@ -75,9 +79,11 @@ star_of_recall:
                   return true;
                 }
 
+                // 发送消息
                 // Send Message
                 PlayerUtil.sendMessage(player, mmUtil.deserialize("<yellow>Don't move. Teleport in " + i + "..."));
 
+                // 等待 1 秒
                 // Sleep 1s
                 ThreadUtil.sleep(1000);
               }
@@ -87,10 +93,12 @@ star_of_recall:
               return true;
             }
 
+            // 生成返回物品
             // Generate Return Item
             var returnItem = bItem.clone();
             returnItem.amount = 1
 
+            // 消耗物品
             // Cost Item
             bItem.amount--
             PlayerUtil.sendMessage(player, mmUtil.deserialize("Don't move. Start teleporting..."));

@@ -11,6 +11,7 @@ import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import io.github.zzzyyylllty.sertraline.impl.setComponent
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
+import io.github.zzzyyylllty.sertraline.util.parseNamespacedKey
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
 import io.github.zzzyyylllty.sertraline.util.minimessage.toComponent
 import org.bukkit.Material
@@ -49,7 +50,7 @@ fun ItemStack.c2s(): ItemStack {
  * */
 fun ItemStack.s2c(player: Player?): ItemStack {
     val oItem = this.clone()
-    if (type.isAir) return oItem
+    if (type == Material.AIR) return oItem
     val tag = this.getItemTag(true)
     val id = tag["sertraline_id"]?.asString() ?: return oItem
     val sItem = itemSerializer(id, player) ?: return oItem
@@ -67,6 +68,8 @@ fun ItemStack.s2c(player: Player?): ItemStack {
 }
 fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray): ItemStack {
 
+    // visual 覆盖基于 DataComponent 写入，低版本（1.12.2 等）直接返回原物品
+    if (!VersionHelper().isOrAbove12005()) return asBukkitCopy(item)
     var resultItem = item
     var visualMaterial: Material? = null
     val autoComponents = LinkedHashMap<String, Any>()
@@ -102,8 +105,8 @@ fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray
                 when (key) {
                     "autoName" -> PlatformCompat.setDisplayName(meta, value.toString().toComponent())
                     "autoLore" -> PlatformCompat.setLore(meta, (value.asListEnhanced())?.toComponent() ?: listOf(value.toString().toComponent()))
-                    "autoCMD" -> meta.setCustomModelData(value.toString().toDouble().roundToInt())
-                    "autoModel" -> PlatformCompat.setItemModel(meta, NamespacedKey.fromString(value.toString()))
+                    "autoCMD" -> PlatformCompat.setCustomModelData(meta, value.toString().toDouble().roundToInt())
+                    "autoModel" -> PlatformCompat.setItemModel(meta, value.toString().parseNamespacedKey())
                 }
                 resultBItem.setItemMeta(meta)
             }

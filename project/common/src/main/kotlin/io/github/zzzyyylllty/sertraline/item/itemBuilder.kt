@@ -9,7 +9,9 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemManager
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.Sertraline.manager
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
+import io.github.zzzyyylllty.sertraline.manager.PRIVATE_OWNER_TAG
 import io.github.zzzyyylllty.sertraline.manager.SubManagerType
+import io.github.zzzyyylllty.sertraline.manager.isPrivateItemId
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
@@ -20,13 +22,16 @@ import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
 import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseMapNBT
 import io.github.zzzyyylllty.sertraline.util.ItemTagUtil.parseNBT
+import io.github.zzzyyylllty.sertraline.util.minimessage.cleanRemovedDataComponents
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import io.github.zzzyyylllty.sertraline.util.toUpperCase
 import io.github.zzzyyylllty.sertraline.function.update.getExpectedRevision
 import org.bukkit.Material
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import com.cryptomorin.xseries.XMaterial
+import org.bukkit.Bukkit
 import taboolib.module.lang.asLangText
 import taboolib.module.nms.ItemTag
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
@@ -45,6 +50,7 @@ fun itemSource(str: String,player: Player?): ItemStack {
                 (if (split.isNotEmpty()) split[0] else if (str != "null") str else "GRASS_BLOCK").toUpperCase()
             ).parseItem()
         } else {
+
 //            val provider = AllItemProvider()
 //            if (player != null) provider.item(ItemKey(key, split.joinToString(":")), player) else provider.item(ItemKey(key, split.joinToString(":")))
             if (player != null) {
@@ -60,7 +66,8 @@ fun itemSource(str: String,player: Player?): ItemStack {
     }
     return item ?: run {
         devLog("Material is null, returning grass block")
-        ItemStack(Material.GRASS_BLOCK)
+        // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+        ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
     }
 }
 
@@ -85,23 +92,29 @@ fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = 
  * @param source 物品源，留空则不覆盖
  * @param amount 数量
  * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
- * @param vars 自带物品数据变量
+ * @param vars 自带物品数据变量（可持久化到 NBT）
+ * @param context 运行时上下文（Player、Event 等对象），可通过 {context:xxx} 标签访问，不持久化到 NBT
  * */
-fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, vars: Map<String, Any?>? = null): ItemStack? {
-    return sertralineItemBuilderInternal(template, player, source, amount, overrideData,vars = vars)?.rebuildBypassKeepData(player)
+fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, vars: Map<String, Any?>? = null, context: Map<String, Any?>? = null): ItemStack? {
+    return sertralineItemBuilderInternal(template, player, source, amount, overrideData,vars = vars, context = context)?.rebuildBypassKeepData(player)
 }
 
 /**
  * 如要生成物品请使用 [sertralineItemBuilder]
  * */
-fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null): ItemStack? {
-    val pTemplate: ModernSItem
-    if (template.startsWith("__")) {
-        val uuid = player?.uniqueId?.toString() ?: run {
+fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null, context: Map<String, Any?>? = null): ItemStack? {
+    val isPrivateTemplate = isPrivateItemId(template)
+    val rebuildOwner = if (isPrivateTemplate) rebuild?.let(::privateOwnerUuid) else null
+    val privateUuid = if (isPrivateTemplate) {
+        rebuildOwner ?: player?.uniqueId?.toString() ?: run {
             try { manager.resolvePrivateUuid(null, null) } catch (_: Exception) { return null }
         }
-        pTemplate = (manager.privateManager.getItem(uuid, template, SubManagerType.TEMPORARY)
-            ?: manager.privateManager.getItem(uuid, template, SubManagerType.PERSISTENT)
+    } else null
+
+    val pTemplate: ModernSItem
+    if (isPrivateTemplate) {
+        pTemplate = (manager.privateManager.getItem(privateUuid!!, template, SubManagerType.TEMPORARY)
+            ?: manager.privateManager.getItem(privateUuid, template, SubManagerType.PERSISTENT)
             ?: return null).deepCopy()
     } else {
         pTemplate = itemMap[template]?.deepCopy() ?: return null
@@ -112,20 +125,42 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
         }
     }
     vars?.let {
-        val ovars = pTemplate.getDeepData("sertraline:vars") as? MutableMap<String, Any?>? ?: mutableMapOf()
+        val ovars = (pTemplate.getDeepData("sertraline:vars") as? Map<String, Any?>?)?.toMutableMap() ?: mutableMapOf()
         ovars.putAll(it)
         pTemplate.setDeepData("sertraline:vars", ovars)
+    }
+    context?.let {
+        val ocontext = pTemplate.getDeepData("sertraline:context") as? MutableMap<String, Any?>? ?: mutableMapOf()
+        ocontext.putAll(it)
+        pTemplate.setDeepData("sertraline:context", ocontext)
+        // keep-context：将命中的 context 转为 var 持久化，rebuild 后 {var:xxx} 仍可用
+        pTemplate.getDeepData("sertraline:keep-context").asListEnhanced()?.let { keepContext ->
+            if (keepContext.isNotEmpty()) {
+                val vars = (pTemplate.getDeepData("sertraline:vars") as? Map<String, Any?>?)?.toMutableMap() ?: mutableMapOf()
+                keepContext.forEach { key ->
+                    ocontext[key]?.let { value -> vars[key] = value.toNbtPersistable() }
+                }
+                pTemplate.setDeepData("sertraline:vars", vars)
+            }
+        }
     }
     val processedTemplate = rebuild?.let { itemSerializer(it, player) } ?: itemSerializer(pTemplate, player)  ?: return null
     val itemSource = source ?: itemSource((processedTemplate.getDeepData("xbuilder:material") ?: processedTemplate.getDeepData("minecraft:material")).toString(), player)
     val item = itemManager.processItem(processedTemplate, itemSource, player)
     item.amount = amount
+    val ownerUuid = if (isPrivateItemId(processedTemplate.key)) {
+        if (rebuild != null) rebuildOwner else privateUuid
+    } else null
 
     if (processedTemplate.getDeepData("sertraline:no-sertraline-id") as? Boolean? ?: false) {
+        val tag = item.getItemTag()
+        tag.remove(PRIVATE_OWNER_TAG)
+        tag.saveTo(item)
         return item
     } else {
         val tag = item.getItemTag()
         tag["sertraline_id"] = processedTemplate.key
+        if (ownerUuid != null) tag[PRIVATE_OWNER_TAG] = ownerUuid else tag.remove(PRIVATE_OWNER_TAG)
         // 写入类型到NBT
         val typeData = processedTemplate.getDeepData("sertraline:type")
         if (typeData != null) {
@@ -136,7 +171,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
             tag["sertraline_type"] = typeId
         }
         // 写入修订版本
-        val revision = getExpectedRevision(processedTemplate.key)
+        val revision = getExpectedRevision(processedTemplate.key, ownerUuid = ownerUuid)
         if (revision > 0) tag["sertraline_revision"] = revision
         tag.saveTo(item)
         return item
@@ -149,6 +184,13 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
  * */
 fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
     val pTemplate = template.deepCopy()
+    val isPrivateTemplate = isPrivateItemId(pTemplate.key)
+    val rebuildOwner = if (isPrivateTemplate) rebuild?.let(::privateOwnerUuid) else null
+    val privateUuid = if (isPrivateTemplate) {
+        rebuildOwner ?: player?.uniqueId?.toString() ?: run {
+            try { manager.resolvePrivateUuid(null, null) } catch (_: Exception) { return null }
+        }
+    } else null
     overrideData?.let {
         it.forEach {
             pTemplate.setDeepData(it.key, it.value)
@@ -158,9 +200,13 @@ fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, sourc
     val itemSource = source ?: itemSource((processedTemplate.getDeepData("xbuilder:material") ?: processedTemplate.getDeepData("minecraft:material")).toString(), player)
     val item = itemManager.processItem(processedTemplate, itemSource, player)
     item.amount = amount
+    val ownerUuid = if (isPrivateItemId(processedTemplate.key)) {
+        if (rebuild != null) rebuildOwner else privateUuid
+    } else null
 
     val tag = item.getItemTag()
     tag["sertraline_id"] = processedTemplate.key
+    if (ownerUuid != null) tag[PRIVATE_OWNER_TAG] = ownerUuid else tag.remove(PRIVATE_OWNER_TAG)
     // 写入类型到NBT
     val typeData = processedTemplate.getDeepData("sertraline:type")
     if (typeData != null) {
@@ -171,7 +217,7 @@ fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, sourc
         tag["sertraline_type"] = typeId
     }
     // 写入修订版本
-    val revision = getExpectedRevision(processedTemplate.key)
+    val revision = getExpectedRevision(processedTemplate.key, ownerUuid = ownerUuid)
     if (revision > 0) tag["sertraline_revision"] = revision
     tag.saveTo(item)
     return item
@@ -210,7 +256,7 @@ fun ItemStack.rebuildBypassKeepData(player: Player?): ItemStack {
     val sID = tag["sertraline_id"]?.asString() ?: return this
 
     // 快速路径：如果没有 dynamics 且无 NBT 实例数据，重建是冗余的
-    val template = itemMap[sID]
+    val template = itemTemplateForStack(this, player)
     if (template != null && template.getDeepData("sertraline:dynamics") == null) {
         val nbtData = tag["sertraline_data"]?.parseMapNBT()
         if (nbtData == null) {
@@ -272,11 +318,12 @@ fun ItemStack.rebuildName(player: Player?) {
     val overrideData = mutableMapOf<String, Any?>()
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
+    val name = PlatformCompat.getEffectiveName(regen)
     if (VersionHelper().isOrAbove12005()) {
-        PlatformCompat.setDataComponent(this, "CUSTOM_NAME", PlatformCompat.getDisplayName(regen))
+        PlatformCompat.setDataComponent(this, "CUSTOM_NAME", name)
     } else {
         this.itemMeta?.let { meta ->
-            PlatformCompat.setDisplayName(meta, PlatformCompat.getDisplayName(regen))
+            PlatformCompat.setDisplayName(meta, name)
             this.setItemMeta(meta)
         }
     }
@@ -290,14 +337,33 @@ fun ItemStack.rebuildDisplay(player: Player?) {
     overrideData["sertraline:vars"] = tag["sertraline_data"]?.parseMapNBT()
     val regen = sertralineItemBuilderInternal(sID, player,overrideData = overrideData, rebuild = this) ?: throw NullPointerException("Item $sID Not Exist")
     PlatformCompat.setLore(this, PlatformCompat.getLore(regen))
+    val name = PlatformCompat.getEffectiveName(regen)
     if (VersionHelper().isOrAbove12005()) {
-        PlatformCompat.setDataComponent(this, "CUSTOM_NAME", PlatformCompat.getDisplayName(regen))
+//        val component = if (VersionHelper().isOrAbove12104()) "ITEM_NAME" else "CUSTOM_NAME"
+        val component =  "CUSTOM_NAME"
+        PlatformCompat.setDataComponent(this, component, name)
     } else {
         this.itemMeta?.let { meta ->
-            PlatformCompat.setDisplayName(meta, PlatformCompat.getDisplayName(regen))
+            PlatformCompat.setDisplayName(meta, name)
             PlatformCompat.setLore(meta, PlatformCompat.getLore(regen))
             this.setItemMeta(meta)
         }
     }
 
+}
+
+/**
+ * 将 context 值转为可持久化到 NBT 的类型。
+ * String/Number/Boolean/数组保留原样；Player/Entity 转为 name；Map/Collection 递归；
+ * 其他对象尽力转字符串。用于 keep-context 把运行时 context 转为 var 存储。
+ */
+private fun Any?.toNbtPersistable(): Any? = when (this) {
+    null -> null
+    is String, is Number, is Boolean -> this
+    is ByteArray, is IntArray, is LongArray -> this
+    is Player -> name
+    is Entity -> name
+    is Map<*, *> -> entries.associate { it.key.toString() to it.value.toNbtPersistable() }
+    is Collection<*> -> map { it.toNbtPersistable() }
+    else -> toString()
 }

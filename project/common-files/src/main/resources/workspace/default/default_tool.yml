@@ -1,4 +1,5 @@
 
+# 放置指定方块的建筑魔杖。
 # A block-placing wand that places a specific block.
 block_wand:
   xbuilder:
@@ -10,20 +11,23 @@ block_wand:
   sertraline:
     tier: C
     vars:
-      block_type: "STONE" # The block type to place
+      block_type: "STONE" # 要放置的方块类型 The block type to place
     actions:
       onRightClick:
         - async: false
           js: |
+            // 获取玩家注视的方块。
             // Get the block the player is looking at.
-            var block = player.getTargetBlockExact(16); // Range of 16 blocks.
+            var block = player.getTargetBlockExact(16); // 射程 16 格 Range of 16 blocks.
             if (!player.isSneaking()) {
 
+              // 检查方块是否为空气。
               // Check if the block is air.
               if (block != null && !block.isAir) {
               
                 var success = false;
 
+                // 设置方块类型。
                 // Set the block type.
                 try {
                   block.setType(org.bukkit.Material.valueOf(block_type), false);
@@ -44,9 +48,11 @@ block_wand:
 
                               PlayerUtil.sendActionBar(player, mmUtil.deserialize("<dark_aqua>Logged blocks: " + target + " successfully."));
 
+              // 修改物品存储的数据。
               // Modify item stored data.
               tag.putDeep("sertraline_data.block_type", target.toString());
 
+              // 保存数据
               // Save data
               ItemStackUtil.setItemTagDirect(bItem, tag);
 
@@ -57,7 +63,7 @@ ultimate_pickaxe:
     tier: S
     actions:
       onMine:
-        - async: false # If cancel event or modify event content, async must be false (default to true).
+        - async: false # 如果取消事件或修改事件内容，async 必须为 false（默认为 true）If cancel event or modify event content, async must be false (default to true).
           js: |
             PlayerUtil.sendMessage(player, mmUtil.deserialize("<aqua>Not yet implement."));
   xbuilder:

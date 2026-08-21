@@ -1,0 +1,23 @@
+# ==================================================
+# Sertraline 实验性功能配置 (Experimental features)
+# 修改后执行 /sertraline reload 生效
+# Reload with /sertraline reload to apply changes
+# ==================================================
+
+# 使用 Sparrow MiniMessage 快速解析引擎替代原版 MiniMessage（adventure），
+# 对物品名 / Lore 等高频解析场景有显著性能提升。
+# Use the Sparrow MiniMessage engine to replace the standard MiniMessage (adventure)
+# for significant performance gains in hot paths (item names / lore, etc.).
+#
+# 注意：Sparrow 需要服务端 Java 21+ 且服务端自带 Adventure 4.18+（Paper/Leaf 1.21.5 及以上）。
+# 服务端 Adventure 过旧时（如 Paper/Leaf 1.21.4 及更早），该选项会被自动禁用并输出警告，
+# 不影响正常使用。Legacy(1.12.2) 平台不支持，此选项会被强制忽略。
+# Note: Sparrow requires Java 21+ and server-side Adventure 4.18+ (Paper/Leaf 1.21.5+).
+# On servers with an older Adventure (e.g. Paper/Leaf 1.21.4 or earlier), this option is
+# automatically disabled with a warning; the plugin keeps working normally.
+# The Legacy(1.12.2) platform is not supported and this option is forcibly ignored.
+fast-minimessage: false
+
+# 解析结果缓存条数（仅 fast-minimessage 开启时生效；0 = 禁用缓存）。
+# 物品模板字符串会被反复解析，命中缓存可进一步降低 CPU 开销。
+fast-minimessage-cache-size: 2048

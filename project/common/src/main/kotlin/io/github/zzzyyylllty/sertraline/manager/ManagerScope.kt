@@ -10,6 +10,12 @@ enum class ManagerType(val alias: Set<String>) {
     }
 }
 
+enum class ManagerRange {
+    PUBLIC,
+    PRIVATE,
+    BOTH
+}
+
 enum class SubManagerType(val alias: Set<String>) {
     PERSISTENT(setOf("persistent", "pers", "p")),
     TEMPORARY(setOf("temporary", "temp", "t"));

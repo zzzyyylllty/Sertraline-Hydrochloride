@@ -27,6 +27,10 @@ class VersionHelper {
     fun isLegacy(): Boolean{
         return versionId < 12005
     }
+    // 自定义合成系统（SimpleRecipeHelper/ItemResolver）依赖 1.13+ 的 RecipeChoice/Tag 与 1.14+ 的 CookingRecipe，低版本整体禁用
+    fun isOrAbove114(): Boolean{
+        return versionId >= 11400
+    }
     fun isOrAbove12100(): Boolean{
         return versionId >= 12100
     }

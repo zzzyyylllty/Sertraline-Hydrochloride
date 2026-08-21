@@ -6,7 +6,6 @@ import io.github.zzzyyylllty.sertraline.impl.getComponentJava
 import io.github.zzzyyylllty.sertraline.util.ActionHelper.throttleAction
 import net.kyori.adventure.title.Title
 import org.bukkit.event.block.Action
-import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -24,7 +23,6 @@ import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
-import org.bukkit.event.player.PlayerRiptideEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.SubscribeEvent
@@ -65,13 +63,6 @@ fun onShoot(e: EntityShootBowEvent) {
 }
 
 @SubscribeEvent
-fun onShootTrident(e: PlayerRiptideEvent) {
-    val player = e.player
-    val uuid = player.uniqueId.toString()
-    val param = ThrottleActionParam(player, e, null, e.item)
-    throttleAction(ThrottleActionLink(uuid, "onShootTrident"), param)
-}
-@SubscribeEvent
 fun onLogin(e: PlayerLoginEvent) {
     val inv = e.player.inventory
     val uuid = e.player.uniqueId.toString()
@@ -93,13 +84,14 @@ fun onMine(e: BlockBreakEvent) {
 
 @SubscribeEvent
 fun onAttack(e: EntityDamageByEntityEvent) {
-    val player = e.damageSource.causingEntity as? Player ?: return
+    // damageSource/AbstractArrow.weapon 是 1.13+ API，走 PlatformCompat（v11200 反射降级）
+    val player = PlatformCompat.getDamageCausingPlayer(e) ?: return
     var item: ItemStack? = null
-    val dEntity = e.damageSource.directEntity
-    if (dEntity is AbstractArrow) {
-        item = dEntity.weapon
-    } else if (dEntity is Player) {
+    val dEntity = PlatformCompat.getDamageDirectEntity(e)
+    if (dEntity is Player) {
         item = dEntity.inventory.itemInMainHand
+    } else {
+        item = PlatformCompat.getProjectileWeapon(dEntity)
     }
     throttleAction(ThrottleActionLink(player.uniqueId.toString(), "onAttack"), ThrottleActionParam(player, e, e, item))
 }

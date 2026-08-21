@@ -17,6 +17,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.KeybindComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.TranslatableComponent
+import java.lang.reflect.Method
 
 /**
  * adventure Component → bungee BaseComponent（Spigot 专用）。
@@ -59,7 +60,7 @@ object BungeeComponentConverter {
     }
 
     private fun applyStyle(node: BaseComponent, style: net.kyori.adventure.text.format.Style) {
-        style.color()?.let { node.color = ChatColor.of("#" + it.asHexString()) }
+        style.color()?.let { node.color = toBungeeColor(it.asHexString()) }
 
         val obf = style.decoration(TextDecoration.OBFUSCATED)
         if (obf == TextDecoration.State.TRUE) node.isObfuscated = true
@@ -96,8 +97,33 @@ object BungeeComponentConverter {
             net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND -> ClickEvent.Action.RUN_COMMAND
             net.kyori.adventure.text.event.ClickEvent.Action.SUGGEST_COMMAND -> ClickEvent.Action.SUGGEST_COMMAND
             net.kyori.adventure.text.event.ClickEvent.Action.CHANGE_PAGE -> ClickEvent.Action.CHANGE_PAGE
-            net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD -> ClickEvent.Action.COPY_TO_CLIPBOARD
+            net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD -> copyToClipboardAction
             // bungee 1.20-R0.2 无 SHOW_DIALOG/CUSTOM，无法传递，跳过
             else -> null
         }
+
+    // ── bungee 1.16+ API 反射桥（v11200 = MC 1.12.2 编译面不存在，正确降级） ──
+
+    // ChatColor.of(String) 是 1.16+ API；1.12.2 无 hex 颜色模型，缺失时返回 null（无色）
+    private val chatColorOfMethod: Method? by lazy {
+        try { ChatColor::class.java.getMethod("of", String::class.java) } catch (_: Throwable) { null }
+    }
+
+    private fun toBungeeColor(hex: String): ChatColor? {
+        return try {
+            chatColorOfMethod?.invoke(null, "#$hex") as? ChatColor
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    // ClickEvent.Action.COPY_TO_CLIPBOARD 是 1.16+ 枚举常量；1.12.2 缺失时该 click 事件整体丢弃
+    private val copyToClipboardAction: ClickEvent.Action? by lazy {
+        try {
+            @Suppress("UNCHECKED_CAST")
+            ClickEvent.Action::class.java.getField("COPY_TO_CLIPBOARD").get(null) as? ClickEvent.Action
+        } catch (_: Throwable) {
+            null
+        }
+    }
 }

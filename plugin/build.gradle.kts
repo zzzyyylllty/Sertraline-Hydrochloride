@@ -21,7 +21,6 @@ taboolib {
             name("Oxaren").optional(true)
             name("MagicCosmetics").optional(true)
             name("packetevents").optional(true)
-            name("eco").optional(true)
             name("PlaceholderAPI").optional(true)
         }
     }
@@ -45,6 +44,8 @@ taboolib {
 
 
 val platform: String = (findProperty("platform") ?: "paper") as String
+// legacy12（MC 1.12.2）与 spigot 都使用 :project:spigot 的 spigot 源集（纯 Bukkit API + 降级路径）
+val useSpigotOutput: Boolean = platform != "paper"
 
 val platformOutput by configurations.creating
 
@@ -56,8 +57,8 @@ val bundleAdventure by configurations.creating
 dependencies {
     // 项目依赖：保证 :project:spigot 先于本项目完成配置，
     // 并按平台严格二选一取其 jar 产物（paper 源集 / spigot 源集）
-    "platformOutput"(project(":project:spigot", configuration = if (platform == "spigot") "spigotOutput" else "paperOutput"))
-    if (platform == "spigot") {
+    "platformOutput"(project(":project:spigot", configuration = if (useSpigotOutput) "spigotOutput" else "paperOutput"))
+    if (useSpigotOutput) {
         bundleAdventure(rootProject.libs.bundles.adventure)
     }
 }
@@ -66,13 +67,16 @@ tasks {
     val taboolibMainTask = named("taboolibMainTask")
 
     // 平台类目录 Sync 任务（:project:spigot 内注册）：先构建再展开进主 jar
-    val platformClassesTask = if (platform == "spigot") ":project:spigot:spigotPlatformClasses" else ":project:spigot:paperPlatformClasses"
+    val platformClassesTask = if (useSpigotOutput) ":project:spigot:spigotPlatformClasses" else ":project:spigot:paperPlatformClasses"
+    // 产物后缀：paper → Standard / spigot → Spigot / legacy12 → Legacy
+    val jarSuffix = when (platform) {
+        "spigot" -> "Spigot"
+        "legacy12" -> "Legacy"
+        else -> "Standard"
+    }
 
     jar {
-        archiveFileName.set(
-            if (platform == "spigot") "${rootProject.name}-${rootProject.version}-Premium-Spigot.jar"
-            else "${rootProject.name}-${rootProject.version}-Premium-Standard.jar"
-        )
+        archiveFileName.set("${rootProject.name}-${rootProject.version}-Premium-$jarSuffix.jar")
         dependsOn(platformClassesTask)
         from(platformOutput)
         rootProject.subprojects.forEach { proj ->
@@ -80,7 +84,7 @@ tasks {
                 from(proj.sourceSets["main"].output)
             }
         }
-        if (platform == "spigot") {
+        if (useSpigotOutput) {
             from({ bundleAdventure.map { zipTree(it) } }) {
                 exclude("META-INF/**", "module-info.class")
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -95,10 +99,7 @@ tasks {
         dependsOn(taboolibMainTask)
         dependsOn(jar)
 
-        archiveFileName.set(
-            if (platform == "spigot") "${rootProject.name}-${version}-Free-Spigot.jar"
-            else "${rootProject.name}-${version}-Free-Standard.jar"
-        )
+        archiveFileName.set("${rootProject.name}-${version}-Free-$jarSuffix.jar")
 
         // 修复：使用 archiveFile 替代 archivePath
         from(zipTree(jar.get().archiveFile)) {
@@ -111,22 +112,41 @@ tasks {
         dependsOn(freeJar)
     }
 
-    // 便捷任务：一次命令构建 Spigot 平台 jar（等价于 ./gradlew build -Pplatform=spigot -x test）
-    val buildSpigot by registering(GradleBuild::class) {
-        group = "build"
-        description = "Build Spigot platform jar (Sertraline-*-Spigot.jar)"
-        dir = rootProject.projectDir
-        tasks = listOf("build")
-        // org.gradle.StartParameter.excludedTaskNames 的 getter 返回 Set 而 setter 收 Iterable，
-        // 类型不一致 Kotlin 不认作 var，只能直接调用 setter；projectProperties 则可属性赋值
-        startParameter.setExcludedTaskNames(listOf("test"))
-        startParameter.projectProperties = startParameter.projectProperties + mapOf("platform" to "spigot")
-    }
-
-    // 一次命令同时产出 Paper 与 Spigot 两套 jar
+    // 一次命令同时产出 Paper、Spigot、Legacy 三套 jar
     val buildAll by registering {
         group = "build"
-        description = "Build both Paper and Spigot platform jars"
-        dependsOn(named("build"), buildSpigot)
+        description = "Build all platform jars (Paper + Spigot + Legacy)"
+        dependsOn(named("build"), named("buildSpigot"), named("buildLegacy"))
     }
 }
+
+// 便捷任务：一次命令构建 Spigot / Legacy 平台 jar（等价于 ./gradlew build -Pplatform=xxx -x test）。
+// 不能用 GradleBuild：同一 Gradle 会话内两个指向相同 dir 的 GradleBuild 会在 IncludedBuildRegistry
+// 撞构建路径（:Sertraline）报 "Included build ... same as included build"（gradle/gradle#13522）。
+// 改为逐个 exec 独立 gradlew 进程（--no-daemon 保证不排队在忙碌的当前 daemon 上），行为等价。
+val gradlewScript: String = rootProject.file(
+    if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
+).absolutePath
+// 继承当前 Gradle 守护进程所在的 JDK，保证嵌套构建同样跑在 JDK 21
+val gradleJdkHome: String = System.getProperty("java.home")
+
+fun registerNestedPlatformBuild(name: String, platform: String, description: String): TaskProvider<Exec> {
+    return tasks.register(name, Exec::class) {
+        group = "build"
+        this.description = description
+        workingDir = rootProject.projectDir
+        commandLine(
+            gradlewScript, "-p", rootProject.projectDir,
+            "-Dorg.gradle.java.home=$gradleJdkHome",
+            "-Pplatform=$platform", "build", "-x", "test",
+            "--no-daemon", "--console=plain"
+        )
+    }
+}
+
+val buildSpigot = registerNestedPlatformBuild(
+    "buildSpigot", "spigot", "Build Spigot platform jar (Sertraline-*-Spigot.jar)"
+)
+val buildLegacy = registerNestedPlatformBuild(
+    "buildLegacy", "legacy12", "Build Legacy platform jar (Sertraline-*-Legacy.jar, MC 1.12.2 / Java 8)"
+)

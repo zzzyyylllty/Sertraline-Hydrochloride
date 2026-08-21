@@ -11,8 +11,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
-import org.bukkit.event.inventory.SmithItemEvent
-import org.bukkit.event.inventory.TradeSelectEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
@@ -71,7 +69,8 @@ private fun shouldBlock(mode: RestrictMode, isVanilla: Boolean): Boolean {
     }
 }
 
-private fun sendBlockMessage(player: Player, key: String) {
+// internal：itemSmithingRestriction.kt / itemTradeRestriction.kt 的处理器也使用
+internal fun sendBlockMessage(player: Player, key: String) {
     val msg = config.getString("messages.common.$key", "")
     if (!msg.isNullOrEmpty()) {
         PlatformCompat.sendComponent(player, MiniMessage.miniMessage().deserialize(msg))
@@ -138,38 +137,5 @@ fun onFurnaceSmelt(event: FurnaceSmeltEvent) {
     }
 }
 
-// ── villager trading ─────────────────────────────────────────────────
-// disable-village-trade: 不区分插件/原版交易，VANILLA 与 TRUE 均拦截全部交易
-
-@SubscribeEvent(priority = EventPriority.HIGHEST)
-fun onTradeSelect(event: TradeSelectEvent) {
-    val player = event.view.player as? Player ?: return
-    val recipe = try {
-        event.merchant.getRecipe(event.index)
-    } catch (_: IndexOutOfBoundsException) {
-        return
-    }
-
-    if (recipe.ingredients.any {
-            checkItemForBlock(it, "disable-village-trade", isVanilla = true)
-        }
-    ) {
-        event.isCancelled = true
-        sendBlockMessage(player, "village-trade-blocked")
-    }
-}
-
-// ── smithing table ───────────────────────────────────────────────────
-
-@SubscribeEvent(priority = EventPriority.HIGHEST)
-fun onSmithItem(event: SmithItemEvent) {
-    val player = event.whoClicked as? Player ?: return
-
-    val inv = event.inventory
-    // SmithItemEvent recipe API varies across versions; we conservatively
-    // pass isVanilla=true so TRUE and VANILLA both block.
-    if (PlatformCompat.getSmithingInputs(inv).any { checkItemForBlock(it, "disable-smithing", isVanilla = true) }) {
-        event.isCancelled = true
-        sendBlockMessage(player, "smithing-blocked")
-    }
-}
+// villager trading / smithing table 限制在 itemTradeRestriction.kt / itemSmithingRestriction.kt
+// （TradeSelectEvent 1.14+ / SmithItemEvent 1.16+，legacy12 编译面排除）

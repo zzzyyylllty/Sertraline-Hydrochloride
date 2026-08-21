@@ -5,6 +5,7 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.item.sertralineItemBuilder
+import io.github.zzzyyylllty.sertraline.util.parseNamespacedKey
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.ExternalItemHelper
@@ -14,6 +15,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import com.cryptomorin.xseries.XMaterial
 import taboolib.library.xseries.XItemStack
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
 import kotlin.math.roundToInt
@@ -62,14 +64,16 @@ data class OmniItem(
 
             if (providedItem == null) {
                 severeL("ErrorItemGenerationFailedNull", source, item)
-                return ItemStack(Material.GRASS_BLOCK)
+                // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
             }
             itemStack = providedItem
 
         } catch (e: Exception) {
             severeL("ErrorItemGenerationFailed", source, item)
             e.printStackTrace()
-            return ItemStack(Material.GRASS_BLOCK)
+            // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
         }
 
         if (parameters?.isNotEmpty() ?: false) {
@@ -79,7 +83,7 @@ data class OmniItem(
                 parameters["display-name"]?.toString()?.toComponent()?.let { PlatformCompat.setDisplayName(meta, it) }
                 parameters["custom-name"]?.toString()?.toComponent()?.let { PlatformCompat.setCustomName(meta, it) }
                 parameters["item-name"]?.toString()?.toComponent()?.let { PlatformCompat.setItemName(meta, it) }
-                (parameters["item-model"] ?: parameters["model"])?.toString()?.let { PlatformCompat.setItemModel(meta, NamespacedKey.fromString(it)) }
+                (parameters["item-model"] ?: parameters["model"])?.toString()?.let { PlatformCompat.setItemModel(meta, it.parseNamespacedKey()) }
                 itemStack.setItemMeta(meta)
             }
             parameters["lore"].asListEnhanced()?.toComponent()?.let { PlatformCompat.setLore(itemStack, it) }

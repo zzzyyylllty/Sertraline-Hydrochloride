@@ -23,9 +23,14 @@ sertraline:vars:
 sertraline:dynamics:
   - sertraline:dynamic
   - sertraline:dynamics
+sertraline:keep-context:
+  - sertraline:keep-context
+  - sertraline:keepContext
 sertraline:actions:
   - sertraline:action
   - sertraline:actions
+sertraline:revision-id:
+  - sertraline:revision-id
 sertraline:lore-format:
   - sertraline:loreFormat
   - sertraline:lore-format

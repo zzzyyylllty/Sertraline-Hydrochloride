@@ -648,8 +648,10 @@ object TemplateManager {
     }
 
     private fun evalStandardJs(shell: String): Any? {
-        val engine = javax.script.ScriptEngineManager().getEngineByName("js") ?: return null
-        return engine.eval(shell)
+        // 复用每线程缓存的 JSR-223 引擎，避免每次调用都创建 ScriptEngineManager + engine
+        val engine = io.github.zzzyyylllty.sertraline.util.GraalJsUtil.nashornEngineHolder.get() ?: return null
+        // 使用独立 bindings，避免脚本顶层 var 污染后续 eval
+        return engine.eval(shell, engine.createBindings())
     }
 
     private fun evalFluxon(shell: String): Any? {
@@ -659,17 +661,11 @@ object TemplateManager {
     }
 
     private fun evalGraalJs(shell: String): Any? {
-        // 尝试使用 GraalJS (需要依赖)
+        // 尝试使用 GraalJS (需要依赖)，失败时回退到标准 JS
         return try {
-            val context = org.graalvm.polyglot.Context.create()
-            try {
-                val result = context.eval("js", shell)
-                result?.toString() ?: result
-            } finally {
-                context.close()
-            }
+            // evalToJsString 保持旧实现 Value.toString 的 JS 语义输出格式
+            io.github.zzzyyylllty.sertraline.util.GraalJsUtil.evalToJsString(shell, emptyMap())
         } catch (e: Exception) {
-            // 回退到标准 JS
             evalStandardJs(shell)
         }
     }

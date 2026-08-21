@@ -6,6 +6,7 @@ import io.github.zzzyyylllty.sertraline.logger.severeS
 import io.github.zzzyyylllty.sertraline.logger.warningS
 import io.github.zzzyyylllty.sertraline.data.RecipeFunction
 import io.github.zzzyyylllty.sertraline.util.SertralineRecipeManager
+import io.github.zzzyyylllty.sertraline.util.textLines
 import org.bukkit.Keyed
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
@@ -68,7 +69,8 @@ fun onCraftItem(event: CraftItemEvent) {
 private fun executeFunction(func: RecipeFunction, player: Player) {
     when (func) {
         is RecipeFunction.Kether -> {
-            val script = func.script.lines()
+            // textLines：Java 8 安全实现（String.lines 是 Java 11 成员方法，见 StringUtil.kt）
+            val script = func.script.textLines()
             if (script.isNotEmpty()) {
                 KetherShell.eval(script, ScriptOptions(sender = adaptCommandSender(player)))
             }

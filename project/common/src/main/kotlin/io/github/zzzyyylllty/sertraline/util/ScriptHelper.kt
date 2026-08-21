@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.util
 
 import io.github.zzzyyylllty.sertraline.data.defaultData
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import io.github.zzzyyylllty.sertraline.debugMode.devLogBypassCheck
 import io.github.zzzyyylllty.sertraline.function.fluxon.FluxonShell
 import io.github.zzzyyylllty.sertraline.logger.infoS
 import io.github.zzzyyylllty.sertraline.logger.severeS
@@ -137,7 +138,8 @@ object ScriptHelper {
             val config = Configuration.loadFromFile(file)
             for (key in config.getKeys(false)) {
                 val section = config.getConfigurationSection(key) ?: continue
-                val typeStr = section.getString("type") ?: "graaljs"
+                // legacy12 无 GraalJS（Nashorn 兼容），默认落到内置 JSR 223；其余平台默认 GraalJS
+                val typeStr = section.getString("type") ?: if (VersionHelper().isLegacy()) "javascript" else "graaljs"
                 val script = section.getString("script") ?: continue
 
                 val type = try {
@@ -273,7 +275,7 @@ object ScriptHelper {
     // ==================== 内部执行 ====================
 
     private fun execute(entry: ScriptEntry, vars: MutableMap<String, Any?>, sender: CommandSender?): Any? {
-        devLog("Executing script '${entry.source}/${entry.script.take(50)}' type=${entry.type} vars=$vars")
+        devLogBypassCheck { "Executing script '${entry.source}/${entry.script.take(50)}' type=${entry.type} vars=$vars" }
         return try {
             when (entry.type) {
                 ScriptType.GRAALJS -> GraalJsUtil.directEval(entry.script, vars)
@@ -297,7 +299,8 @@ object ScriptHelper {
     }
 
     private fun evalStandardJs(script: String, vars: Map<String, Any?>): Any? {
-        val engine = engineManager.getEngineByName("js") ?: run {
+        // 复用 GraalJsUtil 中每线程缓存的 JSR-223 引擎，避免每次调用都创建 engine
+        val engine = GraalJsUtil.nashornEngineHolder.get() ?: run {
             severeS("JavaScript engine not available (Nashorn/GraalJS JSR 223)")
             return null
         }

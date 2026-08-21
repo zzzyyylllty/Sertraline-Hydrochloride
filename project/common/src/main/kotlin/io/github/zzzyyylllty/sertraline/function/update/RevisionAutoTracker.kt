@@ -7,8 +7,8 @@ import io.github.zzzyyylllty.sertraline.Sertraline.itemExpectedRevision
 import io.github.zzzyyylllty.sertraline.Sertraline.itemMap
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.infoL
+import io.github.zzzyyylllty.sertraline.logger.warningL
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
-import org.bukkit.Bukkit
 import java.io.File
 import java.security.MessageDigest
 
@@ -103,7 +103,7 @@ private fun saveTrackerFile(file: File, data: Map<String, RevisionEntry>) {
         }
         file.writeText(jsonUtils.toJson(raw))
     } catch (e: Exception) {
-        Bukkit.getLogger().warning("Failed to save revision tracker file: ${e.message}")
+        warningL("Warning_Revision_Tracker_Save_Failed", e.message ?: e.javaClass.simpleName)
     }
 }
 

@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.logger.severeL
 import io.github.zzzyyylllty.sertraline.util.serialize.isSupportedFormat
 import io.github.zzzyyylllty.sertraline.util.serialize.parseToMap
+import io.github.zzzyyylllty.sertraline.util.textIsBlank
 import java.io.File
 import io.github.zzzyyylllty.sertraline.util.toLowerCase
 
@@ -22,7 +23,8 @@ fun multiExtensionLoader(file: File): Map<String, Any?>? {
         }
 
         val content = file.readText()
-        if (content.isBlank()) {
+        // textIsBlank：Java 8 安全实现（String.isBlank 是 Java 11 成员方法，见 StringUtil.kt）
+        if (content.textIsBlank()) {
             severeL("Config_Load_Error_Empty", file.name)
             return null
         }

@@ -7,17 +7,26 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import java.time.Duration
+import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.block.Block
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
+import org.bukkit.boss.BarStyle
+import org.bukkit.boss.BossBar
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
@@ -28,8 +37,12 @@ import org.bukkit.inventory.SmithingInventory
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.Location
 import org.bukkit.plugin.Plugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import java.io.File
+import java.lang.reflect.Method
 import java.util.UUID
+import java.util.function.Consumer
 
 /**
  * Sertraline 平台适配层（Paper 实现，与 main 源集的同名类签名完全一致）。
@@ -106,7 +119,32 @@ object PlatformCompat {
         return meta
     }
 
+    fun setCustomModelData(meta: ItemMeta, value: Int): ItemMeta {
+        meta.setCustomModelData(value)
+        return meta
+    }
+
     fun getDisplayName(item: ItemStack): Component = item.displayName()
+
+    // effectiveName() 是 Paper 新 API（"name shown to player in inventory"，1.21.4+ ITEM_NAME 优先、
+    // 渲染不带 []，而 displayName/CUSTOM_NAME 渲染带白色 []），编译面 paper-api 1.21.4-R0.1 尚无此方法，
+    // 反射调用，运行时缺失时降级为 itemName → displayName → 类型翻译名
+    private val effectiveNameMethod: Method? by lazy {
+        try { ItemStack::class.java.getMethod("effectiveName") } catch (_: Throwable) { null }
+    }
+
+    fun getEffectiveName(item: ItemStack): Component {
+        return try {
+            effectiveNameMethod?.invoke(item) as? Component ?: fallbackEffectiveName(item)
+        } catch (_: Throwable) {
+            fallbackEffectiveName(item)
+        }
+    }
+
+    private fun fallbackEffectiveName(item: ItemStack): Component {
+        return item.itemMeta?.let { it.itemName() ?: it.displayName() }
+            ?: Component.translatable(item.type.translationKey())
+    }
 
     fun getLore(item: ItemStack): List<Component>? = item.lore()
 
@@ -119,6 +157,8 @@ object PlatformCompat {
     fun setDataComponent(item: ItemStack, typeName: String, value: Any): ItemStack {
         when (typeName) {
             "CUSTOM_NAME" -> item.setData(DataComponentTypes.CUSTOM_NAME, value as Component)
+            // ITEM_NAME 1.21.4+ 渲染不带 [] 括号，与 effectiveName 语义配套
+            "ITEM_NAME" -> item.setData(DataComponentTypes.ITEM_NAME, value as Component)
             else -> throw IllegalArgumentException("Unsupported data component type: $typeName")
         }
         return item
@@ -134,6 +174,10 @@ object PlatformCompat {
 
     fun createMerchant(component: Component?): Merchant {
         return Bukkit.createMerchant(component)
+    }
+
+    fun createMerchant(): Merchant {
+        return Bukkit.createMerchant()
     }
 
     // ── 脚本桥：Server 的 Paper 扩展 ───────────────────────────────────────
@@ -194,6 +238,8 @@ object PlatformCompat {
 
     fun getDatapackManager(): Any? = Bukkit.getDatapackManager()
 
+    fun getStructureManager(): Any? = Bukkit.getStructureManager()
+
     fun getPotionBrewer(): Any? = Bukkit.getPotionBrewer()
 
     fun getUnsafe(): Any? = Bukkit.getUnsafe()
@@ -220,6 +266,120 @@ object PlatformCompat {
     fun createProfile(name: String): Any? = Bukkit.createProfile(name)
 
     fun createProfileExact(uuid: UUID?, name: String?): Any? = uuid?.let { Bukkit.createProfileExact(it, name) }
+
+    // org.bukkit.profile.PlayerProfile（1.18.2+ API），与 createProfile 的 com.destroystokyo 版是不同类型
+    fun createPlayerProfile(uuid: UUID?, name: String?): Any? =
+        uuid?.let { if (name == null) Bukkit.createPlayerProfile(it) else Bukkit.createPlayerProfile(it, name) }
+
+    fun createPlayerProfile(name: String): Any? = Bukkit.createPlayerProfile(name)
+
+    // ── 脚本桥：1.13+ Bukkit API（与 spigot 源集同名方法签名一致） ──────────
+
+    fun setMaxPlayers(value: Int): Unit? {
+        Bukkit.setMaxPlayers(value)
+        return Unit
+    }
+
+    fun getSimulationDistance(): Int? = Bukkit.getSimulationDistance()
+
+    fun getMaxWorldSize(): Int? = Bukkit.getMaxWorldSize()
+
+    fun isLoggingIPs(): Boolean? = Bukkit.isLoggingIPs()
+
+    fun isWhitelistEnforced(): Boolean? = Bukkit.isWhitelistEnforced()
+
+    fun setWhitelistEnforced(value: Boolean): Unit? {
+        Bukkit.setWhitelistEnforced(value)
+        return Unit
+    }
+
+    fun getTicksPerWaterSpawns(): Int? = Bukkit.getTicksPerWaterSpawns()
+
+    fun getTicksPerWaterAmbientSpawns(): Int? = Bukkit.getTicksPerWaterAmbientSpawns()
+
+    fun getTicksPerAmbientSpawns(): Int? = Bukkit.getTicksPerAmbientSpawns()
+
+    fun createWorldBorder(): Any? = Bukkit.createWorldBorder()
+
+    fun getRecipe(key: NamespacedKey): Any? = Bukkit.getRecipe(key)
+
+    fun removeRecipe(key: NamespacedKey): Unit? {
+        Bukkit.removeRecipe(key)
+        return Unit
+    }
+
+    fun getBanListIP(): Any? = Bukkit.getBanList(BanList.Type.IP)
+
+    fun getBanListProfile(): Any? = Bukkit.getBanList(BanList.Type.PROFILE)
+
+    fun getBanListName(): Any? = Bukkit.getBanList(BanList.Type.NAME)
+
+    fun createBossBar(key: NamespacedKey, title: String, color: BarColor, style: BarStyle, flags: Array<BarFlag>): BossBar? =
+        Bukkit.createBossBar(key, title, color, style, *flags)
+
+    fun getBossBars(): Any? = Bukkit.getBossBars()
+
+    fun getBossBar(key: NamespacedKey): Any? = Bukkit.getBossBar(key)
+
+    fun removeBossBar(key: NamespacedKey): Unit? {
+        Bukkit.removeBossBar(key)
+        return Unit
+    }
+
+    fun createBlockData(materialOrData: Any, consumerOrData: Any?): Any? {
+        return when (materialOrData) {
+            is org.bukkit.Material -> when (consumerOrData) {
+                null -> Bukkit.createBlockData(materialOrData)
+                is String -> Bukkit.createBlockData(materialOrData, consumerOrData)
+                is Consumer<*> -> Bukkit.createBlockData(materialOrData, consumerOrData as Consumer<org.bukkit.block.data.BlockData>)
+                else -> null
+            }
+            is String -> Bukkit.createBlockData(materialOrData)
+            else -> null
+        }
+    }
+
+    fun selectEntities(sender: CommandSender, selector: String): List<Entity>? = Bukkit.selectEntities(sender, selector)
+
+    fun getLootTable(key: NamespacedKey): Any? = Bukkit.getLootTable(key)
+
+    @Suppress("UNCHECKED_CAST")
+    fun getRegistry(clazz: Class<*>): Any? = Bukkit.getRegistry(clazz as Class<out org.bukkit.Keyed>)
+
+    @Suppress("UNCHECKED_CAST")
+    fun getTag(registry: String, tagKey: NamespacedKey, clazz: Class<*>): Any? =
+        Bukkit.getTag(registry, tagKey, clazz as Class<out org.bukkit.Keyed>)
+
+    @Suppress("UNCHECKED_CAST")
+    fun getTags(registry: String, clazz: Class<*>): Any? =
+        Bukkit.getTags(registry, clazz as Class<out org.bukkit.Keyed>)
+
+    fun setMotdLegacy(motd: String): Unit? {
+        Bukkit.setMotd(motd)
+        return Unit
+    }
+
+    fun fixMmoAttackSpeed(meta: ItemMeta): ItemMeta {
+        meta.addAttributeModifier(
+            Attribute.ATTACK_SPEED,
+            AttributeModifier("mmoitems:decoy", 0.0, AttributeModifier.Operation.ADD_NUMBER)
+        )
+        return meta
+    }
+
+    fun addPotionEffect(player: Player, type: String, duration: Int, amplifier: Int, ambient: Boolean, particles: Boolean, icon: Boolean): Unit? {
+        val effectType = PotionEffectType.getByName(type) ?: return Unit
+        player.addPotionEffect(PotionEffect(effectType, duration, amplifier, ambient, particles, icon))
+        return Unit
+    }
+
+    // ── 攻击信息（damageSource 1.13+ / AbstractArrow.weapon 1.16+） ─────────
+
+    fun getDamageCausingPlayer(e: EntityDamageByEntityEvent): Player? = e.damageSource.causingEntity as? Player
+
+    fun getDamageDirectEntity(e: EntityDamageByEntityEvent): Entity? = e.damageSource.directEntity
+
+    fun getProjectileWeapon(entity: Entity?): ItemStack? = (entity as? AbstractArrow)?.weapon
 
     // ── Folia 调度器 ──────────────────────────────────────────────────────
 

@@ -254,7 +254,7 @@ object ExtensionItemStack {
             // isEmpty
             .function("isEmpty", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
-                item.type.isAir
+                item.type == Material.AIR
             })
 
             // toString
@@ -308,10 +308,10 @@ object ExtensionItemStack {
                 item.removeEnchantment(ench)
             })
 
-            // removeEnchantments
+            // removeEnchantments（ItemStack.removeEnchantments 是 1.13+ API，逐条移除兼容 v11200）
             .function("removeEnchantments", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
-                item.removeEnchantments()
+                item.enchantments.keys.forEach { item.removeEnchantment(it) }
                 null
             })
 
@@ -325,7 +325,7 @@ object ExtensionItemStack {
                     val value = it.value
                     val ench = if (key is Enchantment) key
                     else if (key is String) {
-                        Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.toUpperCase())
+                        Enchantment.getByName(key.toUpperCase())
                         ?: throw IllegalArgumentException("addEnchantments: Key $key is not a valid Enchantment")
                     } else throw IllegalArgumentException("addEnchantments: Map key must be Enchantment or String")
 
@@ -346,7 +346,7 @@ object ExtensionItemStack {
                     val value = it.value
                     val ench = key as? Enchantment
                         ?: if (key is String) {
-                            Enchantment.getByKey(NamespacedKey.minecraft(key)) ?: Enchantment.getByName(key.toUpperCase())
+                            Enchantment.getByName(key.toUpperCase())
                             ?: throw IllegalArgumentException("addUnsafeEnchantments: Key $key is not a valid Enchantment")
                         } else throw IllegalArgumentException("addUnsafeEnchantments: Map key must be Enchantment or String")
 
@@ -412,13 +412,9 @@ fun asEnchantment(ctx: FunctionContext<*>, index: Int): Enchantment {
     return when(arg) {
         is Enchantment -> arg
         is String -> {
-            // 尝试用命名空间Key获取
-            var ench = Enchantment.getByKey(NamespacedKey.minecraft(arg))
-            if (ench == null) {
-                // 再尝试根据名字获取（大写）
-                ench = Enchantment.getByName(arg.toUpperCase())
-            }
-            ench ?: throw IllegalArgumentException("Cannot convert argument $index to Enchantment: $arg")
+            // Enchantment.getByKey(NamespacedKey) 是 1.13+ API；getByName 全版本可用（大写名）
+            Enchantment.getByName(arg.toUpperCase())
+                ?: throw IllegalArgumentException("Cannot convert argument $index to Enchantment: $arg")
         }
         else -> throw IllegalArgumentException("Argument $index must be Enchantment or String")
     }

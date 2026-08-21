@@ -15,24 +15,19 @@ import taboolib.common.platform.Awake
 import java.util.*
 import org.bukkit.*
 import org.bukkit.advancement.Advancement
-import org.bukkit.ban.IpBanList
-import org.bukkit.block.data.BlockData
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
-import org.bukkit.boss.KeyedBossBar
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.*
-import org.bukkit.loot.LootTable
 import org.bukkit.plugin.Plugin
 import java.io.File
 import java.net.InetAddress
 import java.util.*
-import java.util.function.Consumer
 import java.util.logging.Logger
 
 @Awake(LifeCycle.ENABLE)
@@ -98,7 +93,7 @@ object FunctionBukkit {
 
         @Export
         fun setMaxPlayers(max: Int) {
-            Bukkit.setMaxPlayers(max)
+            PlatformCompat.setMaxPlayers(max)
         }
 
         @Export
@@ -140,7 +135,7 @@ object FunctionBukkit {
         fun getViewDistance(): Int = Bukkit.getViewDistance()
 
         @Export
-        fun getSimulationDistance(): Int = Bukkit.getSimulationDistance()
+        fun getSimulationDistance(): Int = PlatformCompat.getSimulationDistance() ?: -1
 
         @Export
         fun getIp(): String = Bukkit.getIp()
@@ -152,7 +147,7 @@ object FunctionBukkit {
         fun getGenerateStructures(): Boolean = Bukkit.getGenerateStructures()
 
         @Export
-        fun getMaxWorldSize(): Int = Bukkit.getMaxWorldSize()
+        fun getMaxWorldSize(): Int = PlatformCompat.getMaxWorldSize() ?: 0
 
         @Export
         fun getAllowEnd(): Boolean = Bukkit.getAllowEnd()
@@ -161,7 +156,7 @@ object FunctionBukkit {
         fun getAllowNether(): Boolean = Bukkit.getAllowNether()
 
         @Export
-        fun isLoggingIPs(): Boolean = Bukkit.isLoggingIPs()
+        fun isLoggingIPs(): Boolean = PlatformCompat.isLoggingIPs() ?: false
 
         @Export
         fun getOnlineMode(): Boolean = Bukkit.getOnlineMode()
@@ -211,11 +206,11 @@ object FunctionBukkit {
         }
 
         @Export
-        fun isWhitelistEnforced(): Boolean = Bukkit.isWhitelistEnforced()
+        fun isWhitelistEnforced(): Boolean = PlatformCompat.isWhitelistEnforced() ?: false
 
         @Export
         fun setWhitelistEnforced(value: Boolean) {
-            Bukkit.setWhitelistEnforced(value)
+            PlatformCompat.setWhitelistEnforced(value)
         }
 
         @Export
@@ -278,7 +273,8 @@ object FunctionBukkit {
         fun getWorldContainer(): File = Bukkit.getWorldContainer()
 
         @Export
-        fun createWorldBorder(): WorldBorder = Bukkit.createWorldBorder()
+        fun createWorldBorder(): WorldBorder = PlatformCompat.createWorldBorder() as? WorldBorder
+            ?: throw IllegalStateException("createWorldBorder is not supported on this server version.")
 
         // --- Commands ---
 
@@ -308,7 +304,7 @@ object FunctionBukkit {
         fun getRecipesFor(result: ItemStack): List<Recipe> = Bukkit.getRecipesFor(result)
 
         @Export
-        fun getRecipe(key: NamespacedKey): Recipe? = Bukkit.getRecipe(key)
+        fun getRecipe(key: NamespacedKey): Recipe? = PlatformCompat.getRecipe(key) as? Recipe
 
         @Export
         fun recipeIterator(): Iterator<Recipe> = Bukkit.recipeIterator()
@@ -324,7 +320,9 @@ object FunctionBukkit {
         }
 
         @Export
-        fun removeRecipe(key: NamespacedKey): Boolean = Bukkit.removeRecipe(key)
+        fun removeRecipe(key: NamespacedKey) {
+            PlatformCompat.removeRecipe(key)
+        }
 
         // --- Banning ---
 
@@ -335,7 +333,8 @@ object FunctionBukkit {
         fun banIP(address: Any) {
             when (address) {
                 is String -> Bukkit.banIP(address)
-                is InetAddress -> Bukkit.banIP(address)
+                // banIP(InetAddress) 是 1.13+ API，legacy12（v11200）只有 String 版；统一转 hostAddress
+                is InetAddress -> Bukkit.banIP(address.hostAddress)
                 else -> throw IllegalArgumentException("Argument for banIP must be a String or InetAddress.")
             }
         }
@@ -344,7 +343,7 @@ object FunctionBukkit {
         fun unbanIP(address: Any) {
             when (address) {
                 is String -> Bukkit.unbanIP(address)
-                is InetAddress -> Bukkit.unbanIP(address)
+                is InetAddress -> Bukkit.unbanIP(address.hostAddress)
                 else -> throw IllegalArgumentException("Argument for unbanIP must be a String or InetAddress.")
             }
         }
@@ -352,18 +351,15 @@ object FunctionBukkit {
         @Export
         fun getBannedPlayers(): Set<OfflinePlayer> = Bukkit.getBannedPlayers()
 
+        // getBanList 泛型版 / BanList.Type.PROFILE / IpBanList 是 1.13+/1.20.2+ API，走 PlatformCompat 返回 Any?
         @Export
-        fun getBanListIP(): IpBanList {
-            return Bukkit.getBanList<IpBanList>(BanList.Type.IP)
-        }
+        fun getBanListIP(): Any? = PlatformCompat.getBanListIP()
+
         @Export
-        fun getBanListProfile(): IpBanList {
-            return Bukkit.getBanList<IpBanList>(BanList.Type.PROFILE)
-        }
+        fun getBanListProfile(): Any? = PlatformCompat.getBanListProfile()
+
         @Export
-        fun getBanListName(): IpBanList {
-            return Bukkit.getBanList<IpBanList>(BanList.Type.NAME)
-        }
+        fun getBanListName(): Any? = PlatformCompat.getBanListName()
 
         // --- Operators ---
 
@@ -473,7 +469,7 @@ object FunctionBukkit {
 
         @Export
         fun setLegacyMotd(motd: String) {
-            Bukkit.setMotd(motd)
+            PlatformCompat.setMotdLegacy(motd)
         }
 
         @Export
@@ -506,14 +502,14 @@ object FunctionBukkit {
         // --- Boss Bars ---
 
         @Export
-        fun createBossBar(keyOrTitle: Any, titleOrColor: Any, colorOrStyle: Any, styleOrFlags: Any? = null, flags: Array<BarFlag>? = null): BossBar {
+        fun createBossBar(keyOrTitle: Any, titleOrColor: Any, colorOrStyle: Any, styleOrFlags: Any? = null, flags: Array<BarFlag>? = null): BossBar? {
             return when (keyOrTitle) {
+                // keyed 版是 1.16+ API，走 PlatformCompat（低版本降级为 String 版）
                 is NamespacedKey -> {
-                    val key = keyOrTitle
                     val title = titleOrColor as String
                     val color = colorOrStyle as BarColor
                     val style = styleOrFlags as BarStyle
-                    Bukkit.createBossBar(key, title, color, style, *(flags ?: emptyArray()))
+                    PlatformCompat.createBossBar(keyOrTitle, title, color, style, flags ?: emptyArray())
                 }
                 is String -> {
                     val title = keyOrTitle
@@ -527,32 +523,22 @@ object FunctionBukkit {
         }
 
         @Export
-        fun getBossBars(): Iterator<KeyedBossBar> = Bukkit.getBossBars()
+        fun getBossBars(): Any? = PlatformCompat.getBossBars()
 
         @Export
-        fun getBossBar(key: NamespacedKey): KeyedBossBar? = Bukkit.getBossBar(key)
+        fun getBossBar(key: NamespacedKey): Any? = PlatformCompat.getBossBar(key)
 
         @Export
         fun removeBossBar(key: NamespacedKey) {
-            Bukkit.removeBossBar(key)
+            PlatformCompat.removeBossBar(key)
         }
 
         // --- BlockData ---
 
         @Export
-        fun createBlockData(materialOrData: Any,@Optional  consumerOrData: Any? = null): BlockData {
-            return when(materialOrData) {
-                is Material -> {
-                    when(consumerOrData) {
-                        null -> Bukkit.createBlockData(materialOrData)
-                        is Consumer<*> -> Bukkit.createBlockData(materialOrData, consumerOrData as Consumer<BlockData>)
-                        is String -> Bukkit.createBlockData(materialOrData, consumerOrData)
-                        else -> throw IllegalArgumentException("Second argument for createBlockData must be a Consumer or String.")
-                    }
-                }
-                is String -> Bukkit.createBlockData(materialOrData)
-                else -> throw IllegalArgumentException("First argument for createBlockData must be Material or String.")
-            }
+        fun createBlockData(materialOrData: Any, @Optional consumerOrData: Any? = null): Any? {
+            // BlockData 是 1.13+ API，走 PlatformCompat（低版本返回 null）
+            return PlatformCompat.createBlockData(materialOrData, consumerOrData)
         }
 
         // --- Entity and Advancements ---
@@ -567,7 +553,7 @@ object FunctionBukkit {
         fun advancementIterator(): Iterator<Advancement> = Bukkit.advancementIterator()
 
         @Export
-        fun selectEntities(sender: CommandSender, selector: String): List<Entity> = Bukkit.selectEntities(sender, selector)
+        fun selectEntities(sender: CommandSender, selector: String): List<Entity> = PlatformCompat.selectEntities(sender, selector) ?: emptyList()
 
         // --- TPS and Ticks ---
 
@@ -589,10 +575,10 @@ object FunctionBukkit {
         fun getScoreboardManager() = Bukkit.getScoreboardManager()
 
         @Export
-        fun getStructureManager() = Bukkit.getStructureManager()
+        fun getStructureManager() = PlatformCompat.getStructureManager()
 
         @Export
-        fun getLootTable(key: NamespacedKey): LootTable? = Bukkit.getLootTable(key)
+        fun getLootTable(key: NamespacedKey): Any? = PlatformCompat.getLootTable(key)
 
         @Export
         fun getWarningState(): Warning.WarningState = Bukkit.getWarningState()
@@ -612,13 +598,13 @@ object FunctionBukkit {
         fun getTicksPerMonsterSpawns(): Int = Bukkit.getTicksPerMonsterSpawns()
 
         @Export
-        fun getTicksPerWaterSpawns(): Int = Bukkit.getTicksPerWaterSpawns()
+        fun getTicksPerWaterSpawns(): Int = PlatformCompat.getTicksPerWaterSpawns() ?: 0
 
         @Export
-        fun getTicksPerWaterAmbientSpawns(): Int = Bukkit.getTicksPerWaterAmbientSpawns()
+        fun getTicksPerWaterAmbientSpawns(): Int = PlatformCompat.getTicksPerWaterAmbientSpawns() ?: 0
 
         @Export
-        fun getTicksPerAmbientSpawns(): Int = Bukkit.getTicksPerAmbientSpawns()
+        fun getTicksPerAmbientSpawns(): Int = PlatformCompat.getTicksPerAmbientSpawns() ?: 0
 
         @Export
         fun getMonsterSpawnLimit(): Int = Bukkit.getMonsterSpawnLimit()
@@ -633,12 +619,14 @@ object FunctionBukkit {
         fun getAmbientSpawnLimit(): Int = Bukkit.getAmbientSpawnLimit()
 
         @Export
-        fun createPlayerProfile(uuid: UUID,@Optional name: String? = null): org.bukkit.profile.PlayerProfile {
-            return if (name == null) Bukkit.createPlayerProfile(uuid) else Bukkit.createPlayerProfile(uuid, name)
+        // org.bukkit.profile.PlayerProfile 是 1.18.2+ 类，legacy12（v11200）编译面不存在；走 PlatformCompat 返回 Any?
+        fun createPlayerProfile(uuid: UUID, @Optional name: String? = null): Any? {
+            return PlatformCompat.createPlayerProfile(uuid, name)
         }
 
+        // Registry / Tag 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat 返回 Any?
         @Export
-        fun getRegistry(clazz: Class<out Keyed>): Registry<out Keyed>? = Bukkit.getRegistry(clazz)
+        fun getRegistry(clazz: Class<out Keyed>): Any? = PlatformCompat.getRegistry(clazz)
 
         @Export
         fun getPermissionMessage(): String? = PlatformCompat.getPermissionMessage()
@@ -646,13 +634,13 @@ object FunctionBukkit {
         // --- Tags ---
 
         @Export
-        fun <T : Keyed> getTag(registry: String, tagKey: NamespacedKey, clazz: Class<T>): Tag<T>? {
-            return Bukkit.getTag(registry, tagKey, clazz)
+        fun getTag(registry: String, tagKey: NamespacedKey, clazz: Class<out Keyed>): Any? {
+            return PlatformCompat.getTag(registry, tagKey, clazz)
         }
 
         @Export
-        fun <T : Keyed> getTags(registry: String, clazz: Class<T>): Iterable<Tag<T?>?> {
-            return Bukkit.getTags(registry, clazz)
+        fun getTags(registry: String, clazz: Class<out Keyed>): Any? {
+            return PlatformCompat.getTags(registry, clazz)
         }
 
         // --- Paper-specific Profile Creation ---

@@ -15,7 +15,9 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     val dataMap = (sItem.getDeepData("sertraline:vars") as Map<String, Any?>?)?.toMutableMap()
     val tag = item.getItemTag(true)
+    // TODO: filterNbtSafe 注释待确认，当前 vars 不再包含 Player/Event（已独立为 context）
     tag["sertraline_data"] = dataMap
+    //tag["sertraline_data"] = dataMap?.filterNbtSafe()
 
     // 写入类型到NBT
     val typeData = sItem.getDeepData("sertraline:type")
@@ -46,6 +48,46 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     return item
 
+}
+
+/**
+ * 过滤掉不可序列化为 NBT 的值，避免 ItemTag 写入时抛出 Unsupported nbt 异常。
+ * 脚本/战利品 vars 中可能包含 Player、Event 等运行时对象，它们不需要持久化到物品 NBT。
+ */
+private fun Map<String, Any?>.filterNbtSafe(): Map<String, Any?> {
+    return mapValues { (_, value) -> sanitizeNbtValue(value) }
+        .filter { (_, value) -> value !== FILTERED_SENTINEL }
+}
+
+private val FILTERED_SENTINEL = Any()
+
+private fun sanitizeNbtValue(value: Any?): Any? {
+    when {
+        value == null -> return null
+        value is String -> return value
+        value is Number -> return value
+        value is Boolean -> return value
+        value is ByteArray -> return value
+        value is IntArray -> return value
+        value is LongArray -> return value
+        value is Map<*, *> -> {
+            val sanitized = value.entries.associate { (k, v) ->
+                k.toString() to sanitizeNbtValue(v)
+            }.filter { (_, v) -> v !== FILTERED_SENTINEL }
+            return sanitized
+        }
+        value is Collection<*> -> {
+            val sanitized = value.map { sanitizeNbtValue(it) }.filter { it !== FILTERED_SENTINEL }
+            return sanitized
+        }
+        value is Array<*> -> {
+            val sanitized = value.map { sanitizeNbtValue(it) }.filter { it !== FILTERED_SENTINEL }
+            return sanitized
+        }
+        value is Player -> return value.name
+        // 其他不可序列化类型（Event、Entity 等）→ 丢弃
+        else -> return FILTERED_SENTINEL
+    }
 }
 
 

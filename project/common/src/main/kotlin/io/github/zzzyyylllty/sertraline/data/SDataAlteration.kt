@@ -193,7 +193,8 @@ data class SDataAlteration(
         val list = navigateToValue(path, data) as? MutableList<Any?>
 
         if (list != null) {
-            list.addLast(value)
+            // addLast 是 Java 21 SequencedCollection API，jvmTarget 8 编译面不存在；add 即末尾追加
+            list.add(value)
         } else {
             setDeepData(path, mutableListOf(value), data)
         }

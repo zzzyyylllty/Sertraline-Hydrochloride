@@ -19,7 +19,7 @@ class ItemManager {
             ManagerType.PUBLIC -> public.getItem(id, sub)
             ManagerType.PRIVATE -> {
                 val resolvedUuid = resolvePrivateUuid(uuid, null)
-                privateManager.getItem(resolvedUuid, id, sub)
+                privateManager.getItem(resolvedUuid, normalizePrivateItemId(id), sub)
             }
         }
     }
@@ -28,14 +28,15 @@ class ItemManager {
         if (type == ManagerType.PUBLIC && sub == SubManagerType.PERSISTENT) {
             throw UnsupportedOperationException("Creating public-persistent items is not yet supported")
         }
-        val item = ModernSItem(key = id, data = LinkedHashMap(data), config = linkedMapOf())
+        val normalizedId = if (type == ManagerType.PRIVATE) normalizePrivateItemId(id) else id
+        val item = ModernSItem(key = normalizedId, data = LinkedHashMap(data), config = linkedMapOf())
         when (type) {
             ManagerType.PUBLIC -> {
                 public.createTemporary(id, item)
             }
             ManagerType.PRIVATE -> {
                 val resolvedUuid = resolvePrivateUuid(uuid, null)
-                privateManager.createItem(resolvedUuid, id, item, sub)
+                privateManager.createItem(resolvedUuid, normalizedId, item, sub)
             }
         }
     }
@@ -45,7 +46,7 @@ class ItemManager {
             ManagerType.PUBLIC -> public.remove(id, sub)
             ManagerType.PRIVATE -> {
                 val resolvedUuid = resolvePrivateUuid(uuid, null)
-                privateManager.deleteItem(resolvedUuid, id, sub)
+                privateManager.deleteItem(resolvedUuid, normalizePrivateItemId(id), sub)
             }
         }
     }

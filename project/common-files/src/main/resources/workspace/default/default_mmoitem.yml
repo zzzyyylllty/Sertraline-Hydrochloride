@@ -2,7 +2,8 @@ blade_of_mythic:
   mmo:
     attack-damage: 2020
     max-health: 5%
-    # If allowed is null or left a emptylist, Sertraline will detect material's suffix (e.g. diamond_boots -> boots)
+    # 如果 allowed 为空或未填写，Sertraline 将根据材质后缀自动检测（如 diamond_boots -> boots）
+    # If allowed is null or left an empty list, Sertraline will detect material's suffix (e.g. diamond_boots -> boots)
     allowed: ["hand"]
     fix-attack-speed: true
   sertraline:

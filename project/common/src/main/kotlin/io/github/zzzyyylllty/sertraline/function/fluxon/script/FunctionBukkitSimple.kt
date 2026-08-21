@@ -2,6 +2,7 @@ package io.github.zzzyyylllty.sertraline.function.fluxon.script
 
 import io.github.zzzyyylllty.sertraline.Sertraline.fluxonInst
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
+import io.github.zzzyyylllty.sertraline.logger.infoL
 import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -18,7 +19,6 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import java.util.*
 import org.bukkit.*
-import org.bukkit.block.data.BlockData
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
@@ -27,7 +27,6 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.*
 import java.io.File
 import java.net.InetAddress
-import java.util.function.Consumer
 
 @Awake(LifeCycle.ENABLE)
 fun registerFunctionBukkitSimple() {
@@ -51,7 +50,7 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "getOnlinePlayers", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getOnlinePlayers() })
         runtime.registerFunction("sertraline:bukkit", "getMaxPlayers", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getMaxPlayers() })
-        runtime.registerFunction("sertraline:bukkit", "setMaxPlayers", 1, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.setMaxPlayers(ctx!!.getNumber(0).toInt()) })
+        runtime.registerFunction("sertraline:bukkit", "setMaxPlayers", 1, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.setMaxPlayers(ctx!!.getNumber(0).toInt()) })
 
         // getPlayer (overloaded)
         runtime.registerFunction("sertraline:bukkit", "getPlayer", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
@@ -77,14 +76,14 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "getPort", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getPort() })
         runtime.registerFunction("sertraline:bukkit", "getViewDistance", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getViewDistance() })
-        runtime.registerFunction("sertraline:bukkit", "getSimulationDistance", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getSimulationDistance() })
+        runtime.registerFunction("sertraline:bukkit", "getSimulationDistance", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getSimulationDistance() ?: -1 })
         runtime.registerFunction("sertraline:bukkit", "getIp", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getIp() })
         runtime.registerFunction("sertraline:bukkit", "getWorldType", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getWorldType() })
         runtime.registerFunction("sertraline:bukkit", "getGenerateStructures", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getGenerateStructures() })
-        runtime.registerFunction("sertraline:bukkit", "getMaxWorldSize", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getMaxWorldSize() })
+        runtime.registerFunction("sertraline:bukkit", "getMaxWorldSize", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getMaxWorldSize() ?: 0 })
         runtime.registerFunction("sertraline:bukkit", "getAllowEnd", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAllowEnd() })
         runtime.registerFunction("sertraline:bukkit", "getAllowNether", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAllowNether() })
-        runtime.registerFunction("sertraline:bukkit", "isLoggingIPs", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.isLoggingIPs() })
+        runtime.registerFunction("sertraline:bukkit", "isLoggingIPs", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.isLoggingIPs() ?: false })
         runtime.registerFunction("sertraline:bukkit", "getOnlineMode", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getOnlineMode() })
         runtime.registerFunction("sertraline:bukkit", "getAllowFlight", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAllowFlight() })
         runtime.registerFunction("sertraline:bukkit", "isHardcore", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.isHardcore() })
@@ -123,8 +122,8 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "hasWhitelist", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.hasWhitelist() })
         runtime.registerFunction("sertraline:bukkit", "setWhitelist", 1, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.setWhitelist(ctx!!.getBoolean(0)) })
-        runtime.registerFunction("sertraline:bukkit", "isWhitelistEnforced", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.isWhitelistEnforced() })
-        runtime.registerFunction("sertraline:bukkit", "setWhitelistEnforced", 1, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.setWhitelistEnforced(ctx!!.getBoolean(0)) })
+        runtime.registerFunction("sertraline:bukkit", "isWhitelistEnforced", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.isWhitelistEnforced() ?: false })
+        runtime.registerFunction("sertraline:bukkit", "setWhitelistEnforced", 1, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.setWhitelistEnforced(ctx!!.getBoolean(0)) })
         runtime.registerFunction("sertraline:bukkit", "getWhitelistedPlayers", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getWhitelistedPlayers() })
         runtime.registerFunction("sertraline:bukkit", "reloadWhitelist", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.reloadWhitelist() })
 
@@ -164,7 +163,7 @@ object FunctionBukkitSimple {
         })
 
         runtime.registerFunction("sertraline:bukkit", "getWorldContainer", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getWorldContainer() })
-        runtime.registerFunction("sertraline:bukkit", "createWorldBorder", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.createWorldBorder() })
+        runtime.registerFunction("sertraline:bukkit", "createWorldBorder", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.createWorldBorder() })
 
         // --- Commands ---
 
@@ -187,13 +186,13 @@ object FunctionBukkitSimple {
             Bukkit.getRecipesFor(ctx!!.getArgumentByType(0, ItemStack::class.java)!!)
         })
         runtime.registerFunction("sertraline:bukkit", "getRecipe", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            Bukkit.getRecipe(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
+            PlatformCompat.getRecipe(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
         })
         runtime.registerFunction("sertraline:bukkit", "recipeIterator", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.recipeIterator() })
         runtime.registerFunction("sertraline:bukkit", "clearRecipes", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.clearRecipes() })
         runtime.registerFunction("sertraline:bukkit", "resetRecipes", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.resetRecipes() })
         runtime.registerFunction("sertraline:bukkit", "removeRecipe", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            Bukkit.removeRecipe(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
+            PlatformCompat.removeRecipe(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
         })
 
         // --- Banning ---
@@ -202,14 +201,15 @@ object FunctionBukkitSimple {
         runtime.registerFunction("sertraline:bukkit", "banIP", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when (val arg = ctx!!.getArgument(0)) {
                 is String -> Bukkit.banIP(arg)
-                is InetAddress -> Bukkit.banIP(arg)
+                // banIP(InetAddress) 是 1.13+ API，legacy12（v11200）只有 String 版；统一转 hostAddress
+                is InetAddress -> Bukkit.banIP(arg.hostAddress)
                 else -> throw IllegalArgumentException("Argument for banIP must be a String or InetAddress.")
             }
         })
         runtime.registerFunction("sertraline:bukkit", "unbanIP", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when (val arg = ctx!!.getArgument(0)) {
                 is String -> Bukkit.unbanIP(arg)
-                is InetAddress -> Bukkit.unbanIP(arg)
+                is InetAddress -> Bukkit.unbanIP(arg.hostAddress)
                 else -> throw IllegalArgumentException("Argument for unbanIP must be a String or InetAddress.")
             }
         })
@@ -277,7 +277,8 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "createMerchant", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
             if (ctx!!.argumentCount == 0) {
-                Bukkit.createMerchant()
+                // 走 PlatformCompat：无参 createMerchant() 是 1.21 API，legacy12（v11200）只有 String 重载
+                PlatformCompat.createMerchant()
             } else {
                 val title = when (val arg0 = ctx!!.getArgument(0)) {
                     is String -> mmUtil.deserialize(arg0)
@@ -303,7 +304,7 @@ object FunctionBukkitSimple {
         // --- MOTD and Server Icon ---
 
         runtime.registerFunction("sertraline:bukkit", "getMotd", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getMotd() }) // Deprecated
-        runtime.registerFunction("sertraline:bukkit", "setMotd", 1, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.setMotd(ctx!!.getString(0)!!) }) // Deprecated
+        runtime.registerFunction("sertraline:bukkit", "setMotd", 1, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.setMotdLegacy(ctx!!.getString(0)!!) }) // Deprecated
         runtime.registerFunction("sertraline:bukkit", "motd", -1, NativeCallable { ctx: FunctionContext<Any?>? -> // Paper API
             if (ctx!!.argumentCount == 0) {
                 PlatformCompat.getMotdComponent()
@@ -330,7 +331,7 @@ object FunctionBukkitSimple {
         runtime.registerFunction("sertraline:bukkit", "createBossBar", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when (ctx!!.argumentCount) {
                 3, 4 -> { // (title, color, style, ...flags)
-                    val title = ctx.getString(0)
+                    val title = ctx.getString(0)!!
                     val color = ctx!!.getArgumentByType(1, BarColor::class.java)!!
                     val style = ctx!!.getArgumentByType(2, BarStyle::class.java)!!
                     val flags = if (ctx!!.hasArgument(3)) ctx!!.getArgumentByType(3, Array<BarFlag>::class.java)!! else emptyArray()
@@ -339,11 +340,12 @@ object FunctionBukkitSimple {
                 4, 5 -> { // (key, title, color, style, ...flags)
                     if (ctx!!.getArgument(0) is NamespacedKey) {
                         val key = ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!
-                        val title = ctx!!.getString(1)
+                        val title = ctx!!.getString(1)!!
                         val color = ctx!!.getArgumentByType(2, BarColor::class.java)!!
                         val style = ctx!!.getArgumentByType(3, BarStyle::class.java)!!
                         val flags = if (ctx!!.hasArgument(4)) ctx!!.getArgumentByType(4, Array<BarFlag>::class.java)!! else emptyArray()
-                        Bukkit.createBossBar(key, title, color, style, *flags)
+                        // keyed 版是 1.16+ API，走 PlatformCompat（低版本降级为 String 版）
+                        PlatformCompat.createBossBar(key, title, color, style, flags)
                     } else {
                         throw IllegalArgumentException("Invalid arguments for createBossBar.")
                     }
@@ -351,30 +353,27 @@ object FunctionBukkitSimple {
                 else -> throw IllegalArgumentException("Invalid argument count for createBossBar.")
             }
         })
-        runtime.registerFunction("sertraline:bukkit", "getBossBars", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getBossBars() })
+        runtime.registerFunction("sertraline:bukkit", "getBossBars", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getBossBars() })
         runtime.registerFunction("sertraline:bukkit", "getBossBar", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            Bukkit.getBossBar(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
+            PlatformCompat.getBossBar(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
         })
         runtime.registerFunction("sertraline:bukkit", "removeBossBar", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            Bukkit.removeBossBar(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
+            PlatformCompat.removeBossBar(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
         })
 
         // --- BlockData ---
 
         runtime.registerFunction("sertraline:bukkit", "createBlockData", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
+            // BlockData 是 1.13+ API，走 PlatformCompat（低版本返回 null）
             when(val arg0 = ctx!!.getArgument(0)) {
                 is Material -> {
                     if (ctx!!.argumentCount == 1) {
-                        Bukkit.createBlockData(arg0)
+                        PlatformCompat.createBlockData(arg0, null)
                     } else {
-                        when(val arg1 = ctx!!.getArgument(1)) {
-                            is Consumer<*> -> Bukkit.createBlockData(arg0, arg1 as Consumer<BlockData>)
-                            is String -> Bukkit.createBlockData(arg0, arg1)
-                            else -> throw IllegalArgumentException("Second argument for createBlockData must be a Consumer or String.")
-                        }
+                        PlatformCompat.createBlockData(arg0, ctx!!.getArgument(1))
                     }
                 }
-                is String -> Bukkit.createBlockData(arg0)
+                is String -> PlatformCompat.createBlockData(arg0, null)
                 else -> throw IllegalArgumentException("First argument for createBlockData must be Material or String.")
             }
         })
@@ -391,7 +390,7 @@ object FunctionBukkitSimple {
         runtime.registerFunction("sertraline:bukkit", "selectEntities", 2, NativeCallable { ctx: FunctionContext<Any?>? ->
             val sender = ctx!!.getArgumentByType(0, CommandSender::class.java)!!
             val selector = ctx!!.getString(1)!!
-            Bukkit.selectEntities(sender, selector)
+            PlatformCompat.selectEntities(sender, selector)
         })
 
         // --- TPS and Ticks ---
@@ -404,9 +403,9 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "getLogger", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getLogger() })
         runtime.registerFunction("sertraline:bukkit", "getScoreboardManager", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getScoreboardManager() })
-        runtime.registerFunction("sertraline:bukkit", "getStructureManager", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getStructureManager() })
+        runtime.registerFunction("sertraline:bukkit", "getStructureManager", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getStructureManager() })
         runtime.registerFunction("sertraline:bukkit", "getLootTable", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            Bukkit.getLootTable(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
+            PlatformCompat.getLootTable(ctx!!.getArgumentByType(0, NamespacedKey::class.java)!!)
         })
         runtime.registerFunction("sertraline:bukkit", "getWarningState", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getWarningState() })
         // --- Folia Schedulers (Paper API) ---
@@ -444,7 +443,7 @@ object FunctionBukkitSimple {
 
             runtime.registerFunction("sertraline:bukkit", "isGlobalTickThread", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.isGlobalTickThread() ?: false })
         } else {
-            Bukkit.getLogger().info("[Fluxon] Folia API not available on this server type, skipping Folia-specific function registration.")
+            infoL("Info_Folia_Api_Not_Available")
         }
 
 
@@ -459,35 +458,37 @@ object FunctionBukkitSimple {
         // @Deprecated spawn limit related methods (since 1.18.1)
         runtime.registerFunction("sertraline:bukkit", "getTicksPerAnimalSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getTicksPerAnimalSpawns() })
         runtime.registerFunction("sertraline:bukkit", "getTicksPerMonsterSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getTicksPerMonsterSpawns() })
-        runtime.registerFunction("sertraline:bukkit", "getTicksPerWaterSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getTicksPerWaterSpawns() })
-        runtime.registerFunction("sertraline:bukkit", "getTicksPerWaterAmbientSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getTicksPerWaterAmbientSpawns() })
-        runtime.registerFunction("sertraline:bukkit", "getTicksPerAmbientSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getTicksPerAmbientSpawns() })
+        runtime.registerFunction("sertraline:bukkit", "getTicksPerWaterSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getTicksPerWaterSpawns() ?: 0 })
+        runtime.registerFunction("sertraline:bukkit", "getTicksPerWaterAmbientSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getTicksPerWaterAmbientSpawns() ?: 0 })
+        runtime.registerFunction("sertraline:bukkit", "getTicksPerAmbientSpawns", 0, NativeCallable { ctx: FunctionContext<Any?>? -> PlatformCompat.getTicksPerAmbientSpawns() ?: 0 })
         runtime.registerFunction("sertraline:bukkit", "getMonsterSpawnLimit", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getMonsterSpawnLimit() })
         runtime.registerFunction("sertraline:bukkit", "getAnimalSpawnLimit", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAnimalSpawnLimit() })
         runtime.registerFunction("sertraline:bukkit", "getWaterAnimalSpawnLimit", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getWaterAnimalSpawnLimit() })
         runtime.registerFunction("sertraline:bukkit", "getAmbientSpawnLimit", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAmbientSpawnLimit() })
 
         // @Deprecated createPlayerProfile (since 1.18.1)
+        // org.bukkit.profile.PlayerProfile 是 1.18.2+ API，legacy12（v11200）不存在；走 PlatformCompat（反射降级）
         runtime.registerFunction("sertraline:bukkit", "createPlayerProfile", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when(ctx!!.argumentCount) {
                 1 -> when(val arg0 = ctx!!.getArgument(0)) {
-                    is UUID -> Bukkit.createPlayerProfile(arg0)
-                    is String -> Bukkit.createPlayerProfile(arg0)
+                    is UUID -> PlatformCompat.createPlayerProfile(arg0, null)
+                    is String -> PlatformCompat.createPlayerProfile(arg0)
                     else -> throw IllegalArgumentException("Argument for createPlayerProfile must be UUID or String.")
                 }
                 2 -> {
                     val uuid = ctx!!.getArgumentByType(0, UUID::class.java)
                     val name = ctx!!.getString(1)
-                    Bukkit.createPlayerProfile(uuid, name)
+                    PlatformCompat.createPlayerProfile(uuid, name)
                 }
                 else -> throw IllegalArgumentException("Invalid argument count for createPlayerProfile.")
             }
         })
 
         // @Deprecated getRegistry (since 1.20.6)
+        // Registry 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat
         runtime.registerFunction("sertraline:bukkit", "getRegistry", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
             val clazz = ctx!!.getArgument(0) as Class<out Keyed>
-            Bukkit.getRegistry(clazz)
+            PlatformCompat.getRegistry(clazz)
         })
 
         // @Deprecated permissionMessage (Paper)
@@ -496,17 +497,18 @@ object FunctionBukkitSimple {
 
         // --- Tags ---
 
+        // Tag 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat
         runtime.registerFunction("sertraline:bukkit", "getTag", 3, NativeCallable { ctx: FunctionContext<Any?>? ->
             val registry = ctx!!.getString(0)!!
             val tagKey = ctx!!.getArgumentByType(1, NamespacedKey::class.java)!!
             val clazz = ctx!!.getArgument(2) as Class<out Keyed>
-            Bukkit.getTag(registry, tagKey, clazz)
+            PlatformCompat.getTag(registry, tagKey, clazz)
         })
 
         runtime.registerFunction("sertraline:bukkit", "getTags", 2, NativeCallable { ctx: FunctionContext<Any?>? ->
             val registry = ctx!!.getString(0)!!
             val clazz = ctx!!.getArgument(1) as Class<out Keyed>
-            Bukkit.getTags(registry, clazz)
+            PlatformCompat.getTags(registry, clazz)
         })
 
         // --- Paper-specific Profile Creation ---

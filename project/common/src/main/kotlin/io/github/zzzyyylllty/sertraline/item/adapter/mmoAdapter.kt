@@ -1,11 +1,10 @@
 package io.github.zzzyyylllty.sertraline.item.adapter
 
+import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.config.AdapterUtil
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.util.loreformat.handleLoreFormat
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
@@ -20,14 +19,8 @@ fun mmoAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack 
         return item
     }
     item.itemMeta?.let { meta ->
-        meta.addAttributeModifier(
-            Attribute.ATTACK_SPEED,
-            AttributeModifier(
-                "mmoitems:decoy",
-                0.0,
-                AttributeModifier.Operation.ADD_NUMBER
-            )
-        )
+        // Attribute API 是 1.13+，走 PlatformCompat（低版本反射缺失时静默忽略）
+        PlatformCompat.fixMmoAttackSpeed(meta)
         item.setItemMeta(meta)
     }
 

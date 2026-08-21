@@ -4,15 +4,27 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.impl.removeComponentNMS
 import io.github.zzzyyylllty.sertraline.impl.setComponentNMS
+import io.github.zzzyyylllty.sertraline.logger.warningL
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.NMSItemTag.Companion.asBukkitCopy
 import taboolib.module.nms.NMSItemTag.Companion.asNMSCopy
+import java.util.concurrent.atomic.AtomicBoolean
+
+private val warnedMinecraftComponent = AtomicBoolean(false)
 
 fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemStack {
     val item = item
     val map = (sItem.getMajorData("minecraft") as? Map<String, Any?>) ?: return item
     if (map.isEmpty()) return item
+    // DataComponent 是 1.20.5+ 特性，低版本（1.12.2 等）无法写入组件，直接跳过
+    if (!VersionHelper().isOrAbove12005()) {
+        if (warnedMinecraftComponent.compareAndSet(false, true)) {
+            warningL("WarningNotSupportDataComponent")
+        }
+        return item
+    }
     var nmsItem = asNMSCopy(item)
 
     devLog("sItem: $sItem")

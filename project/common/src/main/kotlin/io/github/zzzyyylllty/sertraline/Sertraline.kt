@@ -12,7 +12,6 @@ import io.github.zzzyyylllty.sertraline.config.loadMappingFiles
 import io.github.zzzyyylllty.sertraline.config.loadTierFiles
 import io.github.zzzyyylllty.sertraline.config.loadTypeFiles
 import io.github.zzzyyylllty.sertraline.config.loadLevelFiles
-import io.github.zzzyyylllty.sertraline.config.loadRecipeFiles
 import io.github.zzzyyylllty.sertraline.function.update.initRevisionAutoTracker
 import io.github.zzzyyylllty.sertraline.data.CraftingStation
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
@@ -20,14 +19,15 @@ import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
 import io.github.zzzyyylllty.sertraline.data.Level
+import io.github.zzzyyylllty.sertraline.compat.CompatLog
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.listener.PaperEventBridge
 import io.github.zzzyyylllty.sertraline.listener.attribute.debounceRefreshStat
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
 import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
+import io.github.zzzyyylllty.sertraline.attribute.AttributeProvider
 import io.github.zzzyyylllty.sertraline.attribute.ChotenAttributeProvider
-import io.github.zzzyyylllty.sertraline.attribute.MythicLibAttributeProvider
 import io.github.zzzyyylllty.sertraline.event.SertralineReloadEvent
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.ItemProcessorManager
 import io.github.zzzyyylllty.sertraline.listener.sertraline.builder.registerNativeAdapter
@@ -46,6 +46,8 @@ import io.github.zzzyyylllty.sertraline.util.SertralineLocalDependencyHelper
 import io.github.zzzyyylllty.sertraline.util.dependencies
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper
+import io.github.zzzyyylllty.sertraline.util.VersionHelper
+import io.github.zzzyyylllty.sertraline.util.minimessage.FastMiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.graalvm.polyglot.Source
@@ -199,6 +201,9 @@ object Sertraline : Plugin() {
     @Config("config.yml", migrate = true)
     lateinit var config: Configuration
 
+    @Config("experimental.yml", migrate = true)
+    lateinit var experimentalConfig: Configuration
+
     val _api: SertralineAPI? by lazy { SertralineAPIImpl() }
     val plugin by lazy { this }
     val dataFolder by lazy { nativeDataFolder() }
@@ -265,6 +270,8 @@ object Sertraline : Plugin() {
 
     @Awake(LifeCycle.ENABLE)
     fun onEnableLoad() {
+        // spigot 平台层通过 CompatLog 输出 i18n 警告（映射到 warningL），须在加载前注册
+        CompatLog.register { node, args -> warningL(node, *args) }
         try {
             reloadCustomConfig(false)
         } catch (e: Exception) {
@@ -290,6 +297,16 @@ object Sertraline : Plugin() {
             devMode = config.getBoolean("debug", false)
             allowAsyncLog = config.getBoolean("async-logging", true)
 
+            experimentalConfig.reload()
+            val fastMinimessage = experimentalConfig.getBoolean("fast-minimessage", false)
+            FastMiniMessage.applyConfig(
+                fastMinimessage,
+                experimentalConfig.getInt("fast-minimessage-cache-size", 2048)
+            )
+            if (VersionHelper().isLegacy() && fastMinimessage) {
+                warningL("Experimental_FastMiniMessage_Legacy_Unsupported")
+            }
+
             // save public-temporary items, restore after reload
             manager.preReload()
 
@@ -302,6 +319,7 @@ object Sertraline : Plugin() {
             types.clear()
             levels.clear()
             itemExpectedRevision.clear()
+            fileLastModified.clear()
             ketherScriptCache.clear()
             jsScriptCache.clear()
             gjsScriptCache.clear()
@@ -381,11 +399,18 @@ object Sertraline : Plugin() {
     }
 
     private fun runRecipeSyncTasks(sender: CommandSender?) {
-        try { loadRecipeFiles() } catch (e: Exception) {
-            severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+        // 自定义合成系统依赖 1.13+/1.14+ API，低版本文件已排除，直接跳过
+        if (VersionHelper().isOrAbove114()) {
+            // loadRecipeFiles 在 legacy12 构建中整体排除，反射调用，类缺失时静默跳过
+            try {
+                Class.forName("io.github.zzzyyylllty.sertraline.config.LoadRecipeFilesKt")
+                    .getMethod("loadRecipeFiles").invoke(null)
+            } catch (e: Exception) {
+                severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+            }
         }
         try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
-            severeS("Failed to load scripts: ${e.message}")
+            severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
         }
         SertralineReloadEvent().call()
         ReloadCollector.printSummary(sender)
@@ -457,6 +482,13 @@ object Sertraline : Plugin() {
 }
 
 fun registerNativeAttributeProviders() {
-    AttributeManager.register(MythicLibAttributeProvider())
+    // MythicLibAttributeProvider 依赖 io.lumine.*，legacy12 编译面不存在（文件已排除）；反射注册，类缺失时静默跳过
+    try {
+        Class.forName("io.github.zzzyyylllty.sertraline.attribute.MythicLibAttributeProvider")
+            .getDeclaredConstructor()
+            .newInstance()
+            .let { AttributeManager.register(it as AttributeProvider) }
+    } catch (_: Throwable) {
+    }
     AttributeManager.register(ChotenAttributeProvider())
 }

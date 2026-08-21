@@ -75,11 +75,14 @@ object GraalJsUtil {
 
 
     fun directEval(script: String, vars: Map<String, Any?>): Any? {
-
+        // legacy12（Java 8）：GraalJS 不捆绑且运行时下载描述被排除，
+        // 低版本映射到 JDK 内置 Nashorn（JSR 223），避免 NoClassDefFoundError
+        if (VersionHelper().isLegacy()) return evalNashorn(script, vars)
         return executeScript(script, vars)
 
     }
     fun cachedEval(script: String, vars: Map<String, Any?>): Any? {
+        if (VersionHelper().isLegacy()) return evalNashorn(script, vars)
 
         val hash = script.generateHash()
         val source = gjsScriptCache.getOrPut(hash) {
@@ -96,21 +99,71 @@ object GraalJsUtil {
 
     }
 
-    private fun executeScript(scriptOrSource: Any, vars: Map<String, Any?>): Any? {
-        createContext(vars).use { context ->
-            val bindings: Value = context.getBindings(GJS_LANG_ID)
-            vars.forEach {
-                bindings.putMember(it.key, it.value)
-            }
+    /**
+     * 以 JS 语义字符串返回执行结果（等价于 GraalJS 的 Value.toString），
+     * 用于保持旧 evalGraalJs 的输出格式（如整数 2 → "2" 而非 "2.0"）。
+     */
+    fun evalToJsString(script: String, vars: Map<String, Any?>): Any? {
+        if (VersionHelper().isLegacy()) return evalNashorn(script, vars)
+        val (context, bindings) = prepareContext(vars)
+        val result: Value = context.eval(GJS_LANG_ID, script)
+        return result?.toString() ?: result
+    }
 
-            val result: Value = when (scriptOrSource) {
-                is String -> context.eval(GJS_LANG_ID, scriptOrSource)
-                is Source -> context.eval(scriptOrSource)
-                else -> throw IllegalArgumentException("Unsupported script type: ${scriptOrSource::class.java}")
-            }
+    /**
+     * 每线程复用的 Nashorn 引擎。
+     * JSR-223 引擎非线程安全（同一实例并发 eval 会出问题），且每次创建 ScriptEngineManager + engine 开销较大，
+     * 因此按线程缓存而非全局共享。
+     */
+    internal val nashornEngineHolder = object : ThreadLocal<ScriptEngine>() {
+        override fun initialValue(): ScriptEngine =
+            ScriptEngineManager(GraalJsUtil::class.java.classLoader).getEngineByName("js")
+    }
 
-            return result.`as`(Any::class.java)
+    private fun evalNashorn(script: String, vars: Map<String, Any?>): Any? {
+        val engine = nashornEngineHolder.get() ?: run {
+            severeS("JavaScript engine not available (Nashorn)")
+            return null
         }
+        val bindings = engine.createBindings()
+        vars.forEach { (k, v) -> bindings[k] = v }
+        return engine.eval(script, bindings)
+    }
+
+    /** 每线程复用的 Graal 上下文，避免每次 eval 都创建/销毁 Context（上下文创建是主要开销） */
+    private val contextHolder = ThreadLocal<Context>()
+    private val addedKeysHolder = ThreadLocal<MutableSet<String>>()
+
+    /** 取（或创建）当前线程的上下文，注入变量，返回上下文与 bindings */
+    private fun prepareContext(vars: Map<String, Any?>): Pair<Context, Value> {
+        val context = contextHolder.get() ?: newGraalContext().also { contextHolder.set(it) }
+        val bindings: Value = context.getBindings(GJS_LANG_ID)
+        val addedKeys = addedKeysHolder.get() ?: mutableSetOf<String>().also { addedKeysHolder.set(it) }
+        // 仅清理上一次追加的 key（即本次注入的变量），避免变量残留污染；不清理脚本自身声明的全局量
+        for (key in addedKeys) {
+            try {
+                bindings.removeMember(key)
+            } catch (_: Exception) {
+            }
+        }
+        addedKeys.clear()
+        vars.forEach {
+            bindings.putMember(it.key, it.value)
+            addedKeys.add(it.key)
+        }
+        return context to bindings
+    }
+
+    private fun executeScript(scriptOrSource: Any, vars: Map<String, Any?>): Any? {
+        val (context, _) = prepareContext(vars)
+
+        val result: Value = when (scriptOrSource) {
+            is String -> context.eval(GJS_LANG_ID, scriptOrSource)
+            is Source -> context.eval(scriptOrSource)
+            else -> throw IllegalArgumentException("Unsupported script type: ${scriptOrSource::class.java}")
+        }
+
+        return result.`as`(Any::class.java)
     }
 
     fun createContext(vars: Map<String, Any?>): Context {

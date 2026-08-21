@@ -7,14 +7,14 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 fun String.toComponent(): Component {
-    return mmUtil.deserialize(this)
+    return FastMiniMessage.deserialize(this)
 }
 fun String.toComponentJson(): String {
     return mmJsonUtil.serialize(this.toComponent())
 }
 
 fun List<String>.toComponent(): List<Component> {
-    return if (config.getBoolean("performance.adventure.use-split-replace-list-serialize", false)) listOf(mmUtil.deserialize(this.joinToString("<br>"))) else this.map { mmUtil.deserialize(it) }
+    return if (config.getBoolean("performance.adventure.use-split-replace-list-serialize", false)) listOf(FastMiniMessage.deserialize(this.joinToString("<br>"))) else this.map { FastMiniMessage.deserialize(it) }
 }
 
 fun Any?.serializeComponent(): Any? {
