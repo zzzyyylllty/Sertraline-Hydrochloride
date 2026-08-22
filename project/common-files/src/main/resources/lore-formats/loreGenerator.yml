@@ -1,3 +1,4 @@
+
 loreformat:
   settings:
     # 覆盖原版lore
@@ -17,9 +18,13 @@ loreformat:
     # If the key points to a list, this format will be applied to each item in the list
     - key: "xbuilder:lore"
       content: "<!i><#999999>| {value}"
+    - key: "sertraline:type"
+    - content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
+    # {tier:id}, {tier:name}, {tier:desc}, {tier:color}, {tier:weight}
     - key: "sertraline:tier"
-      # {tier:id}, {tier:name}, {tier:desc}, {tier:color}, {tier:weight}
-      content: "<!i><white>Item Tier: <blue>{tier:format}"
+    - content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
+    - key: "sertraline:level"
+      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
     # 如果是单项 则是该内容toString之后的内容
     # If the key points to a single value, it will be converted to a string.
     # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
@@ -45,12 +50,6 @@ loreformat:
       lineMode: ANY
       lineRequire:
         - "*sertraline.vals.effect"
-    - key: "sertraline:type"
-    - content: "<!i><#AAAAAA>| <#cccccc>类型: {type:name}"
-    - key: "sertraline:tier"
-    - content: "<!i><#AAAAAA>| <#cccccc>品质: {tier:format}"
-    - key: "sertraline:level"
-      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
     - key: "minecraft:food.nutrition"
       content: "<!i><#AAAAAA>| <gold>Hunger <#aabbcc>{plus}{minus}{auto}"
     - key: "minecraft:food.saturation"

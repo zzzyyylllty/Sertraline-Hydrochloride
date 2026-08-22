@@ -169,8 +169,10 @@ data class ModernSItem(
         if (split.size >= 2) {
             val major = split[0]
             val section = location.removePrefix("${split[0]}:")
-            val cvalue = (data[major] as? Map<*,*>?)?.toMutableMap()
-            cvalue?.set(section, value)
+            // 主键 map 不存在时创建，避免对没有该命名空间的物品静默失效
+            //（如 LoreFormatUtil.generateLore 给无 sertraline 段的物品注入 defaultVars）
+            val cvalue = (data[major] as? Map<*, *>)?.toMutableMap() ?: linkedMapOf<Any?, Any?>()
+            cvalue[section] = value
             data[major] = cvalue
         } else data[location] = value
     }

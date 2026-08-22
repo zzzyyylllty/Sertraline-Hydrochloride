@@ -31,7 +31,7 @@ caffeine = "3.2.3"
 caffeineLegacy = "2.9.3"
 gson = "2.10.1"
 kotlinCrypto = "0.7.0"
-graalvm = "25.0.1"
+graalvm = "25.2.4"
 
 [libraries]
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }

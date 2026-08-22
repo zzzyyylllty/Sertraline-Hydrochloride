@@ -24,12 +24,14 @@ configurations {
 
 // legacy12（v11200 = MC 1.12.2 API）编译面不存在的类 → 排除对应文件：
 // SmithItemEvent/SmithingInventory（1.16+）、TradeSelectEvent（1.14+），1.12.2 本身无锻造台；
-// MythicLib 面（io.lumine.*，MythicLib 不支持 1.12.2）；现代合成系统（RecipeChoice/Tag/RecipeManager 均为 1.13+）
+// PlayerRiptideEvent / EntityPickupItemEvent（1.13+，独立文件）；MythicLib 面（io.lumine.*）；
+// 现代合成系统（RecipeChoice/Tag/RecipeManager 均为 1.13+）
 if (platform == "legacy12") {
     sourceSets["main"].kotlin.exclude(
         "**/listener/sertraline/itemSmithingRestriction.kt",
         "**/listener/sertraline/itemTradeRestriction.kt",
         "**/listener/action/itemActionRiptide.kt",
+        "**/listener/action/itemActionPickup.kt",
         "**/attribute/MythicLibAttributeProvider.kt",
         "**/util/dependencies/MMOUtil.kt",
         "**/recipe/ItemResolver.kt",

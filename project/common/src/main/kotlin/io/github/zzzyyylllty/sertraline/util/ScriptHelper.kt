@@ -55,7 +55,7 @@ object ScriptHelper {
 
         companion object {
             fun fromString(s: String): ScriptType = when (s.lowercase()) {
-                "graaljs" -> GRAALJS
+                "graaljs", "gjs" -> GRAALJS
                 "javascript", "js" -> JAVASCRIPT
                 "kether" -> KETHER
                 "fluxon", "fx" -> FLUXON
@@ -273,6 +273,21 @@ object ScriptHelper {
     }
 
     // ==================== 内部执行 ====================
+
+    /**
+     * 直接按类型执行一段原始脚本（不经过 scriptCache），供全局监听器等系统复用。
+     *
+     * @param type   脚本类型
+     * @param script 脚本内容
+     * @param vars   注入变量（会合并 [defaultData]）
+     * @param sender 命令发送者（用于 Kether 的权限/上下文）
+     */
+    fun executeScript(type: ScriptType, script: String, vars: Map<String, Any?>, sender: CommandSender? = null): Any? {
+        val merged = LinkedHashMap<String, Any?>()
+        merged.putAll(defaultData)
+        merged.putAll(vars)
+        return execute(ScriptEntry(type, script, "raw"), merged, sender)
+    }
 
     private fun execute(entry: ScriptEntry, vars: MutableMap<String, Any?>, sender: CommandSender?): Any? {
         devLogBypassCheck { "Executing script '${entry.source}/${entry.script.take(50)}' type=${entry.type} vars=$vars" }

@@ -10,6 +10,7 @@ import io.github.zzzyyylllty.sertraline.config.asListEnhanced
 import io.github.zzzyyylllty.sertraline.data.LineMode.*
 import io.github.zzzyyylllty.sertraline.data.LoreElement
 import io.github.zzzyyylllty.sertraline.data.LoreFormat
+import io.github.zzzyyylllty.sertraline.data.LoreSetting
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
@@ -22,24 +23,99 @@ import io.github.zzzyyylllty.sertraline.util.toLowerCase
 import org.bukkit.entity.Player
 import taboolib.platform.compat.replacePlaceholder
 import io.github.zzzyyylllty.sertraline.util.jsonUtils
+import io.github.zzzyyylllty.sertraline.data.AbstractLoreFormat
+import io.github.zzzyyylllty.sertraline.data.SwitchableLoreFormat
+import io.github.zzzyyylllty.sertraline.data.defaultData
+import io.github.zzzyyylllty.sertraline.debugMode.devLog
+import javax.script.SimpleBindings
+import taboolib.common5.Coerce
 
 
 fun handleLoreFormat(item: ModernSItem, player: Player?,orgLore: List<Component>?, isVisual: Boolean = true): List<Component>? {
-    val loreFormat = loreFormats[item.getDeepData("sertraline:lore-format")] ?: return null
+    val loreFormat = loreFormats[item.getDeepData("sertraline:lore-format")?.toString()] ?: return null
     return applyLoreFormat(item, player, orgLore, loreFormat, isVisual)
 }
 
 /**
- * 应用指定的 [LoreFormat] 生成 lore，[handleLoreFormat] 和 [LoreFormatUtil] 共用此函数。
+ * 应用指定的 [AbstractLoreFormat] 生成 lore，[handleLoreFormat] 和 [LoreFormatUtil] 共用此函数。
+ * 若为 [SwitchableLoreFormat]，先求值 pre-variables 并按 when 条件选出目标格式，再生成 lore。
+ * @param isVisual 视觉（发包）上下文。null 表示不按 visual 过滤（[LoreFormatUtil] 直接调用时始终应用）。
  */
 internal fun applyLoreFormat(
     item: ModernSItem,
     player: Player?,
     orgLore: List<Component>?,
-    loreFormat: LoreFormat,
-    isVisual: Boolean = true,
+    loreFormat: AbstractLoreFormat,
+    isVisual: Boolean? = null,
 ): List<Component>? {
-    if (loreFormat.settings.visual != isVisual) return null
+    val effective = resolveEffectiveFormat(item, player, loreFormat) ?: return null
+    return applyPlainLoreFormat(item, player, orgLore, effective, isVisual)
+}
+
+/**
+ * 递归解析 switchable 至最终的普通 [LoreFormat]；
+ * switchable 声明了 overwriteable-settings 时按字段覆盖分支目标 settings，否则沿用分支目标自身 settings。
+ */
+private fun resolveEffectiveFormat(item: ModernSItem, player: Player?, fmt: AbstractLoreFormat): LoreFormat? {
+    return when (fmt) {
+        is LoreFormat -> fmt
+        is SwitchableLoreFormat -> {
+            val target = resolveSwitchTarget(fmt, item, player) ?: return null
+            val resolved = resolveEffectiveFormat(item, player, target) ?: return null
+            val ov = fmt.settingsOverride ?: return resolved
+            // 仅覆盖显式声明的字段，未声明字段沿用分支目标自身值
+            resolved.copy(
+                settings = LoreSetting(
+                    overwrite = ov.overwrite ?: resolved.settings.overwrite,
+                    visual = ov.visual ?: resolved.settings.visual,
+                    skipBlank = ov.skipBlank ?: resolved.settings.skipBlank,
+                )
+            )
+        }
+        else -> null
+    }
+}
+
+/**
+ * 求值 pre-variables 并按顺序执行 when 条件，返回第一个命中的目标格式；无命中返回 null。
+ */
+private fun resolveSwitchTarget(sw: SwitchableLoreFormat, item: ModernSItem, player: Player?): AbstractLoreFormat? {
+    val bindings = LinkedHashMap<String, Any?>()
+    bindings.putAll(defaultData)
+    bindings["player"] = player
+    bindings["sItem"] = item
+    // pre-variables 按声明顺序求值，后声明的变量可引用先声明的变量
+    for ((name, script) in sw.preVariables) {
+        try {
+            bindings[name] = script.eval(SimpleBindings(bindings))
+        } catch (ex: Exception) {
+            // 求值失败（如 player 为 null 时依赖玩家数据的预变量）时记 debug 即可，
+            // 该场景每次生成 lore 都会走到，severeL 会造成日志刷屏
+            devLog("Switchable lore format: pre-variable \"$name\" eval failed: ${ex.message}")
+            bindings[name] = null
+        }
+    }
+    for (fork in sw.forks) {
+        try {
+            if (Coerce.toBoolean(fork.condition.eval(SimpleBindings(bindings)))) {
+                return fork.toLoreFormat
+            }
+        } catch (ex: Exception) {
+            devLog("Switchable lore format: condition eval failed, skipping fork: ${ex.message}")
+        }
+    }
+    return null
+}
+
+private fun applyPlainLoreFormat(
+    item: ModernSItem,
+    player: Player?,
+    orgLore: List<Component>?,
+    loreFormat: LoreFormat,
+    isVisual: Boolean? = null,
+): List<Component>? {
+    // 未指定视觉上下文（如 JS 工具类直接调用）时不按 visual 过滤，始终应用
+    if (isVisual != null && loreFormat.settings.visual != isVisual) return null
 
     val lore = mutableListOf<String>()
 

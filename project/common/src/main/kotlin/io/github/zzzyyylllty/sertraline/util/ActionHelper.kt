@@ -20,7 +20,7 @@ object ActionHelper {
 
     val actionInstances: Cache<String, ThrottleFunction.Parameterized<ThrottleActionLink, ThrottleActionParam>?> =
         Caffeine.newBuilder()
-            .maximumSize(100)
+            .maximumSize(1000)
             .expireAfterAccess(1, TimeUnit.HOURS)
             .build()
 
@@ -32,8 +32,8 @@ object ActionHelper {
                 if (data.bItem.isNotExist()) {
                     devLog("ItemStack is null or air or amount == 0,Skipping actions.")
                 } else {
-                    data.p.applyActions(link.str, data.e, data.ce, data.bItem!!)
-                    if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
+                    data.p.applyActions(link.str, data.e, data.ce, data.bItem!!, sItemId = data.sItemId)
+                    if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem, sItemId = data.sItemId)
                 }
             }
         }
@@ -43,8 +43,8 @@ object ActionHelper {
             if (data.bItem.isNotExist()) {
                 devLog("ItemStack is null or air or amount == 0,Skipping actions.")
             } else {
-                data.p.applyActions(link.str, data.e, data.ce, data.bItem!!)
-                if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem)
+                data.p.applyActions(link.str, data.e, data.ce, data.bItem!!, sItemId = data.sItemId)
+                if (link.subStr != null) data.p.applyActions(link.str + "@" + link.subStr, data.e, data.ce, data.bItem, sItemId = data.sItemId)
             }
         }
     }

@@ -17,13 +17,12 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerEggThrowEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.SubscribeEvent
 
@@ -38,7 +37,8 @@ data class ThrottleActionParam(
     val e: Event,
     val ce: Cancellable?,
     val bItem : ItemStack? = null,
-    val abItem : ItemStack? = null
+    val abItem : ItemStack? = null,
+    val sItemId : String? = null
 )
 
 @SubscribeEvent
@@ -113,11 +113,6 @@ fun onDrop(e: PlayerDropItemEvent) {
     throttleAction(ThrottleActionLink(uuid, "onDrop"), ThrottleActionParam(e.player, e, e, e.itemDrop.itemStack))
 }
 @SubscribeEvent
-fun onPickup(e: PlayerPickupItemEvent) {
-    val uuid = e.player.uniqueId.toString()
-    throttleAction(ThrottleActionLink(uuid, "onPickUp"), ThrottleActionParam(e.player, e, e, e.item.itemStack))
-}
-@SubscribeEvent
 fun onClickInventory(e: InventoryClickEvent) {
     if (e.whoClicked is Player) {
         val player = e.whoClicked as Player
@@ -132,4 +127,13 @@ fun onSwap(e: PlayerSwapHandItemsEvent) {
     val uuid = e.player.uniqueId.toString()
     throttleAction(ThrottleActionLink(uuid, "onSwap", "main"), ThrottleActionParam(e.player, e, e, e.mainHandItem, e.offHandItem))
     throttleAction(ThrottleActionLink(uuid, "onSwap", "off"), ThrottleActionParam(e.player, e, e, e.offHandItem, e.mainHandItem))
+}
+
+@SubscribeEvent
+fun onSneak(e: PlayerToggleSneakEvent) {
+    // PlayerToggleSneakEvent 在潜行开始和结束时各触发一次，动作可用 onSneak 或 onSneak@main / onSneak@off
+    val inv = e.player.inventory
+    val uuid = e.player.uniqueId.toString()
+    throttleAction(ThrottleActionLink(uuid, "onSneak", "main"), ThrottleActionParam(e.player, e, e, inv.itemInMainHand))
+    throttleAction(ThrottleActionLink(uuid, "onSneak", "off"), ThrottleActionParam(e.player, e, e, inv.itemInOffHand))
 }

@@ -11,6 +11,8 @@ import org.graalvm.polyglot.Value
 import taboolib.common.LifeCycle
 import taboolib.common.env.RuntimeEnv
 import taboolib.common.platform.Awake
+import java.util.Collections
+import java.util.WeakHashMap
 import javax.script.*
 import kotlin.String
 import kotlin.collections.set
@@ -53,6 +55,13 @@ val hostAccess: HostAccess? by lazy {
 
 object GraalJsUtil {
 
+    /**
+     * 所有存活 Graal Context 的弱引用集合，仅用于 DISABLE 时确定性关闭（释放 native 内存）。
+     * 弱引用：调用方随手丢弃的一次性 Context 被 GC 后不会反向阻止集合清空。
+     */
+    private val liveContexts: MutableSet<Context> =
+        Collections.newSetFromMap(Collections.synchronizedMap(WeakHashMap<Context, Boolean>()))
+
     fun compile(script: String): Source? {
         return try {
             Source.newBuilder(GJS_LANG_ID, script, "script.js").build()
@@ -64,13 +73,15 @@ object GraalJsUtil {
 
     fun newGraalContext(): Context {
 
-        return Context.newBuilder(GJS_LANG_ID)
+        val context = Context.newBuilder(GJS_LANG_ID)
 //            .allowAllAccess(true) // 过于宽松，由下方细粒度配置替代
 //            .allowHostAccess(hostAccess)
             .engine(globalGJSEngine)
             .allowHostAccess(hostAccess ?: HostAccess.ALL) // 使用细粒度配置
             .allowHostClassLookup { name -> name.startsWith("io.github.zzzyyylllty.sertraline") } // 仅允许访问插件自身类
             .build()
+        liveContexts.add(context)
+        return context
     }
 
 
@@ -137,7 +148,14 @@ object GraalJsUtil {
     /** 取（或创建）当前线程的上下文，注入变量，返回上下文与 bindings */
     private fun prepareContext(vars: Map<String, Any?>): Pair<Context, Value> {
         val context = contextHolder.get() ?: newGraalContext().also { contextHolder.set(it) }
-        val bindings: Value = context.getBindings(GJS_LANG_ID)
+        val bindings: Value = try {
+            context.getBindings(GJS_LANG_ID)
+        } catch (e: IllegalStateException) {
+            // 上下文已被 DISABLE 关闭（插件热重载后旧线程池线程仍存活），重建
+            val fresh = newGraalContext()
+            contextHolder.set(fresh)
+            fresh.getBindings(GJS_LANG_ID)
+        }
         val addedKeys = addedKeysHolder.get() ?: mutableSetOf<String>().also { addedKeysHolder.set(it) }
         // 仅清理上一次追加的 key（即本次注入的变量），避免变量残留污染；不清理脚本自身声明的全局量
         for (key in addedKeys) {
@@ -179,6 +197,18 @@ object GraalJsUtil {
     @Awake(LifeCycle.INIT)
     private fun initialize() {
         loadDependencies("graaljs")
+    }
+
+    @Awake(LifeCycle.DISABLE)
+    private fun shutdown() {
+        // 关闭所有存活 Graal Context，确定性释放其 native 内存。
+        // 若不显式 close，ThreadLocal 强引用会使 Context 永不进入 GC，native 内存随线程池线程持续泄漏
+        synchronized(liveContexts) {
+            liveContexts.forEach { ctx -> runCatching { ctx.close(true) } }
+            liveContexts.clear()
+        }
+        contextHolder.remove()
+        addedKeysHolder.remove()
     }
 
     internal fun loadDependencies(name: String) {

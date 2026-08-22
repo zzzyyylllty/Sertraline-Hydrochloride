@@ -1,0 +1,56 @@
+switchable-format:
+  mode: switch
+  overwriteable-settings:
+    overwrite: true
+    visual: true
+    auto-skip-blank: true
+  pre-variables:
+    loreMode: DataUtil.getDataAsInt(player, "loreMode")
+  when:
+    # js
+    - if: loreMode == 0
+      then: switchable_attribute
+    - if: loreMode == 1
+      then: switchable_lore
+    - then: switchable_misc
+
+
+switchable_attribute:
+  # settings: {}
+  elements:
+    - content: ""
+    - key: "*sertraline.vals.lore"
+      content: "<!i><#cccccc>| {value}"
+    - key: "*sertraline.vals.graylore"
+      content: "<!i><#777777>| {value}"
+    - content: ""
+    - key: "mmo:ATTACK_DAMAGE"
+      # {auto} for automatic round or show full value
+      # e.g. value:
+      # 114.514 -> 114.514
+      # 66.0 -> 66
+      content: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"
+switchable_lore:
+  # settings: {}
+  elements:
+    - content: ""
+    - key: "xbuilder:lore"
+      content: "<!i><#999999>| {value}"
+    - key: "sertraline:type"
+    - content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
+    - key: "sertraline:tier"
+    - content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
+    - key: "sertraline:level"
+      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
+switchable_misc:
+  # settings: {}
+  elements:
+    - key: "xbuilder:lore"
+      content: "<!i><#999999>| {value}"
+    - content: " "
+    - key: "sertraline:type"
+    - content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
+    - key: "sertraline:tier"
+    - content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
+    - key: "sertraline:level"
+      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"

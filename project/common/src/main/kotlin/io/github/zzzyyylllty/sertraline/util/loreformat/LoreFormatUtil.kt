@@ -2,7 +2,7 @@ package io.github.zzzyyylllty.sertraline.util.loreformat
 
 import io.github.zzzyyylllty.sertraline.Sertraline.loreFormats
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
-import io.github.zzzyyylllty.sertraline.data.LoreFormat
+import io.github.zzzyyylllty.sertraline.data.AbstractLoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -40,13 +40,12 @@ object LoreFormatUtil {
     ): List<Component>? {
         val loreFormat = loreFormats[format] ?: return null
         if (defaultVars != null) {
-            val originVars = sItem.getDeepData("sertraline:vars")
-            sItem.setDeepData("sertraline:vars", defaultVars)
-            try {
-                return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat)
-            } finally {
-                sItem.setDeepData("sertraline:vars", originVars)
-            }
+            // 注入 defaultVars 时操作 sItem 的深拷贝，避免污染共享模板实例
+            // （itemSerializer 对无占位符/动态数据的物品直接返回 itemMap 中的同一实例，
+            //   直接 setDeepData 会与其他玩家/线程的并发调用互相污染）
+            val working = sItem.deepCopy()
+            working.setDeepData("sertraline:vars", defaultVars)
+            return applyLoreFormat(working, player, PlatformCompat.getLore(item), loreFormat)
         }
         return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat)
     }
@@ -75,13 +74,13 @@ object LoreFormatUtil {
     }
 
     /**
-     * 获取已加载的 LoreFormat 对象。
+     * 获取已加载的 Lore 格式对象（普通或 switchable）。
      *
      * @param format Lore 格式名称
-     * @return LoreFormat 对象，不存在则返回 null
+     * @return 格式对象，不存在则返回 null
      */
     @JvmStatic
-    fun getFormat(format: String): LoreFormat? = loreFormats[format]
+    fun getFormat(format: String): AbstractLoreFormat? = loreFormats[format]
 
     /**
      * 获取所有已加载的 Lore 格式名称列表。

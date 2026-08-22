@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline
 import io.github.zzzyyylllty.sertraline.api.SertralineAPI
 import io.github.zzzyyylllty.sertraline.api.SertralineAPIImpl
 import io.github.zzzyyylllty.sertraline.config.ConfigUtil
+import io.github.zzzyyylllty.sertraline.config.CustomEventsConfig
 import io.github.zzzyyylllty.sertraline.config.TemplateManager
 import io.github.zzzyyylllty.sertraline.config.loadCraftingStationFiles
 import io.github.zzzyyylllty.sertraline.gui.CraftingStationManager
@@ -14,7 +15,7 @@ import io.github.zzzyyylllty.sertraline.config.loadTypeFiles
 import io.github.zzzyyylllty.sertraline.config.loadLevelFiles
 import io.github.zzzyyylllty.sertraline.function.update.initRevisionAutoTracker
 import io.github.zzzyyylllty.sertraline.data.CraftingStation
-import io.github.zzzyyylllty.sertraline.data.LoreFormat
+import io.github.zzzyyylllty.sertraline.data.AbstractLoreFormat
 import io.github.zzzyyylllty.sertraline.data.ModernSItem
 import io.github.zzzyyylllty.sertraline.data.Tier
 import io.github.zzzyyylllty.sertraline.data.Type
@@ -23,6 +24,8 @@ import io.github.zzzyyylllty.sertraline.compat.CompatLog
 import io.github.zzzyyylllty.sertraline.compat.PlatformCompat
 import io.github.zzzyyylllty.sertraline.listener.PaperEventBridge
 import io.github.zzzyyylllty.sertraline.listener.attribute.debounceRefreshStat
+import io.github.zzzyyylllty.sertraline.listener.custom.CustomEventListener
+import io.github.zzzyyylllty.sertraline.listener.global.GlobalListenerManager
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.debugMode.devLogSync
 import io.github.zzzyyylllty.sertraline.attribute.AttributeManager
@@ -213,7 +216,7 @@ object Sertraline : Plugin() {
 
     var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
     var mappings = LinkedHashMap<String, List<String>?>()
-    var loreFormats = LinkedHashMap<String, LoreFormat>()
+    var loreFormats = LinkedHashMap<String, AbstractLoreFormat>()
     var craftingStations = LinkedHashMap<String, CraftingStation>()
     var tiers = LinkedHashMap<String, Tier>()
     var types = LinkedHashMap<String, Type>()
@@ -255,6 +258,16 @@ object Sertraline : Plugin() {
     }
 
     override fun onDisable() {
+        // 反注册自定义事件监听
+        try {
+            CustomEventListener.unregisterAll()
+        } catch (_: Throwable) {
+        }
+        // 反注册全局监听器
+        try {
+            GlobalListenerManager.unregisterAll()
+        } catch (_: Throwable) {
+        }
         // 取消所有合成任务（保留持久化数据，玩家下次加入时可恢复）
         CraftingStationManager.shutdownAll()
         // 清理临时物品（私有临时物品在服务器关闭后销毁）
@@ -306,6 +319,9 @@ object Sertraline : Plugin() {
             if (VersionHelper().isLegacy() && fastMinimessage) {
                 warningL("Experimental_FastMiniMessage_Legacy_Unsupported")
             }
+
+            // 自定义事件注册配置独立文件
+            CustomEventsConfig.config.reload()
 
             // save public-temporary items, restore after reload
             manager.preReload()
@@ -411,6 +427,18 @@ object Sertraline : Plugin() {
         }
         try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
             severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
+        }
+        // 自定义事件监听在配置加载后于主线程重新注册（custom-events.yml）
+        try {
+            CustomEventListener.registerAll()
+        } catch (e: Exception) {
+            severeL("Config_Load_Error_Parse", "custom-events", e.message ?: "Unknown error")
+        }
+        // 全局监听器在配置加载后于主线程重新注册（global-listeners/*.yml）
+        try {
+            GlobalListenerManager.registerAll()
+        } catch (e: Exception) {
+            severeL("Config_Load_Error_Parse", "global-listeners", e.message ?: "Unknown error")
         }
         SertralineReloadEvent().call()
         ReloadCollector.printSummary(sender)

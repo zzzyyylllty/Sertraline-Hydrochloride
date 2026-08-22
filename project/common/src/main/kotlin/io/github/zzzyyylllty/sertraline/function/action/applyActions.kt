@@ -16,11 +16,11 @@ import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 import taboolib.module.nms.getItemTag
 
-fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStack, abItem: ItemStack? = null) {
+fun Player.applyActions(trigger: String, e: Event, ce: Cancellable?, i: ItemStack, abItem: ItemStack? = null, sItemId: String? = null) {
     devLog("Triggering action $trigger - ${e.eventName}")
     val player = this@applyActions
     val inv = player.inventory
-    val id = i.getItemTag(true)["sertraline_id"]?.asString() ?: return
+    val id = sItemId ?: i.getItemTag(true)["sertraline_id"]?.asString() ?: return
     if (((itemCache[id] as? Map<*,*>)?.get("actions") as? List<String>?)?.contains(trigger) != true) return
     var item : ModernSItem? = null
     val allActions = ((itemCache[id] as? Map<*,*>)?.get("preloadActions") as? LinkedHashMap<String, List<Action>>?) ?: run {

@@ -4,3 +4,5 @@ build
 .claude
 gradle.properties
 libs
+.kotlin
+hs_err_pid*.log

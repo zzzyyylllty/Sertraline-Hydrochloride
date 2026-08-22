@@ -155,6 +155,11 @@ action:
   throttle:
     onConsume: 0
 
+# 自定义事件监听已迁移至独立文件 custom-events.yml
+# Custom event listeners have been moved to the separate custom-events.yml
+# 让物品动作可以监听任意 Bukkit 事件，而不仅限于内置的 onClick / onConsume 等触发。
+# Lets item actions listen to any Bukkit event, not only the built-in onClick / onConsume triggers.
+
 database:
   # 数据库类型（true: MySQL；false: SQLite）
   # Database type (true: MySQL; false: SQLite)

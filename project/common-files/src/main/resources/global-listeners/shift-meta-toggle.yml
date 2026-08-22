@@ -1,0 +1,37 @@
+# 全局监听器配置
+# Global listener configuration
+# 与物品动作无关，监听任意 Bukkit 事件并执行脚本，适合做全局行为。
+# Listens to any Bukkit event and runs scripts, unrelated to item actions — good for global behavior.
+#
+# 字段说明 / Fields:
+#   bind             事件类（简写或全限定名，如 PlayerToggleSneakEvent / org.bukkit.event.player.PlayerToggleSneakEvent）
+#                    Event class (shorthand or fully-qualified name)
+#   priority         监听优先级：LOWEST / LOW / NORMAL / HIGH / HIGHEST / MONITOR（默认 NORMAL）
+#                    Listener priority (default NORMAL)
+#   accept-cancelled 是否处理已取消的事件（默认 false）
+#                    Whether to handle cancelled events (default false)
+#   async            是否异步执行脚本（默认 true）
+#                    Whether to run the script asynchronously (default true)
+#   condition        Kether 条件，为 false 时跳过本监听器（可选）
+#                    Kether condition; the listener is skipped when it evaluates to false (optional)
+#   eval             脚本段：键为脚本引擎，值为脚本内容（多行字符串或行列表）
+#                    Script section: key = script engine, value = script (block scalar or line list)
+#                    引擎支持 graaljs / javascript(js) / kether / fluxon(fx) / jexl
+#                    运行时注入变量：player / event / cancellableEvent / listener，并合并 defaultData
+#                    (DataUtil、Bukkit、SertralineAPI、PlayerUtil 等)
+#
+# 注意：绑定高频事件（如 PlayerMoveEvent）时脚本会每 tick 执行，请自行用 condition / 数据位限制。
+# Note: binding to high-frequency events (e.g. PlayerMoveEvent) runs every tick — throttle via condition / data yourself.
+
+sample_listener:
+  bind: "PlayerToggleSneakEvent" # OR org.bukkit.event.player.PlayerToggleSneakEvent
+  eval:
+    graaljs: |
+      if (event.isSneaking()) {
+        var currentLoreData = DataUtil.getDataAsInt(player, "loreMode")
+        if (currentLoreData >= 2) {
+          DataUtil.setData(player, "loreMode", 0)
+        } else {
+          DataUtil.setData(player, "loreMode", currentLoreData + 1)
+        }
+      }

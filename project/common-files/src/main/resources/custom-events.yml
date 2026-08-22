@@ -1,0 +1,78 @@
+# 自定义事件监听配置
+# Custom event listener configuration
+# 让物品动作可以监听任意 Bukkit 事件，而不仅限于内置的 onClick / onConsume 等触发。
+# 物品在 sertraline:actions 下使用与下方键名一致的触发名即可。
+# Let item actions listen to any Bukkit event, not only the built-in onClick / onConsume triggers.
+# Items reference these triggers by using the same key name under sertraline:actions.
+#
+# 每个注册项支持的字段：
+# Supported fields for each registration entry:
+#   class             Bukkit 事件类（支持全限定名，或省略 org.bukkit.event 前缀的简写，如 PlayerDeathEvent）
+#                     Bukkit event class (full name, or shorthand with the org.bukkit.event prefix omitted, e.g. PlayerDeathEvent)
+#   priority          监听优先级：LOWEST / LOW / NORMAL / HIGH / HIGHEST / MONITOR
+#                     Listener priority: LOWEST / LOW / NORMAL / HIGH / HIGHEST / MONITOR
+#   accept-cancelled  是否处理已取消的事件（默认 false，即忽略已取消事件）
+#                     Whether to handle cancelled events (default false, i.e. cancelled events are ignored)
+#   item-source       从玩家身上哪些位置查找触发动作的物品（多选，默认主手 + 副手）
+#                     Where to look for the triggering item on the player (multi-select, default main-hand + off-hand)
+#                     main-hand 主手 / off-hand 副手 / both-hands 双手 / armor 盔甲 /
+#                     main-hand / off-hand / both-hands / armor /
+#                     event 从事件中反射读取物品 / inventory 整个背包
+#                     event (reflect the item from the event) / inventory (whole inventory)
+#
+# 节流沿用 config.yml 的 action.throttle.<触发名>（默认 action.throttle-time，设 0 可关闭）。
+# Throttle follows config.yml's action.throttle.<trigger> (default action.throttle-time, set 0 to disable).
+# 节流按「玩家 + 触发名 + 物品槽位」独立计算：both-hands / armor / inventory 中每个物品的动作都会触发，互不影响。
+# Throttle is computed per player + trigger + item slot, so every item in both-hands / armor / inventory fires independently.
+#
+# 注意：以下内置触发名已被插件占用，禁止注册为自定义触发（会导致同一事件双重执行）：
+# Note: the following built-in triggers are reserved and must NOT be used as custom triggers (would double-fire):
+#   onClick / onRightClick / onLeftClick / onShoot / onLogin / onMine / onAttack / onConsume /
+#   onBreak / onDrop / onPickUp / onInventoryClick / onSwap / onShootTrident / onSneak
+#
+# 可选：custom-source 用事件表达式显式绑定玩家与触发物品，完全绕开启发式解析（配置后 item-source 被忽略）。
+# Optional: custom-source explicitly binds the player and the triggering item via event expressions,
+# bypassing the heuristic resolution entirely (item-source is ignored when present).
+#   player  玩家表达式，如 event.player / event.damager / event.entity
+#           player expression, e.g. event.player / event.damager / event.entity
+#   bItem   触发物品表达式，如 event.player.itemInMainHand / event.item
+#           item expression, e.g. event.player.itemInMainHand / event.item
+# 表达式根必须是 event，后续为 getter 或字段路径，如 event.damager.itemInMainHand。
+# Expression must start with "event", followed by getter or field paths, e.g. event.damager.itemInMainHand.
+
+# 示例：玩家死亡时触发物品动作
+# Example: trigger item actions when a player dies
+#onPlayerDeath:
+#  class: PlayerDeathEvent
+#  priority: NORMAL
+#  accept-cancelled: false
+#  item-source:
+#    - main-hand
+#    - off-hand
+
+# 物品侧用法：在物品的 sertraline:actions 下用同样的触发名，写动作脚本（与内置触发完全一致）
+# Item side: use the same trigger name under sertraline:actions, with action scripts
+# (identical to built-in triggers):
+# sertraline:
+#   actions:
+#     onPlayerDeath:
+#       ...
+# 一个动作可同时写多个脚本字段，全部依次执行。运行时注入 player / event / cancellableEvent / sItem 等变量。
+# An action can write multiple script fields simultaneously and execute them all sequentially.
+# Inject variables such as player/event/cancellableEvent/sItem during runtime.
+
+# 示例：custom-source 显式绑定玩家与触发物品。
+# Example: explicitly bind the player and the triggering item with custom-source.
+# 注意：Bukkit 事件里没有 "killer" getter，EntityDeathEvent 拿不到击杀者，无法启发式解析玩家。
+# 绑定近战攻击方改用 EntityDamageByEntityEvent 的 event.damager（攻击者必须是玩家才生效）；
+# 想绑定受害者，把 event.damager 换成 event.entity 即可，这会覆盖默认的「发起方优先」启发式。
+# Note: there is no "killer" getter and EntityDeathEvent cannot resolve the killer.
+# Use event.damager on EntityDamageByEntityEvent to bind the attacker (fires only when the attacker is a
+# player); to bind the victim instead, swap event.damager for event.entity, which overrides the
+# damager-first heuristic.
+#onPlayerAttack:
+#  class: EntityDamageByEntityEvent
+#  custom-source:
+#    player: event.damager
+#    bItem: event.damager.itemInMainHand
+#  accept-cancelled: false
