@@ -298,9 +298,9 @@ fun handleLoreExists(element: LoreElement,item: ModernSItem): Boolean {
             }
             return true
         }
-        NOT_ALL -> { // 全部都不包含
+        NOT_ALL -> { // 不是全部条件都存在（只要有一个不存在就显示，= ALL 的取反）
             for (e in element.lineRequire ?: emptyList()) {
-                if (handleExistLore(e, item)) return true // 如果有任何一个符合的
+                if (!handleExistLore(e, item)) return true // 如果有任何一个不存在的
             }
             return false
         }

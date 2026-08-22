@@ -195,7 +195,7 @@ private fun loadSwitchableLoreFormat(key: String, arg: Map<String, Any?>) {
     // LinkedHashMap：pre-variables 按声明顺序求值，后声明的变量可引用先声明的变量
     val preVariables = LinkedHashMap<String, CompiledScript>()
     (c.getDeep(arg, "pre-variables") as? Map<*, *>)?.forEach { (name, expr) ->
-        val compiled = expr?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.compileJS()
+        val compiled = expr?.toString()?.trim()?.takeIf { it.isNotEmpty() }?.let { compileJsSafely(it) }
         if (compiled == null) {
             warningL("LoreFormat_Switch_Load_PreVar_Compile", key, name?.toString() ?: "?", expr?.toString() ?: "")
         } else {
@@ -208,7 +208,7 @@ private fun loadSwitchableLoreFormat(key: String, arg: Map<String, Any?>) {
         val m = item as? Map<*, *> ?: continue
         val thenKey = m["then"]?.toString() ?: continue
         val target = loreFormats[thenKey] ?: throw IllegalArgumentException("target \"$thenKey\" not loaded")
-        val conditionCompiled = (m["if"]?.toString() ?: "true").compileJS()
+        val conditionCompiled = compileJsSafely(m["if"]?.toString() ?: "true")
         if (conditionCompiled == null) {
             warningL("LoreFormat_Switch_Load_Condition_Compile", key, thenKey, m["if"]?.toString() ?: "")
             continue
@@ -221,3 +221,11 @@ private fun loadSwitchableLoreFormat(key: String, arg: Map<String, Any?>) {
     loreFormats[key] = SwitchableLoreFormat(settings, preVariables, forks, settingsOverride)
     devLog("Loaded switchable lore format \"$key\" with ${forks.size} fork(s)")
 }
+
+/**
+ * 安全编译 JS：TabooLib 的 compileJS 依赖 Nashorn，在无 Nashorn 环境
+ * （JDK 15+ 无内置 Nashorn 且未安装 nashorn-core）会抛 NoClassDefFoundError（Error 而非 Exception）。
+ * 单个格式的预变量/条件编译失败只应告警跳过，不能中断整个 reload，因此统一兜底为 null。
+ */
+private fun compileJsSafely(source: String): CompiledScript? =
+    runCatching { source.compileJS() }.getOrNull()

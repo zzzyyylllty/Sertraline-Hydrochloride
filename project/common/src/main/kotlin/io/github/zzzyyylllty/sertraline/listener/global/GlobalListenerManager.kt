@@ -11,6 +11,7 @@ import io.github.zzzyyylllty.sertraline.util.ClassAliases
 import io.github.zzzyyylllty.sertraline.util.EventPlayerResolver
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper.ScriptType
+import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -198,12 +199,13 @@ object GlobalListenerManager {
     }
 
     private fun onEvent(listener: GlobalListener, event: Event) {
+        // 玩家解析一次：节流 key 与脚本变量注入共用，避免同一事件做两次反射解析
+        val player = EventPlayerResolver.resolvePlayer(event)
         // 节流放行才继续：高频事件下避免每个事件都做 condition 求值 + async 任务派发
-        if (listener.throttle > 0 && !throttleAcquire(listener, event)) {
+        if (listener.throttle > 0 && !throttleAcquire(listener, player)) {
             devLogBypassCheck { "Global listener \"${listener.name}\": throttled, skipped." }
             return
         }
-        val player = EventPlayerResolver.resolvePlayer(event)
         val vars = LinkedHashMap<String, Any?>()
         // 与 eval 脚本保持一致：condition 求值同样注入 defaultData（DataUtil/Bukkit/SertralineAPI 等）
         vars.putAll(defaultData)
@@ -229,9 +231,9 @@ object GlobalListenerManager {
     /**
      * 按（监听器文件:监听器名 + 玩家 uuid，无玩家则仅监听器）粒度判定节流窗口。
      * 返回 true 表示本次事件放行，并把放行时间更新为 now（原子，避免同窗口并发放行）。
+     * @param player 由调用方解析并传入，避免对同一事件重复反射解析
      */
-    private fun throttleAcquire(listener: GlobalListener, event: Event): Boolean {
-        val player = EventPlayerResolver.resolvePlayer(event)
+    private fun throttleAcquire(listener: GlobalListener, player: Player?): Boolean {
         val key = if (player != null) "${listener.source}:${listener.name}:${player.uniqueId}" else "${listener.source}:${listener.name}"
         val now = System.currentTimeMillis()
         val result = lastFire.compute(key) { _, last ->
