@@ -12,7 +12,7 @@ import taboolib.module.chat.impl.PropertyValue
 import taboolib.platform.BukkitListener.BukkitListener
 
 fun itemDebugger(e: ItemLoadEvent, sItem: ModernSItem) {
-    // 检查必需字段
+    // Check required fields
     val minecraft = sItem.getMajorData("minecraft") as? Map<String, Any?>?
     val xbuilder = sItem.getMajorData("xbuilder") as? Map<String, Any?>?
     if (!(xbuilder?.containsKey("material") ?: false || minecraft?.containsKey("material") ?: false)) {

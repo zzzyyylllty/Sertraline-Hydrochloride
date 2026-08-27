@@ -19,18 +19,18 @@ object FluxonShell {
         .build<String, ParsedScript>()
 
     /**
-     * 解释脚本但不执行
+     * Interprets the script but does not execute it
      */
     fun parse(script: String, env: Environment.() -> Unit = {}): ParseScript {
         return ParseScript(parse(script, FluxonRuntime.getInstance().newEnvironment().also(env)))
     }
 
     /**
-     * 执行脚本
+     * Executes the script
      *
-     * @param script      脚本文本
-     * @param useCache    是否使用缓存，如果脚本修改频繁建议不使用缓存
-     * @param env         脚本执行环境
+     * @param script      The script text
+     * @param useCache    Whether to use the cache; disable it if the script changes frequently
+     * @param env         The script execution environment
      */
     fun invoke(script: String, useCache: Boolean = true, env: Environment.() -> Unit = {}): Any? {
         val environment = FluxonRuntime.getInstance().newEnvironment().also(env)
@@ -45,10 +45,10 @@ object FluxonShell {
     }
 
     /**
-     * 执行已解析的脚本
+     * Executes an already-parsed script
      *
-     * @param parsed      已解析的脚本
-     * @param environment 脚本执行环境
+     * @param parsed       The already-parsed script
+     * @param environment  The script execution environment
      */
     fun invoke(parsed: ParsedScript, environment: Environment): Any? {
         return try {

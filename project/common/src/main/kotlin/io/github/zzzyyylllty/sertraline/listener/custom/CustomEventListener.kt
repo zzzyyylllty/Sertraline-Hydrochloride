@@ -23,14 +23,15 @@ import taboolib.library.configuration.ConfigurationSection
 import taboolib.platform.BukkitPlugin
 
 /**
- * 自定义事件注册
+ * Custom event registration
  *
- * 让物品动作可以监听任意 Bukkit 事件，而不仅限于 [io.github.zzzyyylllty.sertraline.listener.action.itemAction]
- * 中内置的 onClick / onConsume 等触发。参考 Vulpecula 的 dispatcher 注册方式：
- * 在 config.yml 的 custom-events 段注册「触发名 -> 事件类 / 优先级 / accept-cancelled / 物品来源」，
- * 物品在 sertraline:actions 下直接使用该触发名即可。
+ * Lets item actions listen to any Bukkit event, not just the built-in onClick / onConsume etc.
+ * triggers from [io.github.zzzyyylllty.sertraline.listener.action.itemAction]. Inspired by Vulpecula's
+ * dispatcher registration: define a "trigger name -> event class / priority / accept-cancelled / item source"
+ * mapping in the custom-events section of config.yml, then items simply use that trigger name under
+ * sertraline:actions.
  *
- * config.yml 示例：
+ * config.yml example:
  * ```
  * custom-events:
  *   onPlayerDeath:
@@ -42,9 +43,10 @@ import taboolib.platform.BukkitPlugin
  *       - off-hand
  * ```
  *
- * 可选：用 custom-source 以事件表达式显式绑定玩家与触发物品，覆盖 item-source 的启发式解析。
- * 注意：Bukkit 事件里没有 "killer" getter，EntityDeathEvent 拿不到击杀者；绑定近战攻击方请用
- * EntityDamageByEntityEvent 的 event.damager（攻击者必须是玩家才生效）。
+ * Optionally use custom-source to explicitly bind both the player and the trigger item with an event
+ * expression, overriding the heuristic resolution of item-source.
+ * Note: Bukkit events have no "killer" getter, so EntityDeathEvent cannot retrieve the killer; to bind a
+ * melee attacker use the event.damager of EntityDamageByEntityEvent (must be a player to take effect).
  * ```
  * custom-events:
  *   onPlayerAttack:
@@ -70,14 +72,14 @@ object CustomEventListener {
         }
     }
 
-    /** 内置触发名（itemAction / itemActionRiptide 已注册），custom-events.yml 禁止注册同名，否则同一 Bukkit 事件会被双重触发 */
+    /** Built-in trigger names (already registered by itemAction / itemActionRiptide); registering the same name in custom-events.yml is forbidden, otherwise the same Bukkit event would fire twice */
     private val builtInTriggers = setOf(
         "onClick", "onRightClick", "onLeftClick", "onShoot", "onLogin", "onMine",
         "onAttack", "onConsume", "onBreak", "onDrop", "onPickUp", "onInventoryClick",
         "onSwap", "onShootTrident", "onSneak"
     )
 
-    /** 小写化后的内置触发名集合，用于大小写不敏感的冲突检测 */
+    /** Lowercased set of built-in trigger names, for case-insensitive collision detection */
     private val builtInTriggersLower = builtInTriggers.map { it.lowercase() }.toSet()
 
     private data class Registration(
@@ -90,22 +92,22 @@ object CustomEventListener {
     )
 
     /**
-     * custom-source：用事件表达式显式绑定玩家与触发物品，覆盖默认的启发式解析。
-     * player / bItem 为「event.<getter/字段路径>」，如 event.player、event.killer、event.player.itemInMainHand。
+     * custom-source: explicitly bind player and trigger item with an event expression, overriding the default heuristic resolution.
+     * player / bItem are "event.<getter/field path>", e.g. event.player, event.killer, event.player.itemInMainHand.
      */
     private data class CustomSource(
         val playerExpr: String?,
         val bItemExpr: String?,
     ) {
-        /** 将 "event.player.itemInMainHand" 拆成 [player, itemInMainHand]；根必须是 event */
+        /** Splits "event.player.itemInMainHand" into [player, itemInMainHand]; the root must be event */
         val playerTokens: List<String>? = parseExprTokens(playerExpr)
         val bItemTokens: List<String>? = parseExprTokens(bItemExpr)
     }
 
-    /** 已解析出的物品；discriminator 用于区分同一次事件里不同来源/槽位的物品，作为节流 key 的一部分 */
+    /** A resolved item; discriminator distinguishes items from different sources/slots in the same event and becomes part of the throttle key */
     private data class ResolvedItem(val discriminator: String, val item: ItemStack)
 
-    /** 共享 Listener 实例，仅用于自定义事件注册，可整体反注册 */
+    /** Shared Listener instance, used only for custom event registration and can be unregistered as a whole */
     private val dummyListener: Listener = object : Listener {}
 
     private val registrations = mutableListOf<Registration>()
@@ -115,7 +117,7 @@ object CustomEventListener {
         "getCurrentItem", "getBow", "getArrow", "getWeapon", "getItemDrop", "getBrokenItem"
     )
 
-    /** 读取 custom-events.yml 并注册全部自定义事件监听器 */
+    /** Reads custom-events.yml and registers all custom event listeners */
     fun registerAll() {
         unregisterAll()
         val root = CustomEventsConfig.config
@@ -146,10 +148,10 @@ object CustomEventListener {
         }
     }
 
-    /** 反注册所有自定义事件监听器 */
+    /** Unregisters all custom event listeners */
     fun unregisterAll() {
         if (registrations.isEmpty()) return
-        // HandlerList.unregisterAll(Listener) 为全版本 API（cancelEvents 在 legacy12 编译面不存在）
+        // HandlerList.unregisterAll(Listener) is an all-version API (cancelEvents is absent from the legacy12 compile surface)
         try {
             HandlerList.unregisterAll(dummyListener)
         } catch (_: Throwable) {
@@ -158,7 +160,7 @@ object CustomEventListener {
     }
 
     private fun parseRegistration(trigger: String, section: ConfigurationSection): Registration {
-        // 内置触发名已在 itemAction / itemActionRiptide 注册，同名自定义触发会导致同一事件双重执行
+        // Built-in trigger names are already registered in itemAction / itemActionRiptide; a same-named custom trigger would double-execute the same event
         if (trigger.lowercase() in builtInTriggersLower) {
             error("trigger \"$trigger\" collides with a built-in trigger")
         }
@@ -181,8 +183,8 @@ object CustomEventListener {
     }
 
     /**
-     * 解析 custom-source：player / bItem 用表达式显式绑定。
-     * 存在 custom-source 时，item-source 的启发式解析被覆盖（两者同时配置以 custom-source 为准）。
+     * Parses custom-source: player / bItem are bound explicitly with expressions.
+     * When custom-source exists, the heuristic resolution of item-source is overridden (if both are configured, custom-source wins).
      */
     private fun parseCustomSource(section: ConfigurationSection?): CustomSource? {
         if (section == null) return null
@@ -190,7 +192,7 @@ object CustomEventListener {
         val bItemRaw = section.getString("bItem") ?: section.getString("item")
         val bItem = bItemRaw?.trim()
         if (player.isNullOrBlank() && bItem.isNullOrBlank()) return null
-        // 表达式必须从 event 开始，否则运行时恒解析为 null，直接报错便于配置排查
+        // The expression must start at event; otherwise it always resolves to null at runtime, so error early to ease config debugging
         if (player != null && !player.startsWith("event")) {
             error("custom-source.player must start with \"event.\", got \"$player\"")
         }
@@ -206,13 +208,13 @@ object CustomEventListener {
         return CustomSource(player, bItem)
     }
 
-    /** 把 "event.player.itemInMainHand" 拆成求值路径 [player, itemInMainHand]；根必须是 event，否则返回 null */
+    /** Splits "event.player.itemInMainHand" into an evaluation path [player, itemInMainHand]; the root must be event, otherwise returns null */
     private fun parseExprTokens(expr: String?): List<String>? {
         if (expr == null) return null
         val parts = expr.trim().split('.')
         if (parts.firstOrNull() != "event") return null
         val tokens = parts.drop(1)
-        // 空列表（如 "event" 无后续字段）视为无效
+        // An empty list (e.g. "event" with no further fields) is treated as invalid
         if (tokens.isEmpty()) return null
         return tokens
     }
@@ -238,7 +240,7 @@ object CustomEventListener {
         }
         val player = EventPlayerResolver.resolvePlayer(event)
         if (player == null) {
-            // 惰性求值：devMode 关闭时不构造字符串，避免高频事件开销
+            // Lazy evaluation: no string is constructed when devMode is off, avoiding overhead on high-frequency events
             devLogBypassCheck { "Custom event \"${reg.trigger}\" (${event.eventName}): no player resolved, skipped." }
             return
         }
@@ -247,7 +249,7 @@ object CustomEventListener {
         }
     }
 
-    /** custom-source：用表达式显式绑定 player 与触发物品，彻底绕开启发式解析 */
+    /** custom-source: explicitly binds player and trigger item with expressions, bypassing heuristic resolution entirely */
     private fun onEventWithCustomSource(reg: Registration, event: Event, cs: CustomSource) {
         val player = resolveExpression(event, cs.playerTokens) as? Player
         if (player == null) {
@@ -266,12 +268,12 @@ object CustomEventListener {
         triggerActions(reg, event, player, item, "custom")
     }
 
-    /** 统一入口：过滤非 Sertraline 物品并触发节流动作 */
+    /** Single entry point: filters out non-Sertraline items and triggers throttled actions */
     private fun triggerActions(reg: Registration, event: Event, player: Player, item: ItemStack, discriminator: String) {
         if (item.isNotExist()) return
-        // 与内置 itemAction 一致：不提前读 NBT。sertraline_id 解析 + actions 门控放在节流回调内的
-        // applyActions 里（applyActions 内部只读一次 NBT）；否则 inventory/armor 源在高频事件下
-        // 会对每个槽位每次事件都做一次深度 NBT 解析，而其中绝大多数槽位根本不是 Sertraline 物品
+        // Consistent with the built-in itemAction: NBT is not read in advance. sertraline_id resolution + the actions gate
+        // live inside applyActions in the throttle callback (applyActions reads NBT only once); otherwise inventory/armor
+        // sources would do a deep NBT parse per slot per event under high-frequency events, and most slots are not Sertraline items at all
         throttleAction(
             ThrottleActionLink(player.uniqueId.toString(), reg.trigger, discriminator),
             ThrottleActionParam(player, event, event as? Cancellable, item)
@@ -279,9 +281,10 @@ object CustomEventListener {
     }
 
     /**
-     * 解析物品并附带槽位描述（discriminator）。
-     * discriminator 会进入节流 key，同一玩家同一触发名下不同槽位的物品各自独立节流，
-     * 避免多物品来源（both-hands / armor / inventory）只有第一个物品的动作被触发。
+     * Resolves items and attaches a slot description (discriminator).
+     * The discriminator enters the throttle key, so items in different slots under the same player and trigger
+     * are throttled independently, preventing only the first item's action from firing with multiple item sources
+     * (both-hands / armor / inventory).
      */
     private fun resolveItems(player: Player, event: Event, sources: List<ItemSource>): List<ResolvedItem> {
         val items = ArrayList<ResolvedItem>()
@@ -295,7 +298,7 @@ object CustomEventListener {
                     items.add(ResolvedItem(ItemSource.OFF_HAND.key, inv.itemInOffHand))
                 }
                 ItemSource.ARMOR -> {
-                    // armorContents 顺序固定为 boots, leggings, chestplate, helmet
+                    // armorContents order is fixed: boots, leggings, chestplate, helmet
                     val slotNames = arrayOf("boots", "leggings", "chestplate", "helmet")
                     val armor = inv.armorContents
                     for (i in armor.indices) {
@@ -313,7 +316,7 @@ object CustomEventListener {
                 ItemSource.EVENT -> resolveEventItem(event)?.let { items.add(ResolvedItem(ItemSource.EVENT.key, it)) }
             }
         }
-        // 同一来源/槽位可能被重复列出（如 both-hands + main-hand 同时配置），按 discriminator 去重
+        // The same source/slot may be listed repeatedly (e.g. both-hands + main-hand configured together); deduplicate by discriminator
         return items.distinctBy { it.discriminator }
     }
 
@@ -327,7 +330,7 @@ object CustomEventListener {
         return null
     }
 
-    /** 按点分路径求值事件表达式（如 "event.player.itemInMainHand"）；根必须是 event */
+    /** Evaluates an event expression by dot-separated path (e.g. "event.player.itemInMainHand"); the root must be event */
     private fun resolveExpression(event: Event, tokens: List<String>?): Any? {
         if (tokens == null) return null
         var current: Any? = event
@@ -338,9 +341,9 @@ object CustomEventListener {
     }
 
     /**
-     * 单步解析：依次尝试 getX / isX / 原样方法名；对象上找不到时经 getInventory / getEquipment 容器再找一次
-     * （Player 没有 getItemInMainHand，但 player.inventory.itemInMainHand 有），最后兜底读取字段。
-     * 方法名可带括号（如 getItemInMainHand()）。
+     * Single-step resolution: tries getX / isX then the raw method name; if not found on the object, retries through
+     * the getInventory / getEquipment containers (Player has no getItemInMainHand, but player.inventory.itemInMainHand does),
+     * finally falling back to reading the field. Method names may include parentheses (e.g. getItemInMainHand()).
      */
     private fun resolveToken(target: Any?, rawToken: String): Any? {
         if (target == null) return null
@@ -349,7 +352,7 @@ object CustomEventListener {
         for (name in arrayOf("get$capitalized", "is$capitalized", token)) {
             EventPlayerResolver.invokeGetter(target, name)?.let { return it }
         }
-        // 常见 Bukkit 模式：物品相关 getter 挂在 inventory/equipment 上（如 event.player.itemInMainHand）
+        // Common Bukkit pattern: item-related getters hang off inventory/equipment (e.g. event.player.itemInMainHand)
         for (container in arrayOf("getInventory", "getEquipment")) {
             val holder = EventPlayerResolver.invokeGetter(target, container) ?: continue
             EventPlayerResolver.invokeGetter(holder, "get$capitalized")?.let { return it }
@@ -357,7 +360,7 @@ object CustomEventListener {
         return readField(target, token)
     }
 
-    /** 读取字段（含私有字段），找不到返回 null */
+    /** Reads a field (including private fields); returns null if not found */
     private fun readField(target: Any, name: String): Any? {
         var clazz: Class<*>? = target.javaClass
         while (clazz != null && clazz != Any::class.java) {

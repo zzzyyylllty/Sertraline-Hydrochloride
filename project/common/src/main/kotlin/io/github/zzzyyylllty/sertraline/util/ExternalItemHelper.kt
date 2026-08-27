@@ -48,6 +48,23 @@ object ExternalItemHelper {
             null
         }
     }
+
+    // ── Query helpers (based on itemBridgeAll, same bridge as build, includes sertralineprivate provider) ──
+
+    /** Whether a given external plugin has registered the given item id. */
+    fun has(plugin: String, id: String): Boolean = itemBridgeAll?.has(plugin, id) ?: false
+
+    /** Whether a plugin is registered as an external item source. */
+    fun hasProvider(plugin: String): Boolean = itemBridgeAll?.hasProvider(plugin) ?: false
+
+    /** Whether the item comes from the given plugin (and can be recognized by that provider). */
+    fun `is`(plugin: String, item: ItemStack): Boolean = itemBridgeAll?.`is`(plugin, item) ?: false
+
+    /** Gets the item's id under the given plugin, returns null if not recognized. */
+    fun idOrNull(plugin: String, item: ItemStack): String? = itemBridgeAll?.idOrNull(plugin, item)
+
+    /** Gets the item's id under the first matching provider (Pair.right), returns null if not recognized. */
+    fun getFirstId(item: ItemStack): String? = itemBridgeAll?.getFirstId(item)?.right
 }
 
 private object SertralinePrivateIBProvider : Provider<ItemStack?, Player?> {

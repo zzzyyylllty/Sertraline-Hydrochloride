@@ -24,31 +24,31 @@ val globalGJSEngine: Engine by lazy {
     Engine.newBuilder(GJS_LANG_ID)
         .allowExperimentalOptions(true)
         .option("js.ecmascript-version", "latest")
-        .option("js.nashorn-compat", "true") // Nashorn 兼容模式
+        .option("js.nashorn-compat", "true") // Nashorn compatibility mode
         .build()
 }
 
 val hostAccess: HostAccess? by lazy {
     HostAccess.newBuilder()
-//允许不受限制地访问所有公共构造函数、公共类的方法或字段
+//Allow unrestricted access to all public constructors, methods, or fields of public classes
         .allowPublicAccess(true)
-//允许客户端语言实现任何 Java 接口
+//Allow client languages to implement any Java interface
         .allowAllImplementations(true)
-//允许客户端语言实现（扩展）任何 Java 类
+//Allow client languages to implement (extend) any Java class
         .allowAllClassImplementations(true)
-//允许访问数组
+//Allow access to arrays
         .allowArrayAccess(true)
-//允许访问 List
+//Allow access to Lists
         .allowListAccess(true)
-//允许客户应用程序以缓冲区元素的形式访问 ByteBuffers
+//Allow client applications to access ByteBuffers as buffer elements
         .allowBufferAccess(false)
-//允许客户应用程序使用迭代器将可迭代对象作为值进行访问
+//Allow client applications to access iterables as values using iterators
         .allowIterableAccess(false)
-//允许客户应用程序将迭代器作为迭代器值进行访问。
+//Allow client applications to access iterators as iterator values.
         .allowIteratorAccess(true)
-//允许客户应用程序以哈希值形式访问 Map 对象
+//Allow client applications to access Map objects as hash values
         .allowMapAccess(true)
-//允许客户应用程序继承对允许方法的访问权限
+//Allow client applications to inherit access to allowed methods
         .allowAccessInheritance(false)
         .build()
 }
@@ -56,8 +56,8 @@ val hostAccess: HostAccess? by lazy {
 object GraalJsUtil {
 
     /**
-     * 所有存活 Graal Context 的弱引用集合，仅用于 DISABLE 时确定性关闭（释放 native 内存）。
-     * 弱引用：调用方随手丢弃的一次性 Context 被 GC 后不会反向阻止集合清空。
+     * A weak-reference set of all live Graal Contexts, used only to deterministically close them on DISABLE (releasing native memory).
+     * Weak references: a discarded one-off Context dropped by the caller does not block the set from being cleared once it is GC'd.
      */
     private val liveContexts: MutableSet<Context> =
         Collections.newSetFromMap(Collections.synchronizedMap(WeakHashMap<Context, Boolean>()))
@@ -67,18 +67,65 @@ object GraalJsUtil {
             Source.newBuilder(GJS_LANG_ID, script, "script.js").build()
         } catch (e: Exception) {
             e.printStackTrace()
-            null // 编译失败时返回 null
+            null // return null on compilation failure
+        }
+    }
+
+    /**
+     * Warm up a single cached [Source] by evaluating it once in a temporary Context.
+     * This triggers Truffle's partial evaluation and compilation of the AST, so the
+     * first real eval via [cachedEval] pays less (or no) compilation cost.
+     *
+     * Scripts that reference variables only available at runtime will fail during
+     * warm-up -- that is expected and silently ignored; the script will still work
+     * normally when eval'd with the correct variables later.
+     */
+    fun warmUpSource(source: Source) {
+        val ctx = newGraalContext()
+        try {
+            ctx.eval(source)
+        } catch (_: Exception) {
+            // expected: script may reference runtime-only variables, or Graal may
+            // decide not to fully compile a one-shot eval; either case is benign
+        } finally {
+            ctx.close(true)
+        }
+    }
+
+    /**
+     * Warm up every cached GraalJS script at once.
+     * Iterates over [Sertraline.gjsScriptCache] and evals each [Source] in a single
+     * temporary Context, minimizing Engine overhead across all scripts.
+     *
+     * Intended to be called from [Sertraline.reloadCustomConfig] after all scripts
+     * have been loaded and pre-compiled into [Source] objects.
+     */
+    fun warmUpAll() {
+        if (gjsScriptCache.isEmpty()) return
+        val ctx = newGraalContext()
+        try {
+            for ((_, source) in gjsScriptCache) {
+                if (source != null) {
+                    try {
+                        ctx.eval(source)
+                    } catch (_: Exception) {
+                        // expected per-source warm-up failure, continue with the next
+                    }
+                }
+            }
+        } finally {
+            ctx.close(true)
         }
     }
 
     fun newGraalContext(): Context {
 
         val context = Context.newBuilder(GJS_LANG_ID)
-//            .allowAllAccess(true) // 过于宽松，由下方细粒度配置替代
+//#            .allowAllAccess(true) // too permissive, replaced by the fine-grained config below
 //            .allowHostAccess(hostAccess)
             .engine(globalGJSEngine)
-            .allowHostAccess(hostAccess ?: HostAccess.ALL) // 使用细粒度配置
-            .allowHostClassLookup { name -> name.startsWith("io.github.zzzyyylllty.sertraline") } // 仅允许访问插件自身类
+            .allowHostAccess(hostAccess ?: HostAccess.ALL) // use fine-grained config
+            .allowHostClassLookup { name -> name.startsWith("io.github.zzzyyylllty.sertraline") } // only allow access to the plugin's own classes
             .build()
         liveContexts.add(context)
         return context
@@ -86,10 +133,10 @@ object GraalJsUtil {
 
 
     fun directEval(script: String, vars: Map<String, Any?>): Any? {
-        // legacy12（Java 8）：GraalJS 不捆绑且运行时下载描述被排除，
-        // 低版本映射到 JDK 内置 Nashorn（JSR 223），避免 NoClassDefFoundError
+        // legacy12 (Java 8): GraalJS is not bundled and its runtime download description is excluded,
+        // lower versions map to the JDK's built-in Nashorn (JSR 223), avoiding NoClassDefFoundError
         if (VersionHelper().isLegacy()) return evalNashorn(script, vars)
-        return executeScript(script, vars)
+        return executeScriptString(script, vars)
 
     }
     fun cachedEval(script: String, vars: Map<String, Any?>): Any? {
@@ -101,18 +148,18 @@ object GraalJsUtil {
         }
 
         if (source == null) {
-            // 编译失败
+            // compilation failed
             severeS("Script compilation failed for script: $script")
             return null
         }
 
-        return executeScript(source, vars)
+        return executeScriptSource(source, vars)
 
     }
 
     /**
-     * 以 JS 语义字符串返回执行结果（等价于 GraalJS 的 Value.toString），
-     * 用于保持旧 evalGraalJs 的输出格式（如整数 2 → "2" 而非 "2.0"）。
+     * Returns the execution result as a JS-semantics string (equivalent to GraalJS's Value.toString),
+     * used to preserve the old evalGraalJs output format (e.g. integer 2 → "2" rather than "2.0").
      */
     fun evalToJsString(script: String, vars: Map<String, Any?>): Any? {
         if (VersionHelper().isLegacy()) return evalNashorn(script, vars)
@@ -122,9 +169,9 @@ object GraalJsUtil {
     }
 
     /**
-     * 每线程复用的 Nashorn 引擎。
-     * JSR-223 引擎非线程安全（同一实例并发 eval 会出问题），且每次创建 ScriptEngineManager + engine 开销较大，
-     * 因此按线程缓存而非全局共享。
+     * Nashorn engine reused per-thread.
+     * JSR-223 engines are not thread-safe (concurrent evals on a single instance cause problems), and creating a new ScriptEngineManager + engine each time is costly,
+     * so it is cached per-thread rather than shared globally.
      */
     internal val nashornEngineHolder = object : ThreadLocal<ScriptEngine>() {
         override fun initialValue(): ScriptEngine =
@@ -141,23 +188,23 @@ object GraalJsUtil {
         return engine.eval(script, bindings)
     }
 
-    /** 每线程复用的 Graal 上下文，避免每次 eval 都创建/销毁 Context（上下文创建是主要开销） */
+    /** Graal context re-used per-thread, avoiding creating/destroying a Context on every eval (context creation is the main overhead) */
     private val contextHolder = ThreadLocal<Context>()
     private val addedKeysHolder = ThreadLocal<MutableSet<String>>()
 
-    /** 取（或创建）当前线程的上下文，注入变量，返回上下文与 bindings */
+    /** Get (or create) the current thread's context, inject the variables, and return the context and bindings */
     private fun prepareContext(vars: Map<String, Any?>): Pair<Context, Value> {
         val context = contextHolder.get() ?: newGraalContext().also { contextHolder.set(it) }
         val bindings: Value = try {
             context.getBindings(GJS_LANG_ID)
         } catch (e: IllegalStateException) {
-            // 上下文已被 DISABLE 关闭（插件热重载后旧线程池线程仍存活），重建
+            // the context was closed by DISABLE (old thread-pool threads still alive after hot reload), rebuild it
             val fresh = newGraalContext()
             contextHolder.set(fresh)
             fresh.getBindings(GJS_LANG_ID)
         }
         val addedKeys = addedKeysHolder.get() ?: mutableSetOf<String>().also { addedKeysHolder.set(it) }
-        // 仅清理上一次追加的 key（即本次注入的变量），避免变量残留污染；不清理脚本自身声明的全局量
+        // Only clean up the keys added last time (i.e. the variables injected this time) to avoid variable residue pollution; do not clear globals declared by the script itself
         for (key in addedKeys) {
             try {
                 bindings.removeMember(key)
@@ -172,20 +219,20 @@ object GraalJsUtil {
         return context to bindings
     }
 
-    private fun executeScript(scriptOrSource: Any, vars: Map<String, Any?>): Any? {
+    private fun executeScriptString(script: String, vars: Map<String, Any?>): Any? {
         val (context, _) = prepareContext(vars)
+        val result: Value = context.eval(GJS_LANG_ID, script)
+        return result.`as`(Any::class.java)
+    }
 
-        val result: Value = when (scriptOrSource) {
-            is String -> context.eval(GJS_LANG_ID, scriptOrSource)
-            is Source -> context.eval(scriptOrSource)
-            else -> throw IllegalArgumentException("Unsupported script type: ${scriptOrSource::class.java}")
-        }
-
+    private fun executeScriptSource(source: Source, vars: Map<String, Any?>): Any? {
+        val (context, _) = prepareContext(vars)
+        val result: Value = context.eval(source)
         return result.`as`(Any::class.java)
     }
 
     fun createContext(vars: Map<String, Any?>): Context {
-        // 初始化预热上下文
+        // initialize the warm-up context
         val context = newGraalContext()
         return context
     }
@@ -201,8 +248,8 @@ object GraalJsUtil {
 
     @Awake(LifeCycle.DISABLE)
     private fun shutdown() {
-        // 关闭所有存活 Graal Context，确定性释放其 native 内存。
-        // 若不显式 close，ThreadLocal 强引用会使 Context 永不进入 GC，native 内存随线程池线程持续泄漏
+        // Close all live Graal Contexts to deterministically release their native memory.
+        // Without explicit close, ThreadLocal strong references keep Contexts from ever being GC'd, and native memory leaks as thread-pool threads persist
         synchronized(liveContexts) {
             liveContexts.forEach { ctx -> runCatching { ctx.close(true) } }
             liveContexts.clear()

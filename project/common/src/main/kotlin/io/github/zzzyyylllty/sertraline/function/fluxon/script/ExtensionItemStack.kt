@@ -308,7 +308,7 @@ object ExtensionItemStack {
                 item.removeEnchantment(ench)
             })
 
-            // removeEnchantments（ItemStack.removeEnchantments 是 1.13+ API，逐条移除兼容 v11200）
+            // removeEnchantments (ItemStack.removeEnchantments is a 1.13+ API; removing each individually keeps v11200 compatible)
             .function("removeEnchantments", 0, NativeCallable { ctx: FunctionContext<ItemStack?>? ->
                 val item = ctx!!.getTarget() ?: throw IllegalStateException("ItemStack target is null")
                 item.enchantments.keys.forEach { item.removeEnchantment(it) }
@@ -412,7 +412,7 @@ fun asEnchantment(ctx: FunctionContext<*>, index: Int): Enchantment {
     return when(arg) {
         is Enchantment -> arg
         is String -> {
-            // Enchantment.getByKey(NamespacedKey) 是 1.13+ API；getByName 全版本可用（大写名）
+            // Enchantment.getByKey(NamespacedKey) is a 1.13+ API; getByName works on all versions (uppercase name)
             Enchantment.getByName(arg.toUpperCase())
                 ?: throw IllegalArgumentException("Cannot convert argument $index to Enchantment: $arg")
         }

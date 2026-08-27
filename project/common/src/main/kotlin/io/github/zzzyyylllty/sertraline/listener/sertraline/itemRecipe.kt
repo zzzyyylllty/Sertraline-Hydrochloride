@@ -19,10 +19,10 @@ import taboolib.module.kether.KetherShell
 import taboolib.module.kether.ScriptOptions
 
 /**
- * 配方合成事件监听器。
- * 负责：
- * 1. PrepareItemCraftEvent — 即时重建 Sertraline 物品结果（含玩家上下文）
- * 2. CraftItemEvent — 合成后执行结果函数（kether / JS / command）
+ * Recipe crafting event listener.
+ * Responsibilities:
+ * 1. PrepareItemCraftEvent — instantly rebuilds the Sertraline item result (with player context)
+ * 2. CraftItemEvent — executes the result functions after crafting (kether / JS / command)
  */
 
 private const val NAMESPACE = "sertraline"
@@ -36,7 +36,7 @@ fun onPrepareCraft(event: PrepareItemCraftEvent) {
 
     val player = event.view.player as? Player ?: return
 
-    // 只重建 Sertraline 物品结果（含玩家变量）
+    // Only rebuild the Sertraline item result (with player variables)
     val (namespace, key) = parseId(recipeData.result.itemId)
     if (namespace != NAMESPACE) return
 
@@ -69,7 +69,7 @@ fun onCraftItem(event: CraftItemEvent) {
 private fun executeFunction(func: RecipeFunction, player: Player) {
     when (func) {
         is RecipeFunction.Kether -> {
-            // textLines：Java 8 安全实现（String.lines 是 Java 11 成员方法，见 StringUtil.kt）
+            // textLines: Java 8 safe implementation (String.lines is a Java 11 member method, see StringUtil.kt)
             val script = func.script.textLines()
             if (script.isNotEmpty()) {
                 KetherShell.eval(script, ScriptOptions(sender = adaptCommandSender(player)))

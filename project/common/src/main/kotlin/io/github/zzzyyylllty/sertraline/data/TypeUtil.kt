@@ -7,12 +7,12 @@ import org.bukkit.inventory.ItemStack
 import taboolib.module.nms.getItemTag
 
 /**
- * 类型工具类，提供类型继承、元数据相关功能，可在 JS/Kether 等脚本中通过 TypeUtil 调用
+ * Type utility providing type inheritance and metadata features, usable from JS/Kether scripts via TypeUtil
  */
 object TypeUtil {
 
     /**
-     * 大小写不敏感地解析类型ID，兼容大小写不匹配的配置
+     * Resolve a type ID case-insensitively, tolerant of mismatched case in configs
      */
     private fun resolveTypeId(typeId: String): String? {
         if (types.containsKey(typeId)) return typeId
@@ -20,49 +20,49 @@ object TypeUtil {
     }
 
     /**
-     * 获取类型对象（大小写不敏感）
-     * @param typeId 类型ID
-     * @return 类型对象，不存在时返回 null
+     * Get a Type object (case-insensitive)
+     * @param typeId Type ID
+     * @return Type object, or null if it does not exist
      */
     fun getType(typeId: String): Type? {
         return resolveTypeId(typeId)?.let { types[it] }
     }
 
     /**
-     * 获取类型元数据
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return meta 值，类型或键不存在时返回 null
+     * Get Type metadata
+     * @param typeId Type ID
+     * @param key meta key
+     * @return meta value, or null if the type or key does not exist
      */
     fun getMeta(typeId: String, key: String): Any? {
         return getType(typeId)?.meta?.get(key)
     }
 
     /**
-     * 获取类型元数据并转为 Boolean（宽容解析 true/yes/1 等）
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return 解析结果，不存在时返回 false
+     * Get Type metadata as Boolean (leniently parsing true/yes/1 etc.)
+     * @param typeId Type ID
+     * @param key meta key
+     * @return the parsed result, or false if it does not exist
      */
     fun getMetaAsBoolean(typeId: String, key: String): Boolean {
         return getMeta(typeId, key)?.toBooleanTolerance() ?: false
     }
 
     /**
-     * 获取类型元数据并转为 String
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return 字符串值，不存在时返回 null
+     * Get Type metadata as String
+     * @param typeId Type ID
+     * @param key meta key
+     * @return the string value, or null if it does not exist
      */
     fun getMetaAsString(typeId: String, key: String): String? {
         return getMeta(typeId, key)?.toString()
     }
 
     /**
-     * 获取类型元数据并转为 Int
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return 整数值，不存在或非数字时返回 null
+     * Get Type metadata as Int
+     * @param typeId Type ID
+     * @param key meta key
+     * @return the integer value, or null if it does not exist or is not numeric
      */
     fun getMetaAsInt(typeId: String, key: String): Int? {
         return (getMeta(typeId, key) as? Number)?.toInt()
@@ -70,10 +70,10 @@ object TypeUtil {
     }
 
     /**
-     * 获取类型元数据并转为 Double
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return 浮点值，不存在或非数字时返回 null
+     * Get Type metadata as Double
+     * @param typeId Type ID
+     * @param key meta key
+     * @return the floating-point value, or null if it does not exist or is not numeric
      */
     fun getMetaAsDouble(typeId: String, key: String): Double? {
         return (getMeta(typeId, key) as? Number)?.toDouble()
@@ -81,10 +81,10 @@ object TypeUtil {
     }
 
     /**
-     * 获取类型元数据并转为 List
-     * @param typeId 类型ID
-     * @param key meta 键
-     * @return 列表值，不存在或非列表时返回 null
+     * Get Type metadata as List
+     * @param typeId Type ID
+     * @param key meta key
+     * @return the list value, or null if it does not exist or is not a list
      */
     @Suppress("UNCHECKED_CAST")
     fun getMetaAsList(typeId: String, key: String): List<Any?>? {
@@ -93,9 +93,9 @@ object TypeUtil {
 
 
     /**
-     * 获取类型的所有祖先（包括自身，大小写不敏感）
-     * @param typeId 类型ID
-     * @return 祖先类型ID列表，按从自身到根的顺序（第一个元素是自身）
+     * Get all ancestors of a type (including itself, case-insensitive)
+     * @param typeId Type ID
+     * @return list of ancestor type IDs, ordered from self up to the root (first element is itself)
      */
     fun getAncestors(typeId: String): List<String> {
         val visited = mutableSetOf<String>()
@@ -110,10 +110,10 @@ object TypeUtil {
     }
 
     /**
-     * 检查类型是否继承自另一个类型（或相同）
-     * @param typeId 要检查的类型ID
-     * @param potentialAncestorId 可能的祖先类型ID
-     * @return 如果typeId继承自potentialAncestorId（或相同）则返回true
+     * Check whether a type inherits from another type (or is the same)
+     * @param typeId the type ID to check
+     * @param potentialAncestorId the potential ancestor type ID
+     * @return true if typeId inherits from potentialAncestorId (or is the same)
      */
     fun isAssignableFrom(typeId: String, potentialAncestorId: String): Boolean {
         val resolved = resolveTypeId(potentialAncestorId) ?: potentialAncestorId
@@ -121,19 +121,19 @@ object TypeUtil {
     }
 
     /**
-     * 获取类型的所有后代（包括自身）
-     * 注意：此操作需要遍历所有类型，性能较差，仅适用于类型数量较少的情况
-     * @param typeId 类型ID
-     * @return 后代类型ID列表
+     * Get all descendants of a type (including itself)
+     * Note: this operation traverses all types and is slow, only suitable when the type count is small
+     * @param typeId Type ID
+     * @return list of descendant type IDs
      */
     fun getDescendants(typeId: String): List<String> {
         return types.keys.filter { isAssignableFrom(it, typeId) }
     }
 
     /**
-     * 从物品数据中获取类型ID
-     * @param itemData 物品数据
-     * @return 类型ID，如果不存在则返回null
+     * Get the type ID from item data
+     * @param itemData Item data
+     * @return the type ID, or null if it does not exist
      */
     fun getTypeIdFromItemData(itemData: Map<String, Any?>): String? {
         val typeData = itemData["sertraline:type"]
@@ -145,18 +145,18 @@ object TypeUtil {
     }
 
     /**
-     * 从物品数据中获取类型对象
-     * @param itemData 物品数据
-     * @return 类型对象，如果不存在则返回null
+     * Get a Type object from item data
+     * @param itemData Item data
+     * @return the Type object, or null if it does not exist
      */
     fun getTypeFromItemData(itemData: Map<String, Any?>): Type? {
         return getTypeIdFromItemData(itemData)?.let { getType(it) }
     }
 
     /**
-     * 从物品（ItemStack / ModernSItem / 物品数据Map）中获取类型ID
-     * @param item 物品
-     * @return 类型ID，无法识别时返回 null
+     * Get the type ID from an item (ItemStack / ModernSItem / item data Map)
+     * @param item the item
+     * @return the type ID, or null if it cannot be recognized
      */
     @Suppress("UNCHECKED_CAST")
     fun getItemTypeId(item: Any): String? {
@@ -182,10 +182,10 @@ object TypeUtil {
     }
 
     /**
-     * 检查物品的类型是否与指定类型完全一致（不包含继承，大小写不敏感）
-     * @param item 物品（ItemStack / ModernSItem / 物品数据Map）
-     * @param typeId 要匹配的类型ID，例如 "weapon"
-     * @return 完全一致返回 true；否则返回 false
+     * Check whether an item's type exactly matches the given type ID (no inheritance, case-insensitive)
+     * @param item the item (ItemStack / ModernSItem / item data Map)
+     * @param typeId the type ID to match, e.g. "weapon"
+     * @return true on an exact match; otherwise false
      */
     fun isItemIsType(item: Any, typeId: String): Boolean {
         val itemTypeId = getItemTypeId(item) ?: return false
@@ -193,10 +193,10 @@ object TypeUtil {
     }
 
     /**
-     * 检查物品的类型是否继承自指定类型（包含继承，例如 sword 继承 weapon 时返回 true，大小写不敏感）
-     * @param item 物品（ItemStack / ModernSItem / 物品数据Map）
-     * @param typeId 要匹配的类型ID，例如 "weapon"
-     * @return 物品类型为 typeId 或继承自 typeId 时返回 true；否则返回 false
+     * Check whether an item's type inherits from the given type ID (with inheritance, e.g. returns true when sword inherits from weapon, case-insensitive)
+     * @param item the item (ItemStack / ModernSItem / item data Map)
+     * @param typeId the type ID to match, e.g. "weapon"
+     * @return true if the item type is typeId or inherits from typeId; otherwise false
      */
     fun isItemIsExtendType(item: Any, typeId: String): Boolean {
         val itemTypeId = getItemTypeId(item) ?: return false

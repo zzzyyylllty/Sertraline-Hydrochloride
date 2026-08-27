@@ -4,54 +4,54 @@ import io.github.zzzyyylllty.sertraline.Sertraline.tiers
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
 
 /**
- * 品质工具类，可在 JS/Kether 等脚本中通过 TierUtil 调用
+ * Quality utility, callable from JS/Kether and other scripts via TierUtil
  */
 object TierUtil {
 
     /**
-     * 获取品质对象
-     * @param tierId 品质ID
-     * @return 品质对象，不存在时返回 null
+     * Gets a quality object
+     * @param tierId the quality ID
+     * @return the quality object, or null if it does not exist
      */
     fun getTier(tierId: String): Tier? {
         return tiers[tierId]
     }
 
     /**
-     * 获取品质元数据
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return meta 值，品质或键不存在时返回 null
+     * Gets quality metadata
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the meta value, or null if the quality or key does not exist
      */
     fun getMeta(tierId: String, key: String): Any? {
         return tiers[tierId]?.meta?.get(key)
     }
 
     /**
-     * 获取品质元数据并转为 Boolean（宽容解析 true/yes/1 等）
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return 解析结果，不存在时返回 false
+     * Gets quality metadata and converts it to a Boolean (lenient parsing of true/yes/1 etc.)
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the parse result, or false if it does not exist
      */
     fun getMetaAsBoolean(tierId: String, key: String): Boolean {
         return getMeta(tierId, key)?.toBooleanTolerance() ?: false
     }
 
     /**
-     * 获取品质元数据并转为 String
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return 字符串值，不存在时返回 null
+     * Gets quality metadata and converts it to a String
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the string value, or null if it does not exist
      */
     fun getMetaAsString(tierId: String, key: String): String? {
         return getMeta(tierId, key)?.toString()
     }
 
     /**
-     * 获取品质元数据并转为 Int
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return 整数值，不存在或非数字时返回 null
+     * Gets quality metadata and converts it to an Int
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the integer value, or null if it does not exist or is not numeric
      */
     fun getMetaAsInt(tierId: String, key: String): Int? {
         return (getMeta(tierId, key) as? Number)?.toInt()
@@ -59,10 +59,10 @@ object TierUtil {
     }
 
     /**
-     * 获取品质元数据并转为 Double
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return 浮点值，不存在或非数字时返回 null
+     * Gets quality metadata and converts it to a Double
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the floating-point value, or null if it does not exist or is not numeric
      */
     fun getMetaAsDouble(tierId: String, key: String): Double? {
         return (getMeta(tierId, key) as? Number)?.toDouble()
@@ -70,10 +70,10 @@ object TierUtil {
     }
 
     /**
-     * 获取品质元数据并转为 List
-     * @param tierId 品质ID
-     * @param key meta 键
-     * @return 列表值，不存在或非列表时返回 null
+     * Gets quality metadata and converts it to a List
+     * @param tierId the quality ID
+     * @param key the meta key
+     * @return the list value, or null if it does not exist or is not a list
      */
     @Suppress("UNCHECKED_CAST")
     fun getMetaAsList(tierId: String, key: String): List<Any?>? {

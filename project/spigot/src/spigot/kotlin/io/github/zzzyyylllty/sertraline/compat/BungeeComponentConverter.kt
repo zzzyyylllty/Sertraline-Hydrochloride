@@ -20,11 +20,12 @@ import net.md_5.bungee.api.chat.TranslatableComponent
 import java.lang.reflect.Method
 
 /**
- * adventure Component → bungee BaseComponent（Spigot 专用）。
- * Spigot 的 sendComponent/sendActionBar 走 BaseComponent 保真传递：
- * hex 颜色、装饰、子元素、click/hover 事件均保留，不再降级为 § 字符串
- * （LEGACY serialize 只对 Title/ItemMeta/Inventory 标题等无 BaseComponent API 的地方使用）。
- * bungee 无 Selector/Score/NBT 组件，这几类降级为纯文本。
+ * adventure Component → bungee BaseComponent (Spigot-specific).
+ * Spigot's sendComponent/sendActionBar go through high-fidelity BaseComponent conversion:
+ * hex colors, decorations, child elements, and click/hover events are all preserved instead of being
+ * degraded to § strings (LEGACY serialize is only used where there is no BaseComponent API,
+ * such as Title/ItemMeta/Inventory titles).
+ * bungee has no Selector/Score/NBT components, so these fall back to plain text.
  */
 object BungeeComponentConverter {
 
@@ -45,7 +46,7 @@ object BungeeComponentConverter {
             is AdventureSelector -> TextComponent(component.pattern())
             is AdventureScore -> TextComponent(listOfNotNull(component.name(), component.value()).joinToString(" "))
             is AdventureNBT<*, *> -> TextComponent(component.nbtPath())
-            // adventure 4.21+ 移除 DecoratedComponent，委托组件统一为 ScopedComponent.asComponent()
+            // adventure 4.21+ removed DecoratedComponent; delegated components are uniformly handled as ScopedComponent.asComponent()
             is AdventureScoped<*> -> convertNode(component.asComponent())
             else -> TextComponent(component.toString())
         }
@@ -53,7 +54,7 @@ object BungeeComponentConverter {
         return node
     }
 
-    /** 翻译参数：组件类转 bungee 组件；标量（String/Number/Boolean）原样交给客户端插值 */
+    /** Translation arguments: component types convert to bungee components; scalars (String/Number/Boolean) are passed to the client as-is for interpolation */
     private fun translateArg(arg: net.kyori.adventure.text.TranslationArgument): Any {
         val value = arg.value()
         return if (value is ComponentLike) convert(value.asComponent()) else value
@@ -98,13 +99,13 @@ object BungeeComponentConverter {
             net.kyori.adventure.text.event.ClickEvent.Action.SUGGEST_COMMAND -> ClickEvent.Action.SUGGEST_COMMAND
             net.kyori.adventure.text.event.ClickEvent.Action.CHANGE_PAGE -> ClickEvent.Action.CHANGE_PAGE
             net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD -> copyToClipboardAction
-            // bungee 1.20-R0.2 无 SHOW_DIALOG/CUSTOM，无法传递，跳过
+            // bungee 1.20-R0.2 has no SHOW_DIALOG/CUSTOM, cannot pass them through, so skip
             else -> null
         }
 
-    // ── bungee 1.16+ API 反射桥（v11200 = MC 1.12.2 编译面不存在，正确降级） ──
+    // ── bungee 1.16+ API reflection bridge (v11200 = MC 1.12.2 compile surface lacks these, correctly falls back) ──
 
-    // ChatColor.of(String) 是 1.16+ API；1.12.2 无 hex 颜色模型，缺失时返回 null（无色）
+    // ChatColor.of(String) is a 1.16+ API; 1.12.2 has no hex color model, so returns null when missing (no color)
     private val chatColorOfMethod: Method? by lazy {
         try { ChatColor::class.java.getMethod("of", String::class.java) } catch (_: Throwable) { null }
     }
@@ -117,7 +118,7 @@ object BungeeComponentConverter {
         }
     }
 
-    // ClickEvent.Action.COPY_TO_CLIPBOARD 是 1.16+ 枚举常量；1.12.2 缺失时该 click 事件整体丢弃
+    // ClickEvent.Action.COPY_TO_CLIPBOARD is a 1.16+ enum constant; when absent on 1.12.2, the whole click event is dropped
     private val copyToClipboardAction: ClickEvent.Action? by lazy {
         try {
             @Suppress("UNCHECKED_CAST")

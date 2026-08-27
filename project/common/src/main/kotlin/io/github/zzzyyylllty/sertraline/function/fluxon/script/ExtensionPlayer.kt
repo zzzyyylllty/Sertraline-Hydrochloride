@@ -44,7 +44,7 @@ object ExtensionPlayer {
                 }
             })
 
-            // sendComponentMessage(String | Component) - 推荐使用这个，语义更清晰
+            // sendComponentMessage(String | Component) - recommended; clearer semantics
             .function("sendComponentMessage", 1, NativeCallable { context: FunctionContext<Player?>? ->
                 val p: Player = Objects.requireNonNull<Player>(context!!.getTarget())
                 when (val arg = context.getArgument(0)) {
@@ -63,7 +63,7 @@ object ExtensionPlayer {
             // getName() -> String
             .function("getName", 0, NativeCallable { context: FunctionContext<Player?>? ->
                 val player = Objects.requireNonNull<Player>(context!!.getTarget())
-                player.name // 使用属性访问
+                player.name // Uses property access
             })
 
             // getDisplayName() -> String (Legacy)
@@ -85,7 +85,7 @@ object ExtensionPlayer {
                 when (val arg = context.getArgument(0)) {
                     is String -> PlatformCompat.setPlayerDisplayName(player, mmUtil.deserialize(arg))
                     is Component -> PlatformCompat.setPlayerDisplayName(player, arg)
-                    null -> PlatformCompat.setPlayerDisplayName(player, null) // 允许设置为 null 来重置
+                    null -> PlatformCompat.setPlayerDisplayName(player, null) // Allows resetting by setting to null
                     else -> throw IllegalArgumentException("Argument for setDisplayName must be a String, Component, or null.")
                 }
             })
@@ -96,7 +96,7 @@ object ExtensionPlayer {
                 when (val arg = context.getArgument(0)) {
                     is String -> PlatformCompat.setPlayerListName(player, mmUtil.deserialize(arg))
                     is Component -> PlatformCompat.setPlayerListName(player, arg)
-                    null -> PlatformCompat.setPlayerListName(player, null) // 允许设置为 null 来重置
+                    null -> PlatformCompat.setPlayerListName(player, null) // Allows resetting by setting to null
                     else -> throw IllegalArgumentException("Argument for setPlayerListName must be a String, Component, or null.")
                 }
             })
@@ -120,7 +120,7 @@ object ExtensionPlayer {
                 when (val arg = context.getArgument(0)) {
                     is String -> PlatformCompat.kick(player, mmUtil.deserialize(arg))
                     is Component -> PlatformCompat.kick(player, arg)
-                    null -> PlatformCompat.kick(player, null) // 如果为 null，调用默认踢出
+                    null -> PlatformCompat.kick(player, null) // If null, use the default kick
                     else -> throw IllegalArgumentException("Argument for kickPlayer must be a String, Component, or null.")
                 }
             })

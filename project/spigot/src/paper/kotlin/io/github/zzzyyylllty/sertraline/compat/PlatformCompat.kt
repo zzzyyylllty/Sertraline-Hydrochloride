@@ -45,14 +45,15 @@ import java.util.UUID
 import java.util.function.Consumer
 
 /**
- * Sertraline 平台适配层（Paper 实现，与 main 源集的同名类签名完全一致）。
- * 所有方法直接调用 Paper API，零反射，零降级。
+ * Sertraline platform adapter layer (Paper implementation, fully matching the signature of the same-named
+ * class in the main source set).
+ * All methods call the Paper API directly: zero reflection, zero fallback.
  */
 object PlatformCompat {
 
     val isPaper: Boolean = true
 
-    // ── 消息 ──────────────────────────────────────────────────────────────
+    // ── Messages ──────────────────────────────────────────────────────────────
 
     fun sendComponent(sender: CommandSender, component: Component) {
         (sender as Audience).sendMessage(component)
@@ -62,9 +63,13 @@ object PlatformCompat {
         player.sendActionBar(component)
     }
 
+    fun sendActionBarString(player: Player, string: String) {
+        player.sendActionBar(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().deserialize(string))
+    }
+
     fun sendTitle(player: Player, title: Component?, subtitle: Component?, fadeIn: Int, stay: Int, fadeOut: Int) {
-        // adventure 4.18+ 移除了 sendTitle(Component, Component, int, int, int)，
-        // 统一走 Audience.showTitle(Title)；fade 参数单位为 tick
+        // adventure 4.18+ removed sendTitle(Component, Component, int, int, int),
+        // so it uniformly goes through Audience.showTitle(Title); the fade parameters are in ticks
         player.showTitle(
             Title.title(
                 title ?: Component.empty(),
@@ -126,9 +131,10 @@ object PlatformCompat {
 
     fun getDisplayName(item: ItemStack): Component = item.displayName()
 
-    // effectiveName() 是 Paper 新 API（"name shown to player in inventory"，1.21.4+ ITEM_NAME 优先、
-    // 渲染不带 []，而 displayName/CUSTOM_NAME 渲染带白色 []），编译面 paper-api 1.21.4-R0.1 尚无此方法，
-    // 反射调用，运行时缺失时降级为 itemName → displayName → 类型翻译名
+    // effectiveName() is a new Paper API ("name shown to player in inventory", with 1.21.4+ ITEM_NAME preferred and
+    // rendered without [], whereas displayName/CUSTOM_NAME render with a white []); not present in the
+    // paper-api 1.21.4-R0.1 compile surface, so it is called via reflection and falls back to
+    // itemName → displayName → the type's translation name when absent at runtime
     private val effectiveNameMethod: Method? by lazy {
         try { ItemStack::class.java.getMethod("effectiveName") } catch (_: Throwable) { null }
     }
@@ -157,7 +163,7 @@ object PlatformCompat {
     fun setDataComponent(item: ItemStack, typeName: String, value: Any): ItemStack {
         when (typeName) {
             "CUSTOM_NAME" -> item.setData(DataComponentTypes.CUSTOM_NAME, value as Component)
-            // ITEM_NAME 1.21.4+ 渲染不带 [] 括号，与 effectiveName 语义配套
+            // ITEM_NAME 1.21.4+ is rendered without [] brackets, matching the effectiveName semantics
             "ITEM_NAME" -> item.setData(DataComponentTypes.ITEM_NAME, value as Component)
             else -> throw IllegalArgumentException("Unsupported data component type: $typeName")
         }
@@ -180,7 +186,7 @@ object PlatformCompat {
         return Bukkit.createMerchant()
     }
 
-    // ── 脚本桥：Server 的 Paper 扩展 ───────────────────────────────────────
+    // ── Script bridge: Server's Paper extensions ─────────────────────────────────────
 
     fun getMinecraftVersion(): String? = Bukkit.getMinecraftVersion()
 
@@ -267,13 +273,13 @@ object PlatformCompat {
 
     fun createProfileExact(uuid: UUID?, name: String?): Any? = uuid?.let { Bukkit.createProfileExact(it, name) }
 
-    // org.bukkit.profile.PlayerProfile（1.18.2+ API），与 createProfile 的 com.destroystokyo 版是不同类型
+    // org.bukkit.profile.PlayerProfile (1.18.2+ API), a different type from the com.destroystokyo version of createProfile
     fun createPlayerProfile(uuid: UUID?, name: String?): Any? =
         uuid?.let { if (name == null) Bukkit.createPlayerProfile(it) else Bukkit.createPlayerProfile(it, name) }
 
     fun createPlayerProfile(name: String): Any? = Bukkit.createPlayerProfile(name)
 
-    // ── 脚本桥：1.13+ Bukkit API（与 spigot 源集同名方法签名一致） ──────────
+    // ── Script bridge: 1.13+ Bukkit API (same method signatures as the spigot source set) ──────────
 
     fun setMaxPlayers(value: Int): Unit? {
         Bukkit.setMaxPlayers(value)
@@ -373,7 +379,7 @@ object PlatformCompat {
         return Unit
     }
 
-    // ── 攻击信息（damageSource 1.13+ / AbstractArrow.weapon 1.16+） ─────────
+    // ── Attack info (damageSource 1.13+ / AbstractArrow.weapon 1.16+) ─────────
 
     fun getDamageCausingPlayer(e: EntityDamageByEntityEvent): Player? = e.damageSource.causingEntity as? Player
 
@@ -381,7 +387,7 @@ object PlatformCompat {
 
     fun getProjectileWeapon(entity: Entity?): ItemStack? = (entity as? AbstractArrow)?.weapon
 
-    // ── Folia 调度器 ──────────────────────────────────────────────────────
+    // ── Folia scheduler ──────────────────────────────────────────────────────
 
     fun getRegionScheduler(): Any? = Bukkit.getRegionScheduler()
 
@@ -414,7 +420,7 @@ object PlatformCompat {
         else -> throw IllegalArgumentException("Unsupported type for isOwnedByCurrentRegion: ${obj.javaClass.name}")
     }
 
-    // ── 事件（Paper 专属，直接注册真实事件） ────────────────────────────────
+    // ── Events (Paper-specific, registers real events directly) ────────────────
 
     fun callEvent(event: Event): Boolean = event.callEvent()
 
@@ -440,6 +446,6 @@ object PlatformCompat {
     }
 
     fun registerArmorPolling(plugin: Plugin, enabled: Boolean, onArmorChange: (Player) -> Unit) {
-        // Paper 有真实事件，无需轮询
+        // Paper has a real event, so no polling is needed
     }
 }

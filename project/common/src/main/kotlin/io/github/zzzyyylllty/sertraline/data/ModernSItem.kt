@@ -101,7 +101,7 @@ data class ModernSItem(
     }
 
     /**
-     * 深拷贝，不使用 JSON 序列化/反序列化，性能远优于 serialize+deserialize
+     * Deep copy, without JSON serialization/deserialization; far faster than serialize+deserialize
      */
     fun deepCopy(): ModernSItem = ModernSItem(
         key = key,
@@ -110,8 +110,8 @@ data class ModernSItem(
     )
 
     /**
-     * 配置中是否包含 ${...}$ 占位符
-     * 在 item 加载时延迟计算一次并缓存
+     * Whether the config contains ${...}$ placeholders
+     * Computed lazily once and cached at item load time
      */
     @Transient
     private var _hasPlaceholders: Boolean? = null
@@ -124,7 +124,7 @@ data class ModernSItem(
         }
 
     /**
-     * 配置中是否包含 sertraline:dynamics 动态数据
+     * Whether the config contains sertraline:dynamics dynamic data
      */
     @Transient
     private var _hasDynamics: Boolean? = null
@@ -145,19 +145,19 @@ data class ModernSItem(
             return data[location]
         }
 
-        // 获取主键对应的数据
+        // Get the data for the major key
         val major = location.substring(0, colonIndex)
         val majorData = data[major] as? Map<*, *> ?: return null
 
-        // 获取section部分
+        // Get the section part
         val section = location.substring(colonIndex + 1)
 
         return if ('.' in section) {
-            // minecraft:food.saturation 深层读取
-            ConfigUtil.getDeep(majorData, section)  // ✓ 正确
+            // minecraft:food.saturation deep read
+            ConfigUtil.getDeep(majorData, section)  // ✓ correct
         } else {
-            // minecraft:food 浅层读取
-            majorData[section]  // ✓ 正确
+            // minecraft:food shallow read
+            majorData[section]  // ✓ correct
         }
     }
     fun getMajorData(location: String): Any? {
@@ -169,8 +169,8 @@ data class ModernSItem(
         if (split.size >= 2) {
             val major = split[0]
             val section = location.removePrefix("${split[0]}:")
-            // 主键 map 不存在时创建，避免对没有该命名空间的物品静默失效
-            //（如 LoreFormatUtil.generateLore 给无 sertraline 段的物品注入 defaultVars）
+            // Create the major map when absent, to avoid silently failing for items without that namespace
+            //(e.g. LoreFormatUtil.generateLore injecting defaultVars into items with no sertraline section)
             val cvalue = (data[major] as? Map<*, *>)?.toMutableMap() ?: linkedMapOf<Any?, Any?>()
             cvalue[section] = value
             data[major] = cvalue
@@ -186,7 +186,7 @@ fun deserializeSItem(string: String): ModernSItem {
 }
 
 /**
- * 深拷贝 LinkedHashMap
+ * Deep copy of a LinkedHashMap
  */
 @Suppress("UNCHECKED_CAST")
 fun deepCopyMap(original: LinkedHashMap<String, Any?>): LinkedHashMap<String, Any?> {
@@ -210,7 +210,7 @@ private fun deepCopyValue(value: Any?): Any? {
 }
 
 /**
- * 递归检查配置中是否包含 ${...}$ 占位符
+ * Recursively checks whether the config contains ${...}$ placeholders
  */
 fun configContainsPlaceholders(config: Map<String, Any?>): Boolean {
     for ((_, value) in config) {

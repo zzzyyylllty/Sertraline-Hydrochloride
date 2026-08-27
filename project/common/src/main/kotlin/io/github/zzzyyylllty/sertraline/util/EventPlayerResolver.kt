@@ -8,19 +8,19 @@ import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 从事件中反射解析 Player 的共享工具。
+ * Shared utility for resolving the Player from an event via reflection.
  *
- * 供自定义事件系统（[io.github.zzzyyylllty.sertraline.listener.custom.CustomEventListener]）
- * 与全局监听器系统（[io.github.zzzyyylllty.sertraline.listener.global.GlobalListenerManager]）复用，
- * 保证两种系统对同一事件的玩家解析行为一致，并共享 getter 方法缓存。
+ * Used by the custom event system ([io.github.zzzyyylllty.sertraline.listener.custom.CustomEventListener])
+ * and the global listener system ([io.github.zzzyyylllty.sertraline.listener.global.GlobalListenerManager]),
+ * ensuring both systems resolve the player from the same event consistently, and share the getter method cache.
  */
 object EventPlayerResolver {
 
     private val getterCache = ConcurrentHashMap<String, Method?>()
 
     /**
-     * 优先解析「动作发起方」（damager/killer/shooter/attacker），兜底再取 getEntity。
-     * 对 EntityDamageByEntityEvent 等事件，getEntity 是受害者，发起方优先可避免解析到错误玩家。
+     * Prefer the "action initiator" (damager/killer/shooter/attacker), falling back to getEntity.
+ * For events such as EntityDamageByEntityEvent, getEntity is the victim, so preferring the initiator avoids resolving the wrong player.
      */
     private val playerGetterNames = arrayOf(
         "getPlayer",
@@ -57,7 +57,7 @@ object EventPlayerResolver {
         }
     }
 
-    /** 兜底：扫描事件类及其父类的字段，找出 Player 类型的值 */
+    /** Fallback: scan the fields of the event class and its superclasses for a value of type Player */
     private fun scanPlayerFields(event: Event): Player? {
         var clazz: Class<*>? = event.javaClass
         while (clazz != null && clazz != Any::class.java) {

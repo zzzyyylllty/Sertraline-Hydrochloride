@@ -5,11 +5,11 @@ import org.bukkit.event.inventory.TradeSelectEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 
-// 独立文件：TradeSelectEvent 是 1.14+ API，legacy12（v11200）编译面不存在，
-// 由 common/build.gradle.kts 的 sourceSets exclude 排除（1.12.2 Bukkit 无任何村民交易事件，功能缺失）
+// Standalone file: TradeSelectEvent is a 1.14+ API and does not exist on the legacy12 (v11200) build surface,
+// excluded via sourceSets in common/build.gradle.kts (1.12.2 Bukkit has no villager trade events, feature missing)
 
 // ── villager trading ─────────────────────────────────────────────────
-// disable-village-trade: 不区分插件/原版交易，VANILLA 与 TRUE 均拦截全部交易
+// disable-village-trade: does not distinguish plugin/vanilla trades; both VANILLA and TRUE block all trades
 
 @SubscribeEvent(priority = EventPriority.HIGHEST)
 fun onTradeSelect(event: TradeSelectEvent) {

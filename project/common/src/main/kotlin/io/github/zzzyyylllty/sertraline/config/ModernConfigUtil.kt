@@ -27,7 +27,7 @@ object ConfigUtil {
         var current: Any? = input
 
         for (key in keys) {
-            if (current !is Map<*, *>) return null  // ✓ 改为 null
+            if (current !is Map<*, *>) return null  // ✓ changed to null
             current = current[key]
         }
         return current
@@ -49,7 +49,7 @@ object ConfigUtil {
         val geted = getFeatureDefault(input, feature)
         val event = FeatureLoadEvent(sItemId,geted, feature, null)
         event.call()
-        return event.result ?: geted // 如果未触发特殊处理
+        return event.result ?: geted // if no special treatment was triggered
     }
 
 
@@ -90,7 +90,7 @@ fun getFeatureDefault(input: Map<*, *>?, feature: String): Any? {
     for (entry in mapping) {
         val (namespace, id) = entry.split(":", limit = 2).let { it[0] to it.getOrElse(1) { "" } }
         val section = input[namespace] as? Map<*, *>
-        if (section?.contains(id) == true) { // 如果找到了对应的mapping
+        if (section?.contains(id) == true) { // if the corresponding mapping is found
             return section[id]
         }
     }

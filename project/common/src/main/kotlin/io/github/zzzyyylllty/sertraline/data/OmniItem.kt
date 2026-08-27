@@ -39,18 +39,18 @@ data class OmniItem(
 
         try {
             val providedItem = when {
-                // 原版物品（mc / minecraft / vanilla）
+                // Vanilla items (mc / minecraft / vanilla)
                 specialItemNamespace.contains(source) -> {
                     val params = (parameters ?: mapOf<String, Any?>()).toMutableMap()
                     params["material"] = item
                     XItemStack.deserialize(params)
                 }
-                // Sertraline 自有物品
+                // Sertraline-owned items
                 sertralineNamespace.contains(source) -> {
                     if (player != null) sertralineItemBuilder(item, player)
                     else sertralineItemBuilder(item, null)
                 }
-                // 外部插件物品（ItemsAdder, Oraxen, Nexo, CraftEngine 等）
+                // External plugin items (ItemsAdder, Oraxen, Nexo, CraftEngine, etc.)
                 else -> {
                     if (player != null) {
                         ExternalItemHelper.build(player, source, item)
@@ -64,7 +64,7 @@ data class OmniItem(
 
             if (providedItem == null) {
                 severeL("ErrorItemGenerationFailedNull", source, item)
-                // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+                // 1.13+ enum name; 1.12.2 lacks this constant; XMaterial resolves it by server version (1.12.2 -> GRASS)
 return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
             }
             itemStack = providedItem
@@ -72,7 +72,7 @@ return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
         } catch (e: Exception) {
             severeL("ErrorItemGenerationFailed", source, item)
             e.printStackTrace()
-            // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+            // 1.13+ enum name; 1.12.2 lacks this constant; XMaterial resolves it by server version (1.12.2 -> GRASS)
 return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
         }
 

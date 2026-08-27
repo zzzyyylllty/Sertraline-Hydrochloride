@@ -25,7 +25,7 @@ fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,p
         (item?.getDeepData("sertraline:vars") as Map<String, Any?>?)?.let { itemVar.putAll(it) }
     }
     val itemDynamic = (item?.getDeepData("sertraline:dynamics") as Map<String, Any?>?)
-    // context 是运行时独立数据，不持久化到 NBT，仅存在于构建时模板
+    // context is runtime-independent data, not persisted to NBT, and only exists in the build-time template
     val itemContext = (item?.getDeepData("sertraline:context") as Map<String, Any?>?)
 
     val data = ItemData(itemVal, itemVar, itemDynamic, itemContext, item?.key)
@@ -42,12 +42,13 @@ fun getSavedData(item: ModernSItem?,itemStack: ItemStack?,evalDynamic: Boolean,p
 
 fun ItemStack.getSertralineId(): String? {
 
-    val tag = this.clone().getItemTag(true)
+    val tag = this.getItemTag(true)
     return tag["sertraline_id"]?.asString()
 }
 
 /**
- * context 值转字符串：Player/Entity 返回其 name，避免输出 CraftPlayer{name=...} 之类的类描述。
+ * Converts a context value to a string: Player/Entity returns its name, avoiding a
+ * CraftPlayer{name=...}-style class description.
  */
 fun Any?.contextValue(): String? = when (this) {
     is Player -> name

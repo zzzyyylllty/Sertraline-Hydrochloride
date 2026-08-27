@@ -28,32 +28,32 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 全局监听器系统
+ * Global listener system
  *
- * 从 global-listeners/ 目录加载 YAML 监听器，绑定任意 Bukkit 事件并执行脚本。
- * 与物品动作无关，适合做全局行为（如示例中的潜行切换 loreMode）。
+ * Loads YAML listeners from the global-listeners/ directory, binds them to arbitrary Bukkit events, and executes scripts.
+ * Unrelated to item actions; suited to global behaviors (e.g. the sneaking toggle loreMode in the example).
  *
- * 配置文件格式：
+ * Configuration file format:
  * ```
  * sample_listener:
- *   bind: "PlayerToggleSneakEvent"   # 事件类，简写或全限定名
- *   priority: NORMAL                 # 可选：LOWEST/LOW/NORMAL/HIGH/HIGHEST/MONITOR
- *   accept-cancelled: false          # 可选：是否处理已取消的事件（默认 false）
- *   async: true                      # 可选：是否异步执行脚本（默认 true）
- *   throttle: 500                    # 可选：最短触发间隔（毫秒），0/缺省 = 不限频
- *   condition:                       # 可选：Kether 条件，为 false 时跳过
+ *   bind: "PlayerToggleSneakEvent"   # event class, short alias or fully qualified name
+ *   priority: NORMAL                 # optional: LOWEST/LOW/NORMAL/HIGH/HIGHEST/MONITOR
+ *   accept-cancelled: false          # optional: whether to handle cancelled events (default false)
+ *   async: true                      # optional: whether to run the script asynchronously (default true)
+ *   throttle: 500                    # optional: minimum trigger interval in ms; 0/absent = no rate limiting
+ *   condition:                       # optional: Kether condition, skipped when false
  *     - "..."
  *   eval:
  *     graaljs: |
- *       ...脚本...
+ *       ...script...
  *     kether:
  *       - "..."
  * ```
  *
- * eval 的键支持所有脚本引擎：graaljs / javascript(js) / kether / fluxon(fx) / jexl。
- * 运行时注入变量：player / event / cancellableEvent / listener，并合并 defaultData（DataUtil、Bukkit、SertralineAPI 等）。
- * throttle 按（监听器 + 玩家，无玩家则监听器全局）粒度限流：高频事件（如 PlayerMoveEvent）下
- * 每个窗口只放行一次，避免每个事件都触发一次 condition 求值与 async 任务派发。
+ * The keys of eval support all script engines: graaljs / javascript(js) / kether / fluxon(fx) / jexl.
+ * Injected runtime variables: player / event / cancellableEvent / listener, merged with defaultData (DataUtil, Bukkit, SertralineAPI, etc.).
+ * throttle rate-limits by (listener + player; listener-global when there is no player): under high-frequency events
+ * (such as PlayerMoveEvent) only once per window passes, avoiding a condition evaluation and async dispatch on every event.
  */
 object GlobalListenerManager {
 
@@ -66,19 +66,19 @@ object GlobalListenerManager {
         val condition: String?,
         val scripts: List<Pair<ScriptType, String>>,
         val source: String,
-        /** 最短触发间隔（毫秒），<=0 表示不限频 */
+        /** Minimum trigger interval in ms; <=0 means no rate limiting */
         val throttle: Long,
     )
 
-    /** 共享 Listener 实例，仅用于全局监听器注册，可整体反注册 */
+    /** Shared Listener instance, used only for global listener registration and can be unregistered as a whole */
     private val dummyListener: Listener = object : Listener {}
 
     private val registrations = mutableListOf<GlobalListener>()
 
-    /** 节流 key -> 上次放行时间戳（ms）；Bukkit 事件在主线程触发，用并发容器防御未来可能的异步注册 */
+    /** throttle key -> last release timestamp (ms); Bukkit events fire on the main thread, a concurrent container guards against possible future async registration */
     private val lastFire = ConcurrentHashMap<String, Long>()
 
-    /** 加载 global-listeners/ 目录下全部监听器并注册 */
+    /** Loads and registers all listeners under the global-listeners/ directory */
     fun registerAll() {
         unregisterAll()
         lastFire.clear()
@@ -107,7 +107,7 @@ object GlobalListenerManager {
         devLog("Global listeners: ${registrations.map { it.name }}")
     }
 
-    /** 反注册所有全局监听器 */
+    /** Unregisters all global listeners */
     fun unregisterAll() {
         if (registrations.isEmpty()) return
         try {
@@ -176,7 +176,7 @@ object GlobalListenerManager {
         }
     }
 
-    /** 解析 eval 段为「脚本类型 -> 脚本内容」列表；值可为多行字符串或行列表 */
+    /** Parses the eval section into a "script type -> script content" list; values may be multiline strings or line lists */
     private fun parseScripts(key: String, eval: ConfigurationSection?, file: String): List<Pair<ScriptType, String>> {
         val scripts = mutableListOf<Pair<ScriptType, String>>()
         if (eval == null) return scripts
@@ -199,15 +199,15 @@ object GlobalListenerManager {
     }
 
     private fun onEvent(listener: GlobalListener, event: Event) {
-        // 玩家解析一次：节流 key 与脚本变量注入共用，避免同一事件做两次反射解析
+        // Resolve the player once: shared between the throttle key and script variable injection, avoiding double reflection resolution for the same event
         val player = EventPlayerResolver.resolvePlayer(event)
-        // 节流放行才继续：高频事件下避免每个事件都做 condition 求值 + async 任务派发
+        // Continue only if the throttle allows it: avoids a condition evaluation + async dispatch for every event under high-frequency events
         if (listener.throttle > 0 && !throttleAcquire(listener, player)) {
             devLogBypassCheck { "Global listener \"${listener.name}\": throttled, skipped." }
             return
         }
         val vars = LinkedHashMap<String, Any?>()
-        // 与 eval 脚本保持一致：condition 求值同样注入 defaultData（DataUtil/Bukkit/SertralineAPI 等）
+        // Consistent with the eval scripts: the condition evaluation also injects defaultData (DataUtil/Bukkit/SertralineAPI, etc.)
         vars.putAll(defaultData)
         vars["player"] = player
         vars["event"] = event
@@ -229,9 +229,9 @@ object GlobalListenerManager {
     }
 
     /**
-     * 按（监听器文件:监听器名 + 玩家 uuid，无玩家则仅监听器）粒度判定节流窗口。
-     * 返回 true 表示本次事件放行，并把放行时间更新为 now（原子，避免同窗口并发放行）。
-     * @param player 由调用方解析并传入，避免对同一事件重复反射解析
+     * Determines the throttle window by (listener file:listener name + player uuid, listener only when there is no player).
+     * Returns true to allow this event and updates the release time to now (atomic, avoids concurrent releases within the same window).
+     * @param player resolved and passed in by the caller, avoiding repeated reflection resolution for the same event
      */
     private fun throttleAcquire(listener: GlobalListener, player: Player?): Boolean {
         val key = if (player != null) "${listener.source}:${listener.name}:${player.uniqueId}" else "${listener.source}:${listener.name}"

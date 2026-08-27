@@ -12,8 +12,8 @@ import taboolib.common.platform.function.releaseResourceFolder
 import java.io.File
 
 /**
- * 加载配方配置文件。
- * 格式参考 recipes/sample.yml。
+ * Loads recipe configuration files.
+ * Format reference: recipes/sample.yml.
  */
 fun loadRecipeFiles() {
     infoL("Recipe_Load")
@@ -30,7 +30,7 @@ fun loadRecipeFiles() {
         return
     }
 
-    // 先注销所有旧配方
+    // Unregister all old recipes first
     SertralineRecipeManager.unregisterAll()
 
     var loadedCount = 0
@@ -53,14 +53,15 @@ fun loadRecipeFiles() {
 
     infoL("Recipe_Load_Complete", loadedCount, errorCount)
 
-    // 配方书：玩家配方书默认只含已解锁配方（进度解锁），Sertraline 配方无进度来源，
-    // 需要在玩家 join 时主动解锁才能显示。reload 后同样刷新在线玩家。
+    // Recipe book: by default a player's recipe book only holds unlocked recipes (progress-based).
+    // Sertraline recipes have no progress source, so they must be actively unlocked when the player joins
+    // to become visible. Online players are likewise refreshed after a reload.
     unlockOnlinePlayers()
 }
 
 /**
- * 加载单个配方文件。
- * @return Pair(成功加载的配方数量, 错误数量)
+ * Loads a single recipe file.
+ * @return Pair(recipes loaded successfully, errors)
  */
 fun loadRecipeFile(file: File, regex: String): Pair<Int, Int> {
     if (file.isDirectory) {
@@ -107,7 +108,7 @@ fun loadRecipeFile(file: File, regex: String): Pair<Int, Int> {
     }
 }
 
-// ==================== 辅助扩展函数 ====================
+// ==================== Helper extension functions ====================
 
 private fun Map<String, Any?>.getOptional(key: String): Any? = this[key]
 private fun Map<String, Any?>.getString(key: String): String? = this[key]?.toString()
@@ -124,7 +125,7 @@ private fun Map<String, Any?>.getFlexibleList(key: String): List<Any?> {
     }
 }
 
-// ==================== 主解析函数 ====================
+// ==================== Main parsing function ====================
 
 private fun parseRecipe(id: String, map: Map<String, Any?>): RecipeData {
     val typeStr = map.getString("type") ?: throw IllegalArgumentException("Recipe $id missing type")

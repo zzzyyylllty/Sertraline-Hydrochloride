@@ -84,14 +84,14 @@ class SertralineLocalDependencyHelper {
         scope: MutableList<DependencyScope?>,
         external: Boolean = true,
     ) {
-        // 支持用户对源进行替换
+        // support the user replacing the source
         var repository = repository
         if (repository == null || repository.isEmpty()) {
             repository = defaultRepositoryCentral
         } else if (PrimitiveSettings.RUNTIME_PROPERTIES.containsKey("repo-$repository")) {
             repository = PrimitiveSettings.RUNTIME_PROPERTIES.getProperty("repo-$repository")
         }
-        // 使用 Aether 处理依赖 - 已修改 - 由于 Aether 问题，添加使用旧版加载方法的保险选项，如果Aether出错则使用旧版加载方法。
+        // Use Aether to handle dependencies - modified - due to Aether issues, added a fallback option using the legacy loading method: if Aether fails, fall back to the legacy loading method.
         if (isAetherFound) {
             try {
                 devLog("Start native Dependency loading for $url...")
@@ -163,7 +163,7 @@ class SertralineLocalDependencyHelper {
         }
     }
     /**
-     * 从本地文件中加载依赖
+     * Load dependencies from a local file
      */
     @Suppress("deprecation")
     @Throws(Throwable::class)
@@ -181,7 +181,7 @@ class SertralineLocalDependencyHelper {
             val array = parsed.getAsJsonArray()
             for (element in array) {
                 val `object` = element.getAsJsonObject()
-                // 获取检查条件
+                // get the check condition
                 val test: MutableList<String?> = ArrayList<String?>()
                 for (testElement in array(`object`, "test")) {
                     test.add(testElement.asString)
@@ -190,19 +190,19 @@ class SertralineLocalDependencyHelper {
                     devLog("Test class $test founded, skipping dependency loading.")
                     continue
                 }
-                // 获取依赖信息
+                // get the dependency information
                 val value = `object`.get("value").asString
                 val repository = find(`object`, "repository", defaultRepositoryCentral)
                 val transitive = find(`object`, "transitive")
                 val ignoreOptional = find(`object`, "ignoreOptional")
                 val ignoreException = find(`object`, "ignoreException")
                 val external = find(`object`, "external")
-                // 读取依赖范围
+                // read the dependency scopes
                 val scopes: MutableList<DependencyScope?> = ArrayList<DependencyScope?>()
                 for (scope in array(`object`, "scopes")) {
                     scopes.add(DependencyScope.valueOf(scope.asString.uppercase(Locale.getDefault())))
                 }
-                // 读取重定向规则
+                // read the relocation rules
                 val relocation: MutableList<JarRelocation?> = ArrayList<JarRelocation?>()
                 val relocate = array(`object`, "relocate")
                 var i = 0
@@ -210,7 +210,7 @@ class SertralineLocalDependencyHelper {
                     relocation.add(JarRelocation(relocate.get(i).asString, relocate.get(i + 1).asString))
                     i += 2
                 }
-                // 加载依赖
+                // load the dependency
                 loadDependency(
                     value,
                     File(defaultLibrary),
@@ -247,15 +247,15 @@ class SertralineLocalDependencyHelper {
         private var isAetherFound = false
 
         init {
-            // 当服务端版本在 1.17+ 时，可借助服务端自带的 Aether 库完成依赖下载，兼容性更高。
-            // 同时停止对 Legacy 的支持。
+            // When the server version is 1.17+, use the server's built-in Aether library to download dependencies for better compatibility.
+            // At the same time, drop support for Legacy.
             try {
                 Class.forName("org.eclipse.aether.graph.Dependency")
                 isAetherFound = true
             } catch (e: ClassNotFoundException) {
                 isAetherFound = false
             }
-            // Mohist 直接不用 Aether
+            // Mohist does not use Aether at all
             try {
                 Class.forName("com.mohistmc.MohistMC")
                 isAetherFound = false

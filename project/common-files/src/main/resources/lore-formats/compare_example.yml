@@ -1,0 +1,257 @@
+comparable_format:
+  mode: switch
+  overwriteable-settings:
+    overwrite: true
+    visual: true
+    auto-skip-blank: true
+    compare-enabled: true
+    compare:
+      target:
+        type: simple
+        # 从上到下依次判断，决定被比较的目标物品
+        # Evaluated top-to-bottom to determine the target item for comparison
+        # 可用装备槽位：HEAD, CHEST, LEGS, FEET, OFF_HAND, MAIN_HAND, SLOT_XX
+        when:
+          # 从当前物品的 sertraline:compare-path 读取目标装备槽（如 MAIN_HAND），目标为该槽位上的物品
+          # Reads the target equipment slot (e.g. MAIN_HAND) from the item's sertraline:compare-path
+          - if:
+              fixed-path: true
+            then: "%fixed%"
+          # 如果当前物品位于以下装备槽之一，则用该槽位的物品作为被比较对象
+          # If the item occupies one of these slots, use that slot's item
+          - if:
+              equipment-slot: [HEAD, CHEST, LEGS, FEET, OFF_HAND]
+            then: "%equipment-slot%"
+
+        # ── Optional filter gate (runs after the target resolves) ───────────────────
+        # First matching entry decides; nothing matches -> proceed.
+        #   then: deny  -> skip the whole comparison (compare-enabled treated as false)
+        #   then: allow -> stop evaluating and proceed with the comparison
+        # Condition variables: player, currentItem, compareItem (ItemStacks), and
+        # currentSItem, compareSItem (ModernSItems for getDeepData / .key access).
+        # currentItem/compareItem are built ONCE per render, so it's cheap to call
+        # ItemStackUtil.isSelf(currentItem, compareItem) here.
+      #         filter:
+      #           when:
+      #             - if:
+      #                 self-compare: true
+      #               then: deny
+      #             - if:
+      #                 lore-format: |
+      #                   comparable_format
+      #               then: allow
+      # #            - if:
+      # #                # 可用变量：currentValue（当前值）、compareValue（被比较值）、differentValue（差值，正数为当前更高）
+      # #                # Available variables: currentValue, compareValue, differentValue (positive = current is higher)
+      # #                js: |
+      # #                  currentValue <= compareValue
+      # #              then: deny
+      #             - then: deny
+      compares:
+        simple_example:
+          type: data
+          # 从上到下依次判断，匹配第一个条件后返回对应结果
+          # Evaluated top-to-bottom; the first match returns the result string
+          # 特殊说明：
+          # result-limit 可选值：DEFAULT（默认）、NEW、LOST
+          # DEFAULT = 任意一方不存在时视为 default-value（默认0.0）
+          # NEW     = 仅当被比较方不存在该数值时进行判断
+          # LOST    = 仅当当前物品不存在该数值时进行判断
+          when:
+            - result: "lost"
+              result-limit: LOST
+            - result: "new"
+              result-limit: NEW
+            - operator: EQUAL
+              value: "0"
+              result: "equal"
+            - operator: GREATER_THAN
+              value: "10"
+              result: "very_high"
+            - operator: LESS_THAN
+              value: "10"
+              result: "very_low"
+            - operator: GREATER_THAN
+              value: "0"
+              result: "high"
+            - operator: LESS_THAN
+              value: "0"
+              result: "low"
+        # 顶层作用域不能使用 return——return 只能出现在函数体内，所以必须包裹一层函数
+        # return is only allowed inside a function body, so wrap the logic in a function
+        # 可用变量：currentValue（当前值）、compareValue（被比较值）、differentValue（差值，正数为当前更高）
+        # Available variables: currentValue, compareValue, differentValue (positive = current is higher)
+        script_example: |
+          getDifference()
+          function getDifference() {
+            if (differentValue == 0) {
+              return "equal"
+            } else if (differentValue <= -10) {
+              return "very_low"
+            } else if (differentValue < 0) {
+              return "low"
+            } else if (differentValue > 10) {
+              return "very_high"
+            } else {
+              return "high"
+            }
+          }
+  pre-variables:
+    loreMode: DataUtil.getDataAsInt(player, "loreMode")
+  when:
+    - if: loreMode == 0
+      then: comparable_attribute
+    - if: loreMode == 1
+      then: comparable_lore
+    - then: comparable_misc
+
+
+comparable_attribute:
+  settings:
+    # 不要忘记启用比较 | Don't forget to enable compare
+    compare-enabled: true
+  elements:
+    - content: ""
+    - content: "<green>COMPARABLE LORE MODE: ATTRIBUTE"
+    - content: "<yellow>TIP: MMO ATTRIBUTE REQUIRES MMO PLUGIN."
+    - content: "<yellow>CHECK WIKI FOR MORE INFO."
+    - content: ""
+    - key: "mmo:ATTACK_DAMAGE"
+      content: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"
+      compare:
+        contents:
+          # 可用差值占位符：{diff}, {diff:abs}, {diff:symbol}, {diff:percent_abs}
+          # Available diff placeholders: {diff}, {diff:abs}, {diff:symbol}, {diff:percent_abs}
+          # 旧版别名（向下兼容）：{diff_abs}, {diff_percent_abs}
+          # Legacy aliases (still supported): {diff_abs}, {diff_percent_abs}
+          equal: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"
+          low: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <red>↓{diff:abs} <dark_gray>(-{diff:percent_abs}%)"
+          very_low: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <red>↓{diff:abs} <dark_gray>(-{diff:percent_abs}%)"
+          high: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <green>↑{diff:abs} <dark_gray>(+{diff:percent_abs}%)"
+          very_high: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <green>↑{diff:abs} <dark_gray>(+{diff:percent_abs}%)"
+          new: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <yellow>NEW!"
+          lost: "<!i><#777777>| <st><#ff6936>Attack Damage: {plus}{minus}{auto} <red>LOST..."
+        # 取消注释可覆盖当前值和被比较值的读取路径
+        # Uncomment to override the data paths for current and compare values
+        # currentId: "mmo:ATTACK_DAMAGE"
+        # compareId: "mmo:ATTACK_DAMAGE"
+        # 指向 compares: 下的键名，默认 "default"（如果不存在 default 组，则使用第一个可用的组）
+        # Points to the key in `compares:` above; defaults to "default" (falls back to the first available group if "default" is absent)
+        compareName: "simple_example"
+    - key: "mmo:ATTACK_SPEED"
+      content: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto}"
+comparable_lore:
+  # settings: {}
+  elements:
+    - content: ""
+    - content: "<green>LORE MODE: LORE"
+    - key: "xbuilder:lore"
+      content: "<!i><#999999>| {value}"
+    - key: "sertraline:type"
+      content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
+    - key: "sertraline:tier"
+      content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
+    - key: "sertraline:level"
+      content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
+comparable_misc:
+  # settings: {}
+  elements:
+    - content: " "
+    - content: "<green>LORE MODE: MISC"
+    - content: "<gold>Some misc lore here!"
+    - content: "<aqua>It's Made by sertraline!"
+
+# ─────────────────────────────────────────────────────────────
+#  Self-contained compare format (English)
+#  The target is the item equipped in the slot named by the current item's
+#  sertraline:compare-path (there is NO template reference item).
+#  Data is read from sertraline:vals.{key} on both the current and target item.
+#  Diff placeholders (only resolved when compare is enabled on this element):
+#    {diff:diff}        signed difference (current - compare)
+#    {diff:abs}         absolute difference
+#    {diff:symbol}      "+" / "-" / "" sign prefix
+#    {diff:percent_abs} |diff| / compareValue * 100, rounded to 1 decimal
+# ─────────────────────────────────────────────────────────────
+comparable_item:
+  settings:
+    # Do not forget to enable comparison
+    compare-enabled: true
+    compare:
+      target:
+        type: simple
+        when:
+          # The current item's sertraline:compare-path names the target EQUIPMENT SLOT
+          # (e.g. MAIN_HAND); the target is the item equipped in that slot right now.
+          - if:
+              fixed-path: true
+            then: "%fixed%"
+        # ── Optional filter gate (runs after the target resolves) ───────────────────
+        # First matching entry decides; nothing matches -> proceed.
+        #   then: deny  -> skip the whole comparison (compare-enabled treated as false)
+        #   then: allow -> stop evaluating and proceed with the comparison
+        # Condition variables: player, currentItem, compareItem (ItemStacks), and
+        # currentSItem, compareSItem (ModernSItems for getDeepData / .key access).
+        # ItemStackUtil.isSelf(...) returns whether two args are the same Sertraline item.
+        filter:
+          when:
+            # Don't waste a comparison when the target slot holds the same item as this one.
+            - if: "ItemStackUtil.isSelf(currentItem, compareItem)"
+              then: deny
+            - then: allow
+      compares:
+        default:
+          type: data
+          # Evaluated top-to-bottom using differentValue = current - compare.
+          # result-limit:
+          #   DEFAULT -> a missing side is treated as its default-value (0 unless overridden)
+          #   NEW     -> only matched when the compare value is missing
+          #   LOST    -> only matched when the current value is missing
+          when:
+            - result: "lost"
+              result-limit: LOST
+            - result: "new"
+              result-limit: NEW
+            - operator: EQUAL
+              value: "0"
+              result: "equal"
+            - operator: GREATER_THAN
+              value: "10"
+              result: "very_high"
+            - operator: LESS_THAN
+              value: "10"
+              result: "very_low"
+            - operator: GREATER_THAN
+              value: "0"
+              result: "high"
+            - operator: LESS_THAN
+              value: "0"
+              result: "low"
+  elements:
+    - content: ""
+    - content: "<green><bold>ATTRIBUTE COMPARISON"
+    - content: "<dark_gray><strikethrough>------------------------"
+    - content: ""
+    - key: "sertraline:vals.attack_damage"
+      content: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"
+      compare:
+        contents:
+          lost: "<!i><#777777>| <red>Attack Damage: ??"
+          new: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <gold>(no reference)"
+          equal: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <gray>(matches reference)"
+          very_high: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <green>{diff:symbol}{diff:abs} <gray>({diff:percent_abs}% vs ref)"
+          high: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <green>{diff:symbol}{diff:abs} <gray>({diff:percent_abs}% vs ref)"
+          very_low: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <red>{diff:symbol}{diff:abs} <gray>({diff:percent_abs}% vs ref)"
+          low: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto} <dark_red>{diff:symbol}{diff:abs} <gray>({diff:percent_abs}% vs ref)"
+        compareName: "default"
+    - key: "sertraline:vals.attack_speed"
+      content: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto}"
+      compare:
+        contents:
+          lost: "<!i><#777777>| <red>Attack Speed: ??"
+          new: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <gold>(no reference)"
+          equal: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <gray>(matches reference)"
+          very_high: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <green>{diff:symbol}{diff:abs}"
+          high: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <green>{diff:symbol}{diff:abs}"
+          very_low: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <red>{diff:symbol}{diff:abs}"
+          low: "<!i><#777777>| <#66ccff>Attack Speed: {plus}{minus}{auto} <red>{diff:symbol}{diff:abs}"
+        compareName: "default"

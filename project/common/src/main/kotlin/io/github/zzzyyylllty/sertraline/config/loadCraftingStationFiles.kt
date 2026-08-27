@@ -27,7 +27,7 @@ fun loadCraftingStationFiles() {
     }
 
     val regex = (config["file-load.crafting-station"] ?: ".*").toString()
-    // loadCraftingStationFile 已递归处理目录
+    // loadCraftingStationFile already handles directories recursively
     for (file in files) {
         loadCraftingStationFile(file, regex)
     }
@@ -73,7 +73,7 @@ fun loadCraftingStationFile(file: File, regex: String): Boolean {
     }
 }
 
-// ==================== 辅助扩展函数 ====================
+// ==================== Helper extension functions ====================
 private fun Map<String, Any?>.getOptional(key: String): Any? = this[key]
 
 private fun Map<String, Any?>.getString(key: String): String? = this[key]?.toString()
@@ -86,13 +86,13 @@ private fun Map<String, Any?>.getMap(key: String): Map<String, Any?>? = this[key
 
 private fun Map<String, Any?>.getList(key: String): List<Any?>? = this[key] as? List<*>
 
-// 将 Map<String, Any?> 转换为 Map<String, String>，忽略 null 值
+// Converts Map<String, Any?> to Map<String, String>, ignoring null values
 private fun Map<String, Any?>.toStringMap(): Map<String, String> =
     this.filterValues { it != null }.mapValues { it.value!!.toString() }
 
-// 宽容地获取条件列表：支持 conditions 或 condition 字段，支持列表或单个map
+// Leniently fetches the condition list: supports the conditions or condition field, as either a list or a single map
 private fun Map<String, Any?>.getConditions(key: String): List<Map<String, Any?>> {
-    // 尝试获取key，如果没有则尝试单数形式（去掉's'）
+    // Try to get the key; if missing, try its singular form (drop the trailing 's')
     var raw = this[key]
     if (raw == null && key.endsWith('s')) {
         val singularKey = key.dropLast(1)
@@ -106,7 +106,7 @@ private fun Map<String, Any?>.getConditions(key: String): List<Map<String, Any?>
     }
 }
 
-// ==================== 解析函数 ====================
+// ==================== Parse functions ====================
 private fun parseCraftingStation(id: String, map: Map<String, Any?>): CraftingStation {
     val option = map.getMap("option") ?: emptyMap()
     val displayMap = map.getMap("display") ?: throw IllegalArgumentException("CraftingStation $id missing display config")
@@ -147,7 +147,7 @@ private fun parseStationRecipe(id: String, map: Map<String, Any?>): StationRecip
     val displayTime = map.getString("displayTime")
     val time = map.getString("time") ?: "0"
     val options = map.getMap("options") ?: emptyMap()
-    // 宽容解析 conditions
+    // Leniently parse conditions
     val conditionMaps = map.getConditions("conditions")
     val conditions = conditionMaps.map { parseConditionConfig(it) }.takeIf { it.isNotEmpty() }
     val messages = map.getMap("messages")?.toStringMap()
@@ -181,10 +181,10 @@ private fun parseStationRecipeInput(map: Map<String, Any?>): StationRecipeInput 
 }
 
 private fun parseOmniItem(map: Map<String, Any?>): OmniItem {
-    // OmniItem 字段：source, item, parameters, components, amount
-    // 配置中 item 字段可能是完整标识符，如 "plugin:item"
+    // OmniItem fields: source, item, parameters, components, amount
+    // The item field in the config may be a full identifier, e.g. "plugin:item"
     val itemStr = map.getString("item") ?: throw IllegalArgumentException("OmniItem missing item")
-    // 解析 source 和 item
+    // Parse source and item
     val source: String
     val item: String
     if (itemStr.contains(":")) {
@@ -192,7 +192,7 @@ private fun parseOmniItem(map: Map<String, Any?>): OmniItem {
         source = parts[0]
         item = parts[1]
     } else {
-        // 默认 source 为 "mc" (minecraft)
+        // Default source is "mc" (minecraft)
         source = "mc"
         item = itemStr
     }

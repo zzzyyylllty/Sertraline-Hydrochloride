@@ -66,7 +66,7 @@ private fun loadItemFilesIncremental(workspaceDir: File) {
         val lastModified = Sertraline.fileLastModified[file.absolutePath]
         val currentModified = file.lastModified()
 
-        // 只加载新文件或修改过的文件
+        // Only load new or modified files
         if (lastModified == null || lastModified < currentModified) {
             if (loadItemFile(file, regex)) {
                 Sertraline.fileLastModified[file.absolutePath] = currentModified

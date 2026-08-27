@@ -18,11 +18,11 @@ private data class RevisionEntry(
 )
 
 /**
- * 初始化修订自动追踪器。
- * 在 reloadCustomConfig 中、所有物品加载完成后调用。
+ * Initializes the revision auto-tracker.
+ * Called in reloadCustomConfig after all items are loaded.
  *
- * 为 itemMap 中每个物品计算内容哈希，与上次存储的哈希比较。
- * 若哈希变化则递增修订号，并更新 itemExpectedRevision。
+ * Computes a content hash for each item in itemMap and compares it with the last stored hash.
+ * If the hash changed, increments the revision number and updates itemExpectedRevision.
  */
 fun initRevisionAutoTracker() {
     if (!config.getBoolean("item-update.auto-track", true)) return
@@ -36,7 +36,7 @@ fun initRevisionAutoTracker() {
     var updatedCount = 0
 
     for ((itemId, sItem) in itemMap) {
-        // 如果显式指定了 revision-id，跳过自动追踪
+        // skip auto-tracking if a revision-id is explicitly specified
         val explicit = sItem.getDeepData("sertraline:revision-id")
         if (explicit is Number) {
             itemExpectedRevision[itemId] = explicit.toInt()
@@ -48,24 +48,24 @@ fun initRevisionAutoTracker() {
 
         val storedEntry = stored[itemId]
         if (storedEntry == null) {
-            // 新物品，初始化为修订 1
+            // new item, initialize to revision 1
             current[itemId] = RevisionEntry(hash, 1)
             itemExpectedRevision[itemId] = 1
             updatedCount++
         } else if (storedEntry.hash != hash) {
-            // 物品内容变更，递增修订
+            // item content changed, increment revision
             val newRevision = storedEntry.revision + 1
             current[itemId] = RevisionEntry(hash, newRevision)
             itemExpectedRevision[itemId] = newRevision
             updatedCount++
         } else {
-            // 未变更，沿用上次修订
+            // unchanged, keep the previous revision
             current[itemId] = RevisionEntry(hash, storedEntry.revision)
             itemExpectedRevision[itemId] = storedEntry.revision
         }
     }
 
-    // 保存更新后的追踪数据
+    // save the updated tracking data
     saveTrackerFile(trackerFile, current)
 
     if (updatedCount > 0) {
@@ -119,8 +119,8 @@ private fun computeItemHash(sItem: io.github.zzzyyylllty.sertraline.data.ModernS
 }
 
 /**
- * 重置修订追踪（强制所有物品下次被视作"变更"）。
- * 用于管理员手动触发全量更新。
+ * Resets the revision tracker (forces every item to be treated as "changed" next time).
+ * Used for an admin-triggered full update.
  */
 fun resetRevisionAutoTracker() {
     val revisionDir = getRevisionDir()

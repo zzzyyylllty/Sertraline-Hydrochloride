@@ -10,9 +10,9 @@ import org.tabooproject.fluxon.runtime.FluxonRuntime
 open class ParseScript(val blocks: ParsedScript?) {
 
     /**
-     * 执行脚本
+     * Executes the script
      *
-     * @param env 脚本执行环境
+     * @param env The script execution environment
      */
     open fun invoke(env: Environment.() -> Unit = {}): Any? {
         if (blocks == null) return null

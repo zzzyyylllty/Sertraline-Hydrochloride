@@ -73,11 +73,11 @@ class SmartTypeAdapter : TypeAdapter<Any>() {
     }
 
     private fun parseString(str: String): Any {
-        // 检查是否是布尔值的字符串表示
+        // Check whether it is a string representation of a boolean
         if (str.equals("true", ignoreCase = true)) return true
         if (str.equals("false", ignoreCase = true)) return false
 
-        // 尝试解析为数字
+        // Try to parse it as a number
         return try {
             parseNumberSmart(str)
         } catch (e: NumberFormatException) {
@@ -87,7 +87,7 @@ class SmartTypeAdapter : TypeAdapter<Any>() {
 
     private fun parseNumberSmart(numberStr: String): Any {
         return try {
-            // 先尝试 Int
+            // Try Int first
             if (numberStr.matches(Regex("-?\\d+"))) {
                 val longValue = numberStr.toLong()
                 if (longValue >= Int.MIN_VALUE && longValue <= Int.MAX_VALUE) {
@@ -96,9 +96,9 @@ class SmartTypeAdapter : TypeAdapter<Any>() {
                     longValue
                 }
             } else {
-                // 尝试 Double
+                // Try Double
                 val doubleValue = numberStr.toDouble()
-                // 如果是整数但超出了 Long 范围，返回 BigDecimal
+                // If it's a whole number but exceeds the Long range, return BigDecimal
                 if (doubleValue % 1 == 0.0 &&
                     (doubleValue < Long.MIN_VALUE || doubleValue > Long.MAX_VALUE)) {
                     BigDecimal(numberStr)

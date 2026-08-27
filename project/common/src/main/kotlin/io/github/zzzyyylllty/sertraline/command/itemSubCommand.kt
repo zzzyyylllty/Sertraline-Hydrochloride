@@ -73,7 +73,7 @@ object ItemCommand {
                     submitAsync {
                         val id = context["id"]
                         val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
+                        // Convert to a Bukkit Player
                         val bukkitPlayer = tabooPlayer.castSafely<Player>()
                         val item = sertralineItemBuilder(id,bukkitPlayer) ?: run {
                             sender.sendStringAsComponent(
@@ -95,7 +95,7 @@ object ItemCommand {
                             val id = context["id"]
                             val amount = context["amount"].toInt()
                             val tabooPlayer = context.player("player")
-                            // 转化为Bukkit的Player
+                            // Convert to a Bukkit Player
                             val bukkitPlayer = tabooPlayer.castSafely<Player>()
                             val item = sertralineItemBuilder(id, bukkitPlayer, amount = amount) ?: run {
                                 sender.sendStringAsComponent(
@@ -126,7 +126,7 @@ object ItemCommand {
                                 val id = context["id"]
                                 val amount = context["amount"].toInt()
                                 val tabooPlayer = context.player("player")
-                                // 转化为Bukkit的Player
+                                // Convert to a Bukkit Player
                                 val bukkitPlayer = tabooPlayer.castSafely<Player>()
                                 val item = sertralineItemBuilder(id, bukkitPlayer, amount = amount) ?: run {
                                     sender.sendStringAsComponent(

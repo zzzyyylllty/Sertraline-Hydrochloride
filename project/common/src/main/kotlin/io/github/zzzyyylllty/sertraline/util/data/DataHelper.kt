@@ -74,7 +74,7 @@ object DataUtil {
         val value = dataValue.toString()
         DatabaseManager.propertyMapper.insertOrUpdate(
             PlayerProperty(uuid, dataID, value)
-        ) { "uuid" eq uuid; "propKey" eq dataID }
+        ) { "prop_key" eq dataID }
     }
 
     fun setDataIfNotExist(player: Player, dataID: String, dataValue: Any) {
@@ -145,7 +145,7 @@ object DataUtil {
         val expiry = round(Instant.now().toEpochMilli() + second * 1000).toLong()
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun setCooldownMill(player: Player, cooldownID: String, tick: Int) {
@@ -153,7 +153,7 @@ object DataUtil {
         val expiry = Instant.now().toEpochMilli() + tick
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun extendCooldown(player: Player, cooldownID: String, second: Double) {
@@ -162,7 +162,7 @@ object DataUtil {
         val expiry = round(current + second * 1000).toLong()
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun extendCooldownMill(player: Player, cooldownID: String, tick: Int) {
@@ -171,7 +171,7 @@ object DataUtil {
         val expiry = current + tick
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun reduceCooldown(player: Player, cooldownID: String, second: Double) {
@@ -180,7 +180,7 @@ object DataUtil {
         val expiry = round(current - second * 1000).toLong()
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun reduceCooldownTick(player: Player, cooldownID: String, tick: Int) {
@@ -189,7 +189,7 @@ object DataUtil {
         val expiry = current - tick
         DatabaseManager.cooldownMapper.insertOrUpdate(
             PlayerCooldown(uuid, cooldownID, expiry)
-        ) { "uuid" eq uuid; "cooldownId" eq cooldownID }
+        ) { "cooldown_id" eq cooldownID }
     }
 
     fun resetCooldown(player: Player, cooldownID: String) {

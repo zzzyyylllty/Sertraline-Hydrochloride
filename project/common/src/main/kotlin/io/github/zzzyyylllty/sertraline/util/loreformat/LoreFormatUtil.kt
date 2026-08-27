@@ -9,9 +9,9 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * JS 可调用的 LoreFormat 工具类。
+ * A LoreFormat utility class callable from JS.
  *
- * 在 JavaScript 中通过 Java.type 使用：
+ * Used from JavaScript via Java.type:
  * ```js
  * var LoreFormatUtil = Java.type("io.github.zzzyyylllty.sertraline.util.loreformat.LoreFormatUtil");
  * var lore = LoreFormatUtil.generateLore(itemStack, sItem, "example_lore_format", player);
@@ -21,14 +21,14 @@ import org.bukkit.inventory.ItemStack
 object LoreFormatUtil {
 
     /**
-     * 使用指定的 lore 格式名称生成 lore 组件列表。
+     * Generates a lore component list using the specified lore format name.
      *
-     * @param item        要生成 lore 的物品 ItemStack
-     * @param sItem       物品的 ModernSItem 数据
-     * @param format      Lore 格式名称（对应 lore-formats 目录下的配置）
-     * @param player      玩家（用于占位符解析，可选）
-     * @param defaultVars 额外的默认数据，会合并到物品的 vars 中供占位符解析使用
-     * @return 生成的 Lore Component 列表，如果格式不存在则返回 null
+     * @param item        The item ItemStack to generate lore for
+     * @param sItem       The item's ModernSItem data
+     * @param format      The lore format name (corresponds to a config under the lore-formats directory)
+     * @param player      The player (used for placeholder resolution, optional)
+     * @param defaultVars Extra default data, merged into the item's vars for placeholder resolution
+     * @return The generated lore Component list, or null if the format does not exist
      */
     @JvmStatic
     fun generateLore(
@@ -40,25 +40,25 @@ object LoreFormatUtil {
     ): List<Component>? {
         val loreFormat = loreFormats[format] ?: return null
         if (defaultVars != null) {
-            // 注入 defaultVars 时操作 sItem 的深拷贝，避免污染共享模板实例
-            // （itemSerializer 对无占位符/动态数据的物品直接返回 itemMap 中的同一实例，
-            //   直接 setDeepData 会与其他玩家/线程的并发调用互相污染）
+            // When injecting defaultVars, operate on a deep copy of sItem to avoid polluting the shared template instance
+            // (itemSerializer returns the same instance from itemMap for items without placeholders/dynamic data,
+            //   so calling setDeepData directly would pollute concurrent calls from other players/threads)
             val working = sItem.deepCopy()
             working.setDeepData("sertraline:vars", defaultVars)
-            return applyLoreFormat(working, player, PlatformCompat.getLore(item), loreFormat)
+            return applyLoreFormat(working, player, PlatformCompat.getLore(item), loreFormat, currentItem = item)
         }
-        return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat)
+        return applyLoreFormat(sItem, player, PlatformCompat.getLore(item), loreFormat, currentItem = item)
     }
 
     /**
-     * 使用指定的 lore 格式名称生成 lore 并直接设置到 ItemStack 上。
+     * Generates lore using the specified lore format name and sets it directly on the ItemStack.
      *
-     * @param item        要修改的物品 ItemStack
-     * @param sItem       物品的 ModernSItem 数据
-     * @param format      Lore 格式名称
-     * @param player      玩家（用于占位符解析，可选）
-     * @param defaultVars 额外的默认数据，会合并到物品的 vars 中供占位符解析使用
-     * @return 修改后的 ItemStack（或原物品如果格式不存在）
+     * @param item        The item ItemStack to modify
+     * @param sItem       The item's ModernSItem data
+     * @param format      The lore format name
+     * @param player      The player (used for placeholder resolution, optional)
+     * @param defaultVars Extra default data, merged into the item's vars for placeholder resolution
+     * @return The modified ItemStack (or the original item if the format does not exist)
      */
     @JvmStatic
     fun applyLore(
@@ -74,16 +74,16 @@ object LoreFormatUtil {
     }
 
     /**
-     * 获取已加载的 Lore 格式对象（普通或 switchable）。
+     * Gets a loaded Lore format object (plain or switchable).
      *
-     * @param format Lore 格式名称
-     * @return 格式对象，不存在则返回 null
+     * @param format The lore format name
+     * @return The format object, or null if it does not exist
      */
     @JvmStatic
     fun getFormat(format: String): AbstractLoreFormat? = loreFormats[format]
 
     /**
-     * 获取所有已加载的 Lore 格式名称列表。
+     * Gets the names of all loaded lore formats.
      */
     @JvmStatic
     fun getFormatNames(): Set<String> = loreFormats.keys

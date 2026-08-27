@@ -84,7 +84,7 @@ fun onMine(e: BlockBreakEvent) {
 
 @SubscribeEvent
 fun onAttack(e: EntityDamageByEntityEvent) {
-    // damageSource/AbstractArrow.weapon 是 1.13+ API，走 PlatformCompat（v11200 反射降级）
+    // damageSource/AbstractArrow.weapon are 1.13+ APIs, so we go through PlatformCompat (v11200 reflection fallback)
     val player = PlatformCompat.getDamageCausingPlayer(e) ?: return
     var item: ItemStack? = null
     val dEntity = PlatformCompat.getDamageDirectEntity(e)
@@ -131,7 +131,7 @@ fun onSwap(e: PlayerSwapHandItemsEvent) {
 
 @SubscribeEvent
 fun onSneak(e: PlayerToggleSneakEvent) {
-    // PlayerToggleSneakEvent 在潜行开始和结束时各触发一次，动作可用 onSneak 或 onSneak@main / onSneak@off
+    // PlayerToggleSneakEvent fires once on sneak start and once on sneak end; actions may use onSneak or onSneak@main / onSneak@off
     val inv = e.player.inventory
     val uuid = e.player.uniqueId.toString()
     throttleAction(ThrottleActionLink(uuid, "onSneak", "main"), ThrottleActionParam(e.player, e, e, inv.itemInMainHand))

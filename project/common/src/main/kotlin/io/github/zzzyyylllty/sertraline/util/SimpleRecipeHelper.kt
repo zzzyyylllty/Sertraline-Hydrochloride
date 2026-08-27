@@ -17,36 +17,36 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Sertraline 配方管理器。
- * 使用 Bukkit API 注册/注销配方，取代原有的 NMS 反射方案。
+ * Sertraline recipe manager.
+ * Registers/unregisters recipes using the Bukkit API, replacing the former NMS reflection approach.
  */
 object SertralineRecipeManager {
 
     private val NAMESPACE = "sertraline"
 
-    /** 已注册的 Sertraline 配方 key → RecipeData */
+    /** Registered Sertraline recipe key → RecipeData */
     private val registeredRecipes = ConcurrentHashMap<NamespacedKey, RecipeData>()
 
-    /** Bukkit 插件实例，用于主线程调度 */
+    /** Bukkit plugin instance, used for main-thread scheduling */
     private val bukkitPlugin: org.bukkit.plugin.Plugin by lazy {
         Bukkit.getPluginManager().getPlugin("Sertraline")
             ?: error("Sertraline Bukkit plugin not found")
     }
 
-    /** 将操作切换到主线程执行（阻塞调用线程直到完成） */
+    /** Switch the operation to the main thread for execution (blocking the calling thread until complete) */
     private fun <T> sync(callable: () -> T): T {
         if (Bukkit.isPrimaryThread()) return callable()
         return Bukkit.getScheduler().callSyncMethod(bukkitPlugin, Callable(callable)).get()
     }
 
-    // ==================== 生命周期 ====================
+    // ==================== lifecycle ====================
 
     fun reload() {
         infoS("<green>Loaded recipes successfully.")
     }
 
     /**
-     * 注销所有 Sertraline 配方。
+     * Unregister all Sertraline recipes.
      */
     fun unregisterAll() {
         registeredRecipes.forEach { (key, recipeData) ->
@@ -64,11 +64,11 @@ object SertralineRecipeManager {
         registeredRecipes.clear()
     }
 
-    // ==================== 注册 ====================
+    // ==================== registration ====================
 
     /**
-     * 注册一个配方到 Bukkit（SIMPLE）或 NMS RecipeManager（COMPLEX）。
-     * @return true 如果注册成功
+     * Register a recipe to Bukkit (SIMPLE) or the NMS RecipeManager (COMPLEX).
+     * @return true if registration succeeded
      */
     fun registerRecipe(recipe: RecipeData): Boolean {
         return runCatching {
@@ -102,18 +102,18 @@ object SertralineRecipeManager {
     }
 
     /**
-     * 根据 NamespacedKey 获取 RecipeData。
+     * Get RecipeData by NamespacedKey.
      */
     fun getRecipeData(key: NamespacedKey): RecipeData? = registeredRecipes[key]
 
     /**
-     * 获取所有已注册的配方数据。
+     * Get all registered recipe data.
      */
     fun getAllRecipeData(): Collection<RecipeData> = registeredRecipes.values
 
     /**
-     * 为玩家解锁所有已注册的 Sertraline 配方（配方书显示需要）。
-     * Bukkit 的 Player.discoverRecipe 在 1.21.4 已移除，改走 NMS RecipeBookServer 解锁路径。
+     * Unlock all registered Sertraline recipes for a player (needed for recipe book display).
+     * Bukkit's Player.discoverRecipe has been removed in 1.21.4, so use the NMS RecipeBookServer unlock path instead.
      */
     fun unlockAllForPlayer(player: org.bukkit.entity.Player): Int {
         if (registeredRecipes.isEmpty()) return 0

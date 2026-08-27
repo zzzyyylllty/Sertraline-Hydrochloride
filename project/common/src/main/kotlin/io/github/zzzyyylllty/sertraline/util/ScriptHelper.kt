@@ -23,13 +23,13 @@ import javax.script.ScriptEngineManager
 
 
 /**
- * 脚本管理系统
+ * Script management system
  *
- * 支持从 scripts/ 目录加载 YAML 脚本文件，按名称执行。
+ * Supports loading YAML script files from the scripts/ directory and executing them by name.
  *
- * 脚本类型: graaljs (GraalVM Polyglot), javascript/js (标准 JSR 223), kether, fluxon, jexl
+ * Script types: graaljs (GraalVM Polyglot), javascript/js (standard JSR 223), kether, fluxon, jexl
  *
- * 使用示例:
+ * Usage examples:
  *   ScriptHelper.eval("sample", "arg1_value")
  *   ScriptHelper.eval("sample", mapOf("player" to player, "amount" to 10))
  */
@@ -47,9 +47,9 @@ object ScriptHelper {
     )
 
     enum class ScriptType {
-        /** GraalVM Polyglot API (高性能, 支持 ES2023) */
+        /** GraalVM Polyglot API (high performance, supports ES2023) */
         GRAALJS,
-        /** 标准 JSR 223 javax.script JavaScript / Nashorn */
+        /** Standard JSR 223 javax.script JavaScript / Nashorn */
         JAVASCRIPT,
         KETHER, FLUXON, JEXL;
 
@@ -81,10 +81,10 @@ object ScriptHelper {
         )
     }
 
-    // ==================== 脚本加载 ====================
+    // ==================== script loading ====================
 
     /**
-     * 从 dataFolder/scripts/ 目录加载所有 YAML 脚本文件
+     * Load all YAML script files from the dataFolder/scripts/ directory
      */
     fun loadScriptFiles() {
         scriptCache.clear()
@@ -116,19 +116,19 @@ object ScriptHelper {
     }
 
     /**
-     * 重新加载脚本
+     * Reload the scripts
      */
     fun reloadScripts() {
         loadScriptFiles()
     }
 
     /**
-     * 获取已加载的所有脚本名称
+     * Get the names of all loaded scripts
      */
     fun getScriptNames(): Set<String> = scriptCache.keys.toSet()
 
     /**
-     * 检查脚本是否存在
+     * Check whether a script exists
      */
     fun hasScript(name: String): Boolean = scriptCache.containsKey(name)
 
@@ -138,7 +138,7 @@ object ScriptHelper {
             val config = Configuration.loadFromFile(file)
             for (key in config.getKeys(false)) {
                 val section = config.getConfigurationSection(key) ?: continue
-                // legacy12 无 GraalJS（Nashorn 兼容），默认落到内置 JSR 223；其余平台默认 GraalJS
+                // legacy12 has no GraalJS (Nashorn compatible), so default to the built-in JSR 223; other platforms default to GraalJS
                 val typeStr = section.getString("type") ?: if (VersionHelper().isLegacy()) "javascript" else "graaljs"
                 val script = section.getString("script") ?: continue
 
@@ -158,31 +158,31 @@ object ScriptHelper {
         return count
     }
 
-    // ==================== 上下文管理 ====================
+    // ==================== context management ====================
 
     /**
-     * 推入脚本执行上下文，后续 eval 调用将自动继承此上下文
+     * Push a script execution context; subsequent eval calls will automatically inherit this context
      *
-     * @param sender 命令发送者（玩家/控制台）
-     * @param vars   上下文变量
+     * @param sender the command sender (player/console)
+     * @param vars   context variables
      */
     fun pushContext(sender: CommandSender? = null, vars: Map<String, Any?> = emptyMap()) {
         contextHolder.set(ScriptContext(sender, vars))
     }
 
     /**
-     * 弹出当前线程的脚本执行上下文
+     * Pop the current thread's script execution context
      */
     fun popContext() {
         contextHolder.remove()
     }
 
     /**
-     * 使用指定上下文执行代码块，自动管理 push/pop
+     * Execute a code block with the specified context, automatically managing push/pop
      *
-     * @param sender 上下文发送者
-     * @param vars   上下文变量
-     * @param block  要执行的代码块
+     * @param sender the context sender
+     * @param vars   context variables
+     * @param block  the code block to execute
      */
     fun <T> withContext(sender: CommandSender? = null, vars: Map<String, Any?> = emptyMap(), block: () -> T): T {
         val previous = contextHolder.get()
@@ -195,18 +195,18 @@ object ScriptHelper {
     }
 
     /**
-     * 获取当前线程的脚本执行上下文
+     * Get the current thread's script execution context
      */
     fun currentContext(): ScriptContext? = contextHolder.get()
 
-    // ==================== 执行 API ====================
+    // ==================== execution API ====================
 
     /**
-     * 按名称执行脚本，传递变长参数（映射为 arg1, arg2, ...）
+     * Execute a script by name, passing varargs (mapped to arg1, arg2, ...)
      *
-     * @param name 脚本名称（YAML 中的 key）
-     * @param args 变长参数，在脚本中可通过 arg1, arg2, ... 访问
-     * @return 脚本执行结果
+     * @param name the script name (the key in the YAML)
+     * @param args varargs, accessible in the script as arg1, arg2, ...
+     * @return the execution result
      */
     fun eval(name: String, vararg args: Any?): Any? {
         val entry = scriptCache[name] ?: run {
@@ -217,25 +217,25 @@ object ScriptHelper {
         val ctx = currentContext()
         val vars = LinkedHashMap<String, Any?>()
 
-        // 注入全局默认数据 (mmUtil, Bukkit, PlayerUtil, 等)
+        // inject global default data (mmUtil, Bukkit, PlayerUtil, etc.)
         vars.putAll(defaultData)
 
-        // 继承上下文变量
+        // inherit context variables
         if (ctx != null) vars.putAll(ctx.vars)
 
-        // 变长参数映射为 arg1, arg2, ...
+        // map VarArgs to arg1, arg2, ...
         args.forEachIndexed { i, v -> vars["arg${i + 1}"] = v }
 
         return execute(entry, vars, ctx?.sender)
     }
 
     /**
-     * 按名称执行脚本，传递命名参数
+     * Execute a script by name, passing named parameters
      *
-     * @param name   脚本名称（YAML 中的 key）
-     * @param vars   命名参数
-     * @param sender 命令发送者，覆盖上下文中的 sender
-     * @return 脚本执行结果
+     * @param name   the script name (the key in the YAML)
+     * @param vars   named parameters
+     * @param sender the command sender, overriding the sender in the context
+     * @return the execution result
      */
     fun eval(name: String, vars: Map<String, Any?>, sender: CommandSender? = null): Any? {
         val entry = scriptCache[name] ?: run {
@@ -246,41 +246,41 @@ object ScriptHelper {
         val ctx = currentContext()
         val mergedVars = LinkedHashMap<String, Any?>()
 
-        // 注入全局默认数据 (mmUtil, Bukkit, PlayerUtil, 等)
+        // inject global default data (mmUtil, Bukkit, PlayerUtil, etc.)
         mergedVars.putAll(defaultData)
 
-        // 继承上下文变量
+        // inherit context variables
         if (ctx != null) mergedVars.putAll(ctx.vars)
 
-        // 显式传入的变量覆盖继承的变量
+        // explicitly passed variables override inherited variables
         mergedVars.putAll(vars)
 
         return execute(entry, mergedVars, sender ?: ctx?.sender)
     }
 
     /**
-     * 异步执行脚本
+     * Execute a script asynchronously
      */
     fun evalAsync(name: String, vararg args: Any?): CompletableFuture<Any?> {
         return CompletableFuture.supplyAsync { eval(name, *args) }
     }
 
     /**
-     * 异步执行脚本（命名参数）
+     * Execute a script asynchronously (named parameters)
      */
     fun evalAsync(name: String, vars: Map<String, Any?>, sender: CommandSender? = null): CompletableFuture<Any?> {
         return CompletableFuture.supplyAsync { eval(name, vars, sender) }
     }
 
-    // ==================== 内部执行 ====================
+    // ==================== internal execution ====================
 
     /**
-     * 直接按类型执行一段原始脚本（不经过 scriptCache），供全局监听器等系统复用。
+     * Directly execute a piece of raw script by type (without going through scriptCache), for reuse by systems such as the global listeners.
      *
-     * @param type   脚本类型
-     * @param script 脚本内容
-     * @param vars   注入变量（会合并 [defaultData]）
-     * @param sender 命令发送者（用于 Kether 的权限/上下文）
+     * @param type   the script type
+     * @param script the script content
+     * @param vars   injected variables (merged with [defaultData])
+     * @param sender the command sender (used for Kether permissions/context)
      */
     fun executeScript(type: ScriptType, script: String, vars: Map<String, Any?>, sender: CommandSender? = null): Any? {
         val merged = LinkedHashMap<String, Any?>()
@@ -293,7 +293,7 @@ object ScriptHelper {
         devLogBypassCheck { "Executing script '${entry.source}/${entry.script.take(50)}' type=${entry.type} vars=$vars" }
         return try {
             when (entry.type) {
-                ScriptType.GRAALJS -> GraalJsUtil.directEval(entry.script, vars)
+                ScriptType.GRAALJS -> GraalJsUtil.cachedEval(entry.script, vars)
                 ScriptType.JAVASCRIPT -> evalStandardJs(entry.script, vars)
                 ScriptType.KETHER -> {
                     KetherShell.eval(entry.script, ScriptOptions.builder().apply {
@@ -314,7 +314,7 @@ object ScriptHelper {
     }
 
     private fun evalStandardJs(script: String, vars: Map<String, Any?>): Any? {
-        // 复用 GraalJsUtil 中每线程缓存的 JSR-223 引擎，避免每次调用都创建 engine
+        // reuse the per-thread cached JSR-223 engine in GraalJsUtil, avoiding creating an engine on every call
         val engine = GraalJsUtil.nashornEngineHolder.get() ?: run {
             severeS("JavaScript engine not available (Nashorn/GraalJS JSR 223)")
             return null

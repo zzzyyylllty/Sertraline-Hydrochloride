@@ -22,9 +22,9 @@ fun Any?.serializeComponent(): Any? {
     return when (input) {
         is Map<*, *> -> input.map { (k, v) ->
             k.toString() to v.serializeComponent()
-        }.toMap() // 直接使用 map 和 toMap
+        }.toMap() // directly use map and toMap
 
-        is List<*> -> input.map { it.serializeComponent() } // 使用 map
+        is List<*> -> input.map { it.serializeComponent() } // use map
 
         is String -> input.toComponent()
 

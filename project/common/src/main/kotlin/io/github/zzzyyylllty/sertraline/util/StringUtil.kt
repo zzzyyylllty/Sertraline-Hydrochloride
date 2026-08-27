@@ -7,15 +7,15 @@ private val loc: Locale by lazy { Locale.getDefault() }
 fun String.toLowerCase(): String = lowercase(loc)
 fun String.toUpperCase(): String = uppercase(loc)
 
-// ── Java 8 兼容文本工具 ──────────────────────────────────────────────
-// 陷阱：String.isBlank/lines/repeat 是 Java 11 成员方法，JDK21 编译下裸调用解析到成员，
-// 且 Kotlin 2.2 的 JVM 编译面无法以限定名（kotlin.text.isBlank 等）调用这些扩展，
-// 故手写等价实现，两种构建（Java 21 / Java 8）行为一致。
+// ── Java 8 compatible text utilities ──────────────────────────────────────────────
+// Pitfall: String.isBlank/lines/repeat are Java 11 member methods; under JDK21 compilation a bare call resolves to the member,
+// and Kotlin 2.2's JVM compilation surface cannot invoke these extensions by qualified name (kotlin.text.isBlank, etc.),
+// so write equivalent implementations manually so both builds (Java 21 / Java 8) behave identically.
 
-/** Java 8 安全版 isBlank（空串或全空白） */
+/** Java 8 safe isBlank (empty string or all whitespace) */
 fun CharSequence.textIsBlank(): Boolean = all { it.isWhitespace() }
 
-/** Java 8 安全版 lines()，与 kotlin.text.lines / java.lang.String.lines 行为一致（不含结尾空行） */
+/** Java 8 safe lines(), consistent with kotlin.text.lines / java.lang.String.lines (without the trailing empty line) */
 fun CharSequence.textLines(): List<String> {
     if (isEmpty()) return emptyList()
     val result = ArrayList<String>()
@@ -39,7 +39,7 @@ fun CharSequence.textLines(): List<String> {
     return result
 }
 
-// NamespacedKey.fromString 是 1.16+ API，v11200（1.12.2）编译面不存在；手动解析（非法输入返回 null，语义同 fromString）
+// NamespacedKey.fromString is a 1.16+ API and does not exist in the v11200 (1.12.2) compile surface; parse manually (returns null on invalid input, same semantics as fromString)
 fun String.parseNamespacedKey(): org.bukkit.NamespacedKey? = try {
     val idx = indexOf(':')
     if (idx <= 0 || idx == length - 1) null

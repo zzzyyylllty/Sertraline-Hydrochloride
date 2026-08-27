@@ -26,6 +26,9 @@ import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common.PrimitiveSettings
+import taboolib.common.TabooLib
+import taboolib.common.io.taboolibId
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
@@ -69,20 +72,20 @@ object DebugCommand {
     @CommandBody
     val testTags = subCommand {
         execute<CommandSender> { sender, context, argument ->
-            // 注册自定义标签
+            // Register a custom tag
             ItemTagManager.registerCustomTag("myplugin:special_items", listOf("minecraft:diamond_sword", "minecraft:netherite_sword"))
 
-            // 给物品添加自定义标签
+            // Add a custom tag to the item
             ItemTagManager.addItemToCustomTag("minecraft:golden_apple", "myplugin:food_items")
 
-            // 获取某个标签的所有物品
+            // Get all items with a specific tag
             val axes = ItemTagManager.getItemsByTag("minecraft:axes")
             sender.sendStringAsComponent("Axes: $axes")
 
             val specialItems = ItemTagManager.getItemsByTag("myplugin:special_items")
             sender.sendStringAsComponent("Special items: $specialItems")
 
-            // 检查物品是否有标签
+            // Check whether the item has a tag
             val hasTag = ItemTagManager.hasItemTag("minecraft:diamond_sword", "minecraft:axes")
             sender.sendStringAsComponent("Diamond sword is an axe: $hasTag")
         }
@@ -91,6 +94,13 @@ object DebugCommand {
     val getMappings = subCommand {
         execute<CommandSender> { sender, context, argument ->
             var message = mappings.toString()
+            sender.sendStringAsComponent(message)
+        }
+    }
+    @CommandBody
+    val getTBVersion = subCommand {
+        execute<CommandSender> { sender, context, argument ->
+            var message = PrimitiveSettings.TABOOLIB_VERSION
             sender.sendStringAsComponent(message)
         }
     }
@@ -334,7 +344,7 @@ object DebugCommand {
                 execute<CommandSender> { sender, context, argument ->
                     val id = context["id"]
                     val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
+                    // Convert to a Bukkit Player
                     val bukkitPlayer = tabooPlayer.castSafely<Player>()
                     sertralineItemBuilder(
                         id,

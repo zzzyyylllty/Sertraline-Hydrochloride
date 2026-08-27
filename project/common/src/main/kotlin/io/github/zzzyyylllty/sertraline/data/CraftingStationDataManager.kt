@@ -18,9 +18,9 @@ import taboolib.platform.util.serializeToByteArray
 import java.util.Base64
 
 /**
- * 合成站数据管理器。
- * 使用 PTC Object ORM（CraftingSession 表）持久化玩家进行中的合成会话，
- * 防止服务器关闭/玩家退出时材料丢失。
+ * Crafting station data manager.
+ * Persists players' in-progress crafting sessions using the PTC Object ORM (CraftingSession table),
+ * preventing material loss when the server closes or a player disconnects.
  */
 object CraftingStationDataManager {
 
@@ -28,7 +28,7 @@ object CraftingStationDataManager {
     private val base64Decoder = Base64.getDecoder()
 
     /**
-     * 保存玩家进行中的合成会话。
+     * Saves a player's in-progress crafting session.
      */
     fun saveSession(player: Player, stationId: String, recipeId: String, startTime: Long, totalSeconds: Double, consumedItems: List<ItemStack>) {
         try {
@@ -46,8 +46,8 @@ object CraftingStationDataManager {
     }
 
     /**
-     * 读取玩家未完成的合成会话。
-     * @return 会话数据，若不存在返回 null
+     * Reads a player's unfinished crafting session.
+     * @return the session data, or null if none exists
      */
     fun loadSession(player: Player): PendingSession? {
         try {
@@ -74,7 +74,7 @@ object CraftingStationDataManager {
     }
 
     /**
-     * 清除玩家的合成会话数据。
+     * Clears a player's crafting session data.
      */
     fun clearSession(player: Player) {
         try {
@@ -85,14 +85,14 @@ object CraftingStationDataManager {
     }
 
     /**
-     * 尝试恢复玩家未完成的合成。
-     * - 若合成时间已到 → 给予产出物
-     * - 若合成未完成 → 返还材料
+     * Attempts to restore a player's unfinished crafting session.
+     * - If the crafting time has elapsed -> grant the outputs
+     * - If the crafting is unfinished -> return the materials
      */
     fun restoreSession(player: Player) {
         val pending = loadSession(player) ?: return
 
-        // 总是在主线程操作物品
+        // Always manipulate items on the main thread
         submit(async = false) {
             try {
                 val station = Sertraline.craftingStations[pending.stationId]
@@ -103,7 +103,7 @@ object CraftingStationDataManager {
                 val isComplete = elapsed >= pending.totalSeconds
 
                 if (isComplete && recipe != null) {
-                    // 合成已完成 → 给予产出物
+                    // Crafting completed -> grant the outputs
                     for (output in recipe.outputs) {
                         val stack = output.build(player)
                         player.giveItem(stack)
@@ -115,7 +115,7 @@ object CraftingStationDataManager {
                     )
                     infoS("Restored completed craft for ${player.name}: ${pending.recipeId}")
                 } else {
-                    // 合成未完成 → 返还材料
+                    // Crafting unfinished -> return the materials
                     for (item in pending.consumedItems) {
                         player.inventory.addItem(item).values.forEach { leftover ->
                             player.world.dropItem(player.location, leftover)
@@ -131,7 +131,7 @@ object CraftingStationDataManager {
                 }
             } catch (e: Exception) {
                 severeS("Failed to restore crafting session for ${player.name}: ${e.message}")
-                // 兜底：尽量返还材料
+                // Fallback: return materials whenever possible
                 for (item in pending.consumedItems) {
                     try {
                         player.inventory.addItem(item).values.forEach { leftover ->
@@ -146,7 +146,7 @@ object CraftingStationDataManager {
     }
 
     /**
-     * 待恢复的合成会话数据。
+     * A crafting session awaiting restore.
      */
     data class PendingSession(
         val stationId: String,

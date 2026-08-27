@@ -32,7 +32,7 @@ fun chotenDataAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     devLog("Adapting chotenatb data: $rawData")
 
-    // 如果 chotenatb 不为空且没有指定 allowed，则根据物品材质自动推断
+    // If chotenatb is not empty and no "allowed" is specified, auto-infer it from the item material
     val processedData = if (rawData.isNotEmpty() && !rawData.containsKey("allowed")) {
         val autoState = when (item.type.name.lowercase().substringAfterLast("_")) {
             "boots", "chestplate", "leggings", "helmet" -> item.type.name.lowercase().substringAfterLast("_")

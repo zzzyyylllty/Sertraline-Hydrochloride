@@ -10,12 +10,12 @@ fun devLog(input: String) {
 }
 
 /**
- * 惰性求值版 devLog：字符串在 devMode 开启时才构造，
- * 避免热路径调用处即使 devMode 关闭也白白执行字符串插值。
- * debugS 自身已异步提交，这里不再额外包一层。
+ * Lazy-evaluated devLog: the string is only constructed while devMode is enabled,
+ * avoiding wasted string interpolation on hot paths even when devMode is off.
+ * debugS already submits asynchronously, so no extra wrapper is added here.
  */
 fun devLogBypassCheck(input: () -> String) {
-    // devMode 关闭时直接返回，避免无谓的字符串构造和日志提交
+    // Return early when devMode is off, to avoid needless string construction and log submission
     if (!devMode) return
     debugS(input())
 }

@@ -7,6 +7,7 @@ import io.github.zzzyyylllty.sertraline.function.kether.evalKetherValue
 import io.github.zzzyyylllty.sertraline.item.adapter.transferBooleanToByte
 import io.github.zzzyyylllty.sertraline.item.rebuildLore
 import io.github.zzzyyylllty.sertraline.logger.severeS
+import io.github.zzzyyylllty.sertraline.util.minimessage.mmUtil
 import io.github.zzzyyylllty.sertraline.util.toBooleanTolerance
 import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.text.Component
@@ -26,7 +27,7 @@ import taboolib.module.nms.setItemTag
 
 object PlayerUtil {
     fun addPotionEffect(player: Player, type: String, duration: Int = 30, amplifier: Int = 0, ambient: Boolean = true, particles: Boolean = true, icon: Boolean = true) {
-        // 6 布尔参构造器是 1.13+，v11200 只有 (…, Color) 6 参版；统一走 PlatformCompat（低版本降级 5/4 参）
+        // the 6-boolean-param constructor is 1.13+; v11200 only has the (..., Color) 6-param variant; unify via PlatformCompat (downgrades to 5/4 params on low versions)
         submit {
             PlatformCompat.addPotionEffect(player, type, duration, amplifier, ambient, particles, icon)
         }
@@ -63,9 +64,9 @@ object PlayerUtil {
         }
     }
 
-    // 统一消息接口：Paper 的 CraftPlayer 有 sendMessage(Component) 重载，
-    // Spigot 只有 String 重载，脚本直接 player.sendMessage(mmUtil.deserialize(...)) 会 NoSuchMethod。
-    // 一律经 PlatformCompat，双平台行为一致。
+    // unified message interface: Paper's CraftPlayer has a sendMessage(Component) overload,
+    // Spigot only has the String overload, so calling player.sendMessage(mmUtil.deserialize(...)) directly from a script throws NoSuchMethod.
+    // Always go through PlatformCompat for consistent behavior on both platforms.
     fun sendMessage(player: Player, component: Component) {
         PlatformCompat.sendComponent(player, component)
     }
@@ -76,5 +77,73 @@ object PlayerUtil {
 
     fun showTitle(player: Player, title: Component, subTitle: Component, durationIn: Int = 30, duration: Int = 30, durationOut: Int = 30) {
         PlatformCompat.sendTitle(player, title, subTitle, durationIn, duration, durationOut)
+    }
+
+    // -- Component / String / AsComponent triple interface (GraalJS does not resolve same-named overloads; disambiguate with suffixes; original methods stay unchanged) --
+
+    /** Sends an adventure [Component] message directly (explicitly named version of sendMessage). */
+    fun sendMessageComponent(player: Player, component: Component) {
+        sendMessage(player, component)
+    }
+
+    /** Sends a legacy §-formatted string via Bukkit's old `player.sendMessage(String)` (not Component path). */
+    fun sendMessageString(player: Player, string: String) {
+        player.sendMessage(string)
+    }
+
+    /** Sends a MiniMessage-formatted string, equivalent to `sendMessage(player, mmUtil.deserialize(string))`. */
+    fun sendMessageAsComponent(player: Player, string: String) {
+        sendMessage(player, mmUtil.deserialize(string))
+    }
+
+    /** Sends an adventure [Component] ActionBar directly (explicitly named version of sendActionBar). */
+    fun sendActionBarComponent(player: Player, component: Component) {
+        sendActionBar(player, component)
+    }
+
+    /** Sends a legacy §-formatted string ActionBar via PlatformCompat (not Component path). */
+    fun sendActionBarString(player: Player, string: String) {
+        PlatformCompat.sendActionBarString(player, string)
+    }
+
+    /** Sends a MiniMessage-formatted string ActionBar, equivalent to `sendActionBar(player, mmUtil.deserialize(string))`. */
+    fun sendActionBarAsComponent(player: Player, string: String) {
+        sendActionBar(player, mmUtil.deserialize(string))
+    }
+
+    /** Sends an adventure [Component] Title directly (explicitly named version of showTitle). */
+    fun showTitleComponent(
+        player: Player,
+        title: Component,
+        subTitle: Component,
+        durationIn: Int = 30,
+        duration: Int = 30,
+        durationOut: Int = 30
+    ) {
+        showTitle(player, title, subTitle, durationIn, duration, durationOut)
+    }
+
+    /** Sends a legacy §-formatted string Title via Bukkit's old `player.sendTitle(String, String, ...)` (not Component path). */
+    fun showTitleString(
+        player: Player,
+        title: String,
+        subTitle: String,
+        durationIn: Int = 30,
+        duration: Int = 30,
+        durationOut: Int = 30
+    ) {
+        player.sendTitle(title, subTitle, durationIn, duration, durationOut)
+    }
+
+    /** Sends a MiniMessage-formatted string Title, equivalent to `showTitle(player, mmUtil.deserialize(title), mmUtil.deserialize(subTitle), ...)`. */
+    fun showTitleAsComponent(
+        player: Player,
+        title: String,
+        subTitle: String,
+        durationIn: Int = 30,
+        duration: Int = 30,
+        durationOut: Int = 30
+    ) {
+        showTitle(player, mmUtil.deserialize(title), mmUtil.deserialize(subTitle), durationIn, duration, durationOut)
     }
 }

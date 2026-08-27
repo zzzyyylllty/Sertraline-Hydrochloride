@@ -29,6 +29,7 @@ item-update:
     on-interact: true    # 玩家交互时检查手持物品 Check held item on player interaction
     async-interval: 0    # 定时检查 (单位: tick, 0=禁用) Periodic check (in ticks, 0=disabled)
   # 更新时是否通知玩家
+  # Whether to notify the player of updates
   notify: true
 
 file-load:
@@ -178,14 +179,19 @@ database:
 # Messages
 messages:
   # 合成条件不满足时显示
+  # Shown when crafting conditions are not met
   condition-not-met: "<red>Condition not met: {condition_name}</red>"
   # 已有合成进行中
+  # A crafting process is already in progress
   crafting-already-active: "<yellow>You already have an active crafting process!</yellow>"
   # 缺少材料
+  # Missing ingredients
   missing-ingredients: "<red>Missing ingredients: {display_name}</red>"
   # 合成开始
+  # Crafting started
   crafting-started: "<yellow>Crafting started... ({time} s)</yellow>"
   # 合成完成
+  # Crafting complete
   crafting-complete: "<green>Crafting complete!</green>"
 
   # 通用限制模块消息
@@ -195,8 +201,10 @@ messages:
     # Message displayed when crafting is blocked (set empty to disable)
     crafting-blocked: "<red>This item cannot be used in crafting!</red>"
     # 锻造被阻止时显示
+    # Shown when smithing is blocked
     smithing-blocked: "<red>This item cannot be used in smithing!</red>"
     # 与村民交易被阻止时显示
+    # Shown when trading with villagers is blocked
     village-trade-blocked: "<red>This item cannot be traded!</red>"
 
 performance:

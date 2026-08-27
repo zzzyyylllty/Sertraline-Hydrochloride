@@ -96,7 +96,7 @@ fun mcFeatures(prefix: String): List<String> {
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleMinecraft(e: ItemLoadEvent) {
 
-    // minecraft 特性基于 1.20.5+ DataComponent，低版本（1.12.2 等）直接禁用该模块
+    // minecraft features rely on 1.20.5+ DataComponent; disable this module directly on older versions (1.12.2, etc.)
     if (!VersionHelper().isOrAbove12005()) return
     ((e.arguments["minecraft"]) as Map<String, Any?>?)?.let {
         for (component in it) {
@@ -108,7 +108,7 @@ fun itemModuleMinecraft(e: ItemLoadEvent) {
 @SubscribeEvent(priority = EventPriority.NORMAL)
 fun itemModuleVisual(e: ItemLoadEvent) {
 
-    // visual 模块的写入依赖 DataComponent，低版本（1.12.2 等）直接禁用该模块
+    // the visual module's writes rely on DataComponent; disable on older versions (1.12.2, etc.)
     if (!VersionHelper().isOrAbove12005()) return
     ((e.arguments["visual"]) as Map<String, Any?>?)?.let {
         for (component in it) {

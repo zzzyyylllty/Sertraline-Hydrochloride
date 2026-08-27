@@ -26,7 +26,8 @@ fun itemModuleSertraline(e: ItemLoadEvent) {
         "$prefix:keep-context",
         "$prefix:actions",
         "$prefix:revision-id",
-        "$prefix:no-sertraline-id"
+        "$prefix:no-sertraline-id",
+        "$prefix:compare-path"
     )
 
 

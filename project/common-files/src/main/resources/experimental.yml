@@ -19,5 +19,7 @@
 fast-minimessage: false
 
 # 解析结果缓存条数（仅 fast-minimessage 开启时生效；0 = 禁用缓存）。
+# Parse-result cache size (only effective when fast-minimessage is enabled; 0 = disabled).
 # 物品模板字符串会被反复解析，命中缓存可进一步降低 CPU 开销。
+# Item template strings are parsed repeatedly; cache hits further reduce CPU overhead.
 fast-minimessage-cache-size: 2048

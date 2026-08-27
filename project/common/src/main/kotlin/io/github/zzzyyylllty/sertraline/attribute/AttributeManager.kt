@@ -3,6 +3,7 @@ package io.github.zzzyyylllty.sertraline.attribute
 import io.github.zzzyyylllty.sertraline.debugMode.devLog
 import io.github.zzzyyylllty.sertraline.item.itemSerializer
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.submitAsync
 

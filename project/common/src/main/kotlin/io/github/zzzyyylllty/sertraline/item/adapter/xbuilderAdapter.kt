@@ -30,7 +30,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
 
     val xDeserialized = configMap.let { XItemStack.deserializer().fromConfig(it) }
 
-    // 从反序列化结果拿到ItemMeta
+    // Obtain the ItemMeta from the deserialization result
     val deserializedMeta = xDeserialized.deserialize().itemMeta
 
     val prefix = "xbuilder"
@@ -44,7 +44,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         retList
     }
 
-    // 优先用反序列化meta的内容，但保留原始meta的自定义内容
+    // Prefer the deserialized meta's content, but preserve the original meta's custom content
     if (deserializedMeta != null) {
         if (name != null) {
             PlatformCompat.setDisplayName(deserializedMeta, name)
@@ -57,7 +57,7 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
         }
         item.itemMeta = deserializedMeta
     } else {
-        // 如果没有反序列化meta，尽量保留原始item的Meta并更新显示名和lore
+        // If there is no deserialized meta, keep the original item's Meta as much as possible and update the display name and lore
         item.itemMeta?.let { meta ->
             if (name != null) PlatformCompat.setDisplayName(meta, name)
             if (lore != null) PlatformCompat.setLore(meta, lore)
@@ -65,10 +65,10 @@ fun xbuilderAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemS
             item.itemMeta = meta
         }
     }
-    // 保持原始item的Material类型
+    // Keep the original item's Material type
     item.type = orgItemType
 
-    // 返回修改过meta的ItemStack
+    // Return the ItemStack with the modified meta
     return item
 }
 

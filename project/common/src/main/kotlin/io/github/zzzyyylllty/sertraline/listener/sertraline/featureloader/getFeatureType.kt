@@ -7,14 +7,14 @@ import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.common.platform.event.SubscribeEvent
 
 /**
- * 处理sertraline:type特性
- * 将类型ID解析为实际的Type对象
+ * Handles the sertraline:type feature
+ * Resolves a type ID into the actual Type object
  */
 @SubscribeEvent
 fun getFeatureType(e: FeatureLoadEvent) {
     if (e.feature != "sertraline:type") return
 
-    // 物品没有定义类型特性，直接跳过（不是错误）
+    // The item does not define the type feature, so skip it (not an error)
     val raw = e.content ?: return
 
     val typeId = when (raw) {
@@ -27,19 +27,19 @@ fun getFeatureType(e: FeatureLoadEvent) {
         }
     }
 
-    // 查找对应的类型
+    // Find the corresponding type
     val type = types[typeId]
     if (type == null) {
         warningS("Type '$typeId' not found for item ${e.sItemKey}")
-        // 返回原始值，让默认处理继续
+        // Return the original value and let default handling continue
         e.result = typeId
         return
     }
 
-    // 设置结果为类型ID（字符串）
+    // Set the result to the type ID (string)
     e.result = typeId
 
-    // 同时在itemCache中存储类型引用
+    // Also store the type reference in itemCache
     val cache = io.github.zzzyyylllty.sertraline.Sertraline.itemCache[e.sItemKey]?.toMutableMap() ?: mutableMapOf()
     cache["type"] = type
     cache["typeId"] = typeId

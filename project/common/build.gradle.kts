@@ -5,7 +5,7 @@ taboolib { subproject = true }
 val platform: String = (findProperty("platform") ?: "paper") as String
 
 dependencies {
-    // legacy12 与 spigot 都使用 spigot 源集（纯 Bukkit API + 降级路径）；仅 paper 用 paper 源集
+    // Both legacy12 and spigot use the spigot source set (pure Bukkit API + fallback paths); only paper uses the paper source set
     if (platform != "paper") {
         compileOnly(project(":project:spigot", configuration = "spigotOutput"))
     } else {
@@ -14,7 +14,7 @@ dependencies {
 }
 
 configurations {
-    // 根 allprojects 注入的 paper-api 只用于 Paper 构建
+    // The paper-api injected by the root allprojects is only used for Paper builds
     if (platform == "spigot") {
         getByName("compileOnly") {
             exclude(group = "io.papermc.paper", module = "paper-api")
@@ -22,10 +22,10 @@ configurations {
     }
 }
 
-// legacy12（v11200 = MC 1.12.2 API）编译面不存在的类 → 排除对应文件：
-// SmithItemEvent/SmithingInventory（1.16+）、TradeSelectEvent（1.14+），1.12.2 本身无锻造台；
-// PlayerRiptideEvent / EntityPickupItemEvent（1.13+，独立文件）；MythicLib 面（io.lumine.*）；
-// 现代合成系统（RecipeChoice/Tag/RecipeManager 均为 1.13+）
+// Classes absent from the legacy12 (v11200 = MC 1.12.2 API) compile surface -> exclude the corresponding files:
+// SmithItemEvent/SmithingInventory (1.16+), TradeSelectEvent (1.14+), 1.12.2 itself has no smithing table;
+// PlayerRiptideEvent / EntityPickupItemEvent (1.13+, separate files); MythicLib surface (io.lumine.*);
+// Modern crafting system (RecipeChoice/Tag/RecipeManager are all 1.13+)
 if (platform == "legacy12") {
     sourceSets["main"].kotlin.exclude(
         "**/listener/sertraline/itemSmithingRestriction.kt",

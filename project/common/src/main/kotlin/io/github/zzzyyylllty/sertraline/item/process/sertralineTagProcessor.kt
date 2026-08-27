@@ -23,7 +23,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?, repl: Map<S
             prefix = "val",
             dataSourceEmptyCheck = { itemVal?.isEmpty() ?: true },
             getReplaceValue = { parseResult, section, default, cleanedSection ->
-                // 根据解析结果自定义逻辑，简化示例直接用itemVal查section
+                // Customize the logic based on the parse result; for this simplified example, look up the section directly in itemVal
                 itemVal?.get(cleanedSection) ?: default
             },
             repl = it,
@@ -58,7 +58,7 @@ fun sertralineTagProcessor(data: ProcessItemTagData,player: Player?, repl: Map<S
     repl["kether"]?.let {
         processTagPrefix(
             prefix = "kether",
-            dataSourceEmptyCheck = { false }, // kether业务没empty判定
+            dataSourceEmptyCheck = { false }, // kether has no empty-check logic
             getReplaceValue = { parseResult, section, default, cleanedSection ->
                 cleanedSection.evalKether(data.player, collect, cacheId = "${name}_kether").get() ?: default
             },

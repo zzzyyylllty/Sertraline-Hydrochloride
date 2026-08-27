@@ -1,8 +1,8 @@
 package io.github.zzzyyylllty.sertraline.util
 
 /**
- * 事件类名解析：支持全限定名，也支持省略 org.bukkit.event 等前缀的简写。
- * 参考 Vulpecula 的 ClassAliases。
+ * Event class name resolution: supports fully qualified names as well as shorthand that omits prefixes such as org.bukkit.event.
+ * Reference Vulpecula's ClassAliases.
  */
 object ClassAliases {
 
@@ -26,7 +26,7 @@ object ClassAliases {
         "io.papermc.paper.event.entity",
     )
 
-    /** 解析类名，解析失败返回 null */
+    /** Resolve the class name, returning null on failure */
     fun getClass(name: String): Class<*>? {
         resolve(name)?.let { return it }
         val simple = name.substringAfterLast('.')

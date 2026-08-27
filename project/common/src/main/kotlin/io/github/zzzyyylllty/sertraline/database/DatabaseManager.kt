@@ -1,8 +1,9 @@
 package io.github.zzzyyylllty.sertraline.database
 
 import io.github.zzzyyylllty.sertraline.Sertraline
+import taboolib.common.io.newFile
+import taboolib.common.platform.function.getDataFolder
 import taboolib.expansion.mapper
-import java.io.File
 
 object DatabaseManager {
 
@@ -11,7 +12,9 @@ object DatabaseManager {
         if (cfg.getBoolean("database.enable", false)) {
             cfg.getConfigurationSection("database")!!
         } else {
-            File("${cfg.getString("database.filename") ?: "data"}.db")
+            // SQLite 文件必须落在插件数据目录（plugins/Sertraline/）下，并用 newFile 预先创建；
+            // 之前直接 File("...").db 使用相对路径，SQLite 驱动会把它建到服务器工作目录甚至因父目录不存在而无法创建
+            newFile(getDataFolder(), "${cfg.getString("database.filename") ?: "data"}.db")
         }
     }
 

@@ -22,8 +22,8 @@ fun hotBarChangeEvent(e: PlayerItemHeldEvent) {
     }
 }
 
-// Paper 专属 PlayerArmorChangeEvent 已移至 PaperEventBridge（hooks），
-// Spigot 上通过 attribute.armor-change-polling 轮询模拟。
+// The Paper-only PlayerArmorChangeEvent has been moved to PaperEventBridge (hooks);
+// on Spigot it is simulated via attribute.armor-change-polling polling.
 
 @SubscribeEvent(EventPriority.MONITOR)
 fun onLoginUpdate(e: PlayerLoginEvent) {

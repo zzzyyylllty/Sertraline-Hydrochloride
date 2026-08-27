@@ -27,10 +27,10 @@ val jsonUtils: Gson by lazy {
 
     val tempGson = builder.create()
 
-    // 实例化
+    // instantiate
     val anyValueAdapter = AnyValueTypeAdapter(tempGson)
 
-    // 注册
+    // register
     builder.registerTypeAdapter(linkedHashMapStringType, LinkedHashMapAnyTypeAdapter(anyValueAdapter))
     builder.registerTypeAdapter(arrayListAnyType, ArrayListAnyTypeAdapter(anyValueAdapter))
 

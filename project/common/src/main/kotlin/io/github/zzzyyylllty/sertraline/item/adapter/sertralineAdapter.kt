@@ -15,11 +15,11 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 
     val dataMap = (sItem.getDeepData("sertraline:vars") as Map<String, Any?>?)?.toMutableMap()
     val tag = item.getItemTag(true)
-    // TODO: filterNbtSafe 注释待确认，当前 vars 不再包含 Player/Event（已独立为 context）
+    // TODO: the filterNbtSafe comment needs confirmation; vars no longer contains Player/Event (now separate as context)
     tag["sertraline_data"] = dataMap
     //tag["sertraline_data"] = dataMap?.filterNbtSafe()
 
-    // 写入类型到NBT
+    // Write the type to NBT
     val typeData = sItem.getDeepData("sertraline:type")
     if (typeData != null) {
         val typeId = when (typeData) {
@@ -29,7 +29,7 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
         tag["sertraline_type"] = typeId
     }
 
-    // 写入品质到NBT
+    // Write the tier to NBT
     val tierData = sItem.getDeepData("sertraline:tier")
     if (tierData != null) {
         val tierId = when (tierData) {
@@ -42,7 +42,7 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
     val item = item.setItemTag(tag, true)
 
     // lore format
-    handleLoreFormat(sItem, player, PlatformCompat.getLore(item), false)?.let {
+    handleLoreFormat(sItem, player, PlatformCompat.getLore(item), false, item)?.let {
         PlatformCompat.setLore(item, it)
     }
 
@@ -51,8 +51,8 @@ fun sertralineAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): Ite
 }
 
 /**
- * 过滤掉不可序列化为 NBT 的值，避免 ItemTag 写入时抛出 Unsupported nbt 异常。
- * 脚本/战利品 vars 中可能包含 Player、Event 等运行时对象，它们不需要持久化到物品 NBT。
+ * Filter out values that cannot be serialized to NBT, avoiding an Unsupported nbt exception when writing ItemTag.
+ * Script/loot vars may contain runtime objects such as Player and Event, which do not need to be persisted to item NBT.
  */
 private fun Map<String, Any?>.filterNbtSafe(): Map<String, Any?> {
     return mapValues { (_, value) -> sanitizeNbtValue(value) }
@@ -85,7 +85,7 @@ private fun sanitizeNbtValue(value: Any?): Any? {
             return sanitized
         }
         value is Player -> return value.name
-        // 其他不可序列化类型（Event、Entity 等）→ 丢弃
+        // Other non-serializable types (Event, Entity, etc.) → discard
         else -> return FILTERED_SENTINEL
     }
 }

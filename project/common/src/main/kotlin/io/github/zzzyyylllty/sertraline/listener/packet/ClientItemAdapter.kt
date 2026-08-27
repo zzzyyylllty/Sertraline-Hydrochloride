@@ -35,7 +35,7 @@ private val packetComponent by lazy { config.getBoolean("packet.packet-component
 val suffix by lazy { console.asLangText("Editor_Item_Suffix").asListEnhanced()?.toComponent() ?: emptyList() }
 
 /**
- * 从传入的虚拟物品中的Tag获取SERTRALINE_OITEM以恢复原物品
+ * Gets the SERTRALINE_OITEM Tag from the incoming virtual item's Tag to restore the original item
  * */
 fun ItemStack.c2s(): ItemStack {
     val tag = this.getItemTag()
@@ -46,7 +46,7 @@ fun ItemStack.c2s(): ItemStack {
     return deserialized
 }
 /**
- * 将服务端侧物品转化为虚拟物品
+ * Converts a server-side item into a virtual item
  * */
 fun ItemStack.s2c(player: Player?): ItemStack {
     val oItem = this.clone()
@@ -54,12 +54,12 @@ fun ItemStack.s2c(player: Player?): ItemStack {
     val tag = this.getItemTag(true)
     val id = tag["sertraline_id"]?.asString() ?: return oItem
     val sItem = itemSerializer(id, player) ?: return oItem
-    if (packetLore) handleLoreFormat(sItem, player, PlatformCompat.getLore(this), true)?.let {
+    if (packetLore) handleLoreFormat(sItem, player, PlatformCompat.getLore(this), true, this)?.let {
         PlatformCompat.setLore(this, it)
     }
     val nmsItem = asNMSCopy(this)
     val modifiedItem = visualComponentSetterNMS(nmsItem, sItem, oItem.serializeToByteArray())
-    if (tag["sertraline_browse_item"] != null && PlatformCompat.getLore(oItem) != PlatformCompat.getLore(modifiedItem)) { // 如果是展示物品且lore被修改过
+    if (tag["sertraline_browse_item"] != null && PlatformCompat.getLore(oItem) != PlatformCompat.getLore(modifiedItem)) { // if it is a browse item and its lore was modified
         val lore = PlatformCompat.getLore(modifiedItem)?.toMutableList() ?: mutableListOf()
         lore.addAll(suffix)
         PlatformCompat.setLore(modifiedItem, lore)
@@ -68,7 +68,7 @@ fun ItemStack.s2c(player: Player?): ItemStack {
 }
 fun visualComponentSetterNMS(item: Any, sItem: ModernSItem,serialized: ByteArray): ItemStack {
 
-    // visual 覆盖基于 DataComponent 写入，低版本（1.12.2 等）直接返回原物品
+    // visual overrides are written via DataComponent, older versions (1.12.2 etc.) return the original item directly
     if (!VersionHelper().isOrAbove12005()) return asBukkitCopy(item)
     var resultItem = item
     var visualMaterial: Material? = null

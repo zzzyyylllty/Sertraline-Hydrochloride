@@ -66,41 +66,41 @@ fun itemSource(str: String,player: Player?): ItemStack {
     }
     return item ?: run {
         devLog("Material is null, returning grass block")
-        // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → GRASS）
+        // 1.13+ enum name, not present on 1.12.2; XMaterial resolves by server version (1.12.2 → GRASS)
         ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
     }
 }
 
 /**
- * 生成指定物品。
+ * Generates a specific item.
  *
- * @param template SertralineID
- * @param player 玩家
- * @param source 物品源，留空则不覆盖
- * @param amount 数量
- * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
+ * @param template Sertraline ID
+ * @param player Player
+ * @param source Item source; leave empty to not override
+ * @param amount Amount
+ * @param overrideData Overrides specific item data; used to preserve item variables when rebuilding an item, generally not needed by developers. Leave empty to not override.
  * */
 fun sertralineItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null): ItemStack? {
     return sertralineItemBuilderInternal(template, player, source, amount, overrideData)?.rebuildBypassKeepData(player)
 }
 
 /**
- * 生成带var数据的指定物品。
+ * Generates the specified item with var data.
  *
  * @param template SertralineID
- * @param player 玩家
- * @param source 物品源，留空则不覆盖
- * @param amount 数量
- * @param overrideData 覆盖物品的特定数据，这是用于重构物品时保留物品变量所用，一般对于开发者来说不需要使用。留空不覆盖。
- * @param vars 自带物品数据变量（可持久化到 NBT）
- * @param context 运行时上下文（Player、Event 等对象），可通过 {context:xxx} 标签访问，不持久化到 NBT
+ * @param player the player
+ * @param source the item source; leave empty to not override
+ * @param amount the amount
+ * @param overrideData Overrides specific item data; used to preserve item variables when rebuilding an item, generally not needed by developers. Leave empty to not override.
+ * @param vars Built-in item data variables (can be persisted to NBT)
+ * @param context Runtime context (objects like Player, Event), accessible via the {context:xxx} tag; not persisted to NBT
  * */
 fun sertralineVarItemBuilder(template: String,player: Player?,source: ItemStack? = null,amount: Int = 1,overrideData: Map<String, Any?>? = null, vars: Map<String, Any?>? = null, context: Map<String, Any?>? = null): ItemStack? {
     return sertralineItemBuilderInternal(template, player, source, amount, overrideData,vars = vars, context = context)?.rebuildBypassKeepData(player)
 }
 
 /**
- * 如要生成物品请使用 [sertralineItemBuilder]
+ * To generate an item, please use [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderInternal(template: String, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null, vars: Map<String, Any?>? = null, context: Map<String, Any?>? = null): ItemStack? {
     val isPrivateTemplate = isPrivateItemId(template)
@@ -133,7 +133,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
         val ocontext = pTemplate.getDeepData("sertraline:context") as? MutableMap<String, Any?>? ?: mutableMapOf()
         ocontext.putAll(it)
         pTemplate.setDeepData("sertraline:context", ocontext)
-        // keep-context：将命中的 context 转为 var 持久化，rebuild 后 {var:xxx} 仍可用
+        // keep-context: persist the matched context into a var so {var:xxx} still works after rebuilding
         pTemplate.getDeepData("sertraline:keep-context").asListEnhanced()?.let { keepContext ->
             if (keepContext.isNotEmpty()) {
                 val vars = (pTemplate.getDeepData("sertraline:vars") as? Map<String, Any?>?)?.toMutableMap() ?: mutableMapOf()
@@ -161,7 +161,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
         val tag = item.getItemTag()
         tag["sertraline_id"] = processedTemplate.key
         if (ownerUuid != null) tag[PRIVATE_OWNER_TAG] = ownerUuid else tag.remove(PRIVATE_OWNER_TAG)
-        // 写入类型到NBT
+        // Write the type to NBT
         val typeData = processedTemplate.getDeepData("sertraline:type")
         if (typeData != null) {
             val typeId = when (typeData) {
@@ -170,7 +170,7 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
             }
             tag["sertraline_type"] = typeId
         }
-        // 写入修订版本
+        // Write the revision to NBT
         val revision = getExpectedRevision(processedTemplate.key, ownerUuid = ownerUuid)
         if (revision > 0) tag["sertraline_revision"] = revision
         tag.saveTo(item)
@@ -179,8 +179,8 @@ fun sertralineItemBuilderInternal(template: String, player: Player?, source: Ite
 }
 
 /**
- * 使用临时的 ModernSItem，用于配方中剔除部分数据
- * 如要生成物品请使用 [sertralineItemBuilder]
+ * Uses a temporary ModernSItem, for removing some data in recipes.
+ * To generate an item, please use [sertralineItemBuilder]
  * */
 fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, source: ItemStack? = null, amount: Int = 1, overrideData: Map<String, Any?>? = null, rebuild: ItemStack? = null): ItemStack? {
     val pTemplate = template.deepCopy()
@@ -207,7 +207,7 @@ fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, sourc
     val tag = item.getItemTag()
     tag["sertraline_id"] = processedTemplate.key
     if (ownerUuid != null) tag[PRIVATE_OWNER_TAG] = ownerUuid else tag.remove(PRIVATE_OWNER_TAG)
-    // 写入类型到NBT
+    // Write the type to NBT
     val typeData = processedTemplate.getDeepData("sertraline:type")
     if (typeData != null) {
         val typeId = when (typeData) {
@@ -216,7 +216,7 @@ fun sertralineItemBuilderTemporary(template: ModernSItem, player: Player?, sourc
         }
         tag["sertraline_type"] = typeId
     }
-    // 写入修订版本
+    // Write the revision to NBT
     val revision = getExpectedRevision(processedTemplate.key, ownerUuid = ownerUuid)
     if (revision > 0) tag["sertraline_revision"] = revision
     tag.saveTo(item)
@@ -255,12 +255,12 @@ fun ItemStack.rebuildBypassKeepData(player: Player?): ItemStack {
     val tag = this.clone().getItemTag(true)
     val sID = tag["sertraline_id"]?.asString() ?: return this
 
-    // 快速路径：如果没有 dynamics 且无 NBT 实例数据，重建是冗余的
+    // Fast path: if there is no dynamics and no NBT instance data, rebuilding is redundant
     val template = itemTemplateForStack(this, player)
     if (template != null && template.getDeepData("sertraline:dynamics") == null) {
         val nbtData = tag["sertraline_data"]?.parseMapNBT()
         if (nbtData == null) {
-            return this // 首次构建，无动态内容 → 重建不会改变结果
+            return this // First build, no dynamic content → rebuild would not change the result
         }
     }
 
@@ -353,9 +353,9 @@ fun ItemStack.rebuildDisplay(player: Player?) {
 }
 
 /**
- * 将 context 值转为可持久化到 NBT 的类型。
- * String/Number/Boolean/数组保留原样；Player/Entity 转为 name；Map/Collection 递归；
- * 其他对象尽力转字符串。用于 keep-context 把运行时 context 转为 var 存储。
+ * Convert a context value into a type persistable to NBT.
+ * String/Number/Boolean/arrays stay as-is; Player/Entity become name; Map/Collection recurse;
+ * other objects become strings when possible. Used by keep-context to store runtime context as a var.
  */
 private fun Any?.toNbtPersistable(): Any? = when (this) {
     null -> null

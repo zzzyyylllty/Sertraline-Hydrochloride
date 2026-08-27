@@ -23,7 +23,7 @@ fun multiExtensionLoader(file: File): Map<String, Any?>? {
         }
 
         val content = file.readText()
-        // textIsBlank：Java 8 安全实现（String.isBlank 是 Java 11 成员方法，见 StringUtil.kt）
+        // textIsBlank: Java 8-safe implementation (String.isBlank is a Java 11 member method, see StringUtil.kt)
         if (content.textIsBlank()) {
             severeL("Config_Load_Error_Empty", file.name)
             return null

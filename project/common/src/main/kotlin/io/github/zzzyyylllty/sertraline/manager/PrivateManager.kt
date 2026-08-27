@@ -17,7 +17,7 @@ class PrivateManager {
         return when (sub) {
             SubManagerType.TEMPORARY -> temporaryCache[uuid]?.get(normalizedId)
             SubManagerType.PERSISTENT -> {
-                // DB 加载结果回写缓存，避免重复 getItem 反复打数据库
+                // Write the DB load result back to the cache to avoid repeated getItem calls hitting the database
                 val map = persistentCache.computeIfAbsent(uuid) { ConcurrentHashMap() }
                 map[normalizedId] ?: loadFromDB(
                     uuid,

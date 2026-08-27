@@ -20,7 +20,7 @@ object ItemReflections {
         Class.forName("net.minecraft.resources.ResourceKey")
     }
 
-    // 反射字段
+    // reflection fields
     val field_Holder_Reference_tags by lazy {
         clazz_Holder_Reference.getDeclaredField("tags").apply {
             isAccessible = true
@@ -33,7 +33,7 @@ object ItemReflections {
         }
     }
 
-    // 反射方法
+    // reflection methods
     val method_TagKey_create by lazy {
         clazz_TagKey.getDeclaredMethod(
             "create",

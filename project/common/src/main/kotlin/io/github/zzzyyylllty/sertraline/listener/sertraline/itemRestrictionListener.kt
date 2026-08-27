@@ -69,7 +69,7 @@ private fun shouldBlock(mode: RestrictMode, isVanilla: Boolean): Boolean {
     }
 }
 
-// internal：itemSmithingRestriction.kt / itemTradeRestriction.kt 的处理器也使用
+// internal: also used by the handlers in itemSmithingRestriction.kt / itemTradeRestriction.kt
 internal fun sendBlockMessage(player: Player, key: String) {
     val msg = config.getString("messages.common.$key", "")
     if (!msg.isNullOrEmpty()) {
@@ -137,5 +137,5 @@ fun onFurnaceSmelt(event: FurnaceSmeltEvent) {
     }
 }
 
-// villager trading / smithing table 限制在 itemTradeRestriction.kt / itemSmithingRestriction.kt
-// （TradeSelectEvent 1.14+ / SmithItemEvent 1.16+，legacy12 编译面排除）
+// villager trading / smithing table restrictions live in itemTradeRestriction.kt / itemSmithingRestriction.kt
+// (TradeSelectEvent 1.14+ / SmithItemEvent 1.16+, excluded from the legacy12 build surface)

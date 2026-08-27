@@ -6,7 +6,7 @@ class ItemLoadEvent(val itemKey: String, val arguments: Map<String, Any?>, var i
 
 class FeatureLoadEvent(
     val sItemKey: String?,
-    val content: Any?, // 此节点的内容
+    val content: Any?, // The content of this node
     val feature: String,
     var result: Any?
 ) : BukkitProxyEvent()

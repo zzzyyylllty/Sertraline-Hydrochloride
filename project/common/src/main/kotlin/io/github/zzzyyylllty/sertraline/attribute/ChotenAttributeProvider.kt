@@ -83,7 +83,7 @@ class ChotenAttributeProvider : AttributeProvider {
         val api = ChoTenAttributeAPI.instance
         val playerUuid = player.uniqueId
 
-        // 清除旧修饰符
+        // Remove old modifiers
         appliedModifiers[playerUuid]?.let { uuids ->
             for (modUuid in uuids) {
                 api.removeModifier(playerUuid, modUuid)
@@ -125,7 +125,7 @@ class ChotenAttributeProvider : AttributeProvider {
 
             val attributeSlot = parseAttributeSlot(slot)
 
-            // 移除过滤字段
+            // Remove the filtered fields
             chotenFilter.forEach { chotenMutable.remove(it) }
 
             chotenMutable.forEach { (key, value) ->

@@ -6,8 +6,8 @@ import org.bukkit.event.inventory.SmithItemEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 
-// 独立文件：SmithItemEvent / SmithingInventory 是 1.16+ API，legacy12（v11200）编译面不存在，
-// 由 common/build.gradle.kts 的 sourceSets exclude 排除（1.12.2 无锻造台，功能本身不适用）
+// Standalone file: SmithItemEvent / SmithingInventory are 1.16+ APIs and do not exist on the legacy12 (v11200) build surface,
+// excluded via sourceSets in common/build.gradle.kts (1.12.2 has no smithing table, the feature itself is not applicable)
 
 @SubscribeEvent(priority = EventPriority.HIGHEST)
 fun onSmithItem(event: SmithItemEvent) {

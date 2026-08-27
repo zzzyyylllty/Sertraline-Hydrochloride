@@ -1,7 +1,7 @@
 package io.github.zzzyyylllty.sertraline.data
 
 /**
- * 配方类型枚举
+ * Recipe type enum
  */
 enum class RecipeType {
     CRAFTING,
@@ -15,29 +15,29 @@ enum class RecipeType {
 }
 
 /**
- * 配方格式：有序/无序（仅对 CRAFTING 有效）
+ * Recipe format: shaped/shapeless (only valid for CRAFTING)
  */
 enum class RecipeFormat {
     SHAPED, SHAPELESS
 }
 
 /**
- * 配方提供方式
+ * How the recipe is provided
  */
 enum class RecipeProvider {
     SIMPLE,  // Bukkit API
-    COMPLEX  // NMS 注入（通过 NMSRecipeFactory 反射操作 RecipeManager）
+    COMPLEX  // NMS injection (reflection on RecipeManager via NMSRecipeFactory)
 }
 
 /**
- * 输入组件过滤模式
+ * Input component filter mode
  */
 enum class ComponentsMode {
     REMOVE, KEEP
 }
 
 /**
- * 输入选项：控制合成时对输入物品的数据处理
+ * Input options: control how input items are processed during crafting
  */
 data class InputOptions(
     val dataFilter: List<String> = emptyList(),
@@ -50,25 +50,26 @@ data class ComponentFilter(
 )
 
 /**
- * 配方原料
+ * Recipe ingredient
  */
 sealed class RecipeIngredient {
     /**
-     * 具体物品，如 sertraline:doe_card / minecraft:stone / itemsadder:some_item
-     * @param exact true = 精确原料（NMS ofStacks）：配方书显示完整组件，但合成测试要求组件完全一致。
-     *   仅对确定性构建的物品使用（无 placeholder 的静态物品），placeholder 物品会因玩家差异 mismatch。
+     * A specific item, e.g. sertraline:doe_card / minecraft:stone / itemsadder:some_item
+     * @param exact true = exact ingredient (NMS ofStacks): the recipe book shows full components, but the craft test
+     *   requires components to match exactly. Only use for deterministically built items (static items with no
+     *   placeholders); placeholder items would mismatch due to player differences.
      */
     data class Item(val itemId: String, val amount: Int = 1, val exact: Boolean = false) : RecipeIngredient()
 
-    /** 标签，如 minecraft:planks / #minecraft:planks */
+    /** A tag, e.g. minecraft:planks / #minecraft:planks */
     data class Tag(val tagId: String, val amount: Int = 1) : RecipeIngredient()
 
-    /** 多选一 */
+    /** Choice among several */
     data class Choice(val options: List<RecipeIngredient>) : RecipeIngredient()
 }
 
 /**
- * 配方结果物品
+ * Recipe result item
  */
 data class RecipeResult(
     val itemId: String,
@@ -77,7 +78,7 @@ data class RecipeResult(
 )
 
 /**
- * 结果函数（合成后执行）
+ * Result function (executed after crafting)
  */
 sealed class RecipeFunction {
     data class Kether(val script: String) : RecipeFunction()
@@ -86,7 +87,7 @@ sealed class RecipeFunction {
 }
 
 /**
- * 配方数据
+ * Recipe data
  */
 sealed class RecipeData {
     abstract val id: String

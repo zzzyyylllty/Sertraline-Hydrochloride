@@ -7,14 +7,14 @@ import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.common.platform.event.SubscribeEvent
 
 /**
- * 处理sertraline:tier特性
- * 将品质ID解析为实际的Tier对象
+ * Handles the sertraline:tier feature
+ * Resolves a quality ID into the actual Tier object
  */
 @SubscribeEvent
 fun getFeatureTier(e: FeatureLoadEvent) {
     if (e.feature != "sertraline:tier") return
 
-    // 物品没有定义品质特性，直接跳过（不是错误）
+    // The item does not define the quality feature, so skip it (not an error)
     val raw = e.content ?: return
 
     val tierId = when (raw) {
@@ -27,19 +27,19 @@ fun getFeatureTier(e: FeatureLoadEvent) {
         }
     }
 
-    // 查找对应的品质
+    // Find the corresponding quality
     val tier = tiers[tierId]
     if (tier == null) {
         warningS("Tier '$tierId' not found for item ${e.sItemKey}")
-        // 返回原始值，让默认处理继续
+        // Return the original value and let default handling continue
         e.result = tierId
         return
     }
 
-    // 设置结果为品质ID（字符串）
+    // Set the result to the quality ID (string)
     e.result = tierId
 
-    // 同时在itemCache中存储品质引用
+    // Also store the quality reference in itemCache
     val cache = io.github.zzzyyylllty.sertraline.Sertraline.itemCache[e.sItemKey]?.toMutableMap() ?: mutableMapOf()
     cache["tier"] = tier
     cache["tierId"] = tierId

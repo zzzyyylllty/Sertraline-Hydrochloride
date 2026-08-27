@@ -4,11 +4,11 @@ import taboolib.module.configuration.Config
 import taboolib.module.configuration.Configuration
 
 /**
- * 自定义事件注册配置（custom-events.yml）
+ * Custom event registration config (custom-events.yml)
  *
- * 与 config.yml 的 custom-events 段分离为独立配置文件，
- * 键名为触发名，值为事件类 / 优先级 / accept-cancelled / item-source。
- * 参考 [io.github.zzzyyylllty.sertraline.manager.ManagerConfig] 的加载方式。
+ * It is a standalone config file separate from the custom-events section in config.yml;
+ * keys are trigger names and values are the event class / priority / accept-cancelled / item-source.
+ * Reference the loading approach of [io.github.zzzyyylllty.sertraline.manager.ManagerConfig].
  */
 object CustomEventsConfig {
 

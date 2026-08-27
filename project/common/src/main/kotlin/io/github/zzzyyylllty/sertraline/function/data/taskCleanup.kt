@@ -8,9 +8,9 @@ import taboolib.common.platform.Awake
 
 @Awake(LifeCycle.DISABLE)
 fun taskCleanup() {
-    // 清除所有节流记录
+    // Clear all throttle records
     ThrottleFunction.allThrottleFunctions.forEach { it.clearAll() }
 
-    // 取消所有防抖任务
+    // Cancel all debounce tasks
     DebounceFunction.allDebounceFunctions.forEach { it.clearAll() }
 }

@@ -153,7 +153,7 @@ class PacketEventsSendListener : PacketListener {
 //                            deferredList
 //                        }
 //
-//                    // 处理 carriedItem (单独异步任务)
+//                    // Handle carriedItem (separate async task)
 //                    val rewriteCarriedItem: ItemStack? = carriedItem?.let { item ->
 //                        handleItemStack(player, item)
 //                    }

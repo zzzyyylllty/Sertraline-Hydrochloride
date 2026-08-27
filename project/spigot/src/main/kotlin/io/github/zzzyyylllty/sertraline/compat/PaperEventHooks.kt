@@ -4,14 +4,14 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * Paper 专属事件回调（由 common 提供业务逻辑，适配层负责事件注册/模拟）。
- * 此接口为双平台公共契约，仅使用 Bukkit API 类型。
+ * Paper-specific event callbacks (common provides the business logic; this adapter layer handles event
+ * registration/simulation). This interface is the public contract for both platforms, using only Bukkit API types.
  */
 interface PaperEventHooks {
 
-    /** Paper: PlayerArmorChangeEvent 触发；Spigot: 由 armor-change-polling 轮询触发 */
+    /** Paper: fired by PlayerArmorChangeEvent; Spigot: fired by armor-change-polling */
     fun onArmorChange(player: Player) {}
 
-    /** Paper: PlayerTradeEvent 触发；返回 true 表示拦截本次交易。Spigot: 不触发 */
+    /** Paper: fired by PlayerTradeEvent; returning true intercepts the trade. Spigot: not fired */
     fun onPlayerTrade(ingredients: List<ItemStack>): Boolean = false
 }

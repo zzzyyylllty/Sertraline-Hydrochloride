@@ -3,14 +3,14 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.google.gson.TypeAdapter
-import com.google.gson.reflect.TypeToken // 引入 TypeToken
+import com.google.gson.reflect.TypeToken // import TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import java.io.IOException
 
-// 针对 Any? 的内部处理逻辑，现在我们将它封装在一个通用的 ValueAdapter 中
-// 这个 ValueAdapter 不直接注册给 Any.class，而是由 Map/List 的 TypeAdapter 调用
+// This is the internal handling logic for Any?, now wrapped in a generic ValueAdapter.
+// This ValueAdapter is not registered directly to Any.class; instead it is invoked by the Map/List TypeAdapters.
 class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
 
     @Throws(IOException::class)
@@ -26,13 +26,13 @@ class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
             is Boolean -> out.value(value)
             is List<*> -> {
                 out.beginArray()
-                // 使用 TypeToken 重新获取 List<Any?> 的适配器
-                // 注意这里需要获取 List 的适配器，而不是直接 Any 的，因为 Any 无法直接注册
-                // 为了避免无限循环，这里需要特别小心，我们希望委托给 Gson 内部的 List 处理，
-                // 只是List的元素也使用我们提供的AnyValueTypeAdapter
-                // 实际上，更简单的做法是直接在这里进行递归处理
+                // Re-obtain the List<Any?> adapter via TypeToken
+                // Note that we need the List adapter, not the plain Any one, because Any cannot be registered directly.
+                // To avoid infinite recursion, be careful: we want to delegate to Gson's internal List handling,
+                // but with the List elements also processed by our AnyValueTypeAdapter.
+                // Actually, it's simpler to just handle it recursively right here.
                 for (item in value) {
-                    this.write(out, item) // 递归调用自身处理列表元素
+                    this.write(out, item) // recursively call ourselves to process list elements
                 }
                 out.endArray()
             }
@@ -43,18 +43,18 @@ class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
                         throw IllegalArgumentException("Map key must be a string for JSON serialization: $k")
                     }
                     out.name(k)
-                    this.write(out, v) // 递归调用自身处理 Map 的值
+                    this.write(out, v) // recursively call ourselves to process Map values
                 }
                 out.endObject()
             }
             else -> {
-                // 对于 ModernSItem 内部的 data 和 config 字段，
-                // 如果 Any? 值不是基本类型、List 或 Map，
-                // 我们仍然需要一个 fallback 机制。
-                // 这里的处理方式决定了如果出现未知类型时的行为：
-                // 1. 抛出异常 (最严格):
+                // For ModernSItem's internal data and config fields,
+                // if the Any? value is not a primitive, List, or Map,
+                // we still need a fallback mechanism.
+                // The handling here determines what happens when an unknown type appears:
+                // 1. Throw an exception (strictest):
                 throw IllegalArgumentException("Unsupported type for AnyValueTypeAdapter: ${value::class.java.name}. Expected primitive, List, or Map.")
-                // 2. 委托给 Gson 的默认序列化器 (可能引入反射):
+                // 2. Delegate to Gson's default serializer (may introduce reflection):
                 // gson.toJson(value, value.javaClass, out)
             }
         }
@@ -67,7 +67,7 @@ class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
                 val list = ArrayList<Any?>()
                 reader.beginArray()
                 while (reader.hasNext()) {
-                    list.add(this.read(reader)) // 递归调用自身处理列表元素
+                    list.add(this.read(reader)) // recursively call ourselves to process list elements
                 }
                 reader.endArray()
                 list
@@ -77,7 +77,7 @@ class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
                 reader.beginObject()
                 while (reader.hasNext()) {
                     val key = reader.nextName()
-                    map[key] = this.read(reader) // 递归调用自身处理 Map 的值
+                    map[key] = this.read(reader) // recursively call ourselves to process Map values
                 }
                 reader.endObject()
                 map
@@ -106,8 +106,8 @@ class AnyValueTypeAdapter(private val gson: Gson) : TypeAdapter<Any?>() {
     }
 }
 
-// 针对 LinkedHashMap<String, Any?> 的 TypeAdapter
-// 这个适配器将使用 AnyValueTypeAdapter 来处理其内部的 Any? 值
+// TypeAdapter for LinkedHashMap<String, Any?>
+// This adapter uses AnyValueTypeAdapter to process its internal Any? values
 class LinkedHashMapAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapter) : TypeAdapter<LinkedHashMap<String, Any?>>() {
     override fun write(out: JsonWriter, map: LinkedHashMap<String, Any?>?) {
         if (map == null) {
@@ -117,7 +117,7 @@ class LinkedHashMapAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapt
         out.beginObject()
         for ((key, value) in map) {
             out.name(key)
-            anyValueAdapter.write(out, value) // 使用 AnyValueTypeAdapter 处理值
+            anyValueAdapter.write(out, value) // process the value with AnyValueTypeAdapter
         }
         out.endObject()
     }
@@ -131,15 +131,15 @@ class LinkedHashMapAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapt
         reader.beginObject()
         while (reader.hasNext()) {
             val key = reader.nextName()
-            map[key] = anyValueAdapter.read(reader) // 使用 AnyValueTypeAdapter 处理值
+            map[key] = anyValueAdapter.read(reader) // process AnyValue with AnyValueTypeAdapter
         }
         reader.endObject()
         return map
     }
 }
 
-// 针对 ArrayList<Any?> (或其他 List<Any?>) 的 TypeAdapter
-// 这个适配器将使用 AnyValueTypeAdapter 来处理其内部的 Any? 元素
+// TypeAdapter for ArrayList<Any?> (or other List<Any?>)
+// This adapter uses AnyValueTypeAdapter to process its internal Any? elements
 class ArrayListAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapter) : TypeAdapter<ArrayList<Any?>>() {
     override fun write(out: JsonWriter, list: ArrayList<Any?>?) {
         if (list == null) {
@@ -148,7 +148,7 @@ class ArrayListAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapter) 
         }
         out.beginArray()
         for (item in list) {
-            anyValueAdapter.write(out, item) // 使用 AnyValueTypeAdapter 处理元素
+            anyValueAdapter.write(out, item) // process AnyValue with AnyValueTypeAdapter
         }
         out.endArray()
     }
@@ -161,7 +161,7 @@ class ArrayListAnyTypeAdapter(private val anyValueAdapter: AnyValueTypeAdapter) 
         val list = ArrayList<Any?>()
         reader.beginArray()
         while (reader.hasNext()) {
-            list.add(anyValueAdapter.read(reader)) // 使用 AnyValueTypeAdapter 处理元素
+            list.add(anyValueAdapter.read(reader)) // process Any element with AnyValueTypeAdapter
         }
         reader.endArray()
         return list

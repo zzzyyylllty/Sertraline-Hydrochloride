@@ -50,6 +50,7 @@ import io.github.zzzyyylllty.sertraline.util.dependencies
 import io.github.zzzyyylllty.sertraline.util.ItemTagManager
 import io.github.zzzyyylllty.sertraline.util.ScriptHelper
 import io.github.zzzyyylllty.sertraline.util.VersionHelper
+import io.github.zzzyyylllty.sertraline.util.GraalJsUtil
 import io.github.zzzyyylllty.sertraline.util.minimessage.FastMiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -111,19 +112,19 @@ import javax.script.CompiledScript
 //        value = "!org.tabooproject.fluxon:core:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
 //        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!org.tabooproject.fluxon:core-console:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
 //        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!org.tabooproject.fluxon:core-jsr223:1.2.18",
 //        repository = "https://repo.tabooproject.org/repository/releases",
 //        relocate = ["!org.tabooproject.fluxon", "!io.github.zzzyyylllty.sertraline.dep.fluxon"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!com.mojang:datafixerupper:8.0.16",
@@ -133,27 +134,27 @@ import javax.script.CompiledScript
 //    RuntimeDependency(
 //        value = "!io.github.projectunified:uni-item-all:2.3.1",
 //        relocate = ["!io.github.projectunified.uniitem", "!io.github.zzzyyylllty.sertraline.dep.uniitem"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-serializer-legacy:4.19.0",
 //        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-api:4.19.0",
 //        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-text-minimessage:4.19.0",
 //        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!net.kyori:adventure-nbt:4.19.0",
 //        relocate = ["!net.kyori", "!io.github.zzzyyylllty.sertraline.dep.kyori"],
-//        transitive = false  // 不下载传递依赖
+//        transitive = false  // do not download transitive dependencies
 //    ),
 //    RuntimeDependency(
 //        value = "!com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1",
@@ -214,13 +215,13 @@ object Sertraline : Plugin() {
     val consoleSender by lazy { console.castSafely<CommandSender>()!! }
     var fluxonInst: FluxonRuntime? = null
 
-    var itemMap: LinkedHashMap<String, ModernSItem> = LinkedHashMap<String, ModernSItem>()
-    var mappings = LinkedHashMap<String, List<String>?>()
-    var loreFormats = LinkedHashMap<String, AbstractLoreFormat>()
-    var craftingStations = LinkedHashMap<String, CraftingStation>()
-    var tiers = LinkedHashMap<String, Tier>()
-    var types = LinkedHashMap<String, Type>()
-    var levels = LinkedHashMap<String, Level>()
+    var itemMap = ConcurrentHashMap<String, ModernSItem>()
+    var mappings = ConcurrentHashMap<String, List<String>?>()
+    var loreFormats = ConcurrentHashMap<String, AbstractLoreFormat>()
+    var craftingStations = ConcurrentHashMap<String, CraftingStation>()
+    var tiers = ConcurrentHashMap<String, Tier>()
+    var types = ConcurrentHashMap<String, Type>()
+    var levels = ConcurrentHashMap<String, Level>()
     val dateTimeFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") }
     val itemManager by lazy { ItemProcessorManager() }
     val manager = io.github.zzzyyylllty.sertraline.manager.ItemManager()
@@ -258,19 +259,19 @@ object Sertraline : Plugin() {
     }
 
     override fun onDisable() {
-        // 反注册自定义事件监听
+        // Unregister custom event listeners
         try {
             CustomEventListener.unregisterAll()
         } catch (_: Throwable) {
         }
-        // 反注册全局监听器
+        // Unregister global listeners
         try {
             GlobalListenerManager.unregisterAll()
         } catch (_: Throwable) {
         }
-        // 取消所有合成任务（保留持久化数据，玩家下次加入时可恢复）
+        // Cancel all crafting tasks (persist data; restorable when the player next joins)
         CraftingStationManager.shutdownAll()
-        // 清理临时物品（私有临时物品在服务器关闭后销毁）
+        // Clean up temporary items (private temporary items are destroyed on server shutdown)
         manager.shutdown()
         infoLSync("Disable")
     }
@@ -283,7 +284,7 @@ object Sertraline : Plugin() {
 
     @Awake(LifeCycle.ENABLE)
     fun onEnableLoad() {
-        // spigot 平台层通过 CompatLog 输出 i18n 警告（映射到 warningL），须在加载前注册
+        // The spigot platform layer emits i18n warnings via CompatLog (mapped to warningL); must be registered before loading
         CompatLog.register { node, args -> warningL(node, *args) }
         try {
             reloadCustomConfig(false)
@@ -320,7 +321,7 @@ object Sertraline : Plugin() {
                 warningL("Experimental_FastMiniMessage_Legacy_Unsupported")
             }
 
-            // 自定义事件注册配置独立文件
+            // Custom event registration config is an independent file
             CustomEventsConfig.config.reload()
 
             // save public-temporary items, restore after reload
@@ -328,7 +329,9 @@ object Sertraline : Plugin() {
 
             itemMap.clear()
             mappings.clear()
-            loreFormats.clear()
+            // loreFormats is NOT cleared here — it's swapped atomically right before
+            // loadLoreFormatFiles() (line 397) so concurrent packet readers still see
+            // the old (stale) map during template/tier/type/level/item loading.
             CraftingStationManager.cancelAll()
             craftingStations.clear()
             tiers.clear()
@@ -349,7 +352,7 @@ object Sertraline : Plugin() {
             registerNativeTagAdapter()
             registerNativeAttributeProviders()
 
-            // 模板优先加载，后续所有配置均可引用
+            // Templates load first; all subsequent configs may reference them
             try { TemplateManager.loadTemplates() } catch (e: Exception) {
                 severeL("Config_Load_Error_Parse", "templates", e.message ?: "Unknown error")
             }
@@ -360,7 +363,7 @@ object Sertraline : Plugin() {
             }
             ReloadCollector.addStat(console.asLangText("Reload_Stat_Mappings", mappings.size))
 
-            // tier/type/level 必须在物品之前加载，否则物品的 FeatureLoadEvent 查不到对应数据
+            // tier/type/level must load before items, otherwise items' FeatureLoadEvent can't find the matching data
             try { loadTierFiles() } catch (e: Exception) {
                 severeL("Tier_Load_Error_Parse", "tiers", e.message ?: "Unknown error")
             }
@@ -383,6 +386,19 @@ object Sertraline : Plugin() {
             manager.postReload()
             ReloadCollector.addStat(console.asLangText("Reload_Stat_Items", itemMap.size))
 
+            // warm up GraalJS scripts: eval each cached Source once in a throwaway Context
+            // to trigger Truffle AST compilation, so the first real eval after reload is faster
+            if (config.getBoolean("preload.script.graaljs", true) && !VersionHelper().isLegacy()) {
+                try {
+                    GraalJsUtil.warmUpAll()
+                } catch (e: Exception) {
+                    // warm-up failure does not affect normal operation
+                }
+            }
+
+            // Atomic swap: new empty map is populated immediately by loadLoreFormatFiles() below.
+            // Concurrent readers still see the old map until this point, avoiding the empty-map window.
+            loreFormats = ConcurrentHashMap()
             try { loadLoreFormatFiles() } catch (e: Exception) {
                 severeL("LoreFormat_Load_Error_Parse", "lore-formats", e.message ?: "Unknown error")
             }
@@ -397,7 +413,7 @@ object Sertraline : Plugin() {
                 severeL("Config_Load_Error_Parse", "revision-auto-tracker", e.message ?: "Unknown error")
             }
 
-            // 配方注册 + 事件触发等 Bukkit API 操作必须在主线程执行
+            // Bukkit API operations such as recipe registration and event firing must run on the main thread
             if (Bukkit.isPrimaryThread()) {
                 runRecipeSyncTasks(sender)
             } else {
@@ -415,9 +431,9 @@ object Sertraline : Plugin() {
     }
 
     private fun runRecipeSyncTasks(sender: CommandSender?) {
-        // 自定义合成系统依赖 1.13+/1.14+ API，低版本文件已排除，直接跳过
+        // The custom crafting system depends on 1.13+/1.14+ APIs; lower-version files are excluded, so we skip directly
         if (VersionHelper().isOrAbove114()) {
-            // loadRecipeFiles 在 legacy12 构建中整体排除，反射调用，类缺失时静默跳过
+            // loadRecipeFiles is fully excluded from legacy12 builds; invoked reflectively, silently skipped when the class is missing
             try {
                 Class.forName("io.github.zzzyyylllty.sertraline.config.LoadRecipeFilesKt")
                     .getMethod("loadRecipeFiles").invoke(null)
@@ -428,13 +444,13 @@ object Sertraline : Plugin() {
         try { ScriptHelper.loadScriptFiles() } catch (e: Exception) {
             severeL("Config_Load_Error_Parse", "recipes", e.message ?: "Unknown error")
         }
-        // 自定义事件监听在配置加载后于主线程重新注册（custom-events.yml）
+        // Custom event listeners re-register on the main thread after config load (custom-events.yml)
         try {
             CustomEventListener.registerAll()
         } catch (e: Exception) {
             severeL("Config_Load_Error_Parse", "custom-events", e.message ?: "Unknown error")
         }
-        // 全局监听器在配置加载后于主线程重新注册（global-listeners/*.yml）
+        // Global listeners re-register on the main thread after config load (global-listeners/*.yml)
         try {
             GlobalListenerManager.registerAll()
         } catch (e: Exception) {
@@ -493,7 +509,7 @@ object Sertraline : Plugin() {
                 val resource = Sertraline::class.java.classLoader.getResource("META-INF/dependencies/$name.json")
                 if (resource == null) {
                     severeS("Resource META-INF/dependencies/$name.json not found!")
-                    continue // 跳过这个依赖文件
+                    continue // skip this dependency file
                 }
 
                 if (useTaboo) RuntimeEnv.ENV_DEPENDENCY.loadFromLocalFile(resource) else SertralineLocalDependencyHelper().loadFromLocalFile(resource)
@@ -510,7 +526,7 @@ object Sertraline : Plugin() {
 }
 
 fun registerNativeAttributeProviders() {
-    // MythicLibAttributeProvider 依赖 io.lumine.*，legacy12 编译面不存在（文件已排除）；反射注册，类缺失时静默跳过
+    // MythicLibAttributeProvider depends on io.lumine.*, which doesn't exist on the legacy12 compile surface (file excluded); registered reflectively, silently skipped when the class is missing
     try {
         Class.forName("io.github.zzzyyylllty.sertraline.attribute.MythicLibAttributeProvider")
             .getDeclaredConstructor()

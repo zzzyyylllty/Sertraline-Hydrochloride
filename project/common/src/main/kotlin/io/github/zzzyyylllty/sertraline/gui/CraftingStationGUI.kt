@@ -28,19 +28,19 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * 合成站 GUI 管理器。
- * 负责：打开合成站界面、显示配方、处理合成流程（条件检查→等待→产出）。
+ * Crafting station GUI manager.
+ * Responsibilities: opening the station interface, displaying recipes, and handling the crafting flow (condition check → wait → output).
  */
 object CraftingStationManager {
 
-    /** 活跃的合成会话: playerId → CraftingSession */
+    /** Active crafting sessions: playerId → CraftingSession */
     private val activeSessions = ConcurrentHashMap<String, CraftingSession>()
 
-    /** 唯一会话令牌生成器 */
+    /** Unique session token generator */
     private val nextSessionToken = AtomicLong(0)
 
     /**
-     * 打开合成站 GUI。
+     * Opens the crafting station GUI.
      */
     fun openStation(player: Player, stationId: String) {
         val station = craftingStations[stationId]
@@ -52,10 +52,10 @@ object CraftingStationManager {
     }
 
     /**
-     * 打开合成站 GUI（指定页面）。
+     * Opens the station GUI (with a specific page).
      */
     fun openStation(player: Player, station: CraftingStation, stationId: String, page: Int) {
-        // 检查旧的合成会话
+        // Check for an existing crafting session
         val oldSession = activeSessions[player.uniqueId.toString()]
         if (oldSession != null) {
             val oldRecipe = station.recipes.values.find { it.displayName == oldSession.recipeId }
@@ -64,10 +64,10 @@ object CraftingStationManager {
                 PlatformCompat.sendComponent(player, "<yellow>Current craft cannot be cancelled!</yellow>".toComponent())
                 return
             }
-            // 取消旧的合成会话并返还已消耗的材料
+            // Cancel the old session and return the consumed materials
             activeSessions.remove(player.uniqueId.toString())
             oldSession.itemsReturned.set(true)
-            oldSession.cancel() // 取消调度任务，防止延迟执行后重复产出
+            oldSession.cancel() // Cancel the scheduled task to prevent duplicate output after delayed execution
             CraftingStationDataManager.clearSession(player)
             returnConsumedItems(player, oldSession)
         }
@@ -85,7 +85,7 @@ object CraftingStationManager {
             if (from < totalRecipes) recipes.subList(from, to) else emptyList()
         } else emptyList()
 
-        // 计算所有可用的物品槽位
+        // Compute all usable item slots
         val itemSlots = mutableListOf<Int>()
         for (rowIdx in display.layout.indices) {
             val row = display.layout[rowIdx]
@@ -96,7 +96,7 @@ object CraftingStationManager {
             }
         }
 
-        // 检测配方槽位与元素槽位冲突
+        // Detect collisions between recipe slots and element slots
         val elementSlots = mutableSetOf<Int>()
         for ((_, elementConfig) in display.elements) {
             if (elementConfig.slot != null) {
@@ -123,10 +123,10 @@ object CraftingStationManager {
         player.openMenu<Chest>(display.title) {
             rows(display.layout.size)
 
-            // 渲染布局
+            // Render the layout
             map(*display.layout.toTypedArray())
 
-            // 渲染背景元素
+            // Render background elements
             for ((elementId, elementConfig) in display.elements) {
                 if (elementConfig.slot != null) {
                     val item = buildElementItem(elementConfig, elementId, player, currentPage, totalPages)
@@ -142,7 +142,7 @@ object CraftingStationManager {
                 }
             }
 
-            // 填充配方物品
+            // Populate recipe items
             for ((index, recipe) in pageRecipes.withIndex()) {
                 if (index < itemSlots.size) {
                     val recipeSlot = itemSlots[index]
@@ -155,7 +155,7 @@ object CraftingStationManager {
         }
     }
 
-    // ==================== 元素物品构建 ====================
+    // ==================== Element Item Building ====================
 
     private fun buildElementItem(
         config: ElementConfig,
@@ -167,7 +167,7 @@ object CraftingStationManager {
         val material = try {
             org.bukkit.Material.valueOf(config.material.uppercase())
         } catch (_: Exception) {
-            // 1.13+ 枚举名，1.12.2 无此常量；XMaterial 按服务端版本解析（1.12.2 → STAINED_GLASS_PANE）
+            // 1.13+ enum name, not present on 1.12.2; XMaterial resolves by server version (1.12.2 → STAINED_GLASS_PANE)
             XMaterial.GRAY_STAINED_GLASS_PANE.parseMaterial() ?: Material.STONE
         }
         val item = ItemStack(material)
@@ -187,7 +187,7 @@ object CraftingStationManager {
                 .replace("{total_pages}", totalPages.toString())
                 .replace("{next_page}", (currentPage + 2).coerceAtMost(totalPages).toString())
                 .replace("{previous_page}", currentPage.toString())
-            // 支持多行 lore（用 \n 分隔）
+            // Support multi-line lore (separated by \n)
             val loreLines = resolvedLore.split("\n").map { it.toComponent() }
             PlatformCompat.setLore(meta, loreLines)
         }
@@ -201,14 +201,14 @@ object CraftingStationManager {
         if (displayItem != null) {
             return displayItem.build(player)
         }
-        // 使用第一个输出作为显示
+        // Use the first output as the display
         if (recipe.outputs.isNotEmpty()) {
             return recipe.outputs.first().build(player)
         }
         return ItemStack(XMaterial.GRASS_BLOCK.parseMaterial() ?: Material.STONE)
     }
 
-    // ==================== 元素点击处理 ====================
+    // ==================== Element Click Handling ====================
 
     private fun handleElementClick(
         player: Player,
@@ -225,7 +225,7 @@ object CraftingStationManager {
                 if (currentPage + 1 < totalPages) {
                     openStation(player, station, stationId, currentPage + 1)
                 } else if (roll && totalPages > 1) {
-                    // roll: true 时循环回第一页
+                    // When roll: true, wrap back to the first page
                     openStation(player, station, stationId, 0)
                 }
             }
@@ -233,13 +233,13 @@ object CraftingStationManager {
                 if (currentPage > 0) {
                     openStation(player, station, stationId, currentPage - 1)
                 } else if (roll && totalPages > 1) {
-                    // roll: true 时循环到最后一页
+                    // When roll: true, wrap to the last page
                     openStation(player, station, stationId, totalPages - 1)
                 }
             }
         }
 
-        // 执行 agents
+        // Execute agents
         if (config.agents != null) {
             for ((key, script) in config.agents) {
                 executeAgentScript(key, script, player, mapOf(
@@ -251,12 +251,12 @@ object CraftingStationManager {
         }
     }
 
-    // ==================== 配方点击 & 合成流程 ====================
+    // ==================== Recipe Click & Crafting Flow ====================
 
     private fun handleRecipeClick(player: Player, station: CraftingStation, stationId: String, recipe: StationRecipe, slot: Int) {
         val sessionKey = player.uniqueId.toString()
 
-        // 检查是否已有合成中
+        // Check whether a crafting process is already active
         val existing = activeSessions[sessionKey]
         if (existing != null) {
             val msg = Sertraline.config.getString("messages.crafting-already-active", "<yellow>You already have an active crafting process!</yellow>") ?: "<yellow>You already have an active crafting process!</yellow>"
@@ -264,7 +264,7 @@ object CraftingStationManager {
             return
         }
 
-        // 检查条件
+        // Check conditions
         val conditions = recipe.conditions
         if (conditions != null && conditions.isNotEmpty()) {
             val conditionResults = checkConditions(conditions, player, recipe)
@@ -306,7 +306,7 @@ object CraftingStationManager {
             }
         }
 
-        // 原子化检查并消耗输入物品（修复 TOCTOU 竞态条件）
+        // Atomically check and consume input items (fixes the TOCTOU race condition)
         val consumed = tryConsumeInputs(player, recipe)
         if (consumed == null) {
             val missingName = recipe.inputs.firstOrNull()?.displayName?.ifEmpty { recipe.inputs.firstOrNull()?.input?.item } ?: "unknown"
@@ -315,7 +315,7 @@ object CraftingStationManager {
             return
         }
 
-        // 解析合成时间
+        // Parse the crafting time
         val timeSeconds = try {
             recipe.time.evalKetherString(player)?.toDoubleOrNull() ?: 0.0
         } catch (_: Exception) {
@@ -323,26 +323,26 @@ object CraftingStationManager {
         }
         val timeTicks = (timeSeconds * 20).toInt().coerceAtLeast(1)
 
-        // 执行 onStart agents（配方级 → 合成站级）
+        // Execute onStart agents (recipe level → station level)
         fireRecipeAgents(recipe, "onStart", player)
         fireStationAgents(station, recipe, "onStart", player)
 
-        // 取消标记 + 会话令牌
+        // Cancel flag + session token
         val itemsReturned = AtomicBoolean(false)
         val sessionToken = nextSessionToken.incrementAndGet()
 
-        // 使用调度延迟替代 Thread.sleep()，避免占用线程池线程
+        // Use a scheduled delay instead of Thread.sleep() to avoid occupying pool threads
         val task = submit(async = true, delay = timeTicks.toLong()) {
-            // 检查会话是否已被取消（openStation / cancelAll 已处理归还）
+            // Check whether the session was cancelled (openStation / cancelAll already handled the refund)
             val currentSession = activeSessions[sessionKey]
             if (currentSession == null || currentSession.sessionToken != sessionToken) {
                 return@submit
             }
 
-            // 移除会话，防止重复处理
+            // Remove the session to prevent duplicate processing
             activeSessions.remove(sessionKey, currentSession)
 
-            // 产出物品（必须在主线程）
+            // Grant output items (must run on the main thread)
             submit(async = false) {
                 try {
                     for (output in recipe.outputs) {
@@ -372,7 +372,7 @@ object CraftingStationManager {
             itemsReturned = itemsReturned
         )
 
-        // 持久化合成会话到数据库
+        // Persist the crafting session to the database
         val startTime = System.currentTimeMillis()
         CraftingStationDataManager.saveSession(
             player = player,
@@ -387,7 +387,7 @@ object CraftingStationManager {
         PlatformCompat.sendComponent(player, msg.replace("{time}", "%.1f".format(timeSeconds)).toComponent())
     }
 
-    // ==================== 条件检查 ====================
+    // ==================== Condition Checking ====================
 
     private data class ConditionResult(val condition: ConditionConfig, val passed: Boolean)
 
@@ -417,7 +417,7 @@ object CraftingStationManager {
         }
     }
 
-    // ==================== 输入检查 & 消耗 ====================
+    // ==================== Input Checking & Consumption ====================
 
     data class ConsumedItem(
         val slot: Int,
@@ -425,9 +425,9 @@ object CraftingStationManager {
     )
 
     /**
-     * 原子化检查并消耗输入物品。
-     * 遍历所有配方输入，若能全部满足则消耗并返回 ConsumedItem 列表；
-     * 若任一输入不足则回滚所有已做的修改并返回 null（修复 TOCTOU 竞态条件）。
+     * Atomically check and consume the input items.
+     * Iterates all recipe inputs; if they can all be satisfied, consumes them and returns a ConsumedItem list;
+     * if any input is insufficient, rolls back all changes made and returns null (fixes the TOCTOU race condition).
      */
     private fun tryConsumeInputs(player: Player, recipe: StationRecipe): List<ConsumedItem>? {
         val inventory = player.inventory
@@ -474,7 +474,7 @@ object CraftingStationManager {
     }
 
     /**
-     * 返还被消耗的物品到玩家背包（合成取消/中断时调用）。
+     * Return the consumed items to the player's inventory (called when crafting is cancelled/interrupted).
      */
     private fun returnConsumedItems(player: Player, consumed: List<ConsumedItem>, recipeName: String? = null) {
         if (consumed.isEmpty()) return
@@ -484,24 +484,24 @@ object CraftingStationManager {
         }
         for (ci in consumed) {
             player.inventory.addItem(ci.item).values.forEach { leftover ->
-                // 如果背包满了，掉落在地上
+                // If the inventory is full, drop on the ground
                 player.world.dropItem(player.location, leftover)
             }
         }
     }
 
     /**
-     * 从旧会话中返还已消耗的物品（取消旧合成时调用）。
+     * Return the consumed items from the old session (called when cancelling the old craft).
      */
     private fun returnConsumedItems(player: Player, session: CraftingSession) {
         if (!player.isOnline) return
         returnConsumedItems(player, session.consumedItems, session.recipeId)
     }
 
-    // ==================== Agent 执行 ====================
+    // ==================== Agent Execution ====================
 
     /**
-     * 执行合成站级 agents。
+     * Execute station-level agents.
      */
     private fun fireStationAgents(station: CraftingStation, recipe: StationRecipe, action: String, player: Player) {
         station.agents?.forEach { (key, script) ->
@@ -515,7 +515,7 @@ object CraftingStationManager {
     }
 
     /**
-     * 执行配方级 agents。
+     * Execute recipe-level agents.
      */
     private fun fireRecipeAgents(recipe: StationRecipe, action: String, player: Player) {
         recipe.agents?.forEach { (key, script) ->
@@ -526,7 +526,7 @@ object CraftingStationManager {
     }
 
     /**
-     * 公开入口：供 restoreSession 在会话恢复时触发生命周期 agents。
+     * Public entry point: lets restoreSession trigger lifecycle agents when a session is restored.
      */
     fun fireLifecycleAgents(station: CraftingStation, recipe: StationRecipe, action: String, player: Player) {
         fireRecipeAgents(recipe, action, player)
@@ -558,7 +558,7 @@ object CraftingStationManager {
                     }
                     // Default: Kether (backward compatible)
                     else -> {
-                        // textLines：Java 8 安全实现（String.lines 是 Java 11 成员方法，见 StringUtil.kt）
+                        // textLines: a Java 8-safe implementation (String.lines is a Java 11 member method; see StringUtil.kt)
                         script.textLines().evalKether(player, vars)
                     }
                 }
@@ -568,7 +568,7 @@ object CraftingStationManager {
         }
     }
 
-    // ==================== 合成会话 ====================
+    // ==================== Crafting Session ====================
 
     data class CraftingSession(
         val playerId: String,
@@ -578,7 +578,7 @@ object CraftingStationManager {
         val totalTicks: Int,
         private val task: PlatformTask,
         val consumedItems: MutableList<ConsumedItem> = mutableListOf(),
-        /** 标记已取消/已返还材料，防止异步任务重复返还 */
+        /** Flag indicating the items were cancelled/returned, preventing the async task from returning them twice */
         val itemsReturned: AtomicBoolean = AtomicBoolean(false)
     ) {
         fun cancel() {
@@ -586,7 +586,7 @@ object CraftingStationManager {
         }
     }
 
-    /** 取消所有在线的合成任务并归还物品（用于 reload） */
+    /** Cancel all online crafting sessions and return items (used on reload) */
     fun cancelAll() {
         val onlinePlayers = mutableMapOf<String, CraftingSession>()
         activeSessions.values.forEach { session ->
@@ -595,13 +595,13 @@ object CraftingStationManager {
             if (player != null) {
                 onlinePlayers[session.playerId] = session
             }
-            // 离线玩家：保留 DB 数据，加入时 restoreSession 处理
+            // Offline players: keep the DB data; restoreSession handles it on join
         }
         activeSessions.clear()
 
         if (onlinePlayers.isEmpty()) return
 
-        // 同步归还 + 清 DB，阻塞直到完成。防止后续 craftingStations.clear() 与 restoreSession 竞态。
+        // Synchronously return items + clear the DB, blocking until done. Prevents a race between the subsequent craftingStations.clear() and restoreSession.
         try {
             val plugin = org.bukkit.Bukkit.getPluginManager().getPlugin("Sertraline")
             if (plugin != null) {
@@ -621,13 +621,13 @@ object CraftingStationManager {
         }
     }
 
-    /** 关闭所有合成任务但不清除持久化数据（用于服务器关闭） */
+    /** Shut down all crafting tasks without clearing persisted data (used on server shutdown) */
     fun shutdownAll() {
         activeSessions.values.forEach { it.cancel() }
         activeSessions.clear()
     }
 
-    /** 取消指定玩家的合成会话（玩家退出时调用） */
+    /** Cancel a specific player's crafting session (called when the player disconnects) */
     fun cancelPlayerSession(playerId: String) {
         val session = activeSessions.remove(playerId) ?: return
         session.cancel()

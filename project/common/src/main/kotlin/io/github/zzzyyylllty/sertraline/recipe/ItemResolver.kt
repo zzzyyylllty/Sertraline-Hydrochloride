@@ -11,12 +11,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
 
 /**
- * 将 [RecipeIngredient] 解析为 Bukkit [RecipeChoice]，
- * 支持 Sertraline 物品、原版物品、标签和外部插件物品。
+ * Resolves a [RecipeIngredient] into a Bukkit [RecipeChoice],
+ * supporting Sertraline items, vanilla items, tags, and external plugin items.
  */
 object ItemResolver {
 
-    /** 已知的外部插件命名空间（不通过 Sertraline itemMap 解析） */
+    /** Known external plugin namespaces (not resolved through Sertraline's itemMap) */
     private val knownExternalNamespaces = setOf(
         "itemsadder", "oraxen", "nexo", "mythicmobs",
         "mmoitems", "ecoitems", "executableitems", "neigeitems",
@@ -24,10 +24,10 @@ object ItemResolver {
     )
 
     /**
-     * 将配料定义解析为 [RecipeChoice]。
-     * - [RecipeIngredient.Item] → ExactChoice（Sertraline / 外部）或 MaterialChoice（原版）
+     * Resolves an ingredient definition into a [RecipeChoice].
+     * - [RecipeIngredient.Item] → ExactChoice (Sertraline / external) or MaterialChoice (vanilla)
      * - [RecipeIngredient.Tag] → MaterialChoice(Tag)
-     * - [RecipeIngredient.Choice] → 合并所有选项
+     * - [RecipeIngredient.Choice] → merge all options
      */
     fun resolve(ingredient: RecipeIngredient): RecipeChoice {
         return when (ingredient) {
@@ -41,20 +41,20 @@ object ItemResolver {
         val (namespace, key) = parseId(itemId)
 
         return when {
-            // 原版物品 → MaterialChoice
+            // Vanilla item → MaterialChoice
             namespace == "minecraft" || namespace == "vanilla" -> {
                 val material = Material.matchMaterial(key)
                     ?: throw IllegalArgumentException("Unknown vanilla material: $itemId")
                 RecipeChoice.MaterialChoice(material)
             }
-            // Sertraline 自有物品 → ExactChoice（带 NBT）
+            // Sertraline's own item → ExactChoice (with NBT)
             namespace == "sertraline" -> {
                 val sItem = Sertraline.itemMap[key]
                     ?: throw IllegalArgumentException("Unknown Sertraline item: $itemId")
                 val stack = buildSertralineStack(sItem, amount)
                 RecipeChoice.ExactChoice(stack)
             }
-            // 外部插件物品 → ExactChoice
+            // External plugin item → ExactChoice
             else -> {
                 val stack = buildExternalStack(namespace, key, amount)
                 RecipeChoice.ExactChoice(stack)
@@ -74,7 +74,7 @@ object ItemResolver {
         val choices = choice.options.map { resolve(it) }
         if (choices.isEmpty()) throw IllegalArgumentException("Choice must have at least one option")
 
-        // 收集 MaterialChoice / ExactChoice
+        // Collect MaterialChoice / ExactChoice
         val materials = mutableListOf<Material>()
         val exactStacks = mutableListOf<ItemStack>()
         var materialChoiceCount = 0
@@ -103,7 +103,7 @@ object ItemResolver {
         }
     }
 
-    // ---- 内部辅助 ----
+    // ---- Internal helpers ----
 
     private fun parseId(id: String): Pair<String, String> {
         val idx = id.indexOf(':')
@@ -115,7 +115,7 @@ object ItemResolver {
     }
 
     /**
-     * 规范化标签 Key：
+     * Normalizes a tag key:
      * - #minecraft:planks  →  minecraft:planks
      * - tag:planks        →  minecraft:planks
      * - planks            →  minecraft:planks
@@ -131,7 +131,7 @@ object ItemResolver {
     @Suppress("UNCHECKED_CAST")
     private fun resolveBukkitTag(normalized: String): Tag<Material>? {
         return try {
-            // 尝试 Bukkit 注册表中的 Tag
+            // Try the Tag in the Bukkit registry
             val key = org.bukkit.NamespacedKey.fromString(normalized) ?: return null
             val tagField = Tag::class.java.getDeclaredField(normalized
                 .substringAfter(':')
@@ -141,7 +141,7 @@ object ItemResolver {
             tagField.isAccessible = true
             tagField.get(null) as? Tag<Material>
         } catch (_: Exception) {
-            // 通过 Bukkit.getTag 兜底
+            // Fall back to Bukkit.getTag
             try {
                 val key = org.bukkit.NamespacedKey.fromString(normalized) ?: return null
                 @Suppress("DEPRECATION")
@@ -167,8 +167,8 @@ object ItemResolver {
     }
 
     /**
-     * 将字符串格式的配料描述直接解析为 [RecipeChoice]。
-     * 此方法供外部调用（如配置解析临时使用）。
+     * Parses a string-formatted ingredient description directly into a [RecipeChoice].
+     * This method is for external callers (e.g. temporary use during config parsing).
      */
     fun parseString(choiceStr: String): RecipeChoice {
         val trimmed = choiceStr.trim()

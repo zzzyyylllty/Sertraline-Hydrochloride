@@ -2,8 +2,8 @@ import io.izzel.taboolib.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-// 平台属性：paper（默认，高版本 API + Java 21）/ spigot / legacy12（MC 1.12.2 API 面 + Java 8）。
-// platform 是配置期属性，一次构建进程只能取一个值；Spigot 与 Legacy 侧由 :plugin 的嵌套构建完成。
+// Platform property: paper (default, high-version API + Java 21) / spigot / legacy12 (MC 1.12.2 API surface + Java 8).
+// platform is a configuration-time property; a single build process takes only one value; the Spigot and Legacy sides are handled by the :plugin nested build.
 val platform: String = (findProperty("platform") ?: "paper") as String
 
 plugins {
@@ -79,10 +79,10 @@ allprojects {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 
-        // Paper 相关
+        // Paper related
         maven("https://repo.papermc.io/repository/maven-public/")
 
-        // 插件依赖仓库
+        // Plugin dependency repositories
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
         maven("https://mvn.lumine.io/repository/maven-public/") // MythicMobs
@@ -90,7 +90,7 @@ allprojects {
         maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://repo.dmulloy2.net/repository/public/")
 
-        // 其他仓库
+        // Other repositories
         maven("https://jitpack.io")
         maven("https://repo.gtemc.net/releases/")
         maven {
@@ -102,7 +102,7 @@ allprojects {
     }
 
     dependencies {
-        // TabooLib 依赖
+        // TabooLib dependencies
         // taboo("com.github.cryptomorin:XSeries:13.6.0+26.1")   .
         taboo("io.github.almighty-satan:XSeries:13.6.0+26.1")
 
@@ -112,10 +112,10 @@ allprojects {
         taboo(rootProject.libs.kotlincrypto.sha2)
         taboo(rootProject.libs.kotlin.stdlib)
 
-        // 平台 API：ink.ptms.core 的 universal = Spigot 完整 API（org.bukkit+org.spigotmc），
-        // mapped = Mojang 映射的 NMS 类。与 org.spigotmc:spigot-api 完全等价。
-        // Paper 专属 API（io.papermc.paper.*）只在 :project:spigot 的 paper 源集内声明。
-        // legacy12：MC 1.12.2 核心 v11200（1.17.1 起才有 universal/mapped 子类型，v11200 只有默认类型）
+        // Platform API: ink.ptms.core's universal = full Spigot API (org.bukkit+org.spigotmc),
+        // mapped = Mojang-mapped NMS classes. Fully equivalent to org.spigotmc:spigot-api.
+        // Paper-only API (io.papermc.paper.*) is declared only in the paper source set of :project:spigot.
+        // legacy12: MC 1.12.2 core v11200 (universal/mapped subtypes only exist since 1.17.1; v11200 only has the default type)
         if (platform == "legacy12") {
             compileOnly("ink.ptms.core:v11200:11200")
         } else {
@@ -123,17 +123,17 @@ allprojects {
             compileOnly("ink.ptms.core:v12104:12104:mapped")
         }
 
-        // 原 API jar 的传递依赖（paper-api/spigot-api 均依赖 guava），现显式声明
+        // Transitive dependencies of the original API jar (paper-api/spigot-api both depend on guava), now declared explicitly
         compileOnly("com.google.guava:guava:33.3.1-jre")
 
-        // 编译时依赖
+        // Compile-time dependencies
         compileOnly("ink.ptms.chemdah:api:1.1.17")
         compileOnly("ink.ptms:nms-all:1.0.0")
 //        compileOnly("com.willfp:eco:6.77.2")
         compileOnly("com.github.SkriptLang:Skript:2.14.3")
 
         taboo("ink.ptms:um:1.2.1")
-        // MythicLib 不再支持 1.12.2（1.7.1 为 Java 11 字节码），legacy12 丢弃
+        // MythicLib no longer supports 1.12.2 (1.7.1 is Java 11 bytecode), dropped for legacy12
         if (platform != "legacy12") {
             compileOnly(rootProject.libs.mythiclibdist)
             compileOnly("io.lumine:Mythic-Dist:5.6.1")
@@ -143,7 +143,7 @@ allprojects {
 //        compileOnly(rootProject.libs.datafixerupper)
         compileOnly(rootProject.libs.fluxoncore)
         compileOnly(rootProject.libs.netty.all)
-        // caffeine 3.x 需 Java 11；legacy12 用 2.9.3（Java 8）
+        // caffeine 3.x requires Java 11; legacy12 uses 2.9.3 (Java 8)
         compileOnly(if (platform == "legacy12") rootProject.libs.caffeineLegacy else rootProject.libs.caffeine)
         compileOnly(rootProject.libs.gson)
         compileOnly(rootProject.libs.bundles.graalvm)
@@ -155,11 +155,11 @@ allprojects {
         compileOnly(files("$rootDir/libs/ChoTenTech-1.0.0-api.jar"))
 
 
-        // EmbianComponent：paper/spigot 用 1.2.2；legacy12 用 Java 8 字节码版本（数据组件运行时版本守卫，仅打包不调用）
+        // EmbianComponent: paper/spigot use 1.2.2; legacy12 uses the Java 8 bytecode version (data-component runtime version guard, packaged but not invoked)
         taboo(files("$rootDir/libs-public/EmbianComponent-${if (platform == "legacy12") "1.2.2-java8" else "1.2.2"}.jar"))
 //        taboo("com.github.zzzyyylllty:EmbianComponent:1.2.0")
 
-        // sparrow-minimessage：Java 21 字节码（major 65），legacy12（Java 8）不捆绑仅编译用，运行时由 FastMiniMessage 强制关闭
+        // sparrow-minimessage: Java 21 bytecode (major 65); not bundled for legacy12 (Java 8), compile-only, force-disabled at runtime by FastMiniMessage
         if (platform == "legacy12") {
             compileOnly(files("$rootDir/libs-public/sparrow-minimessage-0.5.jar"))
         } else {
@@ -167,7 +167,7 @@ allprojects {
         }
 
 
-        // 运行时依赖
+        // Runtime dependencies
         implementation(rootProject.libs.bundles.reflex)
         implementation(rootProject.libs.bundles.asm)
         implementation(rootProject.libs.bundles.adventure)
@@ -182,7 +182,7 @@ allprojects {
                     "-Xallow-unstable-dependencies"
                 ) + if (platform == "legacy12") listOf("-Xjdk-release=8") else emptyList()
             )
-            // legacy12 目标 Java 8（1.12.2 服务端只能跑 Java 8）；其余平台 Java 21
+            // legacy12 targets Java 8 (MC 1.12.2 servers can only run Java 8); other platforms target Java 21
             jvmTarget.set(if (platform == "legacy12") JvmTarget.JVM_1_8 else JvmTarget.JVM_21)
         }
     }
@@ -192,13 +192,13 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    // 源码包
+    // Sources jar
     val sourcesJar by tasks.registering(Jar::class) {
         from(sourceSets.main.get().allJava)
         archiveClassifier.set("sources")
     }
 
-    // 文档包
+    // Javadoc jar
     val javadocJar by tasks.registering(Jar::class) {
         from(tasks.javadoc)
         archiveClassifier.set("javadoc")
@@ -206,7 +206,7 @@ allprojects {
 
 }
 
-// common-files 项目特殊配置
+// Special config for the common-files project
 project(":project:common-files") {
     tasks.withType<ProcessResources>().configureEach {
         filesMatching("**/*.json") {
@@ -216,7 +216,7 @@ project(":project:common-files") {
                 "jexlVersion" to rootProject.libs.versions.jexl.get(),
                 "gsonVersion" to rootProject.libs.versions.gson.get(),
                 "kotlincryptoVersion" to rootProject.libs.versions.kotlinCrypto.get(),
-                // legacy12 运行时下载 caffeine 2.9.3（3.x 需 Java 11）
+                // legacy12 downloads caffeine 2.9.3 at runtime (3.x requires Java 11)
                 "caffeineVersion" to (if (platform == "legacy12") rootProject.libs.versions.caffeineLegacy.get() else rootProject.libs.versions.caffeine.get()),
                 "fluxonVersion" to rootProject.libs.versions.fluxon.get(),
                 "datafixerupperVersion" to rootProject.libs.versions.datafixerupper.get(),
@@ -227,8 +227,8 @@ project(":project:common-files") {
                 "arimVersion" to rootProject.libs.versions.arim.get()
             )
         }
-        // legacy12（Java 8）：DFU 8（Java 17+ 字节码）与 GraalJS（Java 11+）运行时下载即炸，
-        // 直接不打包 json，运行时找不到依赖描述就不会下载
+        // legacy12 (Java 8): downloading DFU 8 (Java 17+ bytecode) and GraalJS (Java 11+) at runtime would crash immediately,
+        // so these JSON files are simply not packaged; the runtime won't download if no dependency descriptor is found
         if (platform == "legacy12") {
             exclude("**/dependencies/datafixerupper.json", "**/dependencies/graaljs.json")
         }
@@ -240,7 +240,7 @@ project(":project:common-files") {
 //        create<MavenPublication>("mavenJava") {
 //            from(components["java"])
 //
-//            // 配置 POM 文件信息，这是 Maven 仓库必须的
+//            // Configure POM file information; required by the Maven repository
 //            pom {
 //                name.set("Sertraline")
 //                description.set("A concise description.")
@@ -283,16 +283,16 @@ project(":project:common-files") {
 //    sign(publishing.publications["maven"])
 //}
 
-// 默认 `./gradlew build` 同时产出 Paper、Spigot、Legacy 三套 jar。
-// platform 是配置期属性，一次构建进程只能取一个值，Spigot/Legacy 侧由 :plugin 嵌套构建完成；
-// 嵌套构建自身 platform=spigot/legacy12，此依赖不成立，天然无递归。
+// By default `./gradlew build` produces three sets of jars: Paper, Spigot, and Legacy.
+// platform is a configuration-time property that takes a single value per build process; the Spigot/Legacy sides are handled by the :plugin nested build;
+// the nested build itself is platform=spigot/legacy12, so this dependency doesn't hold there — naturally non-recursive.
 tasks.named("build") {
     if (platform == "paper") {
         dependsOn(":plugin:buildSpigot", ":plugin:buildLegacy")
     }
 }
 
-// 仅构建当前平台的 jar（paper → Standard），不触发 Spigot/Legacy 嵌套构建
+// Build only the current platform jar (paper → Standard); does not trigger Spigot/Legacy nested builds
 tasks.register("buildStandard") {
     group = "build"
     description = "Build only the Standard (Paper) platform jar, skip Spigot/Legacy nested builds"

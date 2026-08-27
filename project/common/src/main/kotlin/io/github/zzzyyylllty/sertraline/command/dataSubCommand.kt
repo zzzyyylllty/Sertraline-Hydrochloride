@@ -77,7 +77,7 @@ object DataCommand {
                     submitAsync {
                         val id = context["id"]
                         val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
+                        // Convert to a Bukkit Player
                         val player = tabooPlayer.castSafely<Player>() ?: run {
                             sender.severeS(sender.asLangText("Player_Not_Exist"))
                             return@submitAsync
@@ -113,7 +113,7 @@ object DataCommand {
                     submitAsync {
                         val id = context["id"]
                         val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
+                        // Convert to a Bukkit Player
                         val player = tabooPlayer.castSafely<Player>() ?: run {
                             sender.severeS(sender.asLangText("Player_Not_Exist"))
                             return@submitAsync
@@ -139,7 +139,7 @@ object DataCommand {
                             val id = context["id"]
                             val dvalue = context["value"]
                             val tabooPlayer = context.player("player")
-                            // 转化为Bukkit的Player
+                            // Convert to a Bukkit Player
                             val player = tabooPlayer.castSafely<Player>() ?: run {
                                 sender.severeS(sender.asLangText("Player_Not_Exist"))
                                 return@submitAsync
@@ -173,7 +173,7 @@ object DataCommand {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
+                    // Convert to a Bukkit Player
                     val player = tabooPlayer.castSafely<Player>() ?: run {
                         sender.severeS(sender.asLangText("Player_Not_Exist"))
                         return@submitAsync
@@ -207,7 +207,7 @@ object DataCommand {
                     submitAsync {
                         val id = context["id"]
                         val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
+                        // Convert to a Bukkit Player
                         val player = tabooPlayer.castSafely<Player>() ?: run {
                             sender.severeS(sender.asLangText("Player_Not_Exist"))
                             return@submitAsync
@@ -243,7 +243,7 @@ object DataCommand {
                     submitAsync {
                         val id = context["id"]
                         val tabooPlayer = context.player("player")
-                        // 转化为Bukkit的Player
+                        // Convert to a Bukkit Player
                         val player = tabooPlayer.castSafely<Player>() ?: run {
                             sender.severeS(sender.asLangText("Player_Not_Exist"))
                             return@submitAsync
@@ -269,7 +269,7 @@ object DataCommand {
                             val id = context["id"]
                             val dvalue = context["value"]
                             val tabooPlayer = context.player("player")
-                            // 转化为Bukkit的Player
+                            // Convert to a Bukkit Player
                             val player = tabooPlayer.castSafely<Player>() ?: run {
                                 sender.severeS(sender.asLangText("Player_Not_Exist"))
                                 return@submitAsync
@@ -303,7 +303,7 @@ object DataCommand {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
+                    // Convert to a Bukkit Player
                     val player = tabooPlayer.castSafely<Player>() ?: run {
                         sender.severeS(sender.asLangText("Player_Not_Exist"))
                         return@submitAsync
@@ -334,7 +334,7 @@ object DataCommand {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val tabooPlayer = context.player("player")
-                    // 转化为Bukkit的Player
+                    // Convert to a Bukkit Player
                     val player = tabooPlayer.castSafely<Player>() ?: run {
                         sender.severeS(sender.asLangText("Player_Not_Exist"))
                         return@submitAsync

@@ -1,13 +1,13 @@
 package io.github.zzzyyylllty.sertraline.data
 
 /**
- * 物品类型数据类
- * @property id 类型ID，用于在配置和物品中引用
- * @property name 类型显示名称
- * @property parent 父类型ID，用于继承（可选）
- * @property description 类型描述
- * @property extra 额外属性
- * @property meta 元数据，可通过 TypeUtil.getMeta(id, key) 在脚本中获取
+ * Item type data class
+ * @property id the type ID, used to reference it in config and items
+ * @property name the type display name
+ * @property parent the parent type ID, for inheritance (optional)
+ * @property description the type description
+ * @property extra extra attributes
+ * @property meta metadata, retrievable in scripts via TypeUtil.getMeta(id, key)
  */
 data class Type(
     val id: String,

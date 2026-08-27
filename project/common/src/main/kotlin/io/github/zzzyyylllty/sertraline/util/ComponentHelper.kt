@@ -10,46 +10,46 @@ import taboolib.platform.util.asLangText
 
 object ComponentFormatter {
 
-    // 颜色定义 (十六进制)
-    private const val BYTE_BOOLEAN_COLOR = "#FF6666"   // 红
-    private const val FLOAT_COLOR = "#FFFF99"        // 浅黄
-    private const val DOUBLE_COLOR = "#99FF99"       // 浅绿
-    private const val INT_COLOR = "#3366FF"          // 深蓝
-    private const val LONG_COLOR = "#66CCFF"         // 湖蓝
-    private const val SHORT_COLOR = "#FF99CC"                       // 粉色
-    private const val COMPONENT_COLOR = "gradient:#EECCFF:#AA66FF"          //  紫
-    private const val KEY_COLOR = "gradient:#FFEECC:#EEEE33"          //  金黄
-    private const val STRING_COLOR = "#99CCAA"  //  浅绿
-    private const val NULL_COLOR = "gradient:#FF0000:#BB0044"  //  深红
-    private const val BRACKET_COLOR = "#BBBBBB"       // 稍暗的灰色 (括号)
-    private const val EMPTY_BRACKET_COLOR = "#996666"            // 暗红色 (空列表/映射括号)
+    // Color definitions (hex)
+    private const val BYTE_BOOLEAN_COLOR = "#FF6666"   // red
+    private const val FLOAT_COLOR = "#FFFF99"        // light yellow
+    private const val DOUBLE_COLOR = "#99FF99"       // light green
+    private const val INT_COLOR = "#3366FF"          // dark blue
+    private const val LONG_COLOR = "#66CCFF"         // lake blue
+    private const val SHORT_COLOR = "#FF99CC"                       // pink
+    private const val COMPONENT_COLOR = "gradient:#EECCFF:#AA66FF"          // purple
+    private const val KEY_COLOR = "gradient:#FFEECC:#EEEE33"          // golden yellow
+    private const val STRING_COLOR = "#99CCAA"  // light green
+    private const val NULL_COLOR = "gradient:#FF0000:#BB0044"  // dark red
+    private const val BRACKET_COLOR = "#BBBBBB"       // slightly darker gray (brackets)
+    private const val EMPTY_BRACKET_COLOR = "#996666"            // dark red (empty list/map brackets)
 
     /**
-     * 将组件 Map 转换为易于阅读的 MiniMessage 格式的 Component.
+     * Convert a component Map into a readable MiniMessage-format Component.
      *
-     * @param componentMap LinkedHashMap<String, Any> 组件 Map
-     * @return Component MiniMessage 格式的 Component
+     * @param componentMap LinkedHashMap<String, Any> component Map
+     * @return Component MiniMessage-format Component
      */
     fun formatComponentMap(componentMap: Map<String, Any?>): Component {
         val sb = StringBuilder()
-        sb.append("<").append(BRACKET_COLOR).append(">{").append("</").append(BRACKET_COLOR).append(">\n") // 根部的括号
+        sb.append("<").append(BRACKET_COLOR).append(">{").append("</").append(BRACKET_COLOR).append(">\n") // root bracket
 
         componentMap.forEach { (key, value) ->
             value?.let { formatEntry(key, it, sb, 1) }
         }
 
-        sb.append("<").append(BRACKET_COLOR).append(">}").append("</").append(BRACKET_COLOR).append(">") // 根部的括号
+        sb.append("<").append(BRACKET_COLOR).append(">}").append("</").append(BRACKET_COLOR).append(">") // root bracket
 
         return mmUtil.deserialize(sb.toString()).replaceText(TextReplacementConfig.builder().match("SINGLE QUOTATION MARK PLACEHOLDER").replacement("'").build())
     }
 
     /**
-     * 递归格式化 Map 中的每个条目.
+     * Recursively format each entry in a Map.
      *
-     * @param key String 条目的键
-     * @param value Any 条目的值
-     * @param sb StringBuilder 用于构建 MiniMessage 字符串
-     * @param indentLevel Int 缩进级别
+     * @param key String the key of the entry
+     * @param value Any the value of the entry
+     * @param sb StringBuilder used to build the MiniMessage string
+     * @param indentLevel Int indentation level
      */
     private fun formatEntry(key: String, value: Any, sb: StringBuilder, indentLevel: Int) {
         val indent = repeatString("  ", indentLevel)
@@ -121,11 +121,11 @@ object ComponentFormatter {
     }
 
     /**
-     * 格式化 List 中的每个条目.
+     * Format each entry in a List.
      *
-     * @param item Any List 中的条目
-     * @param sb StringBuilder 用于构建 MiniMessage 字符串
-     * @param indentLevel Int 缩进级别
+     * @param item Any entry in the List
+     * @param sb StringBuilder used to build the MiniMessage string
+     * @param indentLevel Int indentation level
      */
     private fun formatListItem(item: Any?, sb: StringBuilder, indentLevel: Int) {
         val indent = repeatString("  ", indentLevel)
@@ -193,7 +193,7 @@ object ComponentFormatter {
 
 }
 
-// Java 8 兼容：String.repeat 是 Java 11 成员方法（Kotlin 2.2 的 kotlin.text 已无 repeat 扩展），手写实现
+// Java 8 compatible: String.repeat is a Java 11 member method (Kotlin 2.2's kotlin.text has no repeat extension), so implemented manually
 private fun repeatString(s: String, n: Int): String {
     if (n <= 0) return ""
     val sb = StringBuilder(s.length * n)
@@ -208,9 +208,9 @@ fun handleStringComponent(input: String): String {
         if (input[i] == '\\') {
             if (i + 1 < input.length && input[i + 1] == '\\') {
                 result.append('\\')
-                i += 2 // 跳过两个反斜杠
+                i += 2 // skip two backslashes
             } else {
-                // 单个反斜杠，跳过
+                // single backslash, skip
                 i++
             }
         } else {

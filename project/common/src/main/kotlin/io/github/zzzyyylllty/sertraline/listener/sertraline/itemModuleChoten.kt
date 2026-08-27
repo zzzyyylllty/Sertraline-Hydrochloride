@@ -13,7 +13,7 @@ private val chotenFilter = setOf("id", "source", "slot", "allowed")
 fun itemModuleChoten(e: ItemLoadEvent) {
     ((e.arguments["choten"]) as Map<String, Any>?)?.let { chotenConfig ->
 
-        // 默认生成一个ID
+        // Generate a default ID by default
         e.itemData["choten:id"] = e.itemKey
         e.itemData["choten:allowed"] = listOf<String>()
 

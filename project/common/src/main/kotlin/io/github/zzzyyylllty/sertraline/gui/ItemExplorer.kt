@@ -42,13 +42,13 @@ class ItemExplorer {
 
             set('-', GuiItem("background", "BLACK_STAINED_GLASS_PANE").build())
 
-            // 设置可用槽位（通过字符）
+            // Set usable slots (by character)
             slotsBy('#')
 
-            // 设置元素列表
+            // Set the element list
             elements { items }
 
-            // 生成每个元素对应的物品
+            // Generate the item for each element
             onGenerate(async = true) { player, element, index, slot ->
                 val item = sertralineItemBuilder(element.key, player) ?: GuiItem("error", "ARROW").build()
                 val lore = PlatformCompat.getLore(item)?.toMutableList() ?: mutableListOf()
@@ -59,7 +59,7 @@ class ItemExplorer {
                 item.setItemTag(tag)
             }
 
-            // 元素点击事件
+            // Element click event
             onClick { event, element ->
                 val bukkitPlayer = event.clicker
                 if (itemMap.get(element.key) == null) {
@@ -81,12 +81,12 @@ class ItemExplorer {
 
             }
 
-            // 设置下一页按钮
+            // Set up the next page button
             setNextPage(50) { page, hasNextPage ->
                 GuiItem("nextpage", "ARROW").build()
             }
 
-            // 设置上一页按钮
+            // Set the previous page button
             setPreviousPage(48) { page, hasPreviousPage ->
                 GuiItem("previouspage", "ARROW").build()
             }

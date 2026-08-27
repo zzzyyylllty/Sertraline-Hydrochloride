@@ -30,7 +30,7 @@ import kotlin.collections.set
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-/** random:starttoend[:scale(mode)] 参数格式，热路径上避免每次请求都重建 Regex */
+/** random:starttoend[:scale(mode)] parameter format; avoids rebuilding the Regex on every request on the hot path */
 private val RANDOM_PARAM_REGEX = Regex("""^(-?\d+(?:\.\d+)?)to(-?\d+(?:\.\d+)?)(?::(\d+)([ucdf])?)?$""", RegexOption.IGNORE_CASE)
 
 @Awake(LifeCycle.ENABLE)
@@ -155,16 +155,16 @@ class PapiHookOriginal(plugin: BukkitPlugin) : PlaceholderExpansion() {
             val value = random(start, end)
 
             return run {
-                // 没有 :xx，保持原逻辑
-                // textIsBlank：Java 8 安全实现（见 StringUtil.kt）
+                // No :xx, keep the original logic
+                // textIsBlank: a Java 8-safe implementation (see StringUtil.kt)
                 if (scaleStr.textIsBlank()) {
                     if (startStr.contains(".") || endStr.contains(".")) value else value.toInt()
                 } else {
                     val scale = scaleStr.toInt()
                     val roundingMode = when (modeStr.lowercase()) {
-                        "u", "c" -> RoundingMode.CEILING   // 向上
-                        "d", "f" -> RoundingMode.FLOOR     // 向下
-                        else -> RoundingMode.HALF_UP       // 默认四舍五入
+                        "u", "c" -> RoundingMode.CEILING   // Round up
+                        "d", "f" -> RoundingMode.FLOOR     // Round down
+                        else -> RoundingMode.HALF_UP       // Default rounding
                     }
                     BigDecimal.valueOf(value)
                         .setScale(scale, roundingMode)

@@ -89,7 +89,7 @@ object MythicHook {
                 devLog("[Sertraline][DEBUG][MM_DROP] SKIP roll failed: item=${parsed.itemId} chance=${parsed.chance}")
                 return@forEach
             }
-            // context 作为独立运行时上下文传入（{context:xxx} 标签可访问），不写入 vars/NBT
+            // context is passed as an independent runtime context (accessible via the {context:xxx} tag) and is not written into vars/NBT
             val item = Sertraline.api().buildDataItem(parsed.itemId, killer, context = context)
             if (item == null) {
                 devLog("[Sertraline][DEBUG][MM_DROP] SKIP item not found: '${parsed.itemId}' (generateItemStack returned null)")

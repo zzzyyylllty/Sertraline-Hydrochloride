@@ -333,7 +333,7 @@ object FunctionBukkit {
         fun banIP(address: Any) {
             when (address) {
                 is String -> Bukkit.banIP(address)
-                // banIP(InetAddress) 是 1.13+ API，legacy12（v11200）只有 String 版；统一转 hostAddress
+                // banIP(InetAddress) is a 1.13+ API; legacy12 (v11200) only has a String overload; normalize to hostAddress
                 is InetAddress -> Bukkit.banIP(address.hostAddress)
                 else -> throw IllegalArgumentException("Argument for banIP must be a String or InetAddress.")
             }
@@ -351,7 +351,7 @@ object FunctionBukkit {
         @Export
         fun getBannedPlayers(): Set<OfflinePlayer> = Bukkit.getBannedPlayers()
 
-        // getBanList 泛型版 / BanList.Type.PROFILE / IpBanList 是 1.13+/1.20.2+ API，走 PlatformCompat 返回 Any?
+        // Generic getBanList / BanList.Type.PROFILE / IpBanList are 1.13+/1.20.2+ APIs; go through PlatformCompat returning Any?
         @Export
         fun getBanListIP(): Any? = PlatformCompat.getBanListIP()
 
@@ -504,7 +504,7 @@ object FunctionBukkit {
         @Export
         fun createBossBar(keyOrTitle: Any, titleOrColor: Any, colorOrStyle: Any, styleOrFlags: Any? = null, flags: Array<BarFlag>? = null): BossBar? {
             return when (keyOrTitle) {
-                // keyed 版是 1.16+ API，走 PlatformCompat（低版本降级为 String 版）
+                // keyed version is a 1.16+ API; go through PlatformCompat (falls back to the String version on older servers)
                 is NamespacedKey -> {
                     val title = titleOrColor as String
                     val color = colorOrStyle as BarColor
@@ -537,7 +537,7 @@ object FunctionBukkit {
 
         @Export
         fun createBlockData(materialOrData: Any, @Optional consumerOrData: Any? = null): Any? {
-            // BlockData 是 1.13+ API，走 PlatformCompat（低版本返回 null）
+            // BlockData is a 1.13+ API; go through PlatformCompat (returns null on older versions)
             return PlatformCompat.createBlockData(materialOrData, consumerOrData)
         }
 
@@ -619,12 +619,12 @@ object FunctionBukkit {
         fun getAmbientSpawnLimit(): Int = Bukkit.getAmbientSpawnLimit()
 
         @Export
-        // org.bukkit.profile.PlayerProfile 是 1.18.2+ 类，legacy12（v11200）编译面不存在；走 PlatformCompat 返回 Any?
+        // org.bukkit.profile.PlayerProfile is a 1.18.2+ class, absent from the legacy12 (v11200) compile surface; go through PlatformCompat returning Any?
         fun createPlayerProfile(uuid: UUID, @Optional name: String? = null): Any? {
             return PlatformCompat.createPlayerProfile(uuid, name)
         }
 
-        // Registry / Tag 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat 返回 Any?
+        // Registry / Tag are 1.13+ APIs, absent from the legacy12 (v11200) compile surface; go through PlatformCompat returning Any?
         @Export
         fun getRegistry(clazz: Class<out Keyed>): Any? = PlatformCompat.getRegistry(clazz)
 

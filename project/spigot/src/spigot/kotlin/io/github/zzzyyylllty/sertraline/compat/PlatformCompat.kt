@@ -4,6 +4,7 @@ import io.github.zzzyyylllty.embiancomponent.EmbianComponent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.BanList
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -38,9 +39,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 /**
- * Sertraline 平台适配层（Spigot 实现，与 paper 源集的同名类二进制兼容）。
- * 仅依赖 Bukkit API + 捆绑的 adventure，零反射，纯字符串降级。
- * 同名方法与 Paper 实现保持完全一致的签名（common 代码按构建平台编译其中一个）。
+ * Sertraline platform adapter layer (Spigot implementation, binary-compatible with the same-named class in the paper source set).
+ * Depends only on the Bukkit API + bundled adventure, zero reflection, pure string fallback.
+ * Same-named methods keep signatures fully identical to the Paper implementation (common code compiles one of them depending on the build platform).
  */
 object PlatformCompat {
 
@@ -53,9 +54,9 @@ object PlatformCompat {
         }
     }
 
-    // 不能用 legacySection()（adventure 4.17+ 默认不启用 hex，hex 会被降级为最近 16 色）；
-    // 也不能用默认 hexColors()（输出 §#RRGGBB 简化格式，Spigot 服务端 CraftChatMessage
-    // 的 legacy parser 不识别 §#，只会当字面文本）；必须用 §x 全格式，Spigot 与 Paper 服务端均支持
+    // Can't use legacySection() (adventure 4.17+ does not enable hex by default, hex would be downgraded to the nearest 16 colors);
+    // can't use default hexColors() either (outputs the simplified §#RRGGBB format; the Spigot server's CraftChatMessage
+    // legacy parser doesn't recognize §#, treating it as literal text); must use the §x full format, supported by both Spigot and Paper servers
     private val LEGACY: LegacyComponentSerializer by lazy {
         LegacyComponentSerializer.builder()
             .character('§')
@@ -72,23 +73,27 @@ object PlatformCompat {
         }
     }
 
-    // ── 消息 ──────────────────────────────────────────────────────────────
-    // 消息/ActionBar 走 bungee BaseComponent（hex 颜色、装饰、事件保真），不降级为 § 字符串；
-    // Title 无 BaseComponent API 仍走 LEGACY（§x 全格式，hex 经服务端解析后保真）；
-    // LEGACY serializer 仅留给 Title/ItemMeta/Inventory 等无 BaseComponent API 的地方
+    // ── Messages ──────────────────────────────────────────────────────────
+    // Messages/ActionBar go through bungee BaseComponents (hex colors, decorations, events preserved), not downgraded to § strings;
+    // Title has no BaseComponent API, now goes through LEGACY (the §x full format, hex preserved after server-side parsing);
+    // the LEGACY serializer is only left for places without a BaseComponent API like Title/ItemMeta/Inventory
 
     fun sendComponent(sender: CommandSender, component: Component) {
         sender.spigot().sendMessage(BungeeComponentConverter.convert(component))
     }
 
     fun sendActionBar(player: Player, component: Component) {
-        // spigot-api 1.21.4 已移除 sendActionBar(String)，仅存 bungee 旧 API
+        // spigot-api 1.21.4 removed sendActionBar(String); only the bungee legacy API remains
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, BungeeComponentConverter.convert(component))
     }
 
+    fun sendActionBarString(player: Player, string: String) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(string))
+    }
+
     fun sendTitle(player: Player, title: Component?, subtitle: Component?, fadeIn: Int, stay: Int, fadeOut: Int) {
-        // spigot-api 1.21.4 无 BaseComponent 标题 API，只能走 String 重载；
-        // LEGACY 为 §x 全格式，hex 颜色经 CraftChatMessage 解析后依然保真
+        // spigot-api 1.21.4 has no BaseComponent title API, so only the String overload is possible;
+        // LEGACY is the §x full format; hex colors remain faithful after CraftChatMessage parses them
         player.sendTitle(title?.let { LEGACY.serialize(it) }, subtitle?.let { LEGACY.serialize(it) }, fadeIn, stay, fadeOut)
     }
 
@@ -134,8 +139,8 @@ object PlatformCompat {
     }
 
     fun setCustomModelData(meta: ItemMeta, value: Int): ItemMeta {
-        // setCustomModelData 是 1.14+ Bukkit API，legacy12（v11200）编译面下不存在。
-        // 反射调用兼容两种编译面；不存在时静默忽略（visual 模块在低版本已禁用，正常不会走到）
+        // setCustomModelData is a 1.14+ Bukkit API, absent in the legacy12 (v11200) compile surface.
+        // Reflectively call it to be compatible with both compile surfaces; silently ignored when absent (the visual module is disabled on lower versions, so this is normally never reached)
         try {
             meta::class.java.getMethod("setCustomModelData", Int::class.java).invoke(meta, value)
         } catch (_: Throwable) {
@@ -148,8 +153,8 @@ object PlatformCompat {
             ?: Component.translatable(translationKey(item.type))
     }
 
-    // effectiveName：1.21.4+ ITEM_NAME 组件优先（渲染不带 []，displayName/CUSTOM_NAME 渲染带白色 []）；
-    // itemName() 是 1.21.4+ API，v11200 编译面与低版本运行时均不存在，反射调用缺失时回退 getDisplayName
+    // effectiveName: 1.21.4+ prefers the ITEM_NAME component (rendered without [], while displayName/CUSTOM_NAME render with white []);
+    // itemName() is a 1.21.4+ API, absent in the v11200 compile surface and on lower-version runtimes; on a missing reflective call it falls back to getDisplayName
     private val itemNameMethod: Method? by lazy {
         try { ItemMeta::class.java.getMethod("itemName") } catch (_: Throwable) { null }
     }
@@ -164,7 +169,7 @@ object PlatformCompat {
         } ?: getDisplayName(item)
     }
 
-    // Material.getTranslationKey 是 1.13+ API；v11200（1.12.2）不存在，降级为旧式 key（item.xxx / tile.xxx）
+    // Material.getTranslationKey is a 1.13+ API; absent in v11200 (1.12.2), falling back to the legacy key (item.xxx / tile.xxx)
     private val getTranslationKeyMethod: Method? by lazy {
         try { org.bukkit.Material::class.java.getMethod("getTranslationKey") } catch (_: Throwable) { null }
     }
@@ -195,7 +200,7 @@ object PlatformCompat {
     }
 
     fun setDataComponent(item: ItemStack, typeName: String, value: Any): ItemStack {
-        // data component 统一由 EmbianComponent 负责（NMS 反射路径，组件不存在时安全忽略）
+        // data components are uniformly handled by EmbianComponent (NMS reflection path, safely ignored when the component doesn't exist)
         return EmbianComponent.SafetyComponentSetter.setComponent(item, typeName.lowercase(), value) ?: item
     }
 
@@ -212,11 +217,11 @@ object PlatformCompat {
     }
 
     fun createMerchant(): Merchant {
-        // Bukkit.createMerchant() 无参重载是 1.21 API，v11200（1.12.2）只有 createMerchant(String)；统一走 String 重载
+        // Bukkit.createMerchant() no-arg overload is a 1.21 API; v11200 (1.12.2) only has createMerchant(String); uniformly use the String overload
         return Bukkit.createMerchant("")
     }
 
-    // ── 脚本桥：Server 的 Paper 扩展（Spigot 降级值） ──────────────────────
+    // ── Script bridge: Paper extensions of Server (Spigot fallback values) ─
 
     fun getMinecraftVersion(): String? = Bukkit.getVersion().substringBefore("-")
 
@@ -252,7 +257,7 @@ object PlatformCompat {
     fun getPluginsFolder(): File? = java.io.File(Bukkit.getWorldContainer(), "plugins")
 
     fun restart(): Unit? {
-        // Spigot 无 restart API；shutdown 后由启动脚本重启（与 Paper 行为近似）
+        // Spigot has no restart API; after shutdown the startup script restarts the server (close to Paper's behavior)
         warnOnce(warnedRestart, "server restart (falling back to shutdown)")
         Bukkit.shutdown()
         return Unit
@@ -263,7 +268,7 @@ object PlatformCompat {
     fun getMotdComponent(): Component? = null
 
     fun setMotdComponent(component: Component) {
-        // Bukkit.setMotd 是 1.13+ API，v11200（1.12.2）不存在；反射调用，缺失时静默忽略
+        // Bukkit.setMotd is a 1.13+ API, absent in v11200 (1.12.2); reflectively call it, silently ignore when missing
         try {
             setMotdMethod?.invoke(null, LEGACY.serialize(component))
         } catch (_: Throwable) {
@@ -298,8 +303,8 @@ object PlatformCompat {
 
     fun suggestPlayerNamesWhenNullTabCompletions(): Boolean? = null
 
-    // Bukkit.createPlayerProfile（org.bukkit.profile.PlayerProfile）是 1.18.2+ API，v11200（1.12.2）不存在；
-    // 反射调用，不存在时返回 null（脚本桥降级）
+    // Bukkit.createPlayerProfile (org.bukkit.profile.PlayerProfile) is a 1.18.2+ API, absent in v11200 (1.12.2);
+    // reflectively call it, returning null when missing (script bridge fallback)
     private val createPlayerProfileMethod: Method? by lazy {
         try { Bukkit::class.java.getMethod("createPlayerProfile", UUID::class.java) } catch (_: Throwable) { null }
     }
@@ -337,7 +342,7 @@ object PlatformCompat {
 
     fun createPlayerProfile(name: String): Any? = createProfile(name)
 
-    // ── 脚本桥：1.13+ Bukkit API（legacy12（v11200）编译面缺失，全部反射调用，运行时缺失静默降级） ──────────
+    // ── Script bridge: 1.13+ Bukkit API (absent in the legacy12 (v11200) compile surface, all reflectively called, silently degraded when missing at runtime) ──
 
     private fun invokeGet(method: Method?): Any? = try { method?.invoke(null) } catch (_: Throwable) { null }
 
@@ -411,7 +416,7 @@ object PlatformCompat {
         return Unit
     }
 
-    // getBanList(BanList.Type) 两个版本都有（1.0 API）；PROFILE 枚举常量是 1.20.2+，反射取，取不到返回 null
+    // getBanList(BanList.Type) exists in both versions (1.0 API); the PROFILE enum constant is 1.20.2+, obtained via reflection, returns null when unobtainable
     private val banListProfileType: BanList.Type? by lazy {
         try { BanList.Type::class.java.getField("PROFILE").get(null) as? BanList.Type } catch (_: Throwable) { null }
     }
@@ -422,7 +427,7 @@ object PlatformCompat {
 
     fun getBanListName(): Any? = Bukkit.getBanList(BanList.Type.NAME)
 
-    // createBossBar(NamespacedKey, ...) 是 1.16+；v11200 只有 String 版（1.9 API），key 忽略
+    // createBossBar(NamespacedKey, ...) is 1.16+; v11200 only has the String version (1.9 API), the key is ignored
     private val createBossBarKeyedMethod: Method? by lazy {
         try {
             Bukkit::class.java.getMethod(
@@ -463,7 +468,7 @@ object PlatformCompat {
         return Unit
     }
 
-    // BlockData 是 1.13+，v11200 完全没有 org.bukkit.block.data 包；全反射，低版本返回 null
+    // BlockData is 1.13+; v11200 has no org.bukkit.block.data package at all; all-reflective, returns null on lower versions
     private val createBlockDataMethod: Method? by lazy {
         try { Bukkit::class.java.getMethod("createBlockData", String::class.java) } catch (_: Throwable) { null }
     }
@@ -525,7 +530,7 @@ object PlatformCompat {
         return Unit
     }
 
-    // Attribute / AttributeModifier 是 1.13+，v11200 编译面不存在；全反射，低版本静默忽略
+    // Attribute / AttributeModifier are 1.13+, absent in the v11200 compile surface; all-reflective, silently ignored on lower versions
     fun fixMmoAttackSpeed(meta: ItemMeta): ItemMeta {
         try {
             val attributeClass = Class.forName("org.bukkit.attribute.Attribute")
@@ -541,7 +546,7 @@ object PlatformCompat {
         return meta
     }
 
-    // PotionEffect 6 布尔参构造器是 1.13+；v11200 只有 5/4 参版，逐级降级
+    // The PotionEffect 6-boolean-arg constructor is 1.13+; v11200 only has 5/4-arg versions, degrading step by step
     private val potionEffectCtor6: Constructor<PotionEffect>? by lazy {
         try {
             PotionEffect::class.java.getConstructor(
@@ -591,7 +596,7 @@ object PlatformCompat {
         return Unit
     }
 
-    // ── 攻击信息（damageSource 1.13+ / AbstractArrow.weapon 1.16+，反射降级） ─────────
+    // ── Attack info (damageSource 1.13+ / AbstractArrow.weapon 1.16+, reflection fallback) ──
 
     private val getDamageSourceMethod: Method? by lazy {
         try { EntityDamageByEntityEvent::class.java.getMethod("getDamageSource") } catch (_: Throwable) { null }
@@ -637,7 +642,7 @@ object PlatformCompat {
         }
     }
 
-    // ── Folia 调度器（Spigot 上不存在） ────────────────────────────────────
+    // ── Folia scheduler (not present on Spigot) ────────────────────────
 
     fun getRegionScheduler(): Any? = null
 
@@ -649,18 +654,18 @@ object PlatformCompat {
 
     fun isOwnedByCurrentRegion(obj: Any, vararg args: Any?): Boolean = false
 
-    // ── 事件 ──────────────────────────────────────────────────────────────
+    // ── Events ────────────────────────────────────────────────────────
 
     fun callEvent(event: Event): Boolean {
-        // spigot-api 的 PluginManager.callEvent 返回 void，paper 的 Event.callEvent 返回 boolean
+        // spigot-api's PluginManager.callEvent returns void, while paper's Event.callEvent returns boolean
         Bukkit.getPluginManager().callEvent(event)
         return true
     }
 
     fun getConsumeReplacement(event: PlayerItemConsumeEvent): ItemStack? = null
 
-    // SmithingInventory 是 1.16+ 类，v11200（1.12.2）编译面不存在；参数降级为 Any? 内部转 Inventory（所有版本都有）。
-    // legacy12 上 smithing 监听器整体未编译（见 common 的 sourceSets exclude），此方法不会被调用
+    // SmithingInventory is a 1.16+ class, absent in the v11200 (1.12.2) compile surface; the param is degraded to Any? and cast to Inventory internally (present in all versions).
+    // On legacy12 the smithing listener isn't compiled at all (see common's sourceSets exclude), so this method is never called
     fun getSmithingInputs(inventory: Any?): List<ItemStack> =
         (inventory as? Inventory)?.contents?.take(2)?.filterNotNull() ?: emptyList()
 

@@ -49,7 +49,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
 
         for (map in list) {
 
-            // 预编译脚本
+            // Pre-compile script
             if (config.getBoolean("preload.script.jexl",true)) (map["jexl"] as? String)?.let { script ->
                 try {
                     val compiled = prodJexlCompiler.compileToScript(script)
@@ -72,7 +72,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
                     severeS("exception: $ex")
                 }
             }
-            // legacy12 无 GraalJS 捆绑，跳过预编译（运行时由 GraalJsUtil 守卫映射到 Nashorn）
+            // legacy12 has no bundled GraalJS, so skip pre-compilation (at runtime GraalJsUtil guards and falls back to Nashorn)
             if (!VersionHelper().isLegacy() && config.getBoolean("preload.script.graaljs",true)) (map["graaljs"] as? String)?.let { script ->
                 try {
                     val compiled = GraalJsUtil.compile(script)
@@ -84,7 +84,7 @@ fun getFeatureAction(e: FeatureLoadEvent) {
                     severeS("exception: $ex")
                 }
             }
-            // Fluxon预编译不会传入对应变量，有可能导致编译不通过，因此取消预编译功能。
+            // Fluxon pre-compilation does not pass in the corresponding variables, which may fail compilation, so pre-compilation is disabled.
             // if (config.getBoolean("preload.script.fluxon",true)) (map["fluxon"] as? String)?.let { script ->
             //     FluxonShell.preload(script)
             // }

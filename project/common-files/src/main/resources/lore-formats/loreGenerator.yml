@@ -1,52 +1,37 @@
-
 loreformat:
   settings:
-    # 覆盖原版lore
-    # Overwrite the original lore
+    # 覆盖原版Lore | Overwrite the original lore
     overwrite: true
-    # 发包模式
-    # Visual mode (packet-based)
+    # 发包模式（true=基于发包，false=直接更新物品Lore）
+    # true = packet-based (client-side view), false = directly updates the item lore
     visual: true
-    # 多个空行智能删除
-    # Delete multi blank line automatically
+    # 合并连续空行 | Collapse consecutive blank lines into one
     auto-skip-blank: true
   elements:
-    # 不填写key则该行总是出现
-    # If a key is not specified, this line will always appear
+    # 未指定key时该行始终显示 | Renders unconditionally when no key is set
     - content: "<#aabbcc>--------------------"
-    # 如果是列表 则是列表中的每一行
-    # If the key points to a list, this format will be applied to each item in the list
+    # 如果key指向列表，每个元素依次格式化 | List values are formatted per-element
     - key: "xbuilder:lore"
       content: "<!i><#999999>| {value}"
     - key: "sertraline:type"
-    - content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
+      content: "<!i><#AAAAAA>| <#cccccc>Type: {type:name}"
     # {tier:id}, {tier:name}, {tier:desc}, {tier:color}, {tier:weight}
     - key: "sertraline:tier"
-    - content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
+      content: "<!i><#AAAAAA>| <#cccccc>Tier: {tier:format}"
     - key: "sertraline:level"
       content: "<!i><#AAAAAA>| <#cccccc>Level: {level:name}"
-    # 如果是单项 则是该内容toString之后的内容
-    # If the key points to a single value, it will be converted to a string.
-    # 如果该数字是正数 则plus会被替换为+（其他内容可在config内决定）
-    # If the number is positive, {plus} will be replaced with "+" (configurable).
-    # 如果是负数 minus会被替换为-（其他内容可在config内决定）
-    # If the number is negative, {minus} will be replaced with "-" (configurable).
-    - key: "mmo:attack-damage" # [config]sertraline.lore-format # zhcnloreformat
+    # 单项时转为字符串填入{value}；正数时{plus}替换为"+"，负数时{minus}替换为"-"（可在config.yml定制）
+    # Single value → {value} is the string form; {plus}/{minus} show "+"/"-" for positive/negative numbers
+    - key: "mmo:attack-damage"
       content: "<aqua>Attack Damage {plus}{minus}{value}"
-    # *sertraline.vals.custom 从配置文件直接读取
-    # *sertraline.vals.custom reads the value directly from the configuration file
+    # *前缀从物品配置文件直接读取，而非dataMap | *prefix reads from the item config tree, not the data map
     - key: "*sertraline.vals.custom"
       content: "<aqua>Custom Val <gray>{plus}{value}"
     - content: "Effects:"
-      # ANY: 只要有一个条件满足就显示
-      # ALL: 必须所有条件都满足才显示
-      # NOT: 只要有一个条件不满足就显示 (或者说，所有条件都不存在)
-      # NOT_ALL: 不需要所有条件都满足 (只要有一个条件不存在即可)
-      # ---
-      # ANY: Displays if at least one of the required keys exists.
-      # ALL: Displays only if all of the required keys exist.
-      # NOT: Displays only if none of the required keys exist.
-      # NOT_ALL: Displays if at least one of the required keys does not exist.
+      # ANY:     至少一个key存在时显示 | Displays if at least one required key exists
+      # ALL:     所有key都存在时才显示 | Displays only if all required keys exist
+      # NOT:     所有key都不存在时才显示 | Displays only if none of the required keys exist
+      # NOT_ALL: 至少一个key不存在时显示 | Displays if at least one required key does not exist
       lineMode: ANY
       lineRequire:
         - "*sertraline.vals.effect"
@@ -58,14 +43,12 @@ loreformat:
 
 miscloreformat:
   settings:
-    # 覆盖原版lore
-    # Overwrite the original lore
+    # 覆盖原版Lore | Overwrite the original lore
     overwrite: true
-    # 发包模式
-    # Visual mode (packet-based)
+    # 发包模式（true=基于发包，false=直接更新物品Lore）
+    # true = packet-based (client-side view), false = directly updates the item lore
     visual: false
-    # 多个空行智能删除
-    # Delete multi blank line automatically
+    # 合并连续空行 | Collapse consecutive blank lines into one
     auto-skip-blank: true
   elements:
     - content: "<#aabbcc>--------------------"
@@ -92,8 +75,5 @@ mmolore:
       content: "<!i><#777777>| {value}"
     - content: ""
     - key: "mmo:ATTACK_DAMAGE"
-      # {auto} for automatic round or show full value
-      # e.g. value:
-      # 114.514 -> 114.514
-      # 66.0 -> 66
+      # {auto} 自动取整（如 114.514→114.514, 66.0→66）| Auto-rounds the value
       content: "<!i><#777777>| <#ff6936>Attack Damage: {plus}{minus}{auto}"

@@ -13,8 +13,8 @@ fun List<Any?>.legacyToMiniMessage(): List<Any?> {
 fun String.legacyToMiniMessage(): String {
     var text = this
 
-    // 1. 先处理 Hex 颜色代码 - 旧版 &x&6&6&c&c&f&f
-    // 匹配形式：&x&6&6&c&c&f&f （固定6个16进制字符）
+    // 1. Handle hex color codes first - legacy &x&6&6&c&c&f&f
+    // Matches the form: &x&6&6&c&c&f&f (fixed six hex characters)
     val legacyHexPattern = Regex("&x((&[0-9a-fA-F]){6})")
     text = legacyHexPattern.replace(text) { matchResult ->
         if (isInsidePlaceholder(text, matchResult.range)) {
@@ -25,7 +25,7 @@ fun String.legacyToMiniMessage(): String {
         }
     }
 
-    // 2. 处理现代形式的 Hex Hex代码：&#66ccff 或 &#ABCDEF
+    // 2. Handle modern hex color codes: &#66ccff or &#ABCDEF
     val modernHexPattern = Regex("&#([0-9a-fA-F]{6})")
     text = modernHexPattern.replace(text) { matchResult ->
         if (isInsidePlaceholder(text, matchResult.range)) {
@@ -35,7 +35,7 @@ fun String.legacyToMiniMessage(): String {
         }
     }
 
-    // 3. 处理颜色代码（旧版，无大小写敏感）
+    // 3. Handle color codes (legacy, case-insensitive)
     val colorMap = mapOf(
         '0' to "<black>",
         '1' to "<dark_blue>",
@@ -66,7 +66,7 @@ fun String.legacyToMiniMessage(): String {
         }
     }
 
-    // 4. 处理格式代码
+    // 4. Handle format codes
     val formatMap = mapOf(
         'k' to "<obfuscated>",
         'l' to "<bold>",
@@ -86,7 +86,7 @@ fun String.legacyToMiniMessage(): String {
         }
     }
 
-    // 5. 处理重置代码
+    // 5. Handle reset code
     text = Regex("[&§]r", RegexOption.IGNORE_CASE).replace(text) { matchResult ->
         if (isInsidePlaceholder(text, matchResult.range)) {
             matchResult.value

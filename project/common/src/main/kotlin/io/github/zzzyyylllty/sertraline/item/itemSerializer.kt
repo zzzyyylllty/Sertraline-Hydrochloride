@@ -16,7 +16,7 @@ import taboolib.platform.util.isAir
 fun itemSerializer(itemStack: ItemStack, player: Player?): ModernSItem? {
     if (itemStack.type == Material.AIR || itemStack.isAir) return null
     val item = itemTemplateForStack(itemStack, player) ?: return null
-    // 快速路径：无占位符且无动态内容时跳过序列化→处理→反序列化
+    // Fast path: skip serialization → processing → deserialization when there are no placeholders and no dynamic content
     if (!item.hasPlaceholders && !item.hasDynamics) return item
     val json = item.serialize()
     return deserializeSItem(tagManager.processItem(json!!, item, itemStack, player))
@@ -48,23 +48,23 @@ internal fun privateOwnerUuid(itemStack: ItemStack): String? {
     return itemStack.getItemTag(true)[PRIVATE_OWNER_TAG]?.asString()?.trim()?.takeIf { it.isNotEmpty() }
 }
 fun itemSerializer(item: ModernSItem,player: Player?): ModernSItem {
-    // 快速路径：无占位符且无动态内容时直接返回，无需序列化/反序列化
+    // Fast path: return directly when there are no placeholders and no dynamic content; no serialization/deserialization needed
     if (!item.hasPlaceholders && !item.hasDynamics) return item
     val context = item.getDeepData("sertraline:context")
-    // context 可能含 Player/Event 等运行时对象，Gson 无法安全 round-trip；
-    // 序列化前剥离（item 在构建路径总是 deep copy），标签处理仍从 item 参数读取完整 context
+    // context may contain runtime objects such as Player/Event, which Gson cannot safely round-trip;
+    // strip it before serialization (item is always a deep copy on the build path), while tag processing still reads the full context from the item argument
     val json = if (context != null) {
         item.setDeepData("sertraline:context", null)
         try { item.serialize() } finally { item.setDeepData("sertraline:context", context) }
     } else item.serialize()
     val result = deserializeSItem(tagManager.processItem(json!!, item, null, player))
-    // round-trip 后 context 丢失，重新挂回（供下游 sertralineAdapter 的 lore 占位符使用）
+    // context is lost after the round-trip; reattach it (for downstream sertralineAdapter lore placeholders)
     if (context != null) result.setDeepData("sertraline:context", context)
     return result
 }
 fun itemSerializer(id: String,player: Player?): ModernSItem? {
     val item = itemMap[id] ?: return null
-    // 快速路径：无占位符且无动态内容时直接返回
+    // Fast path: return directly when there are no placeholders and no dynamic content
     if (!item.hasPlaceholders && !item.hasDynamics) return item
     val json = item.serialize()
     return deserializeSItem(tagManager.processItem(json!!, item, null, player))

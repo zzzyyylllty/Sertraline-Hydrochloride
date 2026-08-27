@@ -38,7 +38,7 @@ fun ScriptFrame.getBukkitPlayer(name: ParsedAction<*>? = null): Player {
 }
 
 
-/** 内联脚本 */
+/** Inline script */
 fun List<String>.parseKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
@@ -58,7 +58,7 @@ fun List<String>.parseKether(
     }.build())
 }
 
-/** 内联脚本 */
+/** Inline script */
 fun String?.parseKether(
     player: CommandSender?,
     vars: Map<String, Any?> = mapOf(),
@@ -177,8 +177,8 @@ fun String?.evalKetherBoolean(
     }
 
     /*
-     * 预处理
-     * 条件写 true / false 将直接绕过 Kether
+     * Preprocessing
+     * Conditions written as true / false bypass Kether entirely
      */
     if (this == "true") return true
     if (this == "false") return false
@@ -200,7 +200,7 @@ fun String?.evalKetherBoolean(
 }
 
 /**
- * @param all 是否全部条件通过
+ * @param all whether all conditions must pass
  */
 fun List<String>.evalKetherBoolean(
     player: CommandSender?,
@@ -208,7 +208,7 @@ fun List<String>.evalKetherBoolean(
     sets: List<Pair<String, Any?>> = emptyList(),
     def: Boolean = true,
     /**
-     * 列表是否所有条件通过
+     * Whether all conditions in the list pass
      */
     all: Boolean = true,
     cacheId: String? = null

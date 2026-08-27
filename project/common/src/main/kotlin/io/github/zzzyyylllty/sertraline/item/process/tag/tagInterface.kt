@@ -21,11 +21,11 @@ fun interface TagProcessor {
 }
 
 class TagProcessorManager {
-    // LinkedHashMap保持插入顺序
+    // LinkedHashMap preserves insertion order
     private val processors = LinkedHashMap<String, TagProcessor>()
     val aliases = LinkedHashMap<String, String>()
 
-    // 注册处理器，名称作为key，方便管理
+    // Register a processor, using the name as the key for easy management
     fun registerProcessor(name: String, tagAliases: List<String> = listOf(), processor: TagProcessor) {
         if (config.getBoolean("tags.$name", true)) {
             processors[name] = processor
@@ -36,7 +36,7 @@ class TagProcessorManager {
         }
     }
 
-    // 移除处理器
+    // Remove a processor
     fun unregisterProcessor(name: String) {
         processors.remove(name)
     }
@@ -45,7 +45,7 @@ class TagProcessorManager {
         processors.clear()
     }
 
-    // 按顺应用所有处理器
+    // Run all processors in order
     fun processItem(itemJson: String, item: ModernSItem,itemStack: ItemStack?, player: Player?): String {
 //        var itemData = ProcessItemTagData(itemJson, item, itemStack, player, extractPlaceholders(itemJson))
 //        for (processor in processors) {
@@ -54,49 +54,49 @@ class TagProcessorManager {
 
         val repl: Set<String> = extractPlaceholders(itemJson) ?: return itemJson
 
-        // 提取所有处理器名称，方便进行前缀匹配
+        // Extract all processor names for prefix matching
         val processorNames = aliases.keys.toList()
 
-        // 空的直接返回
+        // An empty set returns directly
         if (repl.isEmpty()) return itemJson
 
-        // 进行转换
-        val groupedRepl: Map<String, List<String>> = repl // 直接对 Set 进行操作
-            .mapNotNull { fullKey -> // fullKey 是 Set 中的每个 String 元素
-                // 尝试找到一个匹配的前缀
+        // Perform the conversion
+        val groupedRepl: Map<String, List<String>> = repl // operate directly on the Set
+            .mapNotNull { fullKey -> // fullKey is each String element in the Set
+                // Try to find a matching prefix
                 val matchingProcessorName = processorNames.firstOrNull { pName ->
                     fullKey.startsWith("$pName:")
                 }
 
                 if (matchingProcessorName != null) {
-                    // 如果找到匹配，则提取内部的key
+                    // If a match is found, extract the inner key
                     val innerKey = fullKey.substringAfter("$matchingProcessorName:")
-                    // 返回一个 Pair，包含匹配的处理器名称和内部key
-                    matchingProcessorName to innerKey // 使用中缀函数创建 Pair
+                    // Return a Pair containing the matching processor name and the inner key
+                    matchingProcessorName to innerKey // use the infix function to build a Pair
                 } else {
-                    // 如果没有找到匹配的处理器名称前缀，则返回 null，
-                    // mapNotNull 会过滤掉这些 null 值
+                    // If no processor name prefix matches, return null;
+                    // mapNotNull will filter out these null values
                     null
                 }
             }
-            .groupBy { (processorName, _) -> processorName } // 按照处理器名称进行分组，这里解构 Pair
-            .mapValues { (_, listOfPairs) -> // 对每个分组，listOfPairs 是 List<Pair<String, String>>
-                // 将 List<Pair<processorName, innerKey>> 转换为 List<innerKey>
-                listOfPairs.map { (_, innerKey) -> innerKey } // 从 Pair 中提取 innerKey
+            .groupBy { (processorName, _) -> processorName } // group by processor name; destructure the Pair here
+            .mapValues { (_, listOfPairs) -> // for each group, listOfPairs is List<Pair<String, String>>
+                // Convert List<Pair<processorName, innerKey>> to List<innerKey>
+                listOfPairs.map { (_, innerKey) -> innerKey } // extract the innerKey from the Pair
             }
 
         val itemData = ProcessItemTagData(item, itemStack, player)
         val target = mutableMapOf<String, String?>()
 
-        // linkedMapOf<处理器ID, LinkedHashMap<标签头ID, List<内容>>?>()
-        // 例如 - sertraline={var={"name"="名称"}}
+        // linkedMapOf<processorId, LinkedHashMap<tagHeadId, List<content>>?>()
+        // e.g. - sertraline={var={"name"="name"}}
         val useProcessors = linkedMapOf<String, LinkedHashMap<String, List<String>>?>()
 
         for ((key, value) in groupedRepl) {
 
-            // "val:常量ID"
+            // "val:constant-id"
             // key = "val"
-            // value = "常量ID"
+            // value = "constant-id"
 
             val processorName = aliases[key] ?: continue
             if (useProcessors[processorName] == null) {
@@ -121,17 +121,17 @@ class TagProcessorManager {
 
         target.forEach { (key, value) ->
             json = if (value != "null" && value != null) {
-                // 如果替换的值不是空的
+                // If the replacement value is not empty
                 json
                     .replace("\${$key}$", value)
                     .replace("\"\${$key}$\"", value)
             } else if (!key.endsWith("!!")) {
-                // 如果key不被标记为非空，即可空，即数值为null时也会被替换成null。
+                // If the key is not marked as non-null, i.e. nullable, the value is replaced with null even when it is null.
                 json
                     .replace("\${$key}$", "null")
                     .replace("\"\${$key}$\"", "null")
             } else {
-                // 如果key被标记为非空，即数值为null时也会被替换成空字符串。
+                // If the key is marked as non-null, the value is replaced with an empty string even when it is null.
                 json.replace("\${$key}$", "")
                     .replace("\"\${$key}$\"", "")
             }
@@ -140,17 +140,17 @@ class TagProcessorManager {
         return json
     }
 
-    // 可以查看当前注册处理
+    // Can view the currently registered processors
     fun listProcessors(): List<String> = processors.keys.toList()
 }
 
 fun extractPlaceholders(input: String): Set<String>? {
 
-    // 不包含标签直接返回
-    if (!input.contains($$"${")) return null
+    // Return directly if there is no placeholder
+    if (!input.contains("\${")) return null
 
-    val regex = "\\$\\{(.*?)}\\$".toRegex() // 匹配 ${xxx} 的正则表达式
-    val result = mutableSetOf<String>() // 创建一个Map来存储结果
+    val regex = "\\$\\{(.*?)}\\$".toRegex() // A regex to match ${xxx}
+    val result = mutableSetOf<String>() // Create a Map to store the results
 
     regex.findAll(input).forEach { matchResult ->
         val key = matchResult.groupValues[1]

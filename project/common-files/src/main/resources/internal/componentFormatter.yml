@@ -1,8 +1,8 @@
-# 格式:
+# 格式: Format:
 # node: TYPE
 
-# node*: TYPE - 必填参数
-# 如果下列是一个列表 在前面加上(LIST)
+# node*: TYPE - 必填参数 (required parameter)
+# 如果下列是一个列表 在前面加上(LIST) If the following is a list, prefix it with (LIST)
 # (LIST)root:
 #   1: xxx
 #   2: xxc

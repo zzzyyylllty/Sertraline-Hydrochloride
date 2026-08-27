@@ -1,0 +1,14 @@
+test_lore_toggle:
+  sertraline:
+    tier: A
+    lore-format: switchable_format
+    vals:
+      toggleable_mark: 1
+  xbuilder:
+    name: "<!i>&7Test lore toggle"
+    lore: |
+      Sample Toggleable Lore!
+    material: DIAMOND_SWORD
+  mmo:
+    ATTACK_DAMAGE: 100
+    ATTACK_SPEED: 100

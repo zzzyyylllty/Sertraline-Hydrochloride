@@ -44,19 +44,19 @@ taboolib {
 
 
 val platform: String = (findProperty("platform") ?: "paper") as String
-// legacy12（MC 1.12.2）与 spigot 都使用 :project:spigot 的 spigot 源集（纯 Bukkit API + 降级路径）
+// Both legacy12 (MC 1.12.2) and spigot use the spigot source set of :project:spigot (pure Bukkit API + fallback paths)
 val useSpigotOutput: Boolean = platform != "paper"
 
 val platformOutput by configurations.creating
 
-// Spigot 专用：捆绑 adventure（Paper 由服务端全局提供；Spigot 无 adventure，
-// 运行期下载的副本会被 relocate 到 dep.kyori，而插件字节码引用的是未 relocate 的
-// net.kyori.*，因此必须把原命名空间类直接内嵌进 Spigot jar）
+// Spigot only: bundle adventure (Paper provides it globally on the server; Spigot has no adventure —
+// the runtime-downloaded copy would be relocated to dep.kyori, but plugin bytecode references the
+// non-relocated net.kyori.*, so the original-namespace classes must be embedded directly into the Spigot jar)
 val bundleAdventure by configurations.creating
 
 dependencies {
-    // 项目依赖：保证 :project:spigot 先于本项目完成配置，
-    // 并按平台严格二选一取其 jar 产物（paper 源集 / spigot 源集）
+    // Project dependency: ensures :project:spigot is configured before this project,
+    // and takes exactly one of its jar artifacts based on platform (paper source set / spigot source set)
     "platformOutput"(project(":project:spigot", configuration = if (useSpigotOutput) "spigotOutput" else "paperOutput"))
     if (useSpigotOutput) {
         bundleAdventure(rootProject.libs.bundles.adventure)
@@ -66,9 +66,9 @@ dependencies {
 tasks {
     val taboolibMainTask = named("taboolibMainTask")
 
-    // 平台类目录 Sync 任务（:project:spigot 内注册）：先构建再展开进主 jar
+    // Platform classes directory Sync task (registered in :project:spigot): builds first, then expands into the main jar
     val platformClassesTask = if (useSpigotOutput) ":project:spigot:spigotPlatformClasses" else ":project:spigot:paperPlatformClasses"
-    // 产物后缀：paper → Standard / spigot → Spigot / legacy12 → Legacy
+    // Artifact suffix: paper → Standard / spigot → Spigot / legacy12 → Legacy
     val jarSuffix = when (platform) {
         "spigot" -> "Spigot"
         "legacy12" -> "Legacy"
@@ -101,7 +101,7 @@ tasks {
 
         archiveFileName.set("${rootProject.name}-${version}-Free-$jarSuffix.jar")
 
-        // 修复：使用 archiveFile 替代 archivePath
+        // Fix: use archiveFile instead of archivePath
         from(zipTree(jar.get().archiveFile)) {
             exclude("io/github/zzzyyylllty/sertraline/premium/**")
         }
@@ -112,7 +112,7 @@ tasks {
         dependsOn(freeJar)
     }
 
-    // 一次命令同时产出 Paper、Spigot、Legacy 三套 jar
+    // One command produces all three sets of jars: Paper, Spigot, and Legacy
     val buildAll by registering {
         group = "build"
         description = "Build all platform jars (Paper + Spigot + Legacy)"
@@ -120,14 +120,14 @@ tasks {
     }
 }
 
-// 便捷任务：一次命令构建 Spigot / Legacy 平台 jar（等价于 ./gradlew build -Pplatform=xxx -x test）。
-// 不能用 GradleBuild：同一 Gradle 会话内两个指向相同 dir 的 GradleBuild 会在 IncludedBuildRegistry
-// 撞构建路径（:Sertraline）报 "Included build ... same as included build"（gradle/gradle#13522）。
-// 改为逐个 exec 独立 gradlew 进程（--no-daemon 保证不排队在忙碌的当前 daemon 上），行为等价。
+// Convenience tasks: build the Spigot / Legacy platform jars with a single command (equivalent to ./gradlew build -Pplatform=xxx -x test).
+// Cannot use GradleBuild: two GradleBuild tasks pointing at the same dir inside one Gradle session collide on the
+// build path (:Sertraline) in the IncludedBuildRegistry, erroring with "Included build ... same as included build" (gradle/gradle#13522).
+// Instead each spawns its own gradlew process via exec (--no-daemon ensures no queueing behind the busy current daemon); behavior is equivalent.
 val gradlewScript: String = rootProject.file(
     if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
 ).absolutePath
-// 继承当前 Gradle 守护进程所在的 JDK，保证嵌套构建同样跑在 JDK 21
+// Inherit the JDK running the current Gradle daemon so the nested builds also run on JDK 21
 val gradleJdkHome: String = System.getProperty("java.home")
 
 fun registerNestedPlatformBuild(name: String, platform: String, description: String): TaskProvider<Exec> {

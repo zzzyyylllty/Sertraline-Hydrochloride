@@ -12,7 +12,7 @@ jexl = "3.4.0"
 paperApi = "1.21.4-R0.1-SNAPSHOT"
 
 # Minecraft-related Libraries
-mythicLib = "1.7.1-SNAPSHOT"
+mythicLib = "1.7.1-20260821.190929-108"
 placeholderApi = "2.11.7"
 packetEvents = "2.10.1"
 adventure = "4.25.0"

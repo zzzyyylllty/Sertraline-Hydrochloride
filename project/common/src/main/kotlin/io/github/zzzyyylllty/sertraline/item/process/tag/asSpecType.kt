@@ -5,10 +5,10 @@ import kotlin.collections.iterator
 import kotlin.math.roundToInt
 
 /**
- * 解析结果的数据类
- * @param prefix As 之前的内容
- * @param asType As 后的两个字符
- * @param splitByValue SplitBy 后的字符串（如果存在）
+ * Data class for the parse result
+ * @param prefix the content before As
+ * @param asType the two characters after As
+ * @param splitByValue the string after SplitBy (if present)
  */
 data class ParseResult(
     val prefix: String,
@@ -32,7 +32,7 @@ fun parseSection(section: String): ParseResult? {
     return ParseResult(prefix, twoChars, splitByValue)
 }
 
-// 通用处理方法
+// Generic processing method
 fun processTagPrefix(
     prefix: String,
     dataSourceEmptyCheck: () -> Boolean,
@@ -50,12 +50,12 @@ fun processTagPrefix(
         val section = split.first()
         val default = if (split.size >= 2) split.last() else null
 
-        // 解析section，尝试识别As和SplitBy结构
+        // Parse the section, trying to recognize the As and SplitBy structure
         val parseResult = parseSection(section)
 
         val replaceValue = getReplaceValue(parseResult, section, default, parseResult?.prefix ?: section)
 
-        // 调用传入的处理逻辑得到替换值
+        // Call the passed-in processing logic to get the replacement value
         val replace = if (replaceValue != default) {
             parseResult?.let { asSpecTypeSolved(replaceValue, it) } ?: replaceValue
         } else {
@@ -67,9 +67,9 @@ fun processTagPrefix(
 }
 
 /**
- * 将 Item 文本标签智能解析为对应类型
+ * Intelligently parse an Item text tag into the corresponding type
  *
- * @input 要转换的值
+ * @input the value to convert
  * */
 fun asSpecTypeSolved(input: Any?, parseResult: ParseResult): Any? {
     return run {

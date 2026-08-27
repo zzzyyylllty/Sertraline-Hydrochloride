@@ -18,4 +18,9 @@ object ThreadUtil {
     fun sleep(time: Long) {
         Thread.sleep(time)
     }
+
+    /** Sleeps in ticks (1 tick = 50ms), commonly used in scripts. */
+    fun sleepTick(tick: Int) {
+        Thread.sleep(tick * 50L)
+    }
 }

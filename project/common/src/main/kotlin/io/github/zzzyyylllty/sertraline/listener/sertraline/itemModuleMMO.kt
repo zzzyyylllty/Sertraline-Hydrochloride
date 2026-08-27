@@ -21,7 +21,7 @@ fun itemModuleMMO(e: ItemLoadEvent) {
 
     ((e.arguments["mmo"]) as Map<String, Any>?)?.let {
 
-        // 默认生成一个ID
+        // Generate a default ID by default
         e.itemData["mmo:id"] = e.itemKey
 
         e.itemData["mmo:allowed"] = listOf<String>()
@@ -30,7 +30,7 @@ fun itemModuleMMO(e: ItemLoadEvent) {
             val key = attribute.key
             if (mmoFilter.contains(key)) {
                 when (key) {
-                    // 特殊处理
+                    // Special handling
                     "id" -> e.itemData["mmo:${key}"] = attribute.value.toString()
                     "source" -> e.itemData["mmo:${key}"] = attribute.value.toString()
                     "slot" -> e.itemData["mmo:${key}"] = attribute.value.toString()

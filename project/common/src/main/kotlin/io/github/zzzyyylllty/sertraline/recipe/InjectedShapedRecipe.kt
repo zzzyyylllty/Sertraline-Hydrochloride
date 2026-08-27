@@ -21,13 +21,13 @@ package io.github.zzzyyylllty.sertraline.recipe
 //    companion object {
 //        @JvmStatic
 //        fun of(recipe: CustomShapedRecipe<ItemStack>): InjectedShapedRecipe {
-//            // 创建视觉模式（用于显示）
+//            // Create the visual pattern (for display)
 //            val visual: Map<Char, Ingredient> = Maps.transformValues(
 //                recipe.pattern().ingredients()
 //            ) { RecipeHelper.toMinecraftVisual(it) }
 //            val visualPattern = ShapedRecipePattern.of(visual, recipe.pattern().pattern())
 //
-//            // 创建实际匹配模式
+//            // Create the actual matching pattern
 //            val actual: Map<Char, Ingredient> = Maps.transformValues(
 //                recipe.pattern().ingredients()
 //            ) { RecipeHelper.toMinecraft(it) }
@@ -47,11 +47,11 @@ package io.github.zzzyyylllty.sertraline.recipe
 //    }
 //
 //    override fun matches(input: CraftingInput, level: Level): Boolean {
-//        // 先进行粗略匹配
+//        // First do a rough match
 //        val vanillaMatches = roughPattern.matches(input)
 //        if (!vanillaMatches) return false
 //
-//        // 再进行细节匹配
+//        // Then do a detailed match
 //        return recipe.matches(RecipeHelper.toCraftEngine(input))
 //    }
 //

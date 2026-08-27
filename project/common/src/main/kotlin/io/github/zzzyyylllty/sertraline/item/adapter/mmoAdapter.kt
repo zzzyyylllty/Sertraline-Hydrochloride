@@ -19,7 +19,7 @@ fun mmoAdapter(item: ItemStack, sItem: ModernSItem, player: Player?): ItemStack 
         return item
     }
     item.itemMeta?.let { meta ->
-        // Attribute API 是 1.13+，走 PlatformCompat（低版本反射缺失时静默忽略）
+        // Attribute API is 1.13+; go through PlatformCompat (silently skipped when the reflection is missing on older versions)
         PlatformCompat.fixMmoAttackSpeed(meta)
         item.setItemMeta(meta)
     }

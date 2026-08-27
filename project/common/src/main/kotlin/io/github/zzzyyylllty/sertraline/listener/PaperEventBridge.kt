@@ -8,8 +8,8 @@ import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submitAsync
 
 /**
- * Paper 专属事件桥接。
- * Paper 上由 PlatformCompat 注册真实监听器调用 hooks；Spigot 上不触发（或由轮询模拟）。
+ * Paper-only event bridge.
+ * On Paper, real listeners registered by PlatformCompat call these hooks; on Spigot they do not fire (or are simulated by polling).
  */
 object PaperEventBridge {
 

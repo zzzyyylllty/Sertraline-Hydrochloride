@@ -35,6 +35,7 @@ LoreFormat_Switch_Load_Error: "<red>Failed to parse switchable lore format {0} (
 LoreFormat_Switch_Load_Unresolved: "<red>Switchable lore format {0} ({1}) could not resolve target(s): {2}</red>"
 LoreFormat_Switch_Load_PreVar_Compile: "<yellow>Switchable lore format {0}: failed to compile pre-variable {1}: {2}</yellow>"
 LoreFormat_Switch_Load_Condition_Compile: "<yellow>Switchable lore format {0}: failed to compile condition for {1}: {2}</yellow>"
+LoreFormat_Load_Filter_Unknown_Decision: "<yellow>Compare target filter: unknown \"then\" decision {0} (expected allow/deny), entry skipped.</yellow>"
 LoreFormat_Switch_Eval_PreVar: "<red>Failed to eval pre-variable {0} in switchable lore format: {1}</red>"
 Mapping_Load: "Loading mappings."
 Mapping_Load_Regen: "Items not found, regenerating."

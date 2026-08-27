@@ -17,7 +17,7 @@ fun assembleMCClass(className: String): String {
 }
 
 fun assembleCBClass(className: String): String {
-    // 因为是paper 1.21.4+所以说不考虑v1_x_R_x
+    // Because this is Paper 1.21.4+, so no need to consider v1_x_R_x
     return CB_PREFIX + className
 }
 
@@ -61,12 +61,12 @@ fun getClazz(className: String): Class<*> {
     }
 }
 
-// ============ 双平台 NMS 反射 ============
-// Paper 服务端是 Mojang 映射（net.minecraft.resources.ResourceLocation 等）；
-// Spigot 服务端是 Bukkit/Spigot 映射（Mojang 包名 + CraftBukkit 1.16 legacy 类名 +
-// proguard 混淆方法/字段短名）。以下工具按「Paper 名优先，Spigot 名回退」解析。
+// ============ Dual-platform NMS reflection ============
+// The Paper server uses Mojang mappings (net.minecraft.resources.ResourceLocation, etc.);
+// the Spigot server uses Bukkit/Spigot mappings (Mojang package names + CraftBukkit 1.16 legacy class names +
+// proguard-obfuscated short method/field names). The utilities below resolve "Paper names first, Spigot names as fallback".
 
-/** 依次尝试候选类名，返回第一个加载成功的；全部失败则抛异常 */
+/** Tries each candidate class name in order, returning the first that loads successfully; throws if all fail */
 fun getClazzCompat(vararg candidates: String): Class<*> {
     for (candidate in candidates) {
         try {
@@ -79,7 +79,7 @@ fun getClazzCompat(vararg candidates: String): Class<*> {
     throw ClassNotFoundException(message)
 }
 
-/** 名字优先，失败后按参数签名匹配（Spigot 方法名为混淆短名） */
+/** Name first; on failure, match by parameter signature (Spigot method names are obfuscated short names) */
 fun getDeclaredMethodCompat(
     clazz: Class<*>,
     name: String,
@@ -88,10 +88,11 @@ fun getDeclaredMethodCompat(
 ): Method = getDeclaredMethodCompat(clazz, listOf(name), returnType, *paramTypes)
 
 /**
- * 依次尝试候选名字（Paper 名在前，Spigot 混淆短名在后），
- * 全部失败后按「参数签名 + 返回类型」匹配（排除构造器）。
- * returnType 用于消歧：Spigot 上多个方法共享同一参数签名（如 IRegistry 有
- * getValue/getOptional/get 三个方法参数都是 ResourceLocation），需返回类型精确区分。
+ * Tries candidate names in order (Paper names first, Spigot obfuscated short names last); if all fail,
+ * matches by "parameter signature + return type" (excluding constructors).
+ * returnType is used for disambiguation: on Spigot multiple methods may share the same parameter signature
+ * (e.g. IRegistry's getValue/getOptional/get all take a ResourceLocation), so the return type is needed to
+ * distinguish them precisely.
  */
 fun getDeclaredMethodCompat(
     clazz: Class<*>,
@@ -120,14 +121,18 @@ fun getDeclaredMethodCompat(
     )
 }
 
-/** 依次尝试候选字段名，失败后按字段类型匹配（Spigot 字段名为混淆短名） */
+/** Tries each candidate field name in order, then matches by field type on failure (Spigot field names are obfuscated short names) */
 fun getDeclaredFieldCompat(
     clazz: Class<*>,
     vararg names: String,
     type: Class<*>? = null,
 ): Field {
     for (name in names) {
-        runCatching { return clazz.getDeclaredField(name) }
+        runCatching {
+            val field = clazz.getDeclaredField(name)
+            field.isAccessible = true
+            return field
+        }
     }
     if (type != null) {
         val matched = clazz.declaredFields.firstOrNull { type.isAssignableFrom(it.type) }
@@ -140,8 +145,9 @@ fun getDeclaredFieldCompat(
 }
 
 /**
- * craftbukkit 类全名，兼容带版本后缀的 Spigot（org.bukkit.craftbukkit.v1_21_R3.*）。
- * Paper 1.21.4+ 无后缀；优先无后缀，失败后从服务端实现类包名提取版本后缀。
+ * The full craftbukkit class name, compatible with Spigot that carries a version suffix (org.bukkit.craftbukkit.v1_21_R3.*).
+ * Paper 1.21.4+ has no suffix; the no-suffix form is preferred, and on failure the version suffix is extracted from
+ * the server implementation class package name.
  */
 fun assembleCBClassCompat(className: String): String {
     val noSuffix = CB_PREFIX + className

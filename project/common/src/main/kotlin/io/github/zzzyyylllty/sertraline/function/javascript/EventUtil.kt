@@ -22,6 +22,17 @@ object EventUtil {
             e.printStackTrace()
         }
     }
+
+    /** Reads the event's cancelled state (a read-side convenience method for cancel). */
+    fun isCancelled(event: Cancellable): Boolean {
+        return try {
+            event.isCancelled
+        } catch (e: Exception) {
+            severeS("An error occurred while trying to read event $event")
+            false
+        }
+    }
+
     fun call(event: Event) {
         try {
             PlatformCompat.callEvent(event)

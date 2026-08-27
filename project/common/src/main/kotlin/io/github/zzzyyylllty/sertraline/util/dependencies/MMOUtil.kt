@@ -76,7 +76,7 @@ object MMOUtil {
 
             val allowed = (mmoData[ALLOWED_KEY] as? List<String>)?.toMutableList() ?: mutableListOf()
 
-            // 如果 allowed 为空，则自动根据素材推断部位
+            // If allowed is empty, infer the slot automatically from the base material
             val normalizedAllowed = if (allowed.isEmpty()) {
                 val autoState = when (val suffix = baseItemMaterial.lowercase().substringAfterLast("_")) {
                     "boots", "chestplate", "leggings", "helmet" -> suffix
@@ -99,7 +99,7 @@ object MMOUtil {
 
             devLog("ID: $idString, Slot: $slot, Source: $source")
 
-            // 移除过滤字段
+            // remove filtered fields
             mmoFilter.forEach { mmoData.remove(it) }
 
             mmoData.forEach { (key, value) ->
@@ -128,13 +128,20 @@ object MMOUtil {
         return if (actSource.contains(HAND)) allowed.contains(HAND) || allowed.contains(actSource) else allowed.contains(actSource)
     }
 
+    // MythicLib 1.7 renamed ADDITIVE_MULTIPLIER to COMPOUND (same additive-multiplier semantics).
+    // Resolve by name at runtime so one build works against both old (ADDITIVE_MULTIPLIER)
+    // and new (COMPOUND) MythicLib servers.
+    private val compoundModifierType: ModifierType by lazy {
+        ModifierType.values().firstOrNull { it.name == "COMPOUND" || it.name == "ADDITIVE_MULTIPLIER" } ?: ModifierType.FLAT
+    }
+
     fun solveStatModifier(key: Any?, value: Any?): MMOAttributeValue {
         val keyStr = key.toString()
         val str = value.toString()
 
         val modifierType = when (str.last()) {
-            '%', 'c', 'm' -> ModifierType.RELATIVE
-            'a', 's' -> ModifierType.ADDITIVE_MULTIPLIER
+            '%', 'a'  -> ModifierType.RELATIVE
+            'c', 'm' -> compoundModifierType
             else -> ModifierType.FLAT
         }
 

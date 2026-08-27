@@ -11,15 +11,15 @@ fun interface ItemProcessor {
 }
 
 class ItemProcessorManager {
-    // LinkedHashMap保持插入顺序
+    // LinkedHashMap preserves insertion order
     private val processors = LinkedHashMap<String, ItemProcessor>()
 
-    // 注册处理器，名称作为key，方便管理
+    // Register a processor by name as the key, for easier management
     fun registerProcessor(name: String, processor: ItemProcessor) {
         if (config.getBoolean("modules.$name.feature", true)) processors[name] = processor
     }
 
-    // 移除处理器
+    // Remove a processor
     fun unregisterProcessor(name: String) {
         processors.remove(name)
     }
@@ -28,7 +28,7 @@ class ItemProcessorManager {
         processors.clear()
     }
 
-    // 按顺应用所有处理器
+    // Apply all processors in order
     fun processItem(item: ModernSItem,itemStack: ItemStack, player: Player?): ItemStack {
         var currentItem = itemStack
         for (processor in processors) {
@@ -37,6 +37,6 @@ class ItemProcessorManager {
         return currentItem
     }
 
-    // 可以查看当前注册处理器
+    // For inspecting the currently registered processors
     fun listProcessors(): List<String> = processors.keys.toList()
 }

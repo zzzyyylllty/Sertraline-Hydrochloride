@@ -20,19 +20,19 @@ import org.bukkit.Tag
 import java.lang.reflect.Field
 
 /**
- * NMS 配方工厂。
- * 自动检测 Minecraft 版本（1.21.4 / 26.1.2），
- * 使用反射操作 RecipeManager，支持双版本构造签名。
+ * NMS recipe factory.
+ * Automatically detects the Minecraft version (1.21.4 / 26.1.2),
+ * manipulates RecipeManager via reflection, supporting dual-version constructor signatures.
  */
 object NMSRecipeFactory {
 
     private const val NAMESPACE = "sertraline"
 
-    // ==================== 版本检测 ====================
+    // ==================== Version detection ====================
 
     enum class MinecraftVersion { v1_21_4, v26_1_2 }
 
-    /** 通过检测 Identifier 类是否存在来判断版本 */
+    /** Determines the version by checking whether the Identifier class exists */
     private val minecraftVersion: MinecraftVersion by lazy {
         if (runCatching { Class.forName("net.minecraft.resources.Identifier") }.isSuccess)
             MinecraftVersion.v26_1_2
@@ -40,7 +40,7 @@ object NMSRecipeFactory {
             MinecraftVersion.v1_21_4
     }
 
-    // ==================== 反射缓存: ResourceLocation (1.21.4) / Identifier (26.1.2) ====================
+    // ==================== Reflection cache: ResourceLocation (1.21.4) / Identifier (26.1.2) ====================
 
     private val clazzResourceLocation: Class<*> by lazy {
         when (minecraftVersion) {
@@ -65,7 +65,7 @@ object NMSRecipeFactory {
         return methodRLFromNamespaceAndPath.invoke(null, namespace, path)
     }
 
-    // ==================== 反射缓存: ResourceKey ====================
+    // ==================== Reflection cache: ResourceKey ====================
 
     private val clazzResourceKey by lazy { getClazz(assembleMCClass("resources.ResourceKey")) }
     private val methodResourceKeyCreate by lazy {
@@ -78,7 +78,7 @@ object NMSRecipeFactory {
         )
     }
 
-    // RECIPE 注册表 key — 1.21.4: Registries.RECIPE; 26.1.2: 同
+    // RECIPE registry key — 1.21.4: Registries.RECIPE; 26.1.2: same
     private val recipeRegistryKey: Any by lazy {
         getDeclaredFieldCompat(clazzRegistries, "RECIPE", "bk").get(null)
     }
@@ -88,7 +88,7 @@ object NMSRecipeFactory {
         return methodResourceKeyCreate.invoke(null, recipeRegistryKey, location)
     }
 
-    // ==================== 反射缓存: ItemStack (NMS) ====================
+    // ==================== Reflection cache: ItemStack (NMS) ====================
 
     private val clazzCraftItemStack by lazy {
         getClazzCompat(
@@ -107,7 +107,7 @@ object NMSRecipeFactory {
         return methodAsNMSCopy.invoke(null, bukkit)
     }
 
-    // ==================== 反射缓存: Ingredient ====================
+    // ==================== Reflection cache: Ingredient ====================
 
     private val clazzIngredient by lazy {
         getClazzCompat(
@@ -127,20 +127,20 @@ object NMSRecipeFactory {
         getDeclaredMethodCompat(clazzNMSItemStack, listOf("getItem", "h"))
     }
 
-    // Ingredient.of(ItemLike...) — varargs（1.21.4 和 26.1.2 均如此）
+    // Ingredient.of(ItemLike...) — varargs (the same in both 1.21.4 and 26.1.2)
     private val methodIngredientOfStacks by lazy {
         val arrayClass = java.lang.reflect.Array.newInstance(clazzItemLike, 0).javaClass
         getDeclaredMethodCompat(clazzIngredient, listOf("of", "a"), null, arrayClass)
     }
 
-    // RecipeItemStack.ofStacks(List<ItemStack>) — 精确原料：保留完整组件，配方书按组件显示；
-    // 合成测试要求组件完全一致（对 placeholder 物品有 mismatch 风险，仅显式 exact 时使用）
+    // RecipeItemStack.ofStacks(List<ItemStack>) — exact ingredient: preserves full components, shown in the recipe book by component;
+    // crafting tests require completely identical components (mismatch risk on placeholder items, only used when exact is explicitly set)
     private val methodIngredientOfStacksExact by lazy {
         getDeclaredMethodCompat(clazzIngredient, listOf("ofStacks", "a"), null, List::class.java)
     }
 
-    // Ingredient.of(TagKey<Item>) — 1.21.4 双平台均无此方法，
-    // 改走 Registry.getTagOrEmpty(TagKey) → HolderSet.direct(List) → of(HolderSet)
+    // Ingredient.of(TagKey<Item>) — neither 1.21.4 platform has this method,
+    // so instead go through Registry.getTagOrEmpty(TagKey) → HolderSet.direct(List) → of(HolderSet)
     private val clazzTagKey by lazy { getClazz("net.minecraft.tags.TagKey") }
     private val clazzRegistries by lazy { getClazz("net.minecraft.core.registries.Registries") }
     private val builtInRegistriesClass by lazy { getClazz("net.minecraft.core.registries.BuiltInRegistries") }
@@ -172,9 +172,9 @@ object NMSRecipeFactory {
     }
 
     /**
-     * 创建 NMS Ingredient。
-     * - 对 Tag 使用 Ingredient.of(TagKey)
-     * - 对具体物品使用 Ingredient.of(ItemLike...)（匹配 Item 类型）
+     * Creates an NMS Ingredient.
+     * - For a Tag, uses Ingredient.of(TagKey)
+     * - For a concrete item, uses Ingredient.of(ItemLike...) (matches the Item type)
      */
     fun createIngredient(ingredient: RecipeIngredient): Any {
         return when (ingredient) {
@@ -183,7 +183,7 @@ object NMSRecipeFactory {
                 if (stacks.isEmpty()) throw IllegalArgumentException("No items resolved for: ${ingredient.itemId}")
                 val nmsStacks = stacks.map { toNMSStack(it) }
                 if (ingredient.exact) {
-                    // 精确原料：完整组件（含 lore 等）会显示在配方书与合成界面
+                    // Exact ingredient: full components (including lore, etc.) will show in the recipe book and crafting interface
                     return methodIngredientOfStacksExact.invoke(null, nmsStacks)
                 }
                 val items = toNMSItems(nmsStacks)
@@ -284,7 +284,7 @@ object NMSRecipeFactory {
         } catch (_: Exception) { null }
     }
 
-    // ==================== 反射缓存: RecipeHolder ====================
+    // ==================== Reflection cache: RecipeHolder ====================
 
     private val clazzRecipeHolder by lazy { getClazz("net.minecraft.world.item.crafting.RecipeHolder") }
 
@@ -297,7 +297,7 @@ object NMSRecipeFactory {
         getDeclaredMethodCompat(clazzRecipeHolder, listOf("id", "a"))
     }
 
-    // ==================== 反射缓存: RecipeManager / RecipeMap ====================
+    // ==================== Reflection cache: RecipeManager / RecipeMap ====================
 
     private val clazzRecipeManager by lazy {
         getClazzCompat(
@@ -313,12 +313,12 @@ object NMSRecipeFactory {
         getDeclaredMethodCompat(clazzMinecraftServer, listOf("getRecipeManager", "aI"))
     }
 
-    // RecipeManager.recipes 字段 — 1.21.4+ 均为 RecipeMap 类型
+    // RecipeManager.recipes field — always RecipeMap type on 1.21.4+
     private val fieldRecipes: Field by lazy {
         getDeclaredFieldCompat(clazzRecipeManager, "recipes", "e", type = clazzRecipeMap)
     }
 
-    // RecipeMap — 不可变，需通过 create() 重建
+    // RecipeMap — immutable, must be rebuilt via create()
     private val clazzRecipeMap by lazy { getClazz(assembleMCClass("world.item.crafting.RecipeMap")) }
     private val methodRecipeMapCreate by lazy {
         getDeclaredMethodCompat(clazzRecipeMap, listOf("create", "a"), null, Iterable::class.java)
@@ -327,18 +327,18 @@ object NMSRecipeFactory {
         getDeclaredMethodCompat(clazzRecipeMap, listOf("values", "a"))
     }
 
-    // CraftingManager.finalizeRecipeLoading() — 从 RecipeMap 重建 display/listener 映射
-    // (f/g/h/i) 并触发 PlayerList.reloadRecipes() 刷新在线玩家配方书。
-    // 只重建 field e 时配方已注册（/recipe give 可用）但配方书 display 查询
-    // (displaysForRecipe) 在 listeners 中找不到该配方，导致配方书不显示。
+    // CraftingManager.finalizeRecipeLoading() — rebuilds the display/listener mappings (f/g/h/i)
+    // from the RecipeMap and triggers PlayerList.reloadRecipes() to refresh online players' recipe books.
+    // If only field e is rebuilt, the recipe is registered (/recipe give works) but the recipe book
+    // display query (displaysForRecipe) cannot find the recipe in listeners, so it is not shown.
     private val methodFinalizeRecipeLoading by lazy {
         getDeclaredMethodCompat(clazzRecipeManager, listOf("finalizeRecipeLoading", "a"))
     }
 
-    // ==================== 反射缓存: 玩家配方书 (RecipeBookServer) ====================
-    // Bukkit 的 Player.discoverRecipe 在 spigot-api 1.21.4 已移除，只能走 NMS 解锁路径：
+    // ==================== Reflection cache: player recipe book (RecipeBookServer) ====================
+    // Bukkit's Player.discoverRecipe was removed in spigot-api 1.21.4, so only the NMS unlock path is available:
     // EntityPlayer.getRecipeBookServer() → RecipeBookServer.add(Collection<RecipeHolder<?>>, EntityPlayer)
-    // （obf: a — 同名 b 为 remove，勿用；add 内部会触发 craft 事件、进度触发、发送 Add 包）
+    // (obf: a — the identically named b is remove, do not use; add internally fires the craft event, triggers advancement, sends the Add packet)
 
     private val clazzCraftPlayer by lazy {
         getClazzCompat("org.bukkit.craftbukkit.entity.CraftPlayer", assembleCBClassCompat("entity.CraftPlayer"))
@@ -350,7 +350,7 @@ object NMSRecipeFactory {
         getClazzCompat("net.minecraft.stats.RecipeBookServer", "net.minecraft.stats.ServerRecipeBook")
     }
     private val methodGetHandle by lazy {
-        // getHandle 声明在 CraftEntity 父类上，getDeclaredMethodCompat 找不到，须查继承方法
+        // getHandle is declared on the CraftEntity parent class; getDeclaredMethodCompat cannot find it, must look up the inherited method
         getMethod(clazzCraftPlayer, clazzEntityPlayer, 0)
             ?: throw IllegalStateException("Cannot find CraftPlayer.getHandle()")
     }
@@ -371,9 +371,9 @@ object NMSRecipeFactory {
     }
 
     /**
-     * 为玩家解锁配方书中的指定配方（与进度解锁同一路径）。
-     * 使配方在玩家 join 时即可显示，无需先合成一次。
-     * @return 成功解锁并发送的配方数量
+     * Unlocks the given recipes in a player's recipe book (same path as advancement unlock).
+     * Makes recipes visible on player join without requiring a prior craft.
+     * @return the number of recipes successfully unlocked and sent
      */
     fun unlockForPlayer(player: org.bukkit.entity.Player, recipeIds: Collection<String>): Int {
         if (recipeIds.isEmpty()) return 0
@@ -397,7 +397,7 @@ object NMSRecipeFactory {
         }
     }
 
-    // ==================== 26.1.2 专用: CommonInfo / BookInfo / ItemStackTemplate ====================
+    // ==================== 26.1.2-specific: CommonInfo / BookInfo / ItemStackTemplate ====================
 
     // Recipe.CommonInfo(boolean showNotification)
     private val clazzCommonInfo by lazy { getClazz("net.minecraft.world.item.crafting.Recipe\$CommonInfo") }
@@ -439,7 +439,7 @@ object NMSRecipeFactory {
         return methodFromNonEmptyStack.invoke(null, nmsStack)
     }
 
-    // ==================== 配方分类枚举 ====================
+    // ==================== Recipe category enums ====================
 
     private val clazzCraftingBookCategory by lazy { getClazz(assembleMCClass("world.item.crafting.CraftingBookCategory")) }
     private val enumCraftingMISC: Any by lazy {
@@ -451,7 +451,7 @@ object NMSRecipeFactory {
         clazzCookingBookCategory.enumConstants.first { it.toString() == "MISC" }
     }
 
-    // ==================== 注册 / 注销 ====================
+    // ==================== Register / unregister ====================
 
     fun register(recipeData: RecipeData): Boolean {
         return try {
@@ -501,7 +501,7 @@ object NMSRecipeFactory {
 
         val existingValues = methodRecipeMapValues.invoke(recipeMap) as Collection<Any>
 
-        // 过滤掉同 key 旧配方，避免 ImmutableMap.Builder 抛重复 key 异常
+        // Filter out the old recipe with the same key to avoid ImmutableMap.Builder throwing a duplicate-key exception
         val filtered = existingValues.filter { existing ->
             val existingId = methodHolderId.invoke(existing)
             existingId != recipeKey
@@ -513,11 +513,11 @@ object NMSRecipeFactory {
 
         val newRecipeMap = methodRecipeMapCreate.invoke(null, allValues as Collection<Any>)
         fieldRecipes.set(manager, newRecipeMap)
-        // 重建 display/listener maps 并刷新玩家配方书，否则配方书不显示注入的配方
+        // Rebuild the display/listener maps and refresh player recipe books, otherwise the injected recipe is not shown in the recipe book
         methodFinalizeRecipeLoading.invoke(manager)
     }
 
-    // ==================== 构建调度 ====================
+    // ==================== Build dispatch ====================
 
     private fun buildNMSRecipe(recipe: RecipeData): Any? {
         return when (recipe) {
@@ -544,7 +544,7 @@ object NMSRecipeFactory {
 
     private fun createShapedPattern(ingredientMap: Any?, pattern: List<String>): Any {
         val dataResult = methodShapedPatternOf.invoke(null, ingredientMap, pattern)
-        // of() 在 1.21.4 / 26.1.2 都直接返回 ShapedRecipePattern，非 DataResult
+        // of() returns ShapedRecipePattern directly on both 1.21.4 / 26.1.2, not a DataResult
         return try {
             val resultMethod = dataResult::class.java.getMethod("result")
             val optional = resultMethod.invoke(dataResult) as java.util.Optional<*>
@@ -561,8 +561,8 @@ object NMSRecipeFactory {
         val pattern = createShapedPattern(ingredientMap, recipe.pattern)
 
         return when (minecraftVersion) {
-            // ShapedRecipe 存在 5 参数(含 showNotification)与 4 参数两个构造器，
-            // constructors.first() 顺序不确定，须按参数数量精确选择
+            // ShapedRecipe has both a 5-parameter (with showNotification) and a 4-parameter constructor,
+            // constructors.first() order is not guaranteed, must select precisely by parameter count
             MinecraftVersion.v1_21_4 -> clazzShapedRecipe.constructors
                 .first { it.parameterCount == 5 }
                 .newInstance(
@@ -578,7 +578,7 @@ object NMSRecipeFactory {
                     createCommonInfo(recipe.showNotification),
                     createCraftingBookInfo(recipe.group ?: ""),
                     pattern,
-                    result  // result 在 26.1.2 已是 ItemStackTemplate
+                    result  // result is already ItemStackTemplate in 26.1.2
                 )
         }
     }
@@ -607,7 +607,7 @@ object NMSRecipeFactory {
             MinecraftVersion.v26_1_2 -> constructorShapeless.newInstance(
                 createCommonInfo(recipe.showNotification),
                 createCraftingBookInfo(recipe.group ?: ""),
-                result,  // result 在 26.1.2 已是 ItemStackTemplate
+                result,  // result is already ItemStackTemplate in 26.1.2
                 java.util.ArrayList(ingredients)
             )
         }
@@ -714,7 +714,7 @@ object NMSRecipeFactory {
         val addition = wrapOptional(createIngredient(recipe.addition))
 
         return when (recipe.type) {
-            // Smithing 配方类同样存在带/不带额外参数的多构造器，须按参数数量选择
+            // Smithing recipe classes likewise have multiple constructors with/without extra parameters; select by parameter count
             RecipeType.SMITHING_TRANSFORM -> {
                 val clazz = getClazz(assembleMCClass("world.item.crafting.SmithingTransformRecipe"))
                 clazz.constructors.first { it.parameterCount == 4 }.newInstance(template, base, addition, result)
@@ -729,12 +729,12 @@ object NMSRecipeFactory {
 
     // 26.1.2:
     //   SmithingTransformRecipe(CommonInfo, Optional<Ingredient> template, Ingredient base, Optional<Ingredient> addition, ItemStackTemplate)
-    //   SmithingTrimRecipe(CommonInfo, Ingredient, Ingredient, Ingredient, Holder<TrimPattern>) — 暂不支持
+    //   SmithingTrimRecipe(CommonInfo, Ingredient, Ingredient, Ingredient, Holder<TrimPattern>) — not supported yet
     private fun buildSmithing26(recipe: RecipeData.Smithing, result: Any): Any? {
         return when (recipe.type) {
             RecipeType.SMITHING_TRANSFORM -> {
                 val template = wrapOptional(createIngredient(recipe.template))
-                val base = createIngredient(recipe.base)  // 26.1.2: base 不是 Optional
+                val base = createIngredient(recipe.base)  // 26.1.2: base is not Optional
                 val addition = wrapOptional(createIngredient(recipe.addition))
                 val clazz = getClazz(assembleMCClass("world.item.crafting.SmithingTransformRecipe"))
                 clazz.constructors.first { it.parameterCount == 5 }.newInstance(
@@ -746,7 +746,7 @@ object NMSRecipeFactory {
                 )
             }
             RecipeType.SMITHING_TRIM -> {
-                // 26.1.2 需要 Holder<TrimPattern>，暂不支持
+                // 26.1.2 requires Holder<TrimPattern>, not supported yet
                 warningS("SmithingTrim is not supported on Minecraft 26.1.2 via NMS injection")
                 null
             }

@@ -34,14 +34,14 @@ object ApiCommand {
         createModernHelper()
     }
 
-    /** 解析 Minimessage */
+    /** Parse MiniMessage */
     @CommandBody
     val minimessage = subCommand {
         dynamic("content") {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val mm = MiniMessage.miniMessage()
-                    // 获取参数的值
+                    // Retrieve the value of the argument
                     val content = context["content"]
                     sender.infoS(content) }
             }
@@ -55,7 +55,7 @@ object ApiCommand {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val mm = MiniMessage.miniMessage()
-                    // 获取参数的值
+                    // Retrieve the value of the argument
                     val content = context["script"]
                     val ret = runKether(listOf(content), sender)
                     sender.infoS("<yellow>Kether: <gray>$content")
@@ -74,7 +74,7 @@ object ApiCommand {
                         val tabooPlayer = context.player("player")
                         val bukkitPlayer = tabooPlayer.castSafely<Player>() as CommandSender
                         val mm = MiniMessage.miniMessage()
-                        // 获取参数的值
+                        // Retrieve the value of the argument
                         val content = context["script"]
                         val ret = runKether(listOf(content), bukkitPlayer)
                         sender.infoS("<yellow>Kether: <gray>$content")
@@ -90,7 +90,7 @@ object ApiCommand {
             execute<CommandSender> { sender, context, argument ->
                 submitAsync {
                     val mm = MiniMessage.miniMessage()
-                    // 获取参数的值
+                    // Retrieve the value of the argument
                     val content = context["script"]
                     runKether(listOf(content), sender) }
             }
@@ -107,7 +107,7 @@ object ApiCommand {
                         val tabooPlayer = context.player("player")
                         val bukkitPlayer = tabooPlayer.castSafely<Player>() as CommandSender
                         val mm = MiniMessage.miniMessage()
-                        // 获取参数的值
+                        // Retrieve the value of the argument
                         val content = context["script"]
                         runKether(listOf(content), bukkitPlayer)
                     }

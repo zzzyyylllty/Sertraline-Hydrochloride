@@ -17,14 +17,14 @@ class MythicLibAttributeProvider : AttributeProvider {
         val playerData = MMOPlayerData.getOrNull(player) ?: return
         val statMap = playerData.statMap
 
-        // 一次性删除所有旧修饰符（包括不带槽位后缀和带槽位后缀的）
+        // Remove all old modifiers at once (both those with and without slot suffixes)
         for (instance in statMap.instances) {
             instance.removeIf { key ->
                 key == "sertraline_item" || key.startsWith("sertraline_item_")
             }
         }
 
-        // 为每个有物品的槽位添加新修饰符
+        // Add new modifiers for each slot that has an item
         itemList.forEach { (slot, itemBound) ->
             val sItem = itemBound.sItem
             val bItem = itemBound.bItem

@@ -4,12 +4,12 @@ val platform: String = (findProperty("platform") ?: "paper") as String
 
 taboolib { subproject = true }
 
-// 平台适配层：
-//   main   源集 = 共享公共契约（PaperEventHooks，纯 Bukkit 类型）
-//   paper  源集 = Paper 实现（PlatformCompat，直接调用 Paper API）
-//   spigot 源集 = Spigot 实现（PlatformCompat，纯 Bukkit API，零反射）
-// 两个 PlatformCompat 同名同签名，打包时严格二选一，绝不共存于同一 jar。
-// legacy12 构建 jvmTarget=8，paper-api 要求 JVM 21，无法解析变体，paper 源集整体不创建。
+// Platform adapter layer:
+//   main   source set = shared common contract (PaperEventHooks, pure Bukkit types)
+//   paper  source set = Paper implementation (PlatformCompat, calls Paper API directly)
+//   spigot source set = Spigot implementation (PlatformCompat, pure Bukkit API, zero reflection)
+// The two PlatformCompat classes share the same name and signature; exactly one is packed, never both in one jar.
+// legacy12 builds with jvmTarget=8 while paper-api requires JVM 21, so its variant cannot resolve and the paper source set is not created at all.
 val hasPaperSourceSet = platform != "legacy12"
 
 sourceSets {
@@ -20,34 +20,34 @@ sourceSets {
 }
 
 dependencies {
-    // main 源集（PaperEventHooks）仅使用 Bukkit 类型
+    // main source set (PaperEventHooks) uses only Bukkit types
     compileOnly("ink.ptms.core:v12104:12104:universal")
 
-    // paper 源集：paper-api + main 公共类
+    // paper source set: paper-api + main common classes
     if (hasPaperSourceSet) {
         "paperCompileOnly"(rootProject.libs.paperapi)
         "paperCompileOnly"(sourceSets["main"].output)
     }
 
-    // spigot 源集：Spigot 等价 API（ink.ptms.core）+ main 公共类 + adventure（该 API 不带 adventure，需显式声明）
-    // legacy12：MC 1.12.2 核心 v11200（无 universal/mapped 子类型）
+    // spigot source set: Spigot-equivalent API (ink.ptms.core) + main common classes + adventure (this API has no adventure, must be declared explicitly)
+    // legacy12: MC 1.12.2 core v11200 (no universal/mapped sub-types)
     if (platform == "legacy12") {
         "spigotCompileOnly"("ink.ptms.core:v11200:11200")
     } else {
         "spigotCompileOnly"("ink.ptms.core:v12104:12104:universal")
         "spigotCompileOnly"("ink.ptms.core:v12104:12104:mapped")
     }
-    // action bar 需要 bungee 聊天 API（spigot-api 的传递依赖，运行时由服务端提供）
+    // action bar needs the Bungee chat API (transitive dependency of spigot-api, provided by the server at runtime)
     "spigotCompileOnly"("net.md-5:bungeecord-chat:1.20-R0.2")
     "spigotCompileOnly"(sourceSets["main"].output)
     "spigotCompileOnly"(rootProject.libs.bundles.adventure)
-    // data component 由 EmbianComponent 负责（NMS 反射路径，Spigot 无 Paper API 可用）；
-    // legacy12 用 Java 8 字节码版本（仅打包，运行时由 common 侧版本守卫拦截调用）
+    // data component is handled by EmbianComponent (NMS reflection path; Spigot has no Paper API available);
+    // legacy12 uses the Java 8 bytecode version (packaged only, calls are blocked by the version guard on the common side at runtime)
     "spigotCompileOnly"(files("$rootDir/libs-public/EmbianComponent-${if (platform == "legacy12") "1.2.2-java8" else "1.2.2"}.jar"))
 }
 
 configurations {
-    // 根 allprojects 注入的 paper-api 只对 paper 源集可见，其余源集排除
+    // the paper-api injected by the root allprojects is only visible to the paper source set; excluded everywhere else
     getByName("compileOnly") {
         exclude(group = "io.papermc.paper", module = "paper-api")
     }
@@ -58,9 +58,9 @@ configurations {
     create("spigotOutput")
 }
 
-// 平台类目录：paper/spigot 两个源集同名类 PlatformCompat 严格二选一同步进目录。
-// 产物为 Provider<Directory>，消费方 from() 时按目录展开（与其它子模块 main 源集一致），
-// 且解析发生在执行期，规避配置期解析导致的 afterEvaluate 冲突。
+// Platform class directories: the same-named class PlatformCompat in the paper/spigot source sets is strictly one-or-the-other when synced into the directory.
+// The artifact is a Provider<Directory>; consumers expand it via from() by directory (consistent with other submodules' main source sets),
+// and resolution happens at execution time, avoiding the afterEvaluate conflict caused by configuration-time resolution.
 val paperPlatformClasses by tasks.registering(Sync::class) {
     if (hasPaperSourceSet) {
         from(sourceSets["main"].output)

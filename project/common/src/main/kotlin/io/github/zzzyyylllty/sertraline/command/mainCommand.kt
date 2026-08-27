@@ -134,13 +134,13 @@ fun CommandComponent.createModernHelper(checkPermissions: Boolean = true) {
         var newline = false
 
         fun check(children: List<CommandComponent>): List<CommandComponent> {
-            // 检查权限
+            // Check permissions
             val filterChildren = if (checkPermissions) {
                 children.filter { sender.hasPermission(it.permission) }
             } else {
                 children
             }
-            // 过滤隐藏
+            // Filter out hidden
             return filterChildren.filter { it !is CommandComponentLiteral || !it.hidden }
         }
 
@@ -194,7 +194,7 @@ fun CommandComponent.createModernHelper(checkPermissions: Boolean = true) {
             }
             val checkedChildren = check(compound.children)
             checkedChildren.forEachIndexed { i, children ->
-                // 因 literal 产生新的行
+                // Produce a newline for the literal
                 if (newline) {
                     print(children, i, checkedChildren.size, offset, level + comment, end, option)
                 } else {

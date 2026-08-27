@@ -9,7 +9,7 @@ data class SDataAlteration(
     val operation: AlterationOperation = AlterationOperation.SET,
     val value: Any? = null
 ) {
-    // 编译期常量
+    // Compile-time constants
     companion object {
         private const val COLON = ':'
         private const val DOT = '.'
@@ -41,7 +41,7 @@ data class SDataAlteration(
     }
 
     /**
-     * 应用到物品数据Map
+     * Applies to the item data map
      */
     fun applyTo(data: LinkedHashMap<String, Any?>) {
         val path = getParsedPath()
@@ -193,7 +193,7 @@ data class SDataAlteration(
         val list = navigateToValue(path, data) as? MutableList<Any?>
 
         if (list != null) {
-            // addLast 是 Java 21 SequencedCollection API，jvmTarget 8 编译面不存在；add 即末尾追加
+            // addLast is a Java 21 SequencedCollection API, absent from the jvmTarget 8 compile surface; add appends to the end
             list.add(value)
         } else {
             setDeepData(path, mutableListOf(value), data)

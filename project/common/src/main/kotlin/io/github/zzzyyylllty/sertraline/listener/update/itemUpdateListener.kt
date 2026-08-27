@@ -31,7 +31,7 @@ fun onPlayerInteract(e: PlayerInteractEvent) {
     if (!config.getBoolean("item-update.enabled", true)) return
     val item = e.item
     if (item == null || item.isAir) return
-    // 获取手持物品的槽位
+    // Get the held item's slot
     val slot = e.player.inventory.heldItemSlot
     checkAndUpdateItem(e.player, item, slot)
 }

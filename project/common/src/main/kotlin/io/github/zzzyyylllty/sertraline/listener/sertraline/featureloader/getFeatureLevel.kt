@@ -7,14 +7,14 @@ import io.github.zzzyyylllty.sertraline.logger.warningS
 import taboolib.common.platform.event.SubscribeEvent
 
 /**
- * 处理sertraline:level特性
- * 将等级ID解析为实际的Level对象
+ * Handles the sertraline:level feature
+ * Resolves a level ID into the actual Level object
  */
 @SubscribeEvent
 fun getFeatureLevel(e: FeatureLoadEvent) {
     if (e.feature != "sertraline:level") return
 
-    // 物品没有定义等级特性，直接跳过（不是错误）
+    // The item does not define the level feature, so skip it (not an error)
     val raw = e.content ?: return
 
     val levelId = when (raw) {
@@ -27,19 +27,19 @@ fun getFeatureLevel(e: FeatureLoadEvent) {
         }
     }
 
-    // 查找对应的等级
+    // Find the corresponding level
     val level = levels[levelId]
     if (level == null) {
         warningS("Level '$levelId' not found for item ${e.sItemKey}")
-        // 返回原始值，让默认处理继续
+        // Return the original value and let default handling continue
         e.result = levelId
         return
     }
 
-    // 设置结果为等级ID（字符串）
+    // Set the result to the level ID (string)
     e.result = levelId
 
-    // 同时在itemCache中存储等级引用
+    // Also store the level reference in itemCache
     val cache = io.github.zzzyyylllty.sertraline.Sertraline.itemCache[e.sItemKey]?.toMutableMap() ?: mutableMapOf()
     cache["level"] = level
     cache["levelId"] = levelId

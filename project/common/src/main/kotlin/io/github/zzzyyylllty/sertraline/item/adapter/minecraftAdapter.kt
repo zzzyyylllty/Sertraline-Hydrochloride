@@ -18,7 +18,7 @@ fun minecraftAdapter(item: ItemStack,sItem: ModernSItem,player: Player?): ItemSt
     val item = item
     val map = (sItem.getMajorData("minecraft") as? Map<String, Any?>) ?: return item
     if (map.isEmpty()) return item
-    // DataComponent 是 1.20.5+ 特性，低版本（1.12.2 等）无法写入组件，直接跳过
+    // DataComponent is a 1.20.5+ feature; older versions (1.12.2, etc.) cannot write components, so skip entirely
     if (!VersionHelper().isOrAbove12005()) {
         if (warnedMinecraftComponent.compareAndSet(false, true)) {
             warningL("WarningNotSupportDataComponent")
@@ -45,9 +45,9 @@ fun transferBooleanToByte(input: Any?): Any? {
     return when (input) {
         is Map<*, *> -> input.map { (k, v) ->
             k.toString() to transferBooleanToByte(v)
-        }.toMap() // 直接使用 map 和 toMap
+        }.toMap() // directly use map and toMap
 
-        is List<*> -> input.map { transferBooleanToByte(it) } // 使用 map
+        is List<*> -> input.map { transferBooleanToByte(it) } // use map
 
         is Boolean -> if (input) 1.toByte() else 0.toByte()
 

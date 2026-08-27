@@ -6,10 +6,10 @@ import org.bukkit.event.player.PlayerJoinEvent
 import taboolib.common.platform.event.SubscribeEvent
 
 /**
- * 玩家配方书解锁。
- * 原版配方书只显示玩家已解锁的配方（进度来源）；Sertraline 配方无进度来源，
- * 玩家不合成一次就看不到。在 join 时通过 NMS RecipeBookServer.add 主动解锁全部
- * Sertraline 配方（Player.discoverRecipe 已在 spigot-api 1.21.4 移除）。
+ * Player recipe book unlock.
+ * The vanilla recipe book only shows recipes the player has unlocked (by progress); Sertraline recipes have no
+ * progress source, so players cannot see them without crafting at least once. On join, proactively unlock all
+ * Sertraline recipes via NMS RecipeBookServer.add (Player.discoverRecipe was removed in spigot-api 1.21.4).
  */
 @SubscribeEvent
 fun onPlayerJoinUnlockRecipes(e: PlayerJoinEvent) {
@@ -17,7 +17,7 @@ fun onPlayerJoinUnlockRecipes(e: PlayerJoinEvent) {
 }
 
 /**
- * 刷新所有在线玩家的配方书（reload 配方后调用，见 loadRecipeFiles）。
+ * Refreshes the recipe book of all online players (call after reloading recipes, see loadRecipeFiles).
  */
 fun unlockOnlinePlayers() {
     for (player in Bukkit.getOnlinePlayers()) {

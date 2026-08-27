@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityPickupItemEvent
 import taboolib.common.platform.event.SubscribeEvent
 
-// EntityPickupItemEvent 是 1.13+ 类，legacy12（v11200）编译面不存在；独立文件在 legacy12 构建中整体排除
+// EntityPickupItemEvent is a 1.13+ class, absent from the legacy12 (v11200) compile surface; this standalone file is excluded entirely in legacy12 builds
 @SubscribeEvent
 fun onPickup(e: EntityPickupItemEvent) {
     val player = e.entity as? Player ?: return

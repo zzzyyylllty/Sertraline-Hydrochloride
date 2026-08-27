@@ -35,6 +35,7 @@ LoreFormat_Switch_Load_Error: "<red>可切换 Lore 格式 {0}（{1}）解析失�
 LoreFormat_Switch_Load_Unresolved: "<red>可切换 Lore 格式 {0}（{1}）无法解析目标格式：{2}</red>"
 LoreFormat_Switch_Load_PreVar_Compile: "<yellow>可切换 Lore 格式 {0}：预变量 {1} 编译失败：{2}</yellow>"
 LoreFormat_Switch_Load_Condition_Compile: "<yellow>可切换 Lore 格式 {0}：条件（用于 {1}）编译失败：{2}</yellow>"
+LoreFormat_Load_Filter_Unknown_Decision: "<yellow>比较目标 filter：未知的\"then\"取值 {0}（应为 allow/deny），已跳过该条目。</yellow>"
 LoreFormat_Switch_Eval_PreVar: "<red>可切换 Lore 格式中预变量 {0} 求值失败：{1}</red>"
 Mapping_Load: "开始加载映射。"
 Mapping_Load_Regen: "未找到映射，重新生成中。"

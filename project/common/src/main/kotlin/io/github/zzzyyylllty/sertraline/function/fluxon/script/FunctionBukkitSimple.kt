@@ -201,7 +201,7 @@ object FunctionBukkitSimple {
         runtime.registerFunction("sertraline:bukkit", "banIP", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when (val arg = ctx!!.getArgument(0)) {
                 is String -> Bukkit.banIP(arg)
-                // banIP(InetAddress) 是 1.13+ API，legacy12（v11200）只有 String 版；统一转 hostAddress
+                // banIP(InetAddress) is a 1.13+ API; legacy12 (v11200) only has a String overload; normalize to hostAddress
                 is InetAddress -> Bukkit.banIP(arg.hostAddress)
                 else -> throw IllegalArgumentException("Argument for banIP must be a String or InetAddress.")
             }
@@ -277,7 +277,7 @@ object FunctionBukkitSimple {
 
         runtime.registerFunction("sertraline:bukkit", "createMerchant", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
             if (ctx!!.argumentCount == 0) {
-                // 走 PlatformCompat：无参 createMerchant() 是 1.21 API，legacy12（v11200）只有 String 重载
+                // Go through PlatformCompat: the no-arg createMerchant() is a 1.21 API; legacy12 (v11200) only has a String overload
                 PlatformCompat.createMerchant()
             } else {
                 val title = when (val arg0 = ctx!!.getArgument(0)) {
@@ -344,7 +344,7 @@ object FunctionBukkitSimple {
                         val color = ctx!!.getArgumentByType(2, BarColor::class.java)!!
                         val style = ctx!!.getArgumentByType(3, BarStyle::class.java)!!
                         val flags = if (ctx!!.hasArgument(4)) ctx!!.getArgumentByType(4, Array<BarFlag>::class.java)!! else emptyArray()
-                        // keyed 版是 1.16+ API，走 PlatformCompat（低版本降级为 String 版）
+                        // keyed version is a 1.16+ API; go through PlatformCompat (falls back to the String version on older servers)
                         PlatformCompat.createBossBar(key, title, color, style, flags)
                     } else {
                         throw IllegalArgumentException("Invalid arguments for createBossBar.")
@@ -364,7 +364,7 @@ object FunctionBukkitSimple {
         // --- BlockData ---
 
         runtime.registerFunction("sertraline:bukkit", "createBlockData", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
-            // BlockData 是 1.13+ API，走 PlatformCompat（低版本返回 null）
+            // BlockData is a 1.13+ API; go through PlatformCompat (returns null on older versions)
             when(val arg0 = ctx!!.getArgument(0)) {
                 is Material -> {
                     if (ctx!!.argumentCount == 1) {
@@ -467,7 +467,7 @@ object FunctionBukkitSimple {
         runtime.registerFunction("sertraline:bukkit", "getAmbientSpawnLimit", 0, NativeCallable { ctx: FunctionContext<Any?>? -> Bukkit.getAmbientSpawnLimit() })
 
         // @Deprecated createPlayerProfile (since 1.18.1)
-        // org.bukkit.profile.PlayerProfile 是 1.18.2+ API，legacy12（v11200）不存在；走 PlatformCompat（反射降级）
+        // org.bukkit.profile.PlayerProfile is a 1.18.2+ API, absent in legacy12 (v11200); go through PlatformCompat (reflection fallback)
         runtime.registerFunction("sertraline:bukkit", "createPlayerProfile", -1, NativeCallable { ctx: FunctionContext<Any?>? ->
             when(ctx!!.argumentCount) {
                 1 -> when(val arg0 = ctx!!.getArgument(0)) {
@@ -485,7 +485,7 @@ object FunctionBukkitSimple {
         })
 
         // @Deprecated getRegistry (since 1.20.6)
-        // Registry 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat
+        // Registry is a 1.13+ API, absent from the legacy12 (v11200) compile surface; go through PlatformCompat
         runtime.registerFunction("sertraline:bukkit", "getRegistry", 1, NativeCallable { ctx: FunctionContext<Any?>? ->
             val clazz = ctx!!.getArgument(0) as Class<out Keyed>
             PlatformCompat.getRegistry(clazz)
@@ -497,7 +497,7 @@ object FunctionBukkitSimple {
 
         // --- Tags ---
 
-        // Tag 是 1.13+ API，legacy12（v11200）编译面不存在，走 PlatformCompat
+        // Tag is a 1.13+ API, absent from the legacy12 (v11200) compile surface; go through PlatformCompat
         runtime.registerFunction("sertraline:bukkit", "getTag", 3, NativeCallable { ctx: FunctionContext<Any?>? ->
             val registry = ctx!!.getString(0)!!
             val tagKey = ctx!!.getArgumentByType(1, NamespacedKey::class.java)!!

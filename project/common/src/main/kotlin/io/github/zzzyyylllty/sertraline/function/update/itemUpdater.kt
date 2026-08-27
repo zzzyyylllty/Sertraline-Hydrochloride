@@ -16,8 +16,8 @@ import taboolib.module.nms.getItemTag
 import taboolib.platform.util.isAir
 
 /**
- * 获取物品的预期修订版本号
- * 优先级: 显式指定 > 自动追踪
+ * Gets the expected revision number of an item
+ * Priority: explicit value > auto tracking
  */
 fun getExpectedRevision(itemId: String, player: Player? = null, ownerUuid: String? = null): Int {
     val normalizedId = if (isPrivateItemId(itemId)) {
@@ -38,12 +38,12 @@ fun getExpectedRevision(itemId: String, player: Player? = null, ownerUuid: Strin
 }
 
 /**
- * 检查单个物品是否需要更新，并在需要时重建替换。
+ * Checks whether a single item needs updating, and rebuilds/replaces it if so.
  *
- * 使用原子性 slot.setItem 替换，禁止 addItem/removeItem 组合，
- * 避免产生刷物品漏洞。
+ * Uses the atomic slot.setItem replacement; addItem/removeItem combos are forbidden,
+ * to avoid an item-duplication exploit.
  *
- * @return true 如果物品已更新
+ * @return true if the item was updated
  */
 fun checkAndUpdateItem(player: Player, itemStack: ItemStack?, slot: Int): Boolean {
     if (itemStack == null || itemStack.isAir) return false
@@ -69,30 +69,30 @@ fun checkAndUpdateItem(player: Player, itemStack: ItemStack?, slot: Int): Boolea
     } ?: return false
     newItem.amount = itemStack.amount
 
-    // 原子替换，禁止 addItem/removeItem 组合
+    // atomic replacement; addItem/removeItem combos are forbidden
     player.inventory.setItem(slot, newItem)
 
     return true
 }
 
 /**
- * 检查玩家全部背包物品（含手持、盔甲栏）。
- * 用于登录时或定时扫描。
+ * Checks all of a player's inventory items (including held and armor slots).
+ * Used at login or for periodic scans.
  */
 fun updatePlayerItems(player: Player) {
     val inv = player.inventory
-    // 主背包 + 快捷栏 slots 0-35 (storageContents 保证不含盔甲/副手)
+    // main inventory + hotbar slots 0-35 (storageContents guarantees no armor/offhand)
     inv.storageContents.forEachIndexed { index, item ->
         if (item == null || item.isAir) return@forEachIndexed
         checkAndUpdateItem(player, item, index)
     }
-    // 盔甲槽 36-39
+    // armor slots 36-39
     inv.armorContents.forEachIndexed { index, item ->
         if (item == null || item.isAir) return@forEachIndexed
         val armorSlot = 36 + index // 0→36(boots), 1→37, 2→38, 3→39(helmet)
         checkAndUpdateItem(player, item, armorSlot)
     }
-    // 副手 slot 40
+    // offhand slot 40
     val offHand = inv.itemInOffHand
     if (!offHand.isAir) {
         checkAndUpdateItem(player, offHand, 40)

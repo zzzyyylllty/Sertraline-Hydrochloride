@@ -21,7 +21,7 @@ fun registerExtensionComponent() {
 
 object ExtensionComponent {
     fun init(runtime: FluxonRuntime) {
-        runtime.registerExtension(Component::class.java) // 获取指定索引的元素
+        runtime.registerExtension(Component::class.java) // Get the element at the specified index
             .function("serializeComponent", 0, NativeCallable { context: FunctionContext<Component?>? ->
                 val c: Component = Objects.requireNonNull<Component>(context!!.getTarget())
                 c.toMiniMessageString()
