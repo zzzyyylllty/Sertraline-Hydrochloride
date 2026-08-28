@@ -1,0 +1,43 @@
+# 全局监听器配置
+# Global listener configuration
+# 丢弃物品时切换 lore 显示模式
+# Drops item to toggle lore display mode
+#
+# 字段说明 / Fields:
+#   bind             事件类（简写或全限定名，如 PlayerDropItemEvent / org.bukkit.event.player.PlayerDropItemEvent）
+#                    Event class (shorthand or fully-qualified name)
+#   priority         监听优先级：LOWEST / LOW / NORMAL / HIGH / HIGHEST / MONITOR（默认 NORMAL）
+#                    Listener priority (default NORMAL)
+#   accept-cancelled 是否处理已取消的事件（默认 false）
+#                    Whether to handle cancelled events (default false)
+#   async            是否异步执行脚本（默认 true）
+#                    Whether to run the script asynchronously (default true)
+#   condition        Kether 条件，为 false 时跳过本监听器（可选）
+#                    Kether condition; the listener is skipped when it evaluates to false (optional)
+#   eval             脚本段：键为脚本引擎，值为脚本内容（多行字符串或行列表）
+#                    Script section: key = script engine, value = script (block scalar or line list)
+#                    引擎支持 graaljs / javascript(js) / kether / fluxon(fx) / jexl
+#                    Supported engines: graaljs / javascript(js) / kether / fluxon(fx) / jexl
+#                    运行时注入变量：player / event / cancellableEvent / listener，并合并 defaultData
+#                    Injected variables: player / event / cancellableEvent / listener, merged with defaultData
+#                    (DataUtil、Bukkit、SertralineAPI、PlayerUtil 等)
+#                    (DataUtil, Bukkit, SertralineAPI, PlayerUtil, etc.)
+#
+
+#drop_meta_toggle:
+#  bind: "PlayerDropItemEvent"
+#  async: false
+#  eval:
+#    graaljs: |
+#      event.setCancelled(true)
+#      var currentLoreData = DataUtil.getDataAsInt(player, "loreMode")
+#      PlayerUtil.sendMessageComponent(player, mmUtil.deserialize("currentLoreData" + currentLoreData))
+#      if (currentLoreData == null) {
+#        DataUtil.setData(player, "loreMode", 0)
+#      } else {
+#        if (currentLoreData >= 2) {
+#          DataUtil.setData(player, "loreMode", 0)
+#        } else {
+#          DataUtil.setData(player, "loreMode", currentLoreData + 1)
+#        }
+#      }
